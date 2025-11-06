@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import UserList from './UserList'
+import Link from 'next/link'
 
 export default async function UsersPage() {
   // Server Component - fetches data
@@ -21,7 +22,16 @@ export default async function UsersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-8">Users</h1>
+        {/* Header with Add Button */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-white">Users</h1>
+          <Link
+            href="/users/add"
+            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-lg hover:shadow-xl"
+          >
+            + Add New User
+          </Link>
+        </div>
 
         {/* Pass data to Client Component */}
         {users && users.length > 0 ? (

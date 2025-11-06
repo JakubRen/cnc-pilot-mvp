@@ -1,0 +1,165 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { supabase } from '@/lib/supabase'
+import toast from 'react-hot-toast'
+
+// Same validation schema as Add User
+const userSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  full_name: z.string().min(2, 'Name must be at least 2 characters'),
+  role: z.enum(['operator', 'manager', 'admin']),
+})
+
+type UserFormData = z.infer<typeof userSchema>
+
+export default function EditUserPage({ params }: { params: { id: string } }) {
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<UserFormData>({
+    resolver: zodResolver(userSchema),
+  })
+
+  // Load existing user data
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', params.id)
+        .single()
+
+      if (error) {
+        toast.error('Error loading user: ' + error.message)
+        router.push('/users')
+        return
+      }
+
+      if (data) {
+        // Pre-fill form with existing data
+        setValue('email', data.email)
+        setValue('full_name', data.full_name)
+        setValue('role', data.role)
+      }
+
+      setLoading(false)
+    }
+
+    fetchUser()
+  }, [params.id, setValue, router])
+
+  const onSubmit = async (data: UserFormData) => {
+    const loadingToast = toast.loading('Updating user...')
+
+    const { error } = await supabase
+      .from('users')
+      .update(data)
+      .eq('id', params.id)
+
+    toast.dismiss(loadingToast)
+
+    if (error) {
+      toast.error('Failed to update user: ' + error.message)
+      return
+    }
+
+    toast.success('User updated successfully!')
+    router.push('/users')
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="text-white text-xl">Loading user data...</div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-4xl font-bold text-white mb-8">Edit User</h1>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Email Field */}
+          <div>
+            <label className="block text-slate-300 mb-2 font-medium">
+              Email <span className="text-red-400">*</span>
+            </label>
+            <input
+              {...register('email')}
+              type="email"
+              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+              placeholder="user@example.com"
+            />
+            {errors.email && (
+              <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
+            )}
+          </div>
+
+          {/* Full Name Field */}
+          <div>
+            <label className="block text-slate-300 mb-2 font-medium">
+              Full Name <span className="text-red-400">*</span>
+            </label>
+            <input
+              {...register('full_name')}
+              type="text"
+              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+              placeholder="Jan Kowalski"
+            />
+            {errors.full_name && (
+              <p className="text-red-400 text-sm mt-1">{errors.full_name.message}</p>
+            )}
+          </div>
+
+          {/* Role Field */}
+          <div>
+            <label className="block text-slate-300 mb-2 font-medium">
+              Role <span className="text-red-400">*</span>
+            </label>
+            <select
+              {...register('role')}
+              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+            >
+              <option value="operator">Operator</option>
+              <option value="manager">Manager</option>
+              <option value="admin">Admin</option>
+            </select>
+            {errors.role && (
+              <p className="text-red-400 text-sm mt-1">{errors.role.message}</p>
+            )}
+          </div>
+
+          {/* Submit Buttons */}
+          <div className="flex gap-4 pt-4">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition shadow-lg hover:shadow-xl"
+            >
+              {isSubmitting ? 'Updating...' : 'Update User'}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/users')}
+              className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 font-semibold transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}

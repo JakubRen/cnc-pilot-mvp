@@ -1,6 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import toast from 'react-hot-toast'
 
 type User = {
   id: string
@@ -14,8 +18,38 @@ type UserListProps = {
   users: User[]
 }
 
-export default function UserList({ users }: UserListProps) {
+export default function UserList({ users: initialUsers }: UserListProps) {
   const [showDetails, setShowDetails] = useState(true)
+  const [users, setUsers] = useState(initialUsers)
+  const router = useRouter()
+
+  const handleDelete = async (userId: string, userName: string) => {
+    // Confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to delete user "${userName}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) return
+
+    const loadingToast = toast.loading('Deleting user...')
+
+    // Delete from Supabase
+    const { error } = await supabase
+      .from('users')
+      .delete()
+      .eq('id', userId)
+
+    toast.dismiss(loadingToast)
+
+    if (error) {
+      toast.error('Failed to delete user: ' + error.message)
+      return
+    }
+
+    // Remove from local state (instant UI update!)
+    setUsers(users.filter(u => u.id !== userId))
+    toast.success(`User "${userName}" deleted successfully!`)
+  }
 
   return (
     <div>
@@ -41,7 +75,7 @@ export default function UserList({ users }: UserListProps) {
               className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition-all hover:shadow-lg"
             >
               <div className="flex justify-between items-start">
-                <div className="space-y-2">
+                <div className="space-y-2 flex-1">
                   <p className="text-xl font-semibold text-white">
                     {user.full_name}
                   </p>
@@ -58,8 +92,24 @@ export default function UserList({ users }: UserListProps) {
                     Created: {new Date(user.created_at).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="text-xs text-slate-500">
-                  ID: {String(user.id).slice(0, 8)}...
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-2">
+                  <Link
+                    href={`/users/${user.id}/edit`}
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium transition text-center"
+                  >
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(user.id, user.full_name)}
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium transition"
+                  >
+                    Delete
+                  </button>
+                  <div className="text-xs text-slate-500 text-center mt-1">
+                    ID: {String(user.id).slice(0, 8)}...
+                  </div>
                 </div>
               </div>
             </div>
