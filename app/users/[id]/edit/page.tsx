@@ -17,9 +17,10 @@ const userSchema = z.object({
 
 type UserFormData = z.infer<typeof userSchema>
 
-export default function EditUserPage({ params }: { params: { id: string } }) {
+export default function EditUserPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string>('')
 
   const {
     register,
@@ -33,10 +34,15 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
   // Load existing user data
   useEffect(() => {
     const fetchUser = async () => {
+      // Await params in Next.js 15+
+      const resolvedParams = await params
+      const id = resolvedParams.id
+      setUserId(id)
+
       const { data, error } = await supabase
         .from('users')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', id)
         .single()
 
       if (error) {
@@ -56,7 +62,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     }
 
     fetchUser()
-  }, [params.id, setValue, router])
+  }, [params, setValue, router])
 
   const onSubmit = async (data: UserFormData) => {
     const loadingToast = toast.loading('Updating user...')
@@ -64,7 +70,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     const { error } = await supabase
       .from('users')
       .update(data)
-      .eq('id', params.id)
+      .eq('id', userId)
 
     toast.dismiss(loadingToast)
 
