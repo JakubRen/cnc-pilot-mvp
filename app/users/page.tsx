@@ -1,8 +1,14 @@
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import UserList from './UserList'
+import LogoutButton from './LogoutButton'
 import Link from 'next/link'
 
 export default async function UsersPage() {
+  const supabase = await createClient()
+
+  // Get current logged-in user
+  const { data: { user: currentUser } } = await supabase.auth.getUser()
+
   // Server Component - fetches data
   const { data: users, error } = await supabase
     .from('users')
@@ -22,6 +28,15 @@ export default async function UsersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
       <div className="max-w-4xl mx-auto">
+        {/* User Navbar */}
+        <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
+          <div className="text-slate-400">
+            Logged in as:{' '}
+            <span className="text-white font-semibold">{currentUser?.email}</span>
+          </div>
+          <LogoutButton />
+        </div>
+
         {/* Header with Add Button */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-white">Users</h1>

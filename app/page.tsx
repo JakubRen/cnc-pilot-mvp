@@ -20,17 +20,24 @@ export default function Home() {
           <p className="text-sm">✅ Supabase Database</p>
         </div>
 
-        <div className="mt-12 space-y-4">
+        <div className="mt-12 flex flex-col gap-4">
           <Link
-            href="/users"
+            href="/login"
             className="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl"
           >
-            View Users →
+            Login →
+          </Link>
+
+          <Link
+            href="/users"
+            className="inline-block px-8 py-4 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors font-semibold text-lg"
+          >
+            View Users
           </Link>
 
           <div className="px-6 py-3 bg-slate-800 rounded-lg border border-slate-700">
             <p className="text-slate-300 text-sm">
-              🎉 Day 2 Complete - Interactive app with database!
+              🔐 Day 4: Authentication System
             </p>
           </div>
         </div>
