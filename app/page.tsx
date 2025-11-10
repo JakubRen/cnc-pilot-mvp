@@ -35,9 +35,16 @@ export default function Home() {
             View Users
           </Link>
 
+          <Link
+            href="/orders"
+            className="inline-block px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg"
+          >
+            View Orders
+          </Link>
+
           <div className="px-6 py-3 bg-slate-800 rounded-lg border border-slate-700">
             <p className="text-slate-300 text-sm">
-              🔐 Day 4: Authentication System
+              🚀 Day 5: Role-Based Permissions + Orders Module
             </p>
           </div>
         </div>

@@ -51,3 +51,14 @@ export async function getSession() {
   const { data: { session } } = await supabase.auth.getSession()
   return session
 }
+
+/**
+ * User profile interface with role information
+ */
+export interface UserProfile {
+  id: string
+  email: string
+  full_name: string
+  role: 'owner' | 'manager' | 'operator' | 'viewer'
+  company_id: string | null
+}

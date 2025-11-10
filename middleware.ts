@@ -59,7 +59,9 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // Protected routes - require authentication
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/users')
+  const isProtectedRoute =
+    request.nextUrl.pathname.startsWith('/users') ||
+    request.nextUrl.pathname.startsWith('/orders')
 
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
@@ -80,6 +82,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/users/:path*',
+    '/orders/:path*',
     '/login',
     '/register',
   ],

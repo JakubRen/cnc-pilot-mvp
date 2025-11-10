@@ -16,9 +16,10 @@ type User = {
 
 type UserListProps = {
   users: User[]
+  currentUserRole: string
 }
 
-export default function UserList({ users: initialUsers }: UserListProps) {
+export default function UserList({ users: initialUsers, currentUserRole }: UserListProps) {
   const [showDetails, setShowDetails] = useState(true)
   const [users, setUsers] = useState(initialUsers)
   const router = useRouter()
@@ -101,12 +102,17 @@ export default function UserList({ users: initialUsers }: UserListProps) {
                   >
                     Edit
                   </Link>
-                  <button
-                    onClick={() => handleDelete(user.id, user.full_name)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium transition"
-                  >
-                    Delete
-                  </button>
+
+                  {/* Only show Delete button if current user is owner */}
+                  {currentUserRole === 'owner' && (
+                    <button
+                      onClick={() => handleDelete(user.id, user.full_name)}
+                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium transition"
+                    >
+                      Delete
+                    </button>
+                  )}
+
                   <div className="text-xs text-slate-500 text-center mt-1">
                     ID: {String(user.id).slice(0, 8)}...
                   </div>
