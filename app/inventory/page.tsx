@@ -43,18 +43,18 @@ export default async function InventoryPage() {
           </div>
 
           {/* Inventory Table */}
-          <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
-            <table className="w-full">
+          <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-x-auto">
+            <table className="w-full min-w-max">
               <thead className="bg-slate-900">
                 <tr>
-                  <th className="px-6 py-4 text-left text-slate-300 font-semibold">SKU</th>
-                  <th className="px-6 py-4 text-left text-slate-300 font-semibold">Name</th>
-                  <th className="px-6 py-4 text-left text-slate-300 font-semibold">Category</th>
-                  <th className="px-6 py-4 text-left text-slate-300 font-semibold">Stock</th>
-                  <th className="px-6 py-4 text-left text-slate-300 font-semibold">Location</th>
-                  <th className="px-6 py-4 text-left text-slate-300 font-semibold">Batch #</th>
-                  <th className="px-6 py-4 text-left text-slate-300 font-semibold">Status</th>
-                  <th className="px-6 py-4 text-left text-slate-300 font-semibold">Actions</th>
+                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">SKU</th>
+                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Name</th>
+                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Category</th>
+                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Stock</th>
+                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Location</th>
+                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Batch #</th>
+                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Status</th>
+                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -66,36 +66,36 @@ export default async function InventoryPage() {
 
                   return (
                     <tr key={item.id} className="border-t border-slate-700 hover:bg-slate-750">
-                      <td className="px-6 py-4 text-white font-mono text-sm">{item.sku}</td>
-                      <td className="px-6 py-4 text-white">{item.name}</td>
-                      <td className="px-6 py-4">
-                        <span className="px-2 py-1 rounded text-xs font-semibold text-slate-300 bg-slate-700">
+                      <td className="px-4 py-3 text-white font-mono text-sm whitespace-nowrap">{item.sku}</td>
+                      <td className="px-4 py-3 text-white">{item.name}</td>
+                      <td className="px-4 py-3">
+                        <span className="px-2 py-1 rounded text-xs font-semibold text-slate-300 bg-slate-700 whitespace-nowrap">
                           {item.category.replace('_', ' ')}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-white font-semibold">
+                      <td className="px-4 py-3 text-white font-semibold whitespace-nowrap">
                         {item.quantity} {item.unit}
                       </td>
-                      <td className="px-6 py-4 text-slate-300">{item.location || 'N/A'}</td>
-                      <td className="px-6 py-4 text-slate-400 font-mono text-xs">
+                      <td className="px-4 py-3 text-slate-300">{item.location || 'N/A'}</td>
+                      <td className="px-4 py-3 text-slate-400 font-mono text-xs whitespace-nowrap">
                         {item.batch_number || '-'}
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${stockColor}`}>
+                      <td className="px-4 py-3">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${stockColor} whitespace-nowrap`}>
                           {stockStatus}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex gap-2">
+                      <td className="px-4 py-3">
+                        <div className="flex gap-2 whitespace-nowrap">
                           <Link
                             href={`/inventory/${item.id}`}
-                            className="px-4 py-2 bg-slate-700 text-white rounded hover:bg-slate-600 text-sm transition"
+                            className="px-3 py-1.5 bg-slate-700 text-white rounded hover:bg-slate-600 text-xs transition"
                           >
                             View
                           </Link>
                           <Link
                             href={`/inventory/${item.id}/edit`}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm transition"
+                            className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs transition"
                           >
                             Edit
                           </Link>
