@@ -63,7 +63,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
     const loadingToast = toast.loading('Updating item...')
 
     const { error } = await supabase
-      .from('inventory_items')
+      .from('inventory')
       .update({
         ...data,
         quantity: Number(data.quantity),

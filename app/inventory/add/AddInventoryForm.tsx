@@ -68,7 +68,7 @@ export default function AddInventoryForm() {
 
     // Create inventory item
     const { data: newItem, error: itemError } = await supabase
-      .from('inventory_items')
+      .from('inventory')
       .insert({
         ...data,
         quantity: Number(data.quantity),

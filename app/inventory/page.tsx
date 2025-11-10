@@ -14,7 +14,7 @@ export default async function InventoryPage() {
 
   // Fetch inventory items
   const { data: items, error } = await supabase
-    .from('inventory_items')
+    .from('inventory')
     .select('*')
     .order('created_at', { ascending: false })
 

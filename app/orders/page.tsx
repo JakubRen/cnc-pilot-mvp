@@ -32,7 +32,7 @@ export default async function OrdersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <Navbar user={userProfile} />
 
         <div className="flex justify-between items-center mb-8">

@@ -32,7 +32,7 @@ export default async function UsersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Use shared Navbar component */}
         <Navbar user={userProfile} />
 
