@@ -23,41 +23,36 @@ export default async function InventoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <Navbar user={user} />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+      <div className="max-w-7xl mx-auto">
+        <Navbar user={user} />
 
-      <div className="p-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Inventory Management</h1>
-              <p className="text-slate-400 mt-1">Magazyn + Śledzenie Partii</p>
-            </div>
-            <Link
-              href="/inventory/add"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
-            >
-              + Add New Item
-            </Link>
-          </div>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-white">Inventory</h1>
+          <Link
+            href="/inventory/add"
+            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-lg"
+          >
+            + Add New Item
+          </Link>
+        </div>
 
           {/* Inventory Table */}
           <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-x-auto">
             <table className="w-full min-w-max">
-              <thead className="bg-slate-900">
+              <thead className="bg-slate-700">
                 <tr>
-                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">SKU</th>
-                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Name</th>
-                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Category</th>
-                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Stock</th>
-                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Location</th>
-                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Batch #</th>
-                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Status</th>
-                  <th className="px-4 py-3 text-left text-slate-300 font-semibold text-sm whitespace-nowrap">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">SKU</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Category</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Stock</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Location</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Batch #</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-slate-700">
                 {items?.map((item) => {
                   const isLowStock = Number(item.quantity) <= Number(item.low_stock_threshold)
                   const isOutOfStock = Number(item.quantity) === 0
@@ -65,41 +60,39 @@ export default async function InventoryPage() {
                   const stockColor = isOutOfStock ? 'bg-gray-600' : isLowStock ? 'bg-red-600' : 'bg-green-600'
 
                   return (
-                    <tr key={item.id} className="border-t border-slate-700 hover:bg-slate-750">
-                      <td className="px-4 py-3 text-white font-mono text-sm whitespace-nowrap">{item.sku}</td>
-                      <td className="px-4 py-3 text-white">{item.name}</td>
-                      <td className="px-4 py-3">
-                        <span className="px-2 py-1 rounded text-xs font-semibold text-slate-300 bg-slate-700 whitespace-nowrap">
+                    <tr key={item.id} className="hover:bg-slate-700/50 transition">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white font-mono">{item.sku}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{item.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 py-1 rounded text-xs font-semibold text-slate-300 bg-slate-700">
                           {item.category.replace('_', ' ')}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-white font-semibold whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-semibold">
                         {item.quantity} {item.unit}
                       </td>
-                      <td className="px-4 py-3 text-slate-300">{item.location || 'N/A'}</td>
-                      <td className="px-4 py-3 text-slate-400 font-mono text-xs whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{item.location || 'N/A'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400 font-mono">
                         {item.batch_number || '-'}
                       </td>
-                      <td className="px-4 py-3">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${stockColor} whitespace-nowrap`}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${stockColor}`}>
                           {stockStatus}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex gap-2 whitespace-nowrap">
-                          <Link
-                            href={`/inventory/${item.id}`}
-                            className="px-3 py-1.5 bg-slate-700 text-white rounded hover:bg-slate-600 text-xs transition"
-                          >
-                            View
-                          </Link>
-                          <Link
-                            href={`/inventory/${item.id}/edit`}
-                            className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs transition"
-                          >
-                            Edit
-                          </Link>
-                        </div>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <Link
+                          href={`/inventory/${item.id}`}
+                          className="text-slate-300 hover:text-white mr-4 font-medium"
+                        >
+                          View
+                        </Link>
+                        <Link
+                          href={`/inventory/${item.id}/edit`}
+                          className="text-blue-400 hover:text-blue-300 font-medium"
+                        >
+                          Edit
+                        </Link>
                       </td>
                     </tr>
                   )
@@ -112,13 +105,21 @@ export default async function InventoryPage() {
                 <p className="text-slate-400 text-lg mb-4">No inventory items yet</p>
                 <Link
                   href="/inventory/add"
-                  className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                 >
                   Add your first item
                 </Link>
               </div>
             )}
           </div>
+
+        <div className="mt-8 text-center">
+          <Link
+            href="/"
+            className="inline-block px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
+          >
+            ← Back to Home
+          </Link>
         </div>
       </div>
     </div>
