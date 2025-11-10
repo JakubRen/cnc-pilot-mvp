@@ -61,7 +61,8 @@ export async function middleware(request: NextRequest) {
   // Protected routes - require authentication
   const isProtectedRoute =
     request.nextUrl.pathname.startsWith('/users') ||
-    request.nextUrl.pathname.startsWith('/orders')
+    request.nextUrl.pathname.startsWith('/orders') ||
+    request.nextUrl.pathname.startsWith('/inventory')
 
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
@@ -83,6 +84,7 @@ export const config = {
   matcher: [
     '/users/:path*',
     '/orders/:path*',
+    '/inventory/:path*',
     '/login',
     '/register',
   ],
