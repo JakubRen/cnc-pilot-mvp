@@ -28,7 +28,7 @@ export async function GET() {
         users: 'ok',
         orders: 'ok',
       },
-      version: 'Day 5',
+      version: 'Day 6',
     })
   } catch (error: any) {
     return Response.json(
