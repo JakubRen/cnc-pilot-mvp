@@ -49,9 +49,16 @@ export default function Home() {
             View Inventory
           </Link>
 
+          <Link
+            href="/time-tracking"
+            className="inline-block px-8 py-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-semibold text-lg"
+          >
+            ⏱️ Time Tracking
+          </Link>
+
           <div className="px-6 py-3 bg-slate-800 rounded-lg border border-slate-700">
             <p className="text-slate-300 text-sm">
-              🚀 Day 7: Inventory Module + Batch Traceability
+              🚀 Day 8: Time Tracking Module + Order Integration
             </p>
           </div>
         </div>

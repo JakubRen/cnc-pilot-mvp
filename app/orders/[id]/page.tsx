@@ -3,6 +3,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import StatusDropdown from './StatusDropdown'
+import OrderTimeTracking from './OrderTimeTracking'
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -29,6 +30,18 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
   if (error || !order) {
     notFound()
   }
+
+  // Fetch time logs for this order
+  const { data: timeLogs } = await supabase
+    .from('time_logs')
+    .select(`
+      *,
+      users (
+        full_name
+      )
+    `)
+    .eq('order_id', id)
+    .order('start_time', { ascending: false })
 
   // Format dates in Polish locale
   const formatDate = (dateString: string) => {
@@ -174,6 +187,19 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               <p className="text-slate-300 whitespace-pre-wrap">{order.notes}</p>
             </div>
           )}
+
+          {/* Time Tracking Section (Full Width) */}
+          <div className="col-span-2">
+            <OrderTimeTracking
+              orderId={order.id}
+              orderNumber={order.order_number}
+              estimatedHours={order.estimated_hours}
+              timeLogs={timeLogs || []}
+              currentUserId={user.id}
+              companyId={user.company_id}
+              hourlyRate={user.hourly_rate || 150}
+            />
+          </div>
         </div>
       </div>
     </div>
