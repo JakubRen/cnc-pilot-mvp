@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabase';
 
 interface TimerProps {
   orderId: string;
@@ -24,7 +24,6 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
   const [loading, setLoading] = useState(false);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const supabase = createClientComponentClient();
 
   // Load active timer on mount (recovery)
   useEffect(() => {
@@ -128,8 +127,9 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
         .maybeSingle();
 
       if (existingTimer) {
+        const orderNumber = (existingTimer.orders as any)?.[0]?.order_number || 'Unknown';
         const shouldStop = confirm(
-          `You have an active timer on Order #${existingTimer.orders?.order_number}. Stop it and start new timer?`
+          `You have an active timer on Order #${orderNumber}. Stop it and start new timer?`
         );
 
         if (!shouldStop) {

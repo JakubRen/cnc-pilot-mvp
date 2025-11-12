@@ -3,8 +3,8 @@
 // Manual time entry form - Server Component
 // ============================================
 
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase-server';
+import { getUserProfile } from '@/lib/auth-server';
 import { redirect } from 'next/navigation';
 import ManualTimeEntryForm from './ManualTimeEntryForm';
 
@@ -14,22 +14,10 @@ export const metadata = {
 };
 
 export default async function AddTimeEntryPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = await createClient();
+  const currentUser = await getUserProfile();
 
-  // Check auth
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    redirect('/login');
-  }
-
-  // Get current user
-  const { data: currentUser } = await supabase
-    .from('users')
-    .select('id, company_id, hourly_rate')
-    .eq('auth_id', session.user.id)
-    .single();
-
-  if (!currentUser) {
+  if (!currentUser || !currentUser.company_id) {
     redirect('/login');
   }
 

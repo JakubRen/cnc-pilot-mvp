@@ -7,7 +7,7 @@
 
 import Link from 'next/link';
 import { formatDurationHuman, getStatusBadgeColor } from '@/lib/time-utils';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
 interface TimeLog {
@@ -39,7 +39,6 @@ interface Props {
 
 export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }: Props) {
   const router = useRouter();
-  const supabase = createClientComponentClient();
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this time log?')) {

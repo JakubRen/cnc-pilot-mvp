@@ -6,7 +6,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabase';
 
 interface StaleTimer {
   id: string;
@@ -19,7 +19,6 @@ interface StaleTimer {
 export default function StaleTimerAlert({ companyId }: { companyId: string }) {
   const [staleTimers, setStaleTimers] = useState<StaleTimer[]>([]);
   const [loading, setLoading] = useState(true);
-  const supabase = createClientComponentClient();
 
   useEffect(() => {
     loadStaleTimers();

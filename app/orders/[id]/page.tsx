@@ -10,7 +10,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
   const supabase = await createClient()
   const user = await getUserProfile()
 
-  if (!user) {
+  if (!user || !user.company_id) {
     redirect('/login')
   }
 

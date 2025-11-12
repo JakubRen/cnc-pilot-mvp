@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { validateTimeRange } from '@/lib/time-utils';
 
@@ -37,7 +37,6 @@ interface Props {
 
 export default function EditTimeLogForm({ timeLog, orders }: Props) {
   const router = useRouter();
-  const supabase = createClientComponentClient();
 
   const [formData, setFormData] = useState({
     order_id: timeLog.order_id,

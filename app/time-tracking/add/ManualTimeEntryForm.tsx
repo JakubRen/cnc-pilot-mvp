@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { validateTimeRange } from '@/lib/time-utils';
 
@@ -30,7 +30,6 @@ export default function ManualTimeEntryForm({
   defaultHourlyRate
 }: Props) {
   const router = useRouter();
-  const supabase = createClientComponentClient();
 
   const [formData, setFormData] = useState({
     order_id: orders[0]?.id || '',

@@ -3,29 +3,18 @@
 // Time log details page - Server Component
 // ============================================
 
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase-server';
+import { getUserProfile } from '@/lib/auth-server';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { formatDuration, formatDurationHuman, getStatusBadgeColor } from '@/lib/time-utils';
 
-export default async function TimeLogDetailsPage({ params }: { params: { id: string } }) {
-  const supabase = createServerComponentClient({ cookies });
+export default async function TimeLogDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const supabase = await createClient();
+  const currentUser = await getUserProfile();
 
-  // Check auth
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    redirect('/login');
-  }
-
-  // Get current user
-  const { data: currentUser } = await supabase
-    .from('users')
-    .select('id, company_id, role')
-    .eq('auth_id', session.user.id)
-    .single();
-
-  if (!currentUser) {
+  if (!currentUser || !currentUser.company_id) {
     redirect('/login');
   }
 
@@ -45,7 +34,7 @@ export default async function TimeLogDetailsPage({ params }: { params: { id: str
         email
       )
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('company_id', currentUser.company_id)
     .single();
 

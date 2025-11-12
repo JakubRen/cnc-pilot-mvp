@@ -3,8 +3,8 @@
 // Time tracking list page - Server Component
 // ============================================
 
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase-server';
+import { getUserProfile } from '@/lib/auth-server';
 import { redirect } from 'next/navigation';
 import TimeLogsClient from './TimeLogsClient';
 import StaleTimerAlert from '@/components/time-tracking/StaleTimerAlert';
@@ -15,22 +15,10 @@ export const metadata = {
 };
 
 export default async function TimeTrackingPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = await createClient();
+  const currentUser = await getUserProfile();
 
-  // Check auth
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    redirect('/login');
-  }
-
-  // Get current user with company_id
-  const { data: currentUser } = await supabase
-    .from('users')
-    .select('id, company_id, role, full_name')
-    .eq('auth_id', session.user.id)
-    .single();
-
-  if (!currentUser) {
+  if (!currentUser || !currentUser.company_id) {
     redirect('/login');
   }
 

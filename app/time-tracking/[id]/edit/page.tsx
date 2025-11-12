@@ -3,28 +3,17 @@
 // Edit time log page - Server Component
 // ============================================
 
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase-server';
+import { getUserProfile } from '@/lib/auth-server';
 import { redirect, notFound } from 'next/navigation';
 import EditTimeLogForm from './EditTimeLogForm';
 
-export default async function EditTimeLogPage({ params }: { params: { id: string } }) {
-  const supabase = createServerComponentClient({ cookies });
+export default async function EditTimeLogPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const supabase = await createClient();
+  const currentUser = await getUserProfile();
 
-  // Check auth
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    redirect('/login');
-  }
-
-  // Get current user
-  const { data: currentUser } = await supabase
-    .from('users')
-    .select('id, company_id, role')
-    .eq('auth_id', session.user.id)
-    .single();
-
-  if (!currentUser) {
+  if (!currentUser || !currentUser.company_id) {
     redirect('/login');
   }
 
@@ -38,7 +27,7 @@ export default async function EditTimeLogPage({ params }: { params: { id: string
         order_number
       )
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('company_id', currentUser.company_id)
     .single();
 

@@ -56,9 +56,10 @@ export async function getSession() {
  * User profile interface with role information
  */
 export interface UserProfile {
-  id: string
+  id: number
   email: string
   full_name: string
   role: 'owner' | 'manager' | 'operator' | 'viewer'
   company_id: string | null
+  hourly_rate?: number | null
 }
