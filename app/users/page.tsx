@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
-import Navbar from '@/components/layout/Navbar'
+import AppLayout from '@/components/layout/AppLayout'
 import UserList from './UserList'
 import Link from 'next/link'
 
@@ -31,40 +31,30 @@ export default async function UsersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Use shared Navbar component */}
-        <Navbar user={userProfile} />
-
-        {/* Header with Add Button */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white">Users</h1>
-          <Link
-            href="/users/add"
-            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-lg hover:shadow-xl"
-          >
-            + Add New User
-          </Link>
-        </div>
-
-        {/* Pass data + currentUserRole to Client Component */}
-        {users && users.length > 0 ? (
-          <UserList users={users} currentUserRole={userProfile.role} />
-        ) : (
-          <div className="text-center py-12 text-slate-400">
-            No users found. Add some users!
+    <AppLayout>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header with Add Button */}
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-4xl font-bold text-white">Użytkownicy</h1>
+            <Link
+              href="/users/add"
+              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-lg hover:shadow-xl"
+            >
+              + Dodaj Użytkownika
+            </Link>
           </div>
-        )}
 
-        <div className="mt-8 text-center">
-          <a
-            href="/"
-            className="inline-block px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
-          >
-            ← Back to Home
-          </a>
+          {/* Pass data + currentUserRole to Client Component */}
+          {users && users.length > 0 ? (
+            <UserList users={users} currentUserRole={userProfile.role} />
+          ) : (
+            <div className="text-center py-12 text-slate-400">
+              Brak użytkowników. Dodaj nowych użytkowników!
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </AppLayout>
   )
 }

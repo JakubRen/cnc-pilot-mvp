@@ -1,75 +1,88 @@
-import Link from 'next/link'
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase-server';
+import { getDashboardSummary } from '@/lib/dashboard-queries';
+import MetricCards from '@/components/dashboard/MetricCards';
+import UrgentTasks from '@/components/dashboard/UrgentTasks';
+import ProductionPlan from '@/components/dashboard/ProductionPlan';
+import ActivityFeed from '@/components/dashboard/ActivityFeed';
+import AppLayout from '@/components/layout/AppLayout';
 
-export default function Home() {
+export default async function HomePage() {
+  const supabase = await createClient();
+
+  // Check authentication
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect('/login');
+  }
+
+  // Get current user with company info
+  const { data: currentUser } = await supabase
+    .from('users')
+    .select('*, company:companies(*)')
+    .eq('auth_id', user.id)
+    .single();
+
+  if (!currentUser || !currentUser.company_id) {
+    redirect('/login');
+  }
+
+  // Fetch dashboard data
+  const dashboardData = await getDashboardSummary(currentUser.company_id);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <main className="flex flex-col items-center gap-6 p-8 text-center">
-        <div className="space-y-4">
-          <h1 className="text-6xl font-bold text-white tracking-tight">
-            CNC-Pilot MVP
-          </h1>
-          <p className="text-2xl text-slate-300 font-light">
-            Production Management System
-          </p>
-        </div>
-
-        <div className="mt-8 flex flex-col gap-3 text-slate-400">
-          <p className="text-sm">✅ Next.js 16 + TypeScript</p>
-          <p className="text-sm">✅ Tailwind CSS</p>
-          <p className="text-sm">✅ App Router</p>
-          <p className="text-sm">✅ Supabase Database</p>
-        </div>
-
-        <div className="mt-12 flex flex-col gap-4">
-          <Link
-            href="/dashboard"
-            className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg hover:from-blue-700 hover:to-cyan-700 transition-all font-semibold text-lg shadow-xl hover:shadow-2xl"
-          >
-            📊 Dashboard (Command Center)
-          </Link>
-
-          <Link
-            href="/login"
-            className="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl"
-          >
-            Login →
-          </Link>
-
-          <Link
-            href="/users"
-            className="inline-block px-8 py-4 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors font-semibold text-lg"
-          >
-            View Users
-          </Link>
-
-          <Link
-            href="/orders"
-            className="inline-block px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg"
-          >
-            View Orders
-          </Link>
-
-          <Link
-            href="/inventory"
-            className="inline-block px-8 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold text-lg"
-          >
-            View Inventory
-          </Link>
-
-          <Link
-            href="/time-tracking"
-            className="inline-block px-8 py-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-semibold text-lg"
-          >
-            ⏱️ Time Tracking
-          </Link>
-
-          <div className="px-6 py-3 bg-slate-800 rounded-lg border border-slate-700">
-            <p className="text-slate-300 text-sm">
-              🚀 Day 9: Dashboard + Production Planning
-            </p>
+    <AppLayout>
+      <div className="min-h-screen bg-slate-900 p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-2">
+                  Dashboard
+                </h1>
+                <p className="text-slate-400">
+                  Witaj, {currentUser.name}! Oto podsumowanie Twojej produkcji.
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-slate-400">
+                  {currentUser.company?.name}
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  {new Date().toLocaleDateString('pl-PL', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </p>
+              </div>
+            </div>
           </div>
+
+          {/* Metric Cards */}
+          <MetricCards metrics={dashboardData.metrics} />
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            {/* Urgent Tasks (1/3 width on desktop) */}
+            <div className="lg:col-span-1">
+              <UrgentTasks urgentTasks={dashboardData.urgentTasks} />
+            </div>
+
+            {/* Production Plan (2/3 width on desktop) */}
+            <div className="lg:col-span-2">
+              <ProductionPlan productionPlan={dashboardData.productionPlan} />
+            </div>
+          </div>
+
+          {/* Activity Feed (Full Width) */}
+          <ActivityFeed recentActivity={dashboardData.recentActivity} />
         </div>
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 }

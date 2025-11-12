@@ -6,6 +6,7 @@
 import { createClient } from '@/lib/supabase-server';
 import { getUserProfile } from '@/lib/auth-server';
 import { redirect } from 'next/navigation';
+import AppLayout from '@/components/layout/AppLayout';
 import TimeLogsClient from './TimeLogsClient';
 import StaleTimerAlert from '@/components/time-tracking/StaleTimerAlert';
 
@@ -59,28 +60,30 @@ export default async function TimeTrackingPage() {
     .order('full_name', { ascending: true });
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      <div className="max-w-7xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">⏱️ Time Tracking</h1>
-          <p className="text-slate-400">
-            Track time spent on orders and monitor productivity
-          </p>
+    <AppLayout>
+      <div className="min-h-screen bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto p-6">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">⏱️ Czas Pracy</h1>
+            <p className="text-slate-400">
+              Śledź czas spędzony na zleceniach i monitoruj produktywność
+            </p>
+          </div>
+
+          {/* Stale Timer Alert */}
+          <StaleTimerAlert companyId={currentUser.company_id} />
+
+          {/* Client Component with all data */}
+          <TimeLogsClient
+            timeLogs={timeLogs || []}
+            orders={orders || []}
+            users={users || []}
+            currentUserId={currentUser.id}
+            currentUserRole={currentUser.role}
+          />
         </div>
-
-        {/* Stale Timer Alert */}
-        <StaleTimerAlert companyId={currentUser.company_id} />
-
-        {/* Client Component with all data */}
-        <TimeLogsClient
-          timeLogs={timeLogs || []}
-          orders={orders || []}
-          users={users || []}
-          currentUserId={currentUser.id}
-          currentUserRole={currentUser.role}
-        />
       </div>
-    </div>
+    </AppLayout>
   );
 }

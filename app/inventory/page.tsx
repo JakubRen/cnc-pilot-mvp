@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import Navbar from '@/components/layout/Navbar'
+import AppLayout from '@/components/layout/AppLayout'
 
 export default async function InventoryPage() {
   const supabase = await createClient()
@@ -23,12 +23,11 @@ export default async function InventoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-7xl mx-auto">
-        <Navbar user={user} />
-
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white">Inventory</h1>
+    <AppLayout>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-4xl font-bold text-white">Magazyn</h1>
           <Link
             href="/inventory/add"
             className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-lg"
@@ -113,15 +112,8 @@ export default async function InventoryPage() {
             )}
           </div>
 
-        <div className="mt-8 text-center">
-          <Link
-            href="/"
-            className="inline-block px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
-          >
-            ← Back to Home
-          </Link>
         </div>
       </div>
-    </div>
+    </AppLayout>
   )
 }

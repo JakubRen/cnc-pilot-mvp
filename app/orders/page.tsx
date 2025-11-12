@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
-import Navbar from '@/components/layout/Navbar'
+import AppLayout from '@/components/layout/AppLayout'
 import Link from 'next/link'
 import OrdersClient from './OrdersClient'
 
@@ -31,31 +31,22 @@ export default async function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-7xl mx-auto">
-        <Navbar user={userProfile} />
+    <AppLayout>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-4xl font-bold text-white">Zamówienia</h1>
+            <Link
+              href="/orders/add"
+              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-lg"
+            >
+              + Dodaj Zamówienie
+            </Link>
+          </div>
 
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white">Orders</h1>
-          <Link
-            href="/orders/add"
-            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-lg"
-          >
-            + Add New Order
-          </Link>
-        </div>
-
-        <OrdersClient orders={orders || []} currentUserRole={userProfile.role} />
-
-        <div className="mt-8 text-center">
-          <Link
-            href="/"
-            className="inline-block px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
-          >
-            ← Back to Home
-          </Link>
+          <OrdersClient orders={orders || []} currentUserRole={userProfile.role} />
         </div>
       </div>
-    </div>
+    </AppLayout>
   )
 }
