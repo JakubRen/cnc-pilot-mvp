@@ -60,21 +60,23 @@ export async function middleware(request: NextRequest) {
 
   // Protected routes - require authentication
   const isProtectedRoute =
+    request.nextUrl.pathname === '/' ||
     request.nextUrl.pathname.startsWith('/users') ||
     request.nextUrl.pathname.startsWith('/orders') ||
-    request.nextUrl.pathname.startsWith('/inventory')
+    request.nextUrl.pathname.startsWith('/inventory') ||
+    request.nextUrl.pathname.startsWith('/time-tracking')
 
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // If logged in and trying to access login/register, redirect to users
+  // If logged in and trying to access login/register, redirect to dashboard
   const isAuthPage =
     request.nextUrl.pathname === '/login' ||
     request.nextUrl.pathname === '/register'
 
   if (isAuthPage && user) {
-    return NextResponse.redirect(new URL('/users', request.url))
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
   return response
@@ -82,9 +84,11 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
     '/users/:path*',
     '/orders/:path*',
     '/inventory/:path*',
+    '/time-tracking/:path*',
     '/login',
     '/register',
   ],
