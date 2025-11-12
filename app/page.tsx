@@ -22,6 +22,13 @@ export default function Home() {
 
         <div className="mt-12 flex flex-col gap-4">
           <Link
+            href="/dashboard"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg hover:from-blue-700 hover:to-cyan-700 transition-all font-semibold text-lg shadow-xl hover:shadow-2xl"
+          >
+            📊 Dashboard (Command Center)
+          </Link>
+
+          <Link
             href="/login"
             className="inline-block px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl"
           >
@@ -58,7 +65,7 @@ export default function Home() {
 
           <div className="px-6 py-3 bg-slate-800 rounded-lg border border-slate-700">
             <p className="text-slate-300 text-sm">
-              🚀 Day 8: Time Tracking Module + Order Integration
+              🚀 Day 9: Dashboard + Production Planning
             </p>
           </div>
         </div>
