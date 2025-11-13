@@ -44,7 +44,7 @@ export async function getCompletedThisWeek(companyId: string) {
     .select('*', { count: 'exact', head: true })
     .eq('company_id', companyId)
     .eq('status', 'completed')
-    .gte('completed_at', oneWeekAgo.toISOString());
+    .gte('created_at', oneWeekAgo.toISOString()); // Changed from completed_at to created_at
 
   if (error) {
     console.error('Error fetching completed this week:', error);
@@ -119,6 +119,12 @@ export async function getLowStockItems(companyId: string) {
 }
 
 export async function getRevenueThisMonth(companyId: string) {
+  // TODO: Add total_cost or price column to orders table
+  // For now, returning 0 since the column doesn't exist yet
+  console.log('Revenue tracking not yet implemented - total_cost column missing');
+  return 0;
+
+  /* Original implementation - requires total_cost column in orders table:
   const supabase = await createClient();
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
@@ -129,19 +135,19 @@ export async function getRevenueThisMonth(companyId: string) {
     .select('total_cost')
     .eq('company_id', companyId)
     .eq('status', 'completed')
-    .gte('completed_at', startOfMonth.toISOString());
+    .gte('created_at', startOfMonth.toISOString());
 
   if (error) {
     console.error('Error fetching revenue this month:', error);
     return 0;
   }
 
-  // Sum up total_cost
   const total = (data || []).reduce(
     (sum, order) => sum + (parseFloat(order.total_cost) || 0),
     0
   );
   return total;
+  */
 }
 
 // ============================================
@@ -177,7 +183,7 @@ export async function getStaleTimers(companyId: string, hoursThreshold = 12) {
     .select(`
       *,
       order:orders!time_logs_order_id_fkey(order_number, customer_name),
-      user:users!time_logs_user_id_fkey(name)
+      user:users!time_logs_user_id_fkey(full_name)
     `)
     .eq('company_id', companyId)
     .eq('status', 'running')
@@ -201,7 +207,7 @@ export async function getProductionPlan(companyId: string) {
     .from('orders')
     .select(`
       *,
-      assigned_operator:users!orders_created_by_fkey(name)
+      assigned_operator:users!orders_created_by_fkey(full_name)
     `)
     .eq('company_id', companyId)
     .neq('status', 'completed')
@@ -231,7 +237,7 @@ export async function getRecentActivity(companyId: string, limit = 10) {
       customer_name,
       status,
       created_at,
-      creator:users!orders_created_by_fkey(name)
+      creator:users!orders_created_by_fkey(full_name)
     `)
     .eq('company_id', companyId)
     .order('created_at', { ascending: false })
@@ -247,7 +253,7 @@ export async function getRecentActivity(companyId: string, limit = 10) {
     type: 'order_created',
     title: `Order #${order.order_number} created`,
     subtitle: `Customer: ${order.customer_name}`,
-    actor: order.creator?.name || 'Unknown',
+    actor: order.creator?.full_name || 'Unknown',
     timestamp: order.created_at,
   }));
 }

@@ -64,19 +64,33 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/users') ||
     request.nextUrl.pathname.startsWith('/orders') ||
     request.nextUrl.pathname.startsWith('/inventory') ||
-    request.nextUrl.pathname.startsWith('/time-tracking')
+    request.nextUrl.pathname.startsWith('/time-tracking') ||
+    request.nextUrl.pathname.startsWith('/dashboard') ||
+    request.nextUrl.pathname.startsWith('/pending-activation')
 
   if (isProtectedRoute && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // If logged in and trying to access login/register, redirect to dashboard
-  const isAuthPage =
-    request.nextUrl.pathname === '/login' ||
-    request.nextUrl.pathname === '/register'
+  // Check user role for pending activation
+  if (user && isProtectedRoute) {
+    const { data: userData } = await supabase
+      .from('users')
+      .select('role')
+      .eq('auth_id', user.id)
+      .single()
 
-  if (isAuthPage && user) {
-    return NextResponse.redirect(new URL('/', request.url))
+    const userRole = userData?.role
+
+    // If user has pending role, redirect to pending-activation page
+    if (userRole === 'pending' && request.nextUrl.pathname !== '/pending-activation') {
+      return NextResponse.redirect(new URL('/pending-activation', request.url))
+    }
+
+    // If user is NOT pending but tries to access pending-activation, redirect to dashboard
+    if (userRole !== 'pending' && request.nextUrl.pathname === '/pending-activation') {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
   }
 
   return response
@@ -89,6 +103,8 @@ export const config = {
     '/orders/:path*',
     '/inventory/:path*',
     '/time-tracking/:path*',
+    '/dashboard/:path*',
+    '/pending-activation',
     '/login',
     '/register',
   ],
