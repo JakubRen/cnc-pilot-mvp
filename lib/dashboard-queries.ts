@@ -249,13 +249,20 @@ export async function getRecentActivity(companyId: string, limit = 10) {
   }
 
   // Format as activity items
-  return (data || []).map((order) => ({
-    type: 'order_created',
-    title: `Order #${order.order_number} created`,
-    subtitle: `Customer: ${order.customer_name}`,
-    actor: order.creator?.full_name || 'Unknown',
-    timestamp: order.created_at,
-  }));
+  return (data || []).map((order) => {
+    // Handle creator - it might be an array from the join
+    const creatorName = Array.isArray(order.creator)
+      ? (order.creator[0] as any)?.full_name
+      : (order.creator as any)?.full_name;
+
+    return {
+      type: 'order_created',
+      title: `Order #${order.order_number} created`,
+      subtitle: `Customer: ${order.customer_name}`,
+      actor: creatorName || 'Unknown',
+      timestamp: order.created_at,
+    };
+  });
 }
 
 // ============================================
