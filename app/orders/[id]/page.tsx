@@ -180,6 +180,47 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             <StatusDropdown orderId={order.id} currentStatus={order.status} />
           </div>
 
+          {/* DAY 12: COST BREAKDOWN - Show only if total_cost > 0 */}
+          {order.total_cost && order.total_cost > 0 && (
+            <div className="col-span-2 bg-gradient-to-br from-green-900/20 to-slate-800 p-6 rounded-lg border border-green-700/50">
+              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <span>💰</span> Cost Breakdown
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {/* Material Cost */}
+                {order.material_cost > 0 && (
+                  <div className="bg-slate-800/50 p-4 rounded-lg">
+                    <p className="text-slate-400 text-sm mb-1">Koszt Materiału</p>
+                    <p className="text-white font-bold text-xl">{order.material_cost.toFixed(2)} PLN</p>
+                  </div>
+                )}
+
+                {/* Labor Cost */}
+                {order.labor_cost > 0 && (
+                  <div className="bg-slate-800/50 p-4 rounded-lg">
+                    <p className="text-slate-400 text-sm mb-1">Koszt Pracy</p>
+                    <p className="text-white font-bold text-xl">{order.labor_cost.toFixed(2)} PLN</p>
+                  </div>
+                )}
+
+                {/* Overhead Cost */}
+                {order.overhead_cost > 0 && (
+                  <div className="bg-slate-800/50 p-4 rounded-lg">
+                    <p className="text-slate-400 text-sm mb-1">Koszty Ogólne</p>
+                    <p className="text-white font-bold text-xl">{order.overhead_cost.toFixed(2)} PLN</p>
+                  </div>
+                )}
+
+                {/* Total Cost - Always show if total_cost > 0 */}
+                <div className="bg-green-900/30 p-4 rounded-lg border-2 border-green-600">
+                  <p className="text-green-300 text-sm mb-1 font-semibold">ŁĄCZNY KOSZT</p>
+                  <p className="text-green-400 font-bold text-2xl">{order.total_cost.toFixed(2)} PLN</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Notes (Full Width if exists) */}
           {order.notes && (
             <div className="col-span-2 bg-slate-800 p-6 rounded-lg border border-slate-700">

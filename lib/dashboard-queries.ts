@@ -119,12 +119,7 @@ export async function getLowStockItems(companyId: string) {
 }
 
 export async function getRevenueThisMonth(companyId: string) {
-  // TODO: Add total_cost or price column to orders table
-  // For now, returning 0 since the column doesn't exist yet
-  console.log('Revenue tracking not yet implemented - total_cost column missing');
-  return 0;
-
-  /* Original implementation - requires total_cost column in orders table:
+  // DAY 12: Fixed - total_cost column now exists!
   const supabase = await createClient();
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
@@ -143,11 +138,11 @@ export async function getRevenueThisMonth(companyId: string) {
   }
 
   const total = (data || []).reduce(
-    (sum, order) => sum + (parseFloat(order.total_cost) || 0),
+    (sum, order) => sum + (parseFloat(order.total_cost as any) || 0),
     0
   );
+
   return total;
-  */
 }
 
 // ============================================

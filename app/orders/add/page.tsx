@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { useEffect } from 'react'
 
 const orderSchema = z.object({
   order_number: z.string().min(1, 'Order number required'),
@@ -16,6 +17,11 @@ const orderSchema = z.object({
   deadline: z.string().min(1, 'Deadline required'),
   status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
   notes: z.string().optional(),
+  // DAY 12: Cost tracking fields
+  material_cost: z.number().min(0, 'Material cost must be positive'),
+  labor_cost: z.number().min(0, 'Labor cost must be positive'),
+  overhead_cost: z.number().min(0, 'Overhead cost must be positive'),
+  total_cost: z.number().min(0, 'Total cost must be positive'),
 })
 
 type OrderFormData = z.infer<typeof orderSchema>
@@ -26,13 +32,29 @@ export default function AddOrderPage() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
       status: 'pending',
+      material_cost: 0,
+      labor_cost: 0,
+      overhead_cost: 0,
+      total_cost: 0,
     },
   })
+
+  // Watch cost fields and auto-calculate total
+  const materialCost = watch('material_cost') || 0
+  const laborCost = watch('labor_cost') || 0
+  const overheadCost = watch('overhead_cost') || 0
+
+  useEffect(() => {
+    const total = materialCost + laborCost + overheadCost
+    setValue('total_cost', total)
+  }, [materialCost, laborCost, overheadCost, setValue])
 
   const onSubmit = async (data: OrderFormData) => {
     const loadingToast = toast.loading('Creating order...')
@@ -185,6 +207,71 @@ export default function AddOrderPage() {
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="Additional notes about this order..."
               />
+            </div>
+          </div>
+
+          {/* DAY 12: COST BREAKDOWN SECTION */}
+          <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
+            <h3 className="text-lg font-semibold text-white mb-4">💰 Kalkulacja Kosztów</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              {/* Material Cost */}
+              <div>
+                <label className="block text-slate-300 mb-2">Koszt Materiału (PLN)</label>
+                <input
+                  {...register('material_cost', { valueAsNumber: true })}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  placeholder="0.00"
+                />
+                {errors.material_cost && (
+                  <p className="text-red-400 text-sm mt-1">{errors.material_cost.message}</p>
+                )}
+              </div>
+
+              {/* Labor Cost */}
+              <div>
+                <label className="block text-slate-300 mb-2">Koszt Pracy (PLN)</label>
+                <input
+                  {...register('labor_cost', { valueAsNumber: true })}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  placeholder="0.00"
+                />
+                {errors.labor_cost && (
+                  <p className="text-red-400 text-sm mt-1">{errors.labor_cost.message}</p>
+                )}
+              </div>
+
+              {/* Overhead Cost */}
+              <div>
+                <label className="block text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
+                <input
+                  {...register('overhead_cost', { valueAsNumber: true })}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  placeholder="0.00"
+                />
+                {errors.overhead_cost && (
+                  <p className="text-red-400 text-sm mt-1">{errors.overhead_cost.message}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Total Cost Display */}
+            <div className="pt-4 border-t border-slate-600">
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-semibold text-slate-200">Łączny Koszt:</span>
+                <span className="text-3xl font-bold text-green-400">
+                  {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
+                </span>
+              </div>
             </div>
           </div>
 
