@@ -12,10 +12,11 @@ export default async function InventoryPage() {
     redirect('/login')
   }
 
-  // Fetch inventory items
+  // Fetch inventory items (filtered by company)
   const { data: items, error } = await supabase
     .from('inventory')
     .select('*')
+    .eq('company_id', user.company_id)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -24,7 +25,7 @@ export default async function InventoryPage() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+      <div className="p-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-4xl font-bold text-white">Magazyn</h1>

@@ -14,9 +14,11 @@ export default async function OrdersPage() {
 
   const supabase = await createClient()
 
+  // Fetch orders filtered by company
   const { data: orders, error } = await supabase
     .from('orders')
     .select('*')
+    .eq('company_id', userProfile.company_id)
     .order('deadline', { ascending: true })
 
   if (error) {
@@ -32,7 +34,7 @@ export default async function OrdersPage() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+      <div className="p-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-4xl font-bold text-white">Zamówienia</h1>

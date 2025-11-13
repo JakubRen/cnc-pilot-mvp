@@ -1,15 +1,23 @@
 import { createClient } from '@/lib/supabase-server'
-import { notFound } from 'next/navigation'
+import { getUserProfile } from '@/lib/auth-server'
+import { notFound, redirect } from 'next/navigation'
 import EditInventoryForm from './EditInventoryForm'
 
 export default async function EditInventoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
+  const user = await getUserProfile()
 
+  if (!user || !user.company_id) {
+    redirect('/login')
+  }
+
+  // Fetch item (filtered by company for security)
   const { data: item, error } = await supabase
     .from('inventory')
     .select('*')
     .eq('id', id)
+    .eq('company_id', user.company_id)
     .single()
 
   if (error || !item) {

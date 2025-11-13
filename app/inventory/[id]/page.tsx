@@ -12,7 +12,7 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
     redirect('/login')
   }
 
-  // Fetch item with creator info
+  // Fetch item with creator info (filtered by company)
   const { data: item, error } = await supabase
     .from('inventory')
     .select(`
@@ -23,6 +23,7 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
       )
     `)
     .eq('id', id)
+    .eq('company_id', user.company_id)
     .single()
 
   if (error || !item) {
