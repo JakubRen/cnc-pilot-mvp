@@ -14,18 +14,26 @@ export default async function HomePage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  console.log('[HOME] User:', user ? `${user.id} (${user.email})` : 'null');
+
   if (!user) {
+    console.log('[HOME] No user - redirecting to /login');
     redirect('/login');
   }
 
   // Get current user with company info
-  const { data: currentUser } = await supabase
+  const { data: currentUser, error } = await supabase
     .from('users')
-    .select('*, company:companies(*)')
+    .select('*, company:companies!fk_company(*)')
     .eq('auth_id', user.id)
     .single();
 
+  console.log('[HOME] Current user:', currentUser ? `${currentUser.id} (company: ${currentUser.company_id})` : 'null');
+  console.log('[HOME] Query error:', error);
+
   if (!currentUser || !currentUser.company_id) {
+    console.log('[HOME] No currentUser or company_id - redirecting to /login');
     redirect('/login');
   }
 
@@ -34,7 +42,7 @@ export default async function HomePage() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-slate-900 p-6">
+      <div className="p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -44,7 +52,7 @@ export default async function HomePage() {
                   Dashboard
                 </h1>
                 <p className="text-slate-400">
-                  Witaj, {currentUser.name}! Oto podsumowanie Twojej produkcji.
+                  Witaj, {currentUser.full_name}! Oto podsumowanie Twojej produkcji.
                 </p>
               </div>
               <div className="text-right">

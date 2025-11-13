@@ -25,16 +25,14 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
   const router = useRouter()
 
   const handleDelete = async (userId: string, userName: string) => {
-    // Confirmation dialog
     const confirmed = window.confirm(
-      `Are you sure you want to delete user "${userName}"?\n\nThis action cannot be undone.`
+      `Czy na pewno chcesz usunąć użytkownika "${userName}"?\n\nTej akcji nie można cofnąć.`
     )
 
     if (!confirmed) return
 
-    const loadingToast = toast.loading('Deleting user...')
+    const loadingToast = toast.loading('Usuwanie użytkownika...')
 
-    // Delete from Supabase
     const { error } = await supabase
       .from('users')
       .delete()
@@ -43,13 +41,12 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error('Failed to delete user: ' + error.message)
+      toast.error('Błąd usuwania: ' + error.message)
       return
     }
 
-    // Remove from local state (instant UI update!)
     setUsers(users.filter(u => u.id !== userId))
-    toast.success(`User "${userName}" deleted successfully!`)
+    toast.success(`Użytkownik "${userName}" został usunięty!`)
   }
 
   return (
@@ -83,10 +80,21 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
                   <p className="text-slate-400">
                     <span className="text-slate-500">Email:</span> {user.email}
                   </p>
-                  <p className="text-slate-400">
+                  <p className="text-slate-400 flex items-center gap-2">
                     <span className="text-slate-500">Role:</span>{' '}
-                    <span className="px-2 py-1 bg-slate-700 rounded text-sm">
-                      {user.role}
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      user.role === 'pending'
+                        ? 'bg-yellow-600/20 text-yellow-400'
+                        : user.role === 'owner'
+                        ? 'bg-purple-600/20 text-purple-400'
+                        : user.role === 'admin'
+                        ? 'bg-red-600/20 text-red-400'
+                        : 'bg-green-600/20 text-green-400'
+                    }`}>
+                      {user.role === 'pending' ? '⏳ Oczekujący' :
+                       user.role === 'owner' ? '👑 Właściciel' :
+                       user.role === 'admin' ? '🔑 Admin' :
+                       user.role === 'operator' ? '⚙️ Operator' : user.role}
                     </span>
                   </p>
                   <p className="text-xs text-slate-500">
@@ -100,16 +108,16 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
                     href={`/users/${user.id}/edit`}
                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium transition text-center"
                   >
-                    Edit
+                    Edytuj
                   </Link>
 
-                  {/* Only show Delete button if current user is owner */}
+                  {/* Only owner can delete */}
                   {currentUserRole === 'owner' && (
                     <button
                       onClick={() => handleDelete(user.id, user.full_name)}
                       className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium transition"
                     >
-                      Delete
+                      Usuń
                     </button>
                   )}
 

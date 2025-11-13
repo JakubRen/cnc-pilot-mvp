@@ -48,8 +48,16 @@ export default function OrderList({ orders, currentUserRole }: OrderListProps) {
 
   if (!orders || orders.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-400 bg-slate-800 border border-slate-700 rounded-lg">
-        No orders yet. Create your first order!
+      <div className="text-center py-16 text-slate-400 bg-slate-800 border border-slate-700 rounded-lg">
+        <div className="text-6xl mb-4">📦</div>
+        <h3 className="text-xl font-semibold text-white mb-2">No orders yet</h3>
+        <p className="text-slate-400 mb-6">Get started by creating your first order</p>
+        <Link
+          href="/orders/add"
+          className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
+        >
+          + Create First Order
+        </Link>
       </div>
     )
   }

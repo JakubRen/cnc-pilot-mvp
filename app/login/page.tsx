@@ -38,7 +38,7 @@ export default function LoginPage() {
     }
 
     toast.success('Login successful!')
-    router.push('/users')
+    router.push('/')
     router.refresh()
   }
 

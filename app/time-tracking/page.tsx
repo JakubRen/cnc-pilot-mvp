@@ -61,7 +61,7 @@ export default async function TimeTrackingPage() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-slate-900 text-white">
+      <div className="text-white">
         <div className="max-w-7xl mx-auto p-6">
           {/* Header */}
           <div className="mb-8">

@@ -8,11 +8,11 @@ import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
-// Same validation schema as Add User
+// Validation schema
 const userSchema = z.object({
   email: z.string().email('Invalid email format'),
   full_name: z.string().min(2, 'Name must be at least 2 characters'),
-  role: z.enum(['operator', 'manager', 'admin']),
+  role: z.enum(['pending', 'operator', 'admin', 'owner']),
 })
 
 type UserFormData = z.infer<typeof userSchema>
@@ -138,9 +138,10 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
               {...register('role')}
               className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             >
-              <option value="operator">Operator</option>
-              <option value="manager">Manager</option>
-              <option value="admin">Admin</option>
+              <option value="pending">⏳ Oczekujący (Pending)</option>
+              <option value="operator">⚙️ Operator</option>
+              <option value="admin">🔑 Admin</option>
+              <option value="owner">👑 Właściciel (Owner)</option>
             </select>
             {errors.role && (
               <p className="text-red-400 text-sm mt-1">{errors.role.message}</p>
