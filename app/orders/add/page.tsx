@@ -18,11 +18,11 @@ const orderSchema = z.object({
   deadline: z.string().min(1, 'Deadline required'),
   status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
   notes: z.string().optional(),
-  // DAY 14-15: Pricing calculator fields
-  length: z.number().optional(),
-  width: z.number().optional(),
-  height: z.number().optional(),
-  complexity: z.enum(['simple', 'medium', 'complex']).optional(),
+  // DAY 14-15: Pricing calculator fields (nullable to handle empty inputs)
+  length: z.union([z.number(), z.nan()]).optional().nullable(),
+  width: z.union([z.number(), z.nan()]).optional().nullable(),
+  height: z.union([z.number(), z.nan()]).optional().nullable(),
+  complexity: z.enum(['simple', 'medium', 'complex']).optional().nullable(),
   // DAY 12: Cost tracking fields
   material_cost: z.number().min(0, 'Material cost must be positive'),
   labor_cost: z.number().min(0, 'Labor cost must be positive'),
@@ -158,10 +158,13 @@ export default function AddOrderPage() {
       return
     }
 
+    // Exclude pricing calculator fields (not in database)
+    const { length, width, height, complexity, ...orderData } = data
+
     const { error } = await supabase
       .from('orders')
       .insert({
-        ...data,
+        ...orderData,
         created_by: userProfile.id,
         company_id: userProfile.company_id,
       })
