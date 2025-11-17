@@ -135,6 +135,27 @@ export default function AddOrderPage() {
     toast.success('Wycena zaakceptowana i wypełniona!')
   }
 
+  // Keyboard shortcuts for pricing calculator
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (!pricingEstimate) return
+
+      // Escape → Close pricing result card
+      if (e.key === 'Escape') {
+        setPricingEstimate(null)
+        toast.success('Wycena zamknięta')
+      }
+
+      // Ctrl+Enter → Accept estimate and fill form
+      if (e.key === 'Enter' && e.ctrlKey) {
+        handleAcceptEstimate()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [pricingEstimate, handleAcceptEstimate])
+
   const onSubmit = async (data: OrderFormData) => {
     const loadingToast = toast.loading('Creating order...')
 
