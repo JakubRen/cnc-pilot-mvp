@@ -61,6 +61,7 @@ export default function AddUserPage() {
             </label>
             <input
               id="email"
+              autoFocus
               {...register('email')}
               type="email"
               className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"

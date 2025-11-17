@@ -196,6 +196,7 @@ export default function AddOrderPage() {
               <label htmlFor="order_number" className="block text-slate-300 mb-2">Order Number *</label>
               <input
                 id="order_number"
+                autoFocus
                 {...register('order_number')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="ORD-001"

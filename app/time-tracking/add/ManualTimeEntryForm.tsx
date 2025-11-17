@@ -133,6 +133,7 @@ export default function ManualTimeEntryForm({
             <label htmlFor="order_id" className="block text-sm font-medium mb-2">Order *</label>
             <select
               id="order_id"
+              autoFocus
               value={formData.order_id}
               onChange={(e) => setFormData({ ...formData, order_id: e.target.value })}
               required
