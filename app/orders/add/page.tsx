@@ -42,6 +42,7 @@ export default function AddOrderPage() {
     handleSubmit,
     watch,
     setValue,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
@@ -198,6 +199,7 @@ export default function AddOrderPage() {
                 id="order_number"
                 autoFocus
                 {...register('order_number')}
+                onBlur={() => trigger('order_number')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="ORD-001"
               />
@@ -212,6 +214,7 @@ export default function AddOrderPage() {
               <select
                 id="material"
                 {...register('material')}
+                onBlur={() => trigger('material')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
               >
                 <option value="">Wybierz materiał...</option>
@@ -236,6 +239,7 @@ export default function AddOrderPage() {
               <input
                 id="customer_name"
                 {...register('customer_name')}
+                onBlur={() => trigger('customer_name')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="Metal-Precyzja Sp. z o.o."
               />
@@ -250,6 +254,7 @@ export default function AddOrderPage() {
               <input
                 id="deadline"
                 {...register('deadline')}
+                onBlur={() => trigger('deadline')}
                 type="date"
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
               />
@@ -264,6 +269,7 @@ export default function AddOrderPage() {
               <input
                 id="quantity"
                 {...register('quantity', { valueAsNumber: true })}
+                onBlur={() => trigger('quantity')}
                 type="number"
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="100"
@@ -295,6 +301,7 @@ export default function AddOrderPage() {
               <input
                 id="part_name"
                 {...register('part_name')}
+                onBlur={() => trigger('part_name')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="Kołnierz 50mm"
               />
@@ -524,6 +531,7 @@ export default function AddOrderPage() {
                 <input
                   id="material_cost"
                   {...register('material_cost', { valueAsNumber: true })}
+                  onBlur={() => trigger('material_cost')}
                   type="number"
                   step="0.01"
                   min="0"
@@ -541,6 +549,7 @@ export default function AddOrderPage() {
                 <input
                   id="labor_cost"
                   {...register('labor_cost', { valueAsNumber: true })}
+                  onBlur={() => trigger('labor_cost')}
                   type="number"
                   step="0.01"
                   min="0"
@@ -558,6 +567,7 @@ export default function AddOrderPage() {
                 <input
                   id="overhead_cost"
                   {...register('overhead_cost', { valueAsNumber: true })}
+                  onBlur={() => trigger('overhead_cost')}
                   type="number"
                   step="0.01"
                   min="0"
