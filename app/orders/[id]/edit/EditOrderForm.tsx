@@ -109,8 +109,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Order Number */}
         <div>
-          <label className="block text-slate-300 mb-2">Order Number *</label>
+          <label htmlFor="edit_order_number" className="block text-slate-300 mb-2">Order Number *</label>
           <input
+            id="edit_order_number"
             {...register('order_number')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
             placeholder="ORD-001"
@@ -122,8 +123,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Material */}
         <div>
-          <label className="block text-slate-300 mb-2">Material (Optional)</label>
+          <label htmlFor="edit_material" className="block text-slate-300 mb-2">Material (Optional)</label>
           <input
+            id="edit_material"
             {...register('material')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
             placeholder="Stainless steel 304"
@@ -132,8 +134,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Customer Name */}
         <div>
-          <label className="block text-slate-300 mb-2">Customer Name *</label>
+          <label htmlFor="edit_customer_name" className="block text-slate-300 mb-2">Customer Name *</label>
           <input
+            id="edit_customer_name"
             {...register('customer_name')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
             placeholder="Metal-Precyzja Sp. z o.o."
@@ -145,8 +148,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Deadline */}
         <div>
-          <label className="block text-slate-300 mb-2">Deadline *</label>
+          <label htmlFor="edit_deadline" className="block text-slate-300 mb-2">Deadline *</label>
           <input
+            id="edit_deadline"
             {...register('deadline')}
             type="date"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -158,8 +162,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Quantity */}
         <div>
-          <label className="block text-slate-300 mb-2">Quantity *</label>
+          <label htmlFor="edit_quantity" className="block text-slate-300 mb-2">Quantity *</label>
           <input
+            id="edit_quantity"
             {...register('quantity', { valueAsNumber: true })}
             type="number"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -172,8 +177,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Status */}
         <div>
-          <label className="block text-slate-300 mb-2">Status *</label>
+          <label htmlFor="edit_status" className="block text-slate-300 mb-2">Status *</label>
           <select
+            id="edit_status"
             {...register('status')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           >
@@ -187,8 +193,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Part Name */}
         <div>
-          <label className="block text-slate-300 mb-2">Part Name (Optional)</label>
+          <label htmlFor="edit_part_name" className="block text-slate-300 mb-2">Part Name (Optional)</label>
           <input
+            id="edit_part_name"
             {...register('part_name')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
             placeholder="Flange 50mm"
@@ -197,8 +204,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Notes - Full Width */}
         <div className="col-span-2">
-          <label className="block text-slate-300 mb-2">Notes (Optional)</label>
+          <label htmlFor="edit_notes" className="block text-slate-300 mb-2">Notes (Optional)</label>
           <textarea
+            id="edit_notes"
             {...register('notes')}
             rows={3}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -214,8 +222,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {/* Material Cost */}
           <div>
-            <label className="block text-slate-300 mb-2">Koszt Materiału (PLN)</label>
+            <label htmlFor="edit_material_cost" className="block text-slate-300 mb-2">Koszt Materiału (PLN)</label>
             <input
+              id="edit_material_cost"
               {...register('material_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
@@ -230,8 +239,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
           {/* Labor Cost */}
           <div>
-            <label className="block text-slate-300 mb-2">Koszt Pracy (PLN)</label>
+            <label htmlFor="edit_labor_cost" className="block text-slate-300 mb-2">Koszt Pracy (PLN)</label>
             <input
+              id="edit_labor_cost"
               {...register('labor_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
@@ -246,8 +256,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
           {/* Overhead Cost */}
           <div>
-            <label className="block text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
+            <label htmlFor="edit_overhead_cost" className="block text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
             <input
+              id="edit_overhead_cost"
               {...register('overhead_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"

@@ -94,8 +94,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* SKU */}
         <div>
-          <label className="block text-slate-300 mb-2">SKU *</label>
+          <label htmlFor="edit_sku" className="block text-slate-300 mb-2">SKU *</label>
           <input
+            id="edit_sku"
             {...register('sku')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-mono"
           />
@@ -104,8 +105,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Category */}
         <div>
-          <label className="block text-slate-300 mb-2">Category *</label>
+          <label htmlFor="edit_category" className="block text-slate-300 mb-2">Category *</label>
           <select
+            id="edit_category"
             {...register('category')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           >
@@ -119,8 +121,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Name */}
         <div className="col-span-2">
-          <label className="block text-slate-300 mb-2">Name *</label>
+          <label htmlFor="edit_name" className="block text-slate-300 mb-2">Name *</label>
           <input
+            id="edit_name"
             {...register('name')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
@@ -129,8 +132,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Quantity */}
         <div>
-          <label className="block text-slate-300 mb-2">Quantity *</label>
+          <label htmlFor="edit_quantity" className="block text-slate-300 mb-2">Quantity *</label>
           <input
+            id="edit_quantity"
             {...register('quantity', { valueAsNumber: true })}
             type="number"
             step="0.01"
@@ -141,8 +145,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Unit */}
         <div>
-          <label className="block text-slate-300 mb-2">Unit *</label>
+          <label htmlFor="edit_unit" className="block text-slate-300 mb-2">Unit *</label>
           <input
+            id="edit_unit"
             {...register('unit')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
@@ -151,8 +156,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Low Stock Threshold */}
         <div>
-          <label className="block text-slate-300 mb-2">Low Stock Threshold *</label>
+          <label htmlFor="edit_low_stock_threshold" className="block text-slate-300 mb-2">Low Stock Threshold *</label>
           <input
+            id="edit_low_stock_threshold"
             {...register('low_stock_threshold', { valueAsNumber: true })}
             type="number"
             step="0.01"
@@ -163,8 +169,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Location */}
         <div>
-          <label className="block text-slate-300 mb-2">Location</label>
+          <label htmlFor="edit_location" className="block text-slate-300 mb-2">Location</label>
           <input
+            id="edit_location"
             {...register('location')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
@@ -172,8 +179,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Supplier */}
         <div>
-          <label className="block text-slate-300 mb-2">Supplier</label>
+          <label htmlFor="edit_supplier" className="block text-slate-300 mb-2">Supplier</label>
           <input
+            id="edit_supplier"
             {...register('supplier')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
@@ -181,8 +189,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Unit Cost */}
         <div>
-          <label className="block text-slate-300 mb-2">Unit Cost (PLN)</label>
+          <label htmlFor="edit_unit_cost" className="block text-slate-300 mb-2">Unit Cost (PLN)</label>
           <input
+            id="edit_unit_cost"
             {...register('unit_cost', { valueAsNumber: true })}
             type="number"
             step="0.01"
@@ -192,8 +201,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Batch Number */}
         <div>
-          <label className="block text-slate-300 mb-2">Batch/Lot Number</label>
+          <label htmlFor="edit_batch_number" className="block text-slate-300 mb-2">Batch/Lot Number</label>
           <input
+            id="edit_batch_number"
             {...register('batch_number')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-mono"
           />
@@ -201,8 +211,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Expiry Date */}
         <div>
-          <label className="block text-slate-300 mb-2">Expiry Date</label>
+          <label htmlFor="edit_expiry_date" className="block text-slate-300 mb-2">Expiry Date</label>
           <input
+            id="edit_expiry_date"
             {...register('expiry_date')}
             type="date"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -211,8 +222,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Description */}
         <div className="col-span-2">
-          <label className="block text-slate-300 mb-2">Description</label>
+          <label htmlFor="edit_description" className="block text-slate-300 mb-2">Description</label>
           <textarea
+            id="edit_description"
             {...register('description')}
             rows={2}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -221,8 +233,9 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Notes */}
         <div className="col-span-2">
-          <label className="block text-slate-300 mb-2">Notes</label>
+          <label htmlFor="edit_notes" className="block text-slate-300 mb-2">Notes</label>
           <textarea
+            id="edit_notes"
             {...register('notes')}
             rows={2}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"

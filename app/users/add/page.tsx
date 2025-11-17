@@ -56,10 +56,11 @@ export default function AddUserPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email Field */}
           <div>
-            <label className="block text-slate-300 mb-2 font-medium">
+            <label htmlFor="email" className="block text-slate-300 mb-2 font-medium">
               Email <span className="text-red-400">*</span>
             </label>
             <input
+              id="email"
               {...register('email')}
               type="email"
               className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
@@ -72,10 +73,11 @@ export default function AddUserPage() {
 
           {/* Full Name Field */}
           <div>
-            <label className="block text-slate-300 mb-2 font-medium">
+            <label htmlFor="full_name" className="block text-slate-300 mb-2 font-medium">
               Full Name <span className="text-red-400">*</span>
             </label>
             <input
+              id="full_name"
               {...register('full_name')}
               type="text"
               className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
@@ -88,10 +90,11 @@ export default function AddUserPage() {
 
           {/* Role Field */}
           <div>
-            <label className="block text-slate-300 mb-2 font-medium">
+            <label htmlFor="role" className="block text-slate-300 mb-2 font-medium">
               Role <span className="text-red-400">*</span>
             </label>
             <select
+              id="role"
               {...register('role')}
               className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             >

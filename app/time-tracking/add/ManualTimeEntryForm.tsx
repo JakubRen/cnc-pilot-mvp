@@ -130,8 +130,9 @@ export default function ManualTimeEntryForm({
         <div className="space-y-6">
           {/* Order Selection */}
           <div>
-            <label className="block text-sm font-medium mb-2">Order *</label>
+            <label htmlFor="order_id" className="block text-sm font-medium mb-2">Order *</label>
             <select
+              id="order_id"
               value={formData.order_id}
               onChange={(e) => setFormData({ ...formData, order_id: e.target.value })}
               required
@@ -148,8 +149,9 @@ export default function ManualTimeEntryForm({
 
           {/* Start Time */}
           <div>
-            <label className="block text-sm font-medium mb-2">Start Time *</label>
+            <label htmlFor="start_time" className="block text-sm font-medium mb-2">Start Time *</label>
             <input
+              id="start_time"
               type="datetime-local"
               value={formData.start_time}
               onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
@@ -160,8 +162,9 @@ export default function ManualTimeEntryForm({
 
           {/* End Time */}
           <div>
-            <label className="block text-sm font-medium mb-2">End Time *</label>
+            <label htmlFor="end_time" className="block text-sm font-medium mb-2">End Time *</label>
             <input
+              id="end_time"
               type="datetime-local"
               value={formData.end_time}
               onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
@@ -172,8 +175,9 @@ export default function ManualTimeEntryForm({
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium mb-2">Notes</label>
+            <label htmlFor="notes" className="block text-sm font-medium mb-2">Notes</label>
             <textarea
+              id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               rows={4}

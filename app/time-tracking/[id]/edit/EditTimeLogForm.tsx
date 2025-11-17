@@ -118,8 +118,9 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
         <div className="space-y-6">
           {/* Order Selection */}
           <div>
-            <label className="block text-sm font-medium mb-2">Order *</label>
+            <label htmlFor="edit_order_id" className="block text-sm font-medium mb-2">Order *</label>
             <select
+              id="edit_order_id"
               value={formData.order_id}
               onChange={(e) => setFormData({ ...formData, order_id: e.target.value })}
               required
@@ -135,8 +136,9 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
 
           {/* Start Time */}
           <div>
-            <label className="block text-sm font-medium mb-2">Start Time *</label>
+            <label htmlFor="edit_start_time" className="block text-sm font-medium mb-2">Start Time *</label>
             <input
+              id="edit_start_time"
               type="datetime-local"
               value={formData.start_time}
               onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
@@ -147,10 +149,11 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
 
           {/* End Time */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label htmlFor="edit_end_time" className="block text-sm font-medium mb-2">
               End Time <span className="text-slate-400">(optional - leave empty if still running)</span>
             </label>
             <input
+              id="edit_end_time"
               type="datetime-local"
               value={formData.end_time}
               onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
@@ -160,8 +163,9 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium mb-2">Notes</label>
+            <label htmlFor="edit_notes" className="block text-sm font-medium mb-2">Notes</label>
             <textarea
+              id="edit_notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               rows={4}

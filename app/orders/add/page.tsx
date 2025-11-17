@@ -193,8 +193,9 @@ export default function AddOrderPage() {
 
             {/* Order Number */}
             <div>
-              <label className="block text-slate-300 mb-2">Order Number *</label>
+              <label htmlFor="order_number" className="block text-slate-300 mb-2">Order Number *</label>
               <input
+                id="order_number"
                 {...register('order_number')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="ORD-001"
@@ -206,8 +207,9 @@ export default function AddOrderPage() {
 
             {/* Material */}
             <div>
-              <label className="block text-slate-300 mb-2">Materiał *</label>
+              <label htmlFor="material" className="block text-slate-300 mb-2">Materiał *</label>
               <select
+                id="material"
                 {...register('material')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
               >
@@ -229,8 +231,9 @@ export default function AddOrderPage() {
 
             {/* Customer Name */}
             <div>
-              <label className="block text-slate-300 mb-2">Customer Name *</label>
+              <label htmlFor="customer_name" className="block text-slate-300 mb-2">Customer Name *</label>
               <input
+                id="customer_name"
                 {...register('customer_name')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="Metal-Precyzja Sp. z o.o."
@@ -242,8 +245,9 @@ export default function AddOrderPage() {
 
             {/* Deadline */}
             <div>
-              <label className="block text-slate-300 mb-2">Deadline *</label>
+              <label htmlFor="deadline" className="block text-slate-300 mb-2">Deadline *</label>
               <input
+                id="deadline"
                 {...register('deadline')}
                 type="date"
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -255,8 +259,9 @@ export default function AddOrderPage() {
 
             {/* Quantity */}
             <div>
-              <label className="block text-slate-300 mb-2">Quantity *</label>
+              <label htmlFor="quantity" className="block text-slate-300 mb-2">Quantity *</label>
               <input
+                id="quantity"
                 {...register('quantity', { valueAsNumber: true })}
                 type="number"
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -269,8 +274,9 @@ export default function AddOrderPage() {
 
             {/* Status */}
             <div>
-              <label className="block text-slate-300 mb-2">Status *</label>
+              <label htmlFor="status" className="block text-slate-300 mb-2">Status *</label>
               <select
+                id="status"
                 {...register('status')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
               >
@@ -284,8 +290,9 @@ export default function AddOrderPage() {
 
             {/* Part Name */}
             <div>
-              <label className="block text-slate-300 mb-2">Nazwa Części (Opcjonalnie)</label>
+              <label htmlFor="part_name" className="block text-slate-300 mb-2">Nazwa Części (Opcjonalnie)</label>
               <input
+                id="part_name"
                 {...register('part_name')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 placeholder="Kołnierz 50mm"
@@ -294,8 +301,9 @@ export default function AddOrderPage() {
 
             {/* Complexity */}
             <div>
-              <label className="block text-slate-300 mb-2">Złożoność *</label>
+              <label htmlFor="complexity" className="block text-slate-300 mb-2">Złożoność *</label>
               <select
+                id="complexity"
                 {...register('complexity')}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
               >
@@ -311,8 +319,9 @@ export default function AddOrderPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Length */}
                 <div>
-                  <label className="block text-slate-400 mb-2 text-sm">Długość (mm)</label>
+                  <label htmlFor="length" className="block text-slate-400 mb-2 text-sm">Długość (mm)</label>
                   <input
+                    id="length"
                     {...register('length', { valueAsNumber: true })}
                     type="number"
                     step="0.1"
@@ -324,8 +333,9 @@ export default function AddOrderPage() {
 
                 {/* Width */}
                 <div>
-                  <label className="block text-slate-400 mb-2 text-sm">Szerokość (mm)</label>
+                  <label htmlFor="width" className="block text-slate-400 mb-2 text-sm">Szerokość (mm)</label>
                   <input
+                    id="width"
                     {...register('width', { valueAsNumber: true })}
                     type="number"
                     step="0.1"
@@ -337,8 +347,9 @@ export default function AddOrderPage() {
 
                 {/* Height */}
                 <div>
-                  <label className="block text-slate-400 mb-2 text-sm">Wysokość (mm)</label>
+                  <label htmlFor="height" className="block text-slate-400 mb-2 text-sm">Wysokość (mm)</label>
                   <input
+                    id="height"
                     {...register('height', { valueAsNumber: true })}
                     type="number"
                     step="0.1"
@@ -355,8 +366,9 @@ export default function AddOrderPage() {
 
             {/* Notes - Full Width */}
             <div className="col-span-2">
-              <label className="block text-slate-300 mb-2">Notatki (Opcjonalnie)</label>
+              <label htmlFor="notes" className="block text-slate-300 mb-2">Notatki (Opcjonalnie)</label>
               <textarea
+                id="notes"
                 {...register('notes')}
                 rows={3}
                 className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -507,8 +519,9 @@ export default function AddOrderPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               {/* Material Cost */}
               <div>
-                <label className="block text-slate-300 mb-2">Koszt Materiału (PLN)</label>
+                <label htmlFor="material_cost" className="block text-slate-300 mb-2">Koszt Materiału (PLN)</label>
                 <input
+                  id="material_cost"
                   {...register('material_cost', { valueAsNumber: true })}
                   type="number"
                   step="0.01"
@@ -523,8 +536,9 @@ export default function AddOrderPage() {
 
               {/* Labor Cost */}
               <div>
-                <label className="block text-slate-300 mb-2">Koszt Pracy (PLN)</label>
+                <label htmlFor="labor_cost" className="block text-slate-300 mb-2">Koszt Pracy (PLN)</label>
                 <input
+                  id="labor_cost"
                   {...register('labor_cost', { valueAsNumber: true })}
                   type="number"
                   step="0.01"
@@ -539,8 +553,9 @@ export default function AddOrderPage() {
 
               {/* Overhead Cost */}
               <div>
-                <label className="block text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
+                <label htmlFor="overhead_cost" className="block text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
                 <input
+                  id="overhead_cost"
                   {...register('overhead_cost', { valueAsNumber: true })}
                   type="number"
                   step="0.01"

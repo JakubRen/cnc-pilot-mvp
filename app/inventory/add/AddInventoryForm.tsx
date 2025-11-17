@@ -117,8 +117,9 @@ export default function AddInventoryForm() {
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* SKU */}
         <div>
-          <label className="block text-slate-300 mb-2">SKU *</label>
+          <label htmlFor="sku" className="block text-slate-300 mb-2">SKU *</label>
           <input
+            id="sku"
             {...register('sku')}
             placeholder="e.g., ALU-6061-100"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-mono"
@@ -128,8 +129,9 @@ export default function AddInventoryForm() {
 
         {/* Category */}
         <div>
-          <label className="block text-slate-300 mb-2">Category *</label>
+          <label htmlFor="category" className="block text-slate-300 mb-2">Category *</label>
           <select
+            id="category"
             {...register('category')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           >
@@ -143,8 +145,9 @@ export default function AddInventoryForm() {
 
         {/* Name - Full Width */}
         <div className="col-span-2">
-          <label className="block text-slate-300 mb-2">Name *</label>
+          <label htmlFor="name" className="block text-slate-300 mb-2">Name *</label>
           <input
+            id="name"
             {...register('name')}
             placeholder="e.g., Aluminum 6061 Bar 100mm"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -154,8 +157,9 @@ export default function AddInventoryForm() {
 
         {/* Quantity */}
         <div>
-          <label className="block text-slate-300 mb-2">Quantity *</label>
+          <label htmlFor="quantity" className="block text-slate-300 mb-2">Quantity *</label>
           <input
+            id="quantity"
             {...register('quantity', { valueAsNumber: true })}
             type="number"
             step="0.01"
@@ -167,8 +171,9 @@ export default function AddInventoryForm() {
 
         {/* Unit */}
         <div>
-          <label className="block text-slate-300 mb-2">Unit *</label>
+          <label htmlFor="unit" className="block text-slate-300 mb-2">Unit *</label>
           <input
+            id="unit"
             {...register('unit')}
             placeholder="e.g., pcs, kg, m, L"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -178,8 +183,9 @@ export default function AddInventoryForm() {
 
         {/* Low Stock Threshold */}
         <div>
-          <label className="block text-slate-300 mb-2">Low Stock Threshold *</label>
+          <label htmlFor="low_stock_threshold" className="block text-slate-300 mb-2">Low Stock Threshold *</label>
           <input
+            id="low_stock_threshold"
             {...register('low_stock_threshold', { valueAsNumber: true })}
             type="number"
             step="0.01"
@@ -191,8 +197,9 @@ export default function AddInventoryForm() {
 
         {/* Location */}
         <div>
-          <label className="block text-slate-300 mb-2">Location</label>
+          <label htmlFor="location" className="block text-slate-300 mb-2">Location</label>
           <input
+            id="location"
             {...register('location')}
             placeholder="e.g., A1, Shelf-3"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -201,8 +208,9 @@ export default function AddInventoryForm() {
 
         {/* Supplier */}
         <div>
-          <label className="block text-slate-300 mb-2">Supplier</label>
+          <label htmlFor="supplier" className="block text-slate-300 mb-2">Supplier</label>
           <input
+            id="supplier"
             {...register('supplier')}
             placeholder="Supplier name"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -211,8 +219,9 @@ export default function AddInventoryForm() {
 
         {/* Unit Cost */}
         <div>
-          <label className="block text-slate-300 mb-2">Unit Cost (PLN)</label>
+          <label htmlFor="unit_cost" className="block text-slate-300 mb-2">Unit Cost (PLN)</label>
           <input
+            id="unit_cost"
             {...register('unit_cost', { valueAsNumber: true })}
             type="number"
             step="0.01"
@@ -223,8 +232,9 @@ export default function AddInventoryForm() {
 
         {/* Batch Number */}
         <div>
-          <label className="block text-slate-300 mb-2">Batch/Lot Number</label>
+          <label htmlFor="batch_number" className="block text-slate-300 mb-2">Batch/Lot Number</label>
           <input
+            id="batch_number"
             {...register('batch_number')}
             placeholder="For traceability"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-mono"
@@ -233,8 +243,9 @@ export default function AddInventoryForm() {
 
         {/* Expiry Date */}
         <div>
-          <label className="block text-slate-300 mb-2">Expiry Date</label>
+          <label htmlFor="expiry_date" className="block text-slate-300 mb-2">Expiry Date</label>
           <input
+            id="expiry_date"
             {...register('expiry_date')}
             type="date"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
@@ -243,8 +254,9 @@ export default function AddInventoryForm() {
 
         {/* Description */}
         <div className="col-span-2">
-          <label className="block text-slate-300 mb-2">Description</label>
+          <label htmlFor="description" className="block text-slate-300 mb-2">Description</label>
           <textarea
+            id="description"
             {...register('description')}
             rows={2}
             placeholder="Additional details..."
@@ -254,8 +266,9 @@ export default function AddInventoryForm() {
 
         {/* Notes */}
         <div className="col-span-2">
-          <label className="block text-slate-300 mb-2">Notes</label>
+          <label htmlFor="notes" className="block text-slate-300 mb-2">Notes</label>
           <textarea
+            id="notes"
             {...register('notes')}
             rows={2}
             placeholder="Internal notes..."
