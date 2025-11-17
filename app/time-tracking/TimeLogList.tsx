@@ -125,7 +125,7 @@ export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }
                 <td className="px-6 py-4 whitespace-nowrap">
                   <Link
                     href={`/orders/${log.order_id}`}
-                    className="text-blue-400 hover:text-blue-300 font-medium"
+                    className="text-blue-400 hover:text-blue-300 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {log.orders.order_number}
                   </Link>
@@ -159,14 +159,14 @@ export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }
                 <td className="px-6 py-4 whitespace-nowrap text-sm space-x-3">
                   <Link
                     href={`/time-tracking/${log.id}`}
-                    className="text-blue-400 hover:text-blue-300"
+                    className="text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     View
                   </Link>
                   {canDelete && (
                     <button
                       onClick={() => handleDelete(log.id)}
-                      className="text-red-400 hover:text-red-300"
+                      className="text-red-400 hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-500"
                     >
                       Delete
                     </button>

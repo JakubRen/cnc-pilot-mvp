@@ -129,7 +129,7 @@ export default function OrderList({
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <Link
                   href={`/orders/${order.id}`}
-                  className="text-blue-400 hover:text-blue-300 font-semibold"
+                  className="text-blue-400 hover:text-blue-300 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {order.order_number}
                 </Link>
@@ -177,20 +177,20 @@ export default function OrderList({
               <td className="px-6 py-4 whitespace-nowrap text-sm">
                 <Link
                   href={`/orders/${order.id}`}
-                  className="text-slate-300 hover:text-white mr-4 font-medium"
+                  className="text-slate-300 hover:text-white mr-4 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   View
                 </Link>
                 <Link
                   href={`/orders/${order.id}/edit`}
-                  className="text-blue-400 hover:text-blue-300 mr-4 font-medium"
+                  className="text-blue-400 hover:text-blue-300 mr-4 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Edit
                 </Link>
                 {currentUserRole === 'owner' && (
                   <button
                     onClick={() => handleDelete(order.id, order.order_number)}
-                    className="text-red-400 hover:text-red-300 font-medium"
+                    className="text-red-400 hover:text-red-300 font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
                   >
                     Delete
                   </button>

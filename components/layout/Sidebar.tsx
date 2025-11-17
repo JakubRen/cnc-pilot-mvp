@@ -38,7 +38,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
         {onClose && (
           <button
             onClick={onClose}
-            className="lg:hidden text-slate-400 hover:text-white transition"
+            className="lg:hidden text-slate-400 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-slate-400"
             aria-label="Zamknij menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +57,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
               key={link.href}
               href={link.href}
               onClick={onClose} // Close sidebar on mobile after click
-              className={`flex items-center gap-3 px-6 py-3 text-sm transition-colors ${
+              className={`flex items-center gap-3 px-6 py-3 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isActive
                   ? 'bg-blue-600 text-white border-r-4 border-blue-400'
                   : 'text-slate-300 hover:bg-slate-700 hover:text-white'
@@ -75,7 +75,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
         <Link
           href="/logout"
           onClick={onClose}
-          className="flex items-center gap-3 px-4 py-3 text-sm text-slate-300 hover:bg-red-600/20 hover:text-red-400 rounded-lg transition-colors group"
+          className="flex items-center gap-3 px-4 py-3 text-sm text-slate-300 hover:bg-red-600/20 hover:text-red-400 rounded-lg transition-colors group focus:outline-none focus:ring-2 focus:ring-red-500"
         >
           <span className="text-xl">🚪</span>
           <span className="font-medium">Wyloguj</span>
