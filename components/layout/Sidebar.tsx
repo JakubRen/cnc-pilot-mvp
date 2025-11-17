@@ -18,6 +18,7 @@ const links: SidebarLink[] = [
   { href: '/', icon: '📊', label: 'Dashboard' },
   { href: '/orders', icon: '📦', label: 'Zamówienia' },
   { href: '/inventory', icon: '🏭', label: 'Magazyn' },
+  { href: '/documents', icon: '📄', label: 'Wydania' },
   { href: '/time-tracking', icon: '⏱️', label: 'Czas Pracy' },
   { href: '/users', icon: '👥', label: 'Użytkownicy' },
 ];
