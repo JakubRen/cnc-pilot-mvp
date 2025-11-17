@@ -34,7 +34,7 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
     <div className="space-y-3">
       {/* Total Orders - Click to clear filters */}
       <div
-        onClick={() => onFilterClick({ status: 'all', deadline: 'all', search: '' })}
+        onClick={() => onFilterClick({ status: 'all', deadline: 'all', search: '', sortBy: 'deadline' })}
         className="bg-slate-800 p-4 rounded-lg border border-slate-700 cursor-pointer hover:bg-slate-700 transition"
       >
         <p className="text-slate-400 text-xs mb-1">Total Orders</p>
@@ -43,7 +43,7 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
 
       {/* In Progress - Click to filter */}
       <div
-        onClick={() => onFilterClick({ status: 'in_progress', deadline: 'all', search: '' })}
+        onClick={() => onFilterClick({ status: 'in_progress', deadline: 'all', search: '', sortBy: 'deadline' })}
         className="bg-slate-800 p-4 rounded-lg border border-blue-700 cursor-pointer hover:bg-slate-700 transition"
       >
         <p className="text-slate-400 text-xs mb-1">In Progress</p>
@@ -52,7 +52,7 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
 
       {/* Urgent - Click to filter */}
       <div
-        onClick={() => onFilterClick({ status: 'all', deadline: 'urgent', search: '' })}
+        onClick={() => onFilterClick({ status: 'all', deadline: 'urgent', search: '', sortBy: 'deadline' })}
         className="bg-slate-800 p-4 rounded-lg border border-yellow-700 cursor-pointer hover:bg-slate-700 transition"
       >
         <p className="text-slate-400 text-xs mb-1">Urgent</p>
@@ -62,7 +62,7 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
 
       {/* Overdue - Click to filter */}
       <div
-        onClick={() => onFilterClick({ status: 'all', deadline: 'overdue', search: '' })}
+        onClick={() => onFilterClick({ status: 'all', deadline: 'overdue', search: '', sortBy: 'deadline' })}
         className="bg-slate-800 p-4 rounded-lg border border-red-700 cursor-pointer hover:bg-slate-700 transition"
       >
         <p className="text-slate-400 text-xs mb-1">Overdue</p>

@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { formatDurationHuman, getStatusBadgeColor } from '@/lib/time-utils';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface TimeLog {
   id: string;
@@ -74,12 +75,14 @@ export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }
 
   if (timeLogs.length === 0) {
     return (
-      <div className="bg-slate-800 rounded-lg p-12 text-center border border-slate-700">
-        <div className="text-4xl mb-4">⏱️</div>
-        <h3 className="text-xl font-semibold mb-2">No Time Logs Found</h3>
-        <p className="text-slate-400 mb-6">
-          No time logs match your current filters
-        </p>
+      <div className="bg-slate-800 rounded-lg border border-slate-700 p-8">
+        <EmptyState
+          icon="⏱️"
+          title="Brak wpisów czasu pracy"
+          description="Nie znaleziono żadnych wpisów czasu pracy pasujących do wybranych filtrów. Dodaj pierwszy wpis aby śledzić czas pracy na zleceniach."
+          actionLabel="+ Dodaj Wpis Czasu"
+          actionHref="/time-tracking/add"
+        />
       </div>
     );
   }

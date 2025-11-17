@@ -8,10 +8,22 @@ import toast from 'react-hot-toast'
 interface OrderListProps {
   orders: any[]
   currentUserRole: string
+  selectedOrders: Set<string>
+  onToggleSelect: (orderId: string) => void
+  onSelectAll: () => void
+  onDeselectAll: () => void
 }
 
-export default function OrderList({ orders, currentUserRole }: OrderListProps) {
+export default function OrderList({
+  orders,
+  currentUserRole,
+  selectedOrders,
+  onToggleSelect,
+  onSelectAll,
+  onDeselectAll,
+}: OrderListProps) {
   const router = useRouter()
+  const allSelected = orders.length > 0 && orders.every(order => selectedOrders.has(order.id))
 
   // Check if order is overdue
   const isOrderOverdue = (deadline: string, status: string) => {
@@ -67,6 +79,15 @@ export default function OrderList({ orders, currentUserRole }: OrderListProps) {
       <table className="w-full">
         <thead className="bg-slate-700">
           <tr>
+            <th className="px-4 py-3 text-left">
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
+                className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-800 cursor-pointer"
+                title={allSelected ? 'Deselect all' : 'Select all'}
+              />
+            </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
               Order #
             </th>
@@ -83,13 +104,28 @@ export default function OrderList({ orders, currentUserRole }: OrderListProps) {
               Status
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Koszt
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-700">
           {orders.map((order: any) => (
-            <tr key={order.id} className="hover:bg-slate-700/50 transition">
+            <tr
+              key={order.id}
+              className={`hover:bg-slate-700/50 transition ${selectedOrders.has(order.id) ? 'bg-blue-900/20' : ''}`}
+            >
+              <td className="px-4 py-4">
+                <input
+                  type="checkbox"
+                  checked={selectedOrders.has(order.id)}
+                  onChange={() => onToggleSelect(order.id)}
+                  className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-800 cursor-pointer"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <Link
                   href={`/orders/${order.id}`}
@@ -124,6 +160,19 @@ export default function OrderList({ orders, currentUserRole }: OrderListProps) {
                 }`}>
                   {order.status.replace('_', ' ')}
                 </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm">
+                {order.total_cost && order.total_cost > 0 ? (
+                  <span className={`font-semibold ${
+                    order.total_cost > 5000 ? 'text-red-400' :
+                    order.total_cost > 2000 ? 'text-yellow-400' :
+                    'text-green-400'
+                  }`}>
+                    {order.total_cost.toFixed(2)} PLN
+                  </span>
+                ) : (
+                  <span className="text-slate-500 text-xs">-</span>
+                )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">
                 <Link

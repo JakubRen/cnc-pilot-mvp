@@ -261,6 +261,43 @@ export async function getRecentActivity(companyId: string, limit = 10) {
 }
 
 // ============================================
+// TOP CUSTOMERS QUERY
+// ============================================
+
+export async function getTopCustomers(companyId: string, limit = 5) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('orders')
+    .select('customer_name, total_cost')
+    .eq('company_id', companyId)
+    .eq('status', 'completed')
+    .not('total_cost', 'is', null)
+    .gt('total_cost', 0);
+
+  if (error) {
+    console.error('Error fetching top customers:', error);
+    return [];
+  }
+
+  // Group by customer and sum revenue
+  const customerRevenue = (data || []).reduce((acc, order) => {
+    const customer = order.customer_name;
+    if (!acc[customer]) {
+      acc[customer] = { name: customer, revenue: 0, count: 0 };
+    }
+    acc[customer].revenue += parseFloat(order.total_cost as any);
+    acc[customer].count += 1;
+    return acc;
+  }, {} as Record<string, { name: string; revenue: number; count: number }>);
+
+  // Convert to array and sort by revenue
+  return Object.values(customerRevenue)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, limit);
+}
+
+// ============================================
 // DASHBOARD SUMMARY (all data in one call)
 // ============================================
 
@@ -278,6 +315,7 @@ export async function getDashboardSummary(companyId: string) {
     staleTimers,
     productionPlan,
     recentActivity,
+    topCustomers,
   ] = await Promise.all([
     getTotalOrders(companyId),
     getActiveOrders(companyId),
@@ -290,6 +328,7 @@ export async function getDashboardSummary(companyId: string) {
     getStaleTimers(companyId),
     getProductionPlan(companyId),
     getRecentActivity(companyId),
+    getTopCustomers(companyId),
   ]);
 
   return {
@@ -310,5 +349,6 @@ export async function getDashboardSummary(companyId: string) {
     },
     productionPlan,
     recentActivity,
+    topCustomers,
   };
 }

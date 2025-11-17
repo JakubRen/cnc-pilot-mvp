@@ -5,6 +5,7 @@ import MetricCards from '@/components/dashboard/MetricCards';
 import UrgentTasks from '@/components/dashboard/UrgentTasks';
 import ProductionPlan from '@/components/dashboard/ProductionPlan';
 import ActivityFeed from '@/components/dashboard/ActivityFeed';
+import TopCustomers from '@/components/dashboard/TopCustomers';
 import AppLayout from '@/components/layout/AppLayout';
 
 export default async function HomePage() {
@@ -85,6 +86,12 @@ export default async function HomePage() {
             <div className="lg:col-span-2">
               <ProductionPlan productionPlan={dashboardData.productionPlan} />
             </div>
+          </div>
+
+          {/* Analytics Section - Top Customers */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <TopCustomers customers={dashboardData.topCustomers} />
+            {/* Future widget placeholder (revenue chart, etc.) */}
           </div>
 
           {/* Activity Feed (Full Width) */}

@@ -6,6 +6,7 @@ export interface FilterState {
   status: string
   deadline: string
   search: string
+  sortBy: string
 }
 
 interface OrderFiltersProps {
@@ -17,6 +18,7 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
     status: 'all',
     deadline: 'all',
     search: '',
+    sortBy: 'deadline',
   })
 
   const handleChange = (key: keyof FilterState, value: string) => {
@@ -29,10 +31,11 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
     filters.status !== 'all',
     filters.deadline !== 'all',
     filters.search.length > 0,
+    filters.sortBy !== 'deadline',
   ].filter(Boolean).length
 
   const handleClearAll = () => {
-    const resetFilters = { status: 'all', deadline: 'all', search: '' }
+    const resetFilters = { status: 'all', deadline: 'all', search: '', sortBy: 'deadline' }
     setFilters(resetFilters)
     onFilterChange(resetFilters)
   }
@@ -77,6 +80,19 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
           <option value="this_week">This Week</option>
           <option value="this_month">This Month</option>
           <option value="next_month">Next Month</option>
+        </select>
+
+        {/* Sort By - Compact */}
+        <select
+          value={filters.sortBy}
+          onChange={(e) => handleChange('sortBy', e.target.value)}
+          className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+        >
+          <option value="deadline">Sort: Deadline</option>
+          <option value="cost_desc">Sort: Cost (High to Low)</option>
+          <option value="cost_asc">Sort: Cost (Low to High)</option>
+          <option value="created_desc">Sort: Newest First</option>
+          <option value="created_asc">Sort: Oldest First</option>
         </select>
 
         {/* Clear Filters Button - Compact */}
