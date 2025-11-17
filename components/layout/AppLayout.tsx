@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -10,10 +12,16 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  // Enable global keyboard shortcuts
+  useKeyboardShortcuts({
+    onShowHelp: () => setShowShortcutsHelp(true),
+  });
 
   return (
     <div className="flex min-h-screen bg-slate-900">
@@ -26,7 +34,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        <Sidebar />
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       </div>
 
       {/* Overlay for mobile - click to close sidebar */}
@@ -47,6 +55,26 @@ export default function AppLayout({ children }: AppLayoutProps) {
           {children}
         </main>
       </div>
+
+      {/* Keyboard Shortcuts Help Modal */}
+      <KeyboardShortcutsHelp
+        isOpen={showShortcutsHelp}
+        onClose={() => setShowShortcutsHelp(false)}
+      />
+
+      {/* Floating Help Button */}
+      <button
+        onClick={() => setShowShortcutsHelp(true)}
+        className="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition z-30 group"
+        title="Keyboard Shortcuts (Ctrl+/)"
+        aria-label="Show keyboard shortcuts"
+      >
+        <span className="text-xl">⌨️</span>
+        {/* Tooltip */}
+        <span className="absolute bottom-full mb-2 right-0 px-3 py-1 bg-slate-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none">
+          Skróty klawiszowe (Ctrl+/)
+        </span>
+      </button>
     </div>
   );
 }

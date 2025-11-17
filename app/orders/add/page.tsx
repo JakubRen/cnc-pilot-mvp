@@ -187,8 +187,8 @@ export default function AddOrderPage() {
         <h1 className="text-3xl font-bold text-white mb-8">Add New Order</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="bg-slate-800 p-8 rounded-lg border border-slate-700">
-          {/* 2-Column Grid */}
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          {/* 2-Column Grid - Responsive */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
             {/* LEFT COLUMN */}
 
             {/* Order Number */}
@@ -308,7 +308,7 @@ export default function AddOrderPage() {
             {/* Dimensions Section - Full Width */}
             <div className="col-span-2">
               <h4 className="text-slate-300 font-semibold mb-3">📐 Wymiary (mm) - Opcjonalnie</h4>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Length */}
                 <div>
                   <label className="block text-slate-400 mb-2 text-sm">Długość (mm)</label>
@@ -451,7 +451,7 @@ export default function AddOrderPage() {
                 {/* Breakdown */}
                 <div className="pt-3 border-t border-slate-700">
                   <p className="text-xs text-slate-400 mb-2">Szczegóły kalkulacji:</p>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-slate-300">Materiał:</span>
                       <span className="text-white font-medium">
@@ -504,7 +504,7 @@ export default function AddOrderPage() {
           <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
             <h3 className="text-lg font-semibold text-white mb-4">💰 Kalkulacja Kosztów</h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               {/* Material Cost */}
               <div>
                 <label className="block text-slate-300 mb-2">Koszt Materiału (PLN)</label>
