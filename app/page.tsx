@@ -6,6 +6,7 @@ import UrgentTasks from '@/components/dashboard/UrgentTasks';
 import ProductionPlan from '@/components/dashboard/ProductionPlan';
 import ActivityFeed from '@/components/dashboard/ActivityFeed';
 import TopCustomers from '@/components/dashboard/TopCustomers';
+import OrdersChart from '@/components/dashboard/OrdersChart';
 import AppLayout from '@/components/layout/AppLayout';
 
 export default async function HomePage() {
@@ -89,6 +90,11 @@ export default async function HomePage() {
                 <TopCustomers customers={dashboardData.topCustomers} />
               </div>
             </div>
+          </div>
+
+          {/* Orders Chart (Full Width) */}
+          <div className="mb-6">
+            <OrdersChart data={dashboardData.ordersChartData} />
           </div>
 
           {/* Activity Feed (Full Width) */}

@@ -298,6 +298,46 @@ export async function getTopCustomers(companyId: string, limit = 5) {
 }
 
 // ============================================
+// CHART DATA QUERIES
+// ============================================
+
+export async function getOrdersChartData(companyId: string) {
+  const supabase = await createClient();
+
+  // Get orders from last 30 days
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const { data, error } = await supabase
+    .from('orders')
+    .select('created_at')
+    .eq('company_id', companyId)
+    .gte('created_at', thirtyDaysAgo.toISOString())
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching orders chart data:', error);
+    return [];
+  }
+
+  // Group by date
+  const groupedByDate = (data || []).reduce((acc: Record<string, number>, order) => {
+    const date = new Date(order.created_at).toLocaleDateString('pl-PL', {
+      month: 'short',
+      day: 'numeric'
+    });
+    acc[date] = (acc[date] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Convert to array format for recharts
+  return Object.entries(groupedByDate).map(([date, orders]) => ({
+    date,
+    orders
+  }));
+}
+
+// ============================================
 // DASHBOARD SUMMARY (all data in one call)
 // ============================================
 
@@ -316,6 +356,7 @@ export async function getDashboardSummary(companyId: string) {
     productionPlan,
     recentActivity,
     topCustomers,
+    ordersChartData,
   ] = await Promise.all([
     getTotalOrders(companyId),
     getActiveOrders(companyId),
@@ -329,6 +370,7 @@ export async function getDashboardSummary(companyId: string) {
     getProductionPlan(companyId),
     getRecentActivity(companyId),
     getTopCustomers(companyId),
+    getOrdersChartData(companyId),
   ]);
 
   return {
@@ -350,5 +392,6 @@ export async function getDashboardSummary(companyId: string) {
     productionPlan,
     recentActivity,
     topCustomers,
+    ordersChartData,
   };
 }
