@@ -20,6 +20,7 @@ const links: SidebarLink[] = [
   { href: '/inventory', icon: '🏭', label: 'Magazyn' },
   { href: '/documents', icon: '📄', label: 'Wydania' },
   { href: '/time-tracking', icon: '⏱️', label: 'Czas Pracy' },
+  { href: '/reports', icon: '📈', label: 'Raporty' },
   { href: '/users', icon: '👥', label: 'Użytkownicy' },
 ];
 

@@ -24,7 +24,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
     .from('warehouse_documents')
     .select(`
       *,
-      users!warehouse_documents_created_by_fkey (
+      creator:users!created_by (
         id,
         full_name
       )
@@ -52,9 +52,9 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
     .eq('document_id', id)
     .order('created_at', { ascending: true })
 
-  const creatorName = Array.isArray(document.users)
-    ? document.users[0]?.full_name
-    : document.users?.full_name
+  const creatorName = Array.isArray(document.creator)
+    ? document.creator[0]?.full_name
+    : document.creator?.full_name
 
   // Kolory dla typów
   const docTypeColor = {

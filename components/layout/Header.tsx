@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import NotificationBell from './NotificationBell';
 
 interface HeaderProps {
   isSidebarOpen?: boolean;
@@ -111,8 +112,11 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
       {/* Spacer */}
       <div className="flex-1" />
 
+      {/* Notification Bell */}
+      <NotificationBell />
+
       {/* User Profile Dropdown */}
-      <div className="relative" ref={dropdownRef}>
+      <div className="relative ml-4" ref={dropdownRef}>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-3 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors group focus:outline-none focus:ring-2 focus:ring-blue-500"

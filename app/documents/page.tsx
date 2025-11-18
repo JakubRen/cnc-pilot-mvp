@@ -28,7 +28,7 @@ export default async function DocumentsPage() {
     .from('warehouse_documents')
     .select(`
       *,
-      users!warehouse_documents_created_by_fkey (
+      creator:users!created_by (
         id,
         full_name
       )
@@ -101,9 +101,9 @@ export default async function DocumentsPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-700">
                   {documents.map((doc) => {
-                    const creatorName = Array.isArray(doc.users)
-                      ? doc.users[0]?.full_name
-                      : doc.users?.full_name
+                    const creatorName = Array.isArray(doc.creator)
+                      ? doc.creator[0]?.full_name
+                      : doc.creator?.full_name
 
                     // Kolory dla typów dokumentów
                     const docTypeColor = {
