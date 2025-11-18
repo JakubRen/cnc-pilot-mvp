@@ -53,10 +53,6 @@ export async function getInventoryReport(
     query = query.eq('category', filters.category);
   }
 
-  if (filters.lowStockOnly) {
-    query = query.lt('quantity', supabase.raw('low_stock_threshold'));
-  }
-
   if (filters.searchQuery) {
     query = query.or(
       `name.ilike.%${filters.searchQuery}%,sku.ilike.%${filters.searchQuery}%`
@@ -70,7 +66,14 @@ export async function getInventoryReport(
     return [];
   }
 
-  return (data || []).map((item) => ({
+  let result = data || [];
+
+  // Apply lowStockOnly filter after fetching (Supabase doesn't support column comparison in queries)
+  if (filters.lowStockOnly) {
+    result = result.filter(item => item.quantity < item.low_stock_threshold);
+  }
+
+  return result.map((item) => ({
     ...item,
     creator_name: Array.isArray(item.creator)
       ? (item.creator[0] as any)?.full_name

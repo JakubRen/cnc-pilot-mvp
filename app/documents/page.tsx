@@ -106,11 +106,12 @@ export default async function DocumentsPage() {
                       : doc.creator?.full_name
 
                     // Kolory dla typów dokumentów
-                    const docTypeColor = {
+                    const docTypeColors: Record<string, string> = {
                       PW: 'bg-green-600',
                       RW: 'bg-blue-600',
                       WZ: 'bg-orange-600'
-                    }[doc.document_type] || 'bg-slate-600'
+                    }
+                    const docTypeColor = docTypeColors[doc.document_type] || 'bg-slate-600'
 
                     // Kolory dla statusów
                     const statusColor = doc.status === 'confirmed'

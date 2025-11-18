@@ -57,11 +57,12 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
     : document.creator?.full_name
 
   // Kolory dla typów
-  const docTypeColor = {
+  const docTypeColors: Record<string, string> = {
     PW: 'bg-green-600',
     RW: 'bg-blue-600',
     WZ: 'bg-orange-600'
-  }[document.document_type] || 'bg-slate-600'
+  }
+  const docTypeColor = docTypeColors[document.document_type] || 'bg-slate-600'
 
   const statusColor = document.status === 'confirmed'
     ? 'bg-green-600'
