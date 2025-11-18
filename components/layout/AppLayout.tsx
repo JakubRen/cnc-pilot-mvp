@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import CommandPalette from '@/components/ui/CommandPalette';
+import MobileBottomNav from './MobileBottomNav';
+import { supabase } from '@/lib/supabase';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -13,10 +16,28 @@ interface AppLayoutProps {
 export default function AppLayout({ children }: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
+  const [userRole, setUserRole] = useState<string | undefined>();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  // Fetch user role for CommandPalette
+  useEffect(() => {
+    async function fetchUserRole() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: userProfile } = await supabase
+          .from('users')
+          .select('role')
+          .eq('auth_id', user.id)
+          .single()
+
+        setUserRole(userProfile?.role)
+      }
+    }
+    fetchUserRole()
+  }, [])
 
   // Enable global keyboard shortcuts
   useKeyboardShortcuts({
@@ -51,10 +72,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
         <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto pb-20 lg:pb-0">
           {children}
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
+
+      {/* Command Palette */}
+      <CommandPalette userRole={userRole} />
 
       {/* Keyboard Shortcuts Help Modal */}
       <KeyboardShortcutsHelp

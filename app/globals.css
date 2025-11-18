@@ -24,3 +24,102 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Command Palette (cmdk) Styles */
+[cmdk-root] {
+  max-width: 640px;
+}
+
+[cmdk-input] {
+  font-family: inherit;
+  border: none;
+  width: 100%;
+  font-size: 14px;
+  padding: 8px;
+  outline: none;
+  background: transparent;
+  color: white;
+}
+
+[cmdk-input]::placeholder {
+  color: rgb(148 163 184);
+}
+
+[cmdk-list] {
+  height: min(400px, calc(var(--cmdk-list-height)));
+  max-height: 400px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  transition: 100ms ease;
+  transition-property: height;
+}
+
+[cmdk-list]::-webkit-scrollbar {
+  width: 8px;
+}
+
+[cmdk-list]::-webkit-scrollbar-track {
+  background: rgb(30 41 59);
+}
+
+[cmdk-list]::-webkit-scrollbar-thumb {
+  background: rgb(71 85 105);
+  border-radius: 4px;
+}
+
+[cmdk-list]::-webkit-scrollbar-thumb:hover {
+  background: rgb(100 116 139);
+}
+
+[cmdk-group-heading] {
+  user-select: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(148 163 184);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+
+[cmdk-item] {
+  content-visibility: auto;
+  cursor: pointer;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  color: rgb(203 213 225);
+  user-select: none;
+  will-change: background, color;
+  transition: all 150ms ease;
+  transition-property: none;
+}
+
+[cmdk-item][aria-selected='true'] {
+  background: rgb(51 65 85);
+  color: white;
+}
+
+[cmdk-item][aria-disabled='true'] {
+  color: rgb(100 116 139);
+  cursor: not-allowed;
+}
+
+[cmdk-item]:active {
+  transition-property: background;
+  background: rgb(30 41 59);
+}
+
+[cmdk-item] + [cmdk-item] {
+  margin-top: 4px;
+}
+
+[cmdk-separator] {
+  height: 1px;
+  width: 100%;
+  background: rgb(51 65 85);
+  margin: 4px 0;
+}
