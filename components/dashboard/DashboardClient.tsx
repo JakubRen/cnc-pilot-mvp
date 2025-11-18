@@ -9,6 +9,9 @@ import ProductionPlan from './ProductionPlan'
 import ActivityFeed from './ActivityFeed'
 import TopCustomers from './TopCustomers'
 import OrdersChart from './OrdersChart'
+import RevenueChart from './RevenueChart'
+import TopCustomersChart from './TopCustomersChart'
+import ProductivityChart from './ProductivityChart'
 
 interface Props {
   userId: number
@@ -129,6 +132,24 @@ export default function DashboardClient({
             <OrdersChart data={dashboardData.ordersChartData} />
           </div>
         )}
+
+        {/* Analytics Charts Grid (3 columns) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          {/* Revenue Chart */}
+          <div className="lg:col-span-1">
+            <RevenueChart data={dashboardData.revenueChartData || []} />
+          </div>
+
+          {/* Top Customers Chart */}
+          <div className="lg:col-span-1">
+            <TopCustomersChart data={dashboardData.topCustomersAnalyticsData || []} />
+          </div>
+
+          {/* Productivity Chart */}
+          <div className="lg:col-span-1">
+            <ProductivityChart data={dashboardData.productivityData || []} />
+          </div>
+        </div>
 
         {/* Activity Feed (Full Width) */}
         {preferences.activityFeed && (

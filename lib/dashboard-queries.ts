@@ -1,5 +1,6 @@
 // Dashboard data queries for metrics and widgets
 import { createClient } from '@/lib/supabase-server';
+import { getRevenueOverTime, getEmployeeProductivity, getTopCustomers as getTopCustomersAnalytics } from '@/lib/analytics/queries';
 
 // ============================================
 // METRIC QUERIES
@@ -407,6 +408,9 @@ export async function getDashboardSummary(companyId: string) {
     recentActivity,
     topCustomers,
     ordersChartData,
+    revenueChartData,
+    topCustomersAnalyticsData,
+    productivityData,
   ] = await Promise.all([
     getTotalOrders(companyId),
     getActiveOrders(companyId),
@@ -421,6 +425,9 @@ export async function getDashboardSummary(companyId: string) {
     getRecentActivity(companyId),
     getTopCustomers(companyId),
     getOrdersChartData(companyId),
+    getRevenueOverTime(companyId, 30),
+    getTopCustomersAnalytics(companyId, 10),
+    getEmployeeProductivity(companyId),
   ]);
 
   return {
@@ -443,5 +450,8 @@ export async function getDashboardSummary(companyId: string) {
     recentActivity,
     topCustomers,
     ordersChartData,
+    revenueChartData,
+    topCustomersAnalyticsData,
+    productivityData,
   };
 }

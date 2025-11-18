@@ -3,13 +3,45 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import type { Notification } from '@/lib/notifications';
+import { useRealtimeNotifications } from '@/lib/realtime/hooks';
+import { supabase } from '@/lib/supabase';
 
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Get user ID on mount
+  useEffect(() => {
+    const getUserId = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: userProfile } = await supabase
+          .from('users')
+          .select('id')
+          .eq('auth_id', user.id)
+          .single();
+
+        if (userProfile) {
+          setUserId(userProfile.id);
+        }
+      }
+    };
+    getUserId();
+  }, []);
+
+  // Real-time notifications (only subscribe when we have userId)
+  const newNotifications = useRealtimeNotifications(userId || 0);
+
+  // Update notifications when new ones arrive via real-time
+  useEffect(() => {
+    if (newNotifications.length > 0) {
+      fetchNotifications(); // Refresh to get updated list
+    }
+  }, [newNotifications]);
 
   // Fetch notifications
   const fetchNotifications = async () => {
@@ -25,14 +57,9 @@ export default function NotificationBell() {
     }
   };
 
-  // Initial fetch and polling
+  // Initial fetch (no more polling!)
   useEffect(() => {
     fetchNotifications();
-
-    // Poll every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
-
-    return () => clearInterval(interval);
   }, []);
 
   // Close dropdown when clicking outside

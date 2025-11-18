@@ -123,3 +123,127 @@ body {
   background: rgb(51 65 85);
   margin: 4px 0;
 }
+
+/* Light Theme Styles */
+.light {
+  /* Base Colors */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-bg-tertiary: #f1f5f9;
+  --color-bg-hover: #e2e8f0;
+
+  /* Text Colors */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748b;
+  --color-text-muted: #94a3b8;
+
+  /* Border Colors */
+  --color-border-primary: #e2e8f0;
+  --color-border-secondary: #cbd5e1;
+
+  /* Component-specific overrides */
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.light body {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* Light theme component overrides */
+.light .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+
+.light .bg-slate-800 {
+  background-color: #f8fafc !important;
+}
+
+.light .bg-slate-700 {
+  background-color: #f1f5f9 !important;
+}
+
+.light .text-white {
+  color: #0f172a !important;
+}
+
+.light .text-slate-300 {
+  color: #475569 !important;
+}
+
+.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+.light .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.light .border-slate-700 {
+  border-color: #e2e8f0 !important;
+}
+
+.light .border-slate-600 {
+  border-color: #cbd5e1 !important;
+}
+
+/* Light theme hover states */
+.light .hover\:bg-slate-700:hover {
+  background-color: #e2e8f0 !important;
+}
+
+.light .hover\:bg-slate-600:hover {
+  background-color: #cbd5e1 !important;
+}
+
+.light .hover\:text-white:hover {
+  color: #0f172a !important;
+}
+
+/* Light theme for command palette */
+.light [cmdk-input] {
+  color: #0f172a;
+}
+
+.light [cmdk-input]::placeholder {
+  color: #94a3b8;
+}
+
+.light [cmdk-list]::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.light [cmdk-list]::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+.light [cmdk-list]::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.light [cmdk-group-heading] {
+  color: #64748b;
+}
+
+.light [cmdk-item] {
+  color: #475569;
+}
+
+.light [cmdk-item][aria-selected='true'] {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.light [cmdk-item][aria-disabled='true'] {
+  color: #cbd5e1;
+}
+
+.light [cmdk-item]:active {
+  background: #f1f5f9;
+}
+
+.light [cmdk-separator] {
+  background: #e2e8f0;
+}
