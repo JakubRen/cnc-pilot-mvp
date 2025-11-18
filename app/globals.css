@@ -124,23 +124,23 @@ body {
   margin: 4px 0;
 }
 
-/* Light Theme Styles */
+/* Light Theme Styles - Improved Contrast */
 .light {
   /* Base Colors */
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8fafc;
-  --color-bg-tertiary: #f1f5f9;
-  --color-bg-hover: #e2e8f0;
+  --color-bg-primary: #f8fafc;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #e2e8f0;
+  --color-bg-hover: #cbd5e1;
 
   /* Text Colors */
   --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #64748b;
-  --color-text-muted: #94a3b8;
+  --color-text-secondary: #334155;
+  --color-text-tertiary: #475569;
+  --color-text-muted: #64748b;
 
   /* Border Colors */
-  --color-border-primary: #e2e8f0;
-  --color-border-secondary: #cbd5e1;
+  --color-border-primary: #cbd5e1;
+  --color-border-secondary: #94a3b8;
 
   /* Component-specific overrides */
   background: var(--color-bg-primary);
@@ -148,21 +148,28 @@ body {
 }
 
 .light body {
-  background: #ffffff;
+  background: #f8fafc;
   color: #0f172a;
 }
 
 /* Light theme component overrides */
 .light .bg-slate-900 {
-  background-color: #ffffff !important;
+  background-color: #f8fafc !important;
 }
 
 .light .bg-slate-800 {
-  background-color: #f8fafc !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
 }
 
 .light .bg-slate-700 {
   background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light .bg-slate-600 {
+  background-color: #e2e8f0 !important;
 }
 
 .light .text-white {
@@ -170,23 +177,23 @@ body {
 }
 
 .light .text-slate-300 {
-  color: #475569 !important;
+  color: #334155 !important;
 }
 
 .light .text-slate-400 {
-  color: #64748b !important;
+  color: #475569 !important;
 }
 
 .light .text-slate-500 {
-  color: #94a3b8 !important;
+  color: #64748b !important;
 }
 
 .light .border-slate-700 {
-  border-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
 }
 
 .light .border-slate-600 {
-  border-color: #cbd5e1 !important;
+  border-color: #94a3b8 !important;
 }
 
 /* Light theme hover states */
@@ -200,6 +207,75 @@ body {
 
 .light .hover\:text-white:hover {
   color: #0f172a !important;
+}
+
+/* Sidebar in light mode */
+.light aside.bg-slate-800 {
+  background-color: #ffffff !important;
+  border-right: 1px solid #e2e8f0 !important;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Buttons in light mode - better visibility */
+.light .bg-blue-600 {
+  background-color: #2563eb !important;
+}
+
+.light .hover\:bg-blue-700:hover {
+  background-color: #1d4ed8 !important;
+}
+
+.light .bg-green-600 {
+  background-color: #16a34a !important;
+}
+
+.light .hover\:bg-green-700:hover {
+  background-color: #15803d !important;
+}
+
+.light .bg-red-600 {
+  background-color: #dc2626 !important;
+}
+
+.light .hover\:bg-red-700:hover {
+  background-color: #b91c1c !important;
+}
+
+.light .bg-yellow-600 {
+  background-color: #ca8a04 !important;
+}
+
+.light .hover\:bg-yellow-700:hover {
+  background-color: #a16207 !important;
+}
+
+.light .bg-gray-600 {
+  background-color: #4b5563 !important;
+}
+
+.light .hover\:bg-gray-700:hover {
+  background-color: #374151 !important;
+}
+
+/* Status badges - darker for better contrast */
+.light .bg-yellow-600.text-white {
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+}
+
+.light .bg-blue-600.text-white {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.light .bg-green-600.text-white {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+}
+
+.light .bg-red-600.text-white {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
 }
 
 /* Light theme for command palette */
@@ -246,4 +322,235 @@ body {
 
 .light [cmdk-separator] {
   background: #e2e8f0;
+}
+
+/* Form inputs in light mode */
+.light input[type="text"],
+.light input[type="email"],
+.light input[type="password"],
+.light input[type="number"],
+.light input[type="date"],
+.light input[type="time"],
+.light textarea,
+.light select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.light input[type="text"]:focus,
+.light input[type="email"]:focus,
+.light input[type="password"]:focus,
+.light input[type="number"]:focus,
+.light input[type="date"]:focus,
+.light input[type="time"]:focus,
+.light textarea:focus,
+.light select:focus {
+  border-color: #2563eb !important;
+  ring-color: #2563eb !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Tables in light mode */
+.light table {
+  border-color: #e2e8f0 !important;
+}
+
+.light th {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+
+.light td {
+  border-color: #e2e8f0 !important;
+}
+
+.light tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Cards and containers */
+.light .bg-slate-800.border {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Active navigation items */
+.light .bg-blue-600.border-blue-400 {
+  background-color: #2563eb !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+/* Metric cards enhancement */
+.light .bg-slate-800 h3 {
+  color: #0f172a !important;
+}
+
+.light .bg-slate-800 p {
+  color: #475569 !important;
+}
+
+/* Header in light mode */
+.light header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Dropdown menus in light mode */
+.light .absolute.right-0.mt-2 {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Modal overlays */
+.light .fixed.inset-0.bg-black\/50 {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Link colors in light mode */
+.light a {
+  color: #2563eb !important;
+}
+
+.light a:hover {
+  color: #1d4ed8 !important;
+}
+
+/* Progress bars */
+.light .bg-blue-600.h-2,
+.light .bg-green-600.h-2,
+.light .bg-yellow-600.h-2,
+.light .bg-red-600.h-2 {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Floating action button (keyboard shortcuts) */
+.light .fixed.bottom-6.right-6 {
+  background-color: #2563eb !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.light .fixed.bottom-6.right-6:hover {
+  background-color: #1d4ed8 !important;
+}
+
+/* Charts in light mode - better visibility */
+.light .recharts-wrapper {
+  background-color: transparent !important;
+}
+
+.light .recharts-cartesian-grid line {
+  stroke: #e2e8f0 !important;
+}
+
+.light .recharts-text {
+  fill: #475569 !important;
+}
+
+.light .recharts-legend-item-text {
+  color: #475569 !important;
+}
+
+/* Mobile Bottom Navigation */
+.light .fixed.bottom-0.left-0.right-0 {
+  background-color: #ffffff !important;
+  border-top: 1px solid #e2e8f0 !important;
+  box-shadow: 0 -1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Empty states */
+.light .text-6xl {
+  opacity: 0.8;
+}
+
+/* Notification badges */
+.light .bg-red-500 {
+  background-color: #ef4444 !important;
+}
+
+/* Scrollbar in light mode */
+.light ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Focus rings in light mode */
+.light *:focus-visible {
+  outline-color: #2563eb !important;
+  outline-offset: 2px;
+  outline-width: 2px;
+}
+
+/* Modals in light mode */
+.light .bg-slate-800.rounded-lg.shadow-xl {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Tooltips */
+.light .absolute.bottom-full {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+}
+
+/* Dividers */
+.light hr,
+.light .border-t {
+  border-color: #e2e8f0 !important;
+}
+
+/* Code blocks (if any) */
+.light code {
+  background-color: #f1f5f9 !important;
+  color: #dc2626 !important;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.light pre {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* Time logs and cards with specific backgrounds */
+.light .bg-slate-800.rounded-lg {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Loading states */
+.light .animate-pulse {
+  background-color: #e2e8f0 !important;
+}
+
+/* Shadows for elevated elements */
+.light .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.light .shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
 }

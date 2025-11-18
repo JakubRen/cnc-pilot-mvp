@@ -7,6 +7,9 @@ export interface DashboardPreferences {
   topCustomers: boolean
   ordersChart: boolean
   activityFeed: boolean
+  revenueChart: boolean
+  topCustomersAnalyticsChart: boolean
+  productivityChart: boolean
 }
 
 export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
@@ -16,6 +19,9 @@ export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
   topCustomers: true,
   ordersChart: true,
   activityFeed: true,
+  revenueChart: true,
+  topCustomersAnalyticsChart: true,
+  productivityChart: true,
 }
 
 export interface DashboardWidget {
@@ -61,5 +67,23 @@ export const DASHBOARD_WIDGETS: DashboardWidget[] = [
     label: 'Ostatnia Aktywność',
     description: 'Ostatnie akcje w systemie',
     icon: '🔔',
+  },
+  {
+    key: 'revenueChart',
+    label: 'Wykres Przychodów',
+    description: 'Przychody w ostatnich 30 dniach',
+    icon: '💰',
+  },
+  {
+    key: 'topCustomersAnalyticsChart',
+    label: 'Wykres Top Klientów',
+    description: 'Top 10 klientów według przychodów',
+    icon: '👥',
+  },
+  {
+    key: 'productivityChart',
+    label: 'Wykres Produktywności',
+    description: 'Produktywność pracowników (godziny, zarobki)',
+    icon: '⚡',
   },
 ]

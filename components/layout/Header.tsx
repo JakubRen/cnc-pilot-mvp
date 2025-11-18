@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import NotificationBell from './NotificationBell';
+import ThemeToggle from '@/components/theme/ThemeToggle';
 
 interface HeaderProps {
   isSidebarOpen?: boolean;
@@ -114,6 +115,11 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
 
       {/* Notification Bell */}
       <NotificationBell />
+
+      {/* Theme Toggle */}
+      <div className="ml-4">
+        <ThemeToggle />
+      </div>
 
       {/* User Profile Dropdown */}
       <div className="relative ml-4" ref={dropdownRef}>

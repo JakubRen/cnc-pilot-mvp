@@ -8,6 +8,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import CommandPalette from '@/components/ui/CommandPalette';
 import MobileBottomNav from './MobileBottomNav';
 import { supabase } from '@/lib/supabase';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -45,7 +46,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
   });
 
   return (
-    <div className="flex min-h-screen bg-slate-900">
+    <ThemeProvider>
+      <div className="flex min-h-screen bg-slate-900">
       {/* Sidebar - Hidden on mobile by default, shown when toggled */}
       <div
         className={`
@@ -102,6 +104,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           Skróty klawiszowe (Ctrl+/)
         </span>
       </button>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }

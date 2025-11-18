@@ -134,22 +134,30 @@ export default function DashboardClient({
         )}
 
         {/* Analytics Charts Grid (3 columns) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          {/* Revenue Chart */}
-          <div className="lg:col-span-1">
-            <RevenueChart data={dashboardData.revenueChartData || []} />
-          </div>
+        {(preferences.revenueChart || preferences.topCustomersAnalyticsChart || preferences.productivityChart) && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            {/* Revenue Chart */}
+            {preferences.revenueChart && (
+              <div className="lg:col-span-1">
+                <RevenueChart data={dashboardData.revenueChartData || []} />
+              </div>
+            )}
 
-          {/* Top Customers Chart */}
-          <div className="lg:col-span-1">
-            <TopCustomersChart data={dashboardData.topCustomersAnalyticsData || []} />
-          </div>
+            {/* Top Customers Chart */}
+            {preferences.topCustomersAnalyticsChart && (
+              <div className="lg:col-span-1">
+                <TopCustomersChart data={dashboardData.topCustomersAnalyticsData || []} />
+              </div>
+            )}
 
-          {/* Productivity Chart */}
-          <div className="lg:col-span-1">
-            <ProductivityChart data={dashboardData.productivityData || []} />
+            {/* Productivity Chart */}
+            {preferences.productivityChart && (
+              <div className="lg:col-span-1">
+                <ProductivityChart data={dashboardData.productivityData || []} />
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         {/* Activity Feed (Full Width) */}
         {preferences.activityFeed && (
