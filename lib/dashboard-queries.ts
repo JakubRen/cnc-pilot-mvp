@@ -338,6 +338,56 @@ export async function getOrdersChartData(companyId: string) {
 }
 
 // ============================================
+// INVENTORY HISTORY QUERY
+// ============================================
+
+export async function getInventoryHistory(inventoryId: string, limit = 20) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('inventory_history')
+    .select(`
+      id,
+      document_id,
+      document_type,
+      document_number,
+      quantity_change,
+      quantity_before,
+      quantity_after,
+      changed_at,
+      notes,
+      changer:users!inventory_history_changed_by_fkey(full_name)
+    `)
+    .eq('inventory_id', inventoryId)
+    .order('changed_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching inventory history:', error);
+    return [];
+  }
+
+  return (data || []).map((item) => {
+    const changerName = Array.isArray(item.changer)
+      ? (item.changer[0] as any)?.full_name
+      : (item.changer as any)?.full_name;
+
+    return {
+      id: item.id,
+      documentId: item.document_id,
+      documentType: item.document_type,
+      documentNumber: item.document_number,
+      quantityChange: item.quantity_change,
+      quantityBefore: item.quantity_before,
+      quantityAfter: item.quantity_after,
+      changedAt: item.changed_at,
+      notes: item.notes,
+      changerName: changerName || 'Unknown',
+    };
+  });
+}
+
+// ============================================
 // DASHBOARD SUMMARY (all data in one call)
 // ============================================
 

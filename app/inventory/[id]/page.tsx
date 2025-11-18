@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
+import { getInventoryHistory } from '@/lib/dashboard-queries'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
+import InventoryHistory from '@/components/inventory/InventoryHistory'
 
 export default async function InventoryDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -41,6 +43,9 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
     `)
     .eq('item_id', id)
     .order('created_at', { ascending: false })
+
+  // Fetch inventory history (from warehouse documents)
+  const inventoryHistory = await getInventoryHistory(id)
 
   // Format dates
   const formatDate = (dateString: string) => {
@@ -213,7 +218,7 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
         </div>
 
         {/* Transaction History */}
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">📋 Transaction History (Audit Trail)</h2>
 
           {transactions && transactions.length > 0 ? (
@@ -267,6 +272,9 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
             <p className="text-slate-400 text-center py-8">No transactions yet</p>
           )}
         </div>
+
+        {/* Inventory History (Warehouse Documents) */}
+        <InventoryHistory history={inventoryHistory} unit={item.unit} />
       </div>
     </div>
   )
