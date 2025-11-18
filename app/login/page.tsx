@@ -1,10 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { signIn } from '@/lib/auth'
+import { loginAction } from './actions'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
@@ -16,7 +15,6 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -28,18 +26,27 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     const loadingToast = toast.loading('Logging in...')
 
-    const { error } = await signIn(data.email, data.password)
+    try {
+      const result = await loginAction(data.email, data.password)
 
-    toast.dismiss(loadingToast)
+      toast.dismiss(loadingToast)
 
-    if (error) {
-      toast.error('Login failed: ' + error.message)
-      return
+      if (result?.error) {
+        toast.error('Login failed: ' + result.error)
+        return
+      }
+
+      toast.success('Login successful!')
+      // loginAction will redirect automatically
+    } catch (error: any) {
+      toast.dismiss(loadingToast)
+      // Server Action redirect throws NEXT_REDIRECT - this is normal
+      if (error?.message?.includes('NEXT_REDIRECT')) {
+        toast.success('Login successful!')
+      } else {
+        toast.error('Login failed: ' + (error?.message || 'Unknown error'))
+      }
     }
-
-    toast.success('Login successful!')
-    router.push('/')
-    router.refresh()
   }
 
   return (
