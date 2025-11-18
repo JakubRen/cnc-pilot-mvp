@@ -8,6 +8,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
+import DeleteButton from './DeleteButton'
 
 export default async function DocumentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -93,12 +94,21 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
             </div>
 
             {document.status === 'draft' && (
-              <Link
-                href={`/documents/${id}/edit`}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
-              >
-                Edytuj
-              </Link>
+              <div className="flex gap-3">
+                <Link
+                  href={`/documents/${id}/edit`}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                >
+                  Edytuj
+                </Link>
+                {user.role === 'owner' && (
+                  <DeleteButton
+                    documentId={id}
+                    documentNumber={document.document_number}
+                    companyId={user.company_id}
+                  />
+                )}
+              </div>
             )}
           </div>
 
