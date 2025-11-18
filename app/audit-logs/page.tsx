@@ -18,7 +18,8 @@ export default async function AuditLogsPage() {
   }
 
   // Only admins and owners can view audit logs
-  if (user.role !== 'owner' && user.role !== 'admin') {
+  const allowedRoles = ['owner', 'admin']
+  if (!allowedRoles.includes(user.role)) {
     return (
       <AppLayout>
         <div className="min-h-screen flex items-center justify-center p-8">
