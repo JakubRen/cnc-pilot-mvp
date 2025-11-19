@@ -22,6 +22,7 @@ const links: SidebarLink[] = [
   { href: '/files', icon: '📁', label: 'Pliki' },
   { href: '/time-tracking', icon: '⏱️', label: 'Czas Pracy' },
   { href: '/reports', icon: '📈', label: 'Raporty' },
+  { href: '/tags', icon: '🏷️', label: 'Tagi' },
   { href: '/users', icon: '👥', label: 'Użytkownicy' },
 ];
 

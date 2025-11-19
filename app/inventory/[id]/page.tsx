@@ -4,6 +4,7 @@ import { getInventoryHistory } from '@/lib/dashboard-queries'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import InventoryHistory from '@/components/inventory/InventoryHistory'
+import TagSelect from '@/components/tags/TagSelect'
 
 export default async function InventoryDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -46,6 +47,25 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
 
   // Fetch inventory history (from warehouse documents)
   const inventoryHistory = await getInventoryHistory(id)
+
+  // Fetch tags for this inventory item
+  const { data: itemTags } = await supabase
+    .from('entity_tags')
+    .select(`
+      tag_id,
+      tags (
+        id,
+        name,
+        color
+      )
+    `)
+    .eq('entity_type', 'inventory_item')
+    .eq('entity_id', id)
+
+  // Transform tags data to flat array
+  const tags = (itemTags || [])
+    .map((et: any) => et.tags)
+    .filter((tag: any) => tag !== null)
 
   // Format dates
   const formatDate = (dateString: string) => {
@@ -153,6 +173,16 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Tags */}
+          <div className="col-span-2 bg-slate-800 p-6 rounded-lg border border-slate-700">
+            <h2 className="text-xl font-semibold text-white mb-4">Tagi</h2>
+            <TagSelect
+              entityType="inventory_item"
+              entityId={item.id}
+              selectedTags={tags}
+            />
           </div>
 
           {/* Traceability (Audit Info) */}

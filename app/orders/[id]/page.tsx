@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import StatusDropdown from './StatusDropdown'
 import OrderTimeTracking from './OrderTimeTracking'
+import TagSelect from '@/components/tags/TagSelect'
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -42,6 +43,25 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     `)
     .eq('order_id', id)
     .order('start_time', { ascending: false })
+
+  // Fetch tags for this order
+  const { data: orderTags } = await supabase
+    .from('entity_tags')
+    .select(`
+      tag_id,
+      tags (
+        id,
+        name,
+        color
+      )
+    `)
+    .eq('entity_type', 'order')
+    .eq('entity_id', id)
+
+  // Transform tags data to flat array
+  const tags = (orderTags || [])
+    .map((et: any) => et.tags)
+    .filter((tag: any) => tag !== null)
 
   // Format dates in Polish locale
   const formatDate = (dateString: string) => {
@@ -178,6 +198,16 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           <div className="bg-slate-800 p-6 rounded-lg border border-blue-700">
             <h2 className="text-xl font-semibold text-white mb-4">Quick Status Change</h2>
             <StatusDropdown orderId={order.id} currentStatus={order.status} />
+          </div>
+
+          {/* Tags */}
+          <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+            <h2 className="text-xl font-semibold text-white mb-4">Tagi</h2>
+            <TagSelect
+              entityType="order"
+              entityId={order.id}
+              selectedTags={tags}
+            />
           </div>
 
           {/* DAY 12: COST BREAKDOWN - Show only if total_cost > 0 */}

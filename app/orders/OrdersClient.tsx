@@ -9,6 +9,8 @@ import OrderStats from './OrderStats'
 import OrderFilters, { FilterState } from './OrderFilters'
 import OrderList from './OrderList'
 import EmptyState from '@/components/ui/EmptyState'
+import TagFilter from '@/components/tags/TagFilter'
+import SavedFilters from '@/components/filters/SavedFilters'
 
 interface OrdersClientProps {
   orders: any[]
@@ -24,6 +26,8 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
     sortBy: 'deadline',
   })
   const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set())
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
+  const [tagLogic, setTagLogic] = useState<'AND' | 'OR'>('OR')
 
   // Handle CSV export
   const handleExportCSV = () => {
@@ -60,6 +64,24 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
 
   const handleDeselectAll = () => {
     setSelectedOrders(new Set())
+  }
+
+  // Load saved filter
+  const handleLoadSavedFilter = (config: any) => {
+    if (config.status !== undefined || config.deadline !== undefined || config.search !== undefined || config.sortBy !== undefined) {
+      setFilters({
+        status: config.status || 'all',
+        deadline: config.deadline || 'all',
+        search: config.search || '',
+        sortBy: config.sortBy || 'deadline',
+      })
+    }
+    if (config.tagIds !== undefined) {
+      setSelectedTagIds(config.tagIds || [])
+    }
+    if (config.tagLogic !== undefined) {
+      setTagLogic(config.tagLogic || 'OR')
+    }
   }
 
   // Bulk status change
@@ -157,6 +179,21 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
       )
     }
 
+    // Tag filter
+    if (selectedTagIds.length > 0) {
+      result = result.filter(order => {
+        const orderTagIds = (order.tags || []).map((tag: any) => tag.id)
+
+        if (tagLogic === 'AND') {
+          // Order must have ALL selected tags
+          return selectedTagIds.every(tagId => orderTagIds.includes(tagId))
+        } else {
+          // Order must have AT LEAST ONE selected tag
+          return selectedTagIds.some(tagId => orderTagIds.includes(tagId))
+        }
+      })
+    }
+
     // Sort orders
     result = [...result].sort((a, b) => {
       switch (filters.sortBy) {
@@ -175,13 +212,28 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
     })
 
     return result
-  }, [orders, filters])
+  }, [orders, filters, selectedTagIds, tagLogic])
 
   return (
     <div className="grid grid-cols-[350px_1fr] gap-6">
-      {/* LEFT COLUMN - Statistics */}
-      <div>
+      {/* LEFT COLUMN - Statistics, Saved Filters & Tags */}
+      <div className="space-y-6">
         <OrderStats orders={filteredOrders} onFilterClick={setFilters} />
+        <SavedFilters
+          filterType="order"
+          currentFilters={{
+            ...filters,
+            tagIds: selectedTagIds,
+            tagLogic: tagLogic,
+          }}
+          onLoadFilter={handleLoadSavedFilter}
+        />
+        <TagFilter
+          onFilterChange={(tagIds, logic) => {
+            setSelectedTagIds(tagIds)
+            setTagLogic(logic)
+          }}
+        />
       </div>
 
       {/* RIGHT COLUMN - Filters + Orders */}

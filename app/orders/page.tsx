@@ -21,6 +21,40 @@ export default async function OrdersPage() {
     .eq('company_id', userProfile.company_id)
     .order('deadline', { ascending: true })
 
+  // Fetch all order tags for filtering
+  const { data: orderTags } = await supabase
+    .from('entity_tags')
+    .select(`
+      entity_id,
+      tag_id,
+      tags (
+        id,
+        name,
+        color
+      )
+    `)
+    .eq('entity_type', 'order')
+    .in('entity_id', (orders || []).map(o => o.id))
+
+  // Create a map of order_id -> tags[]
+  const orderTagsMap: Record<string, any[]> = {}
+  if (orderTags) {
+    orderTags.forEach((et: any) => {
+      if (!orderTagsMap[et.entity_id]) {
+        orderTagsMap[et.entity_id] = []
+      }
+      if (et.tags) {
+        orderTagsMap[et.entity_id].push(et.tags)
+      }
+    })
+  }
+
+  // Attach tags to each order
+  const ordersWithTags = (orders || []).map(order => ({
+    ...order,
+    tags: orderTagsMap[order.id] || []
+  }))
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -46,7 +80,7 @@ export default async function OrdersPage() {
             </Link>
           </div>
 
-          <OrdersClient orders={orders || []} currentUserRole={userProfile.role} />
+          <OrdersClient orders={ordersWithTags} currentUserRole={userProfile.role} />
         </div>
       </div>
     </AppLayout>

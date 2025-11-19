@@ -495,7 +495,14 @@ bg-gray-600    // Cancelled
 
 ---
 
-## Recent Changes & Fixes (Day 11)
+### Recent Changes & Fixes (Day 22)
+
+### New Features
+- **Tag System:** Full CRUD (`components/tags`) for company-scoped tags, integrated into Orders.
+- **File Management:** `/files` page with upload, grid/list view, preview (`components/files`).
+- **Saved Filters:** Save/load filter presets for Orders (`components/filters`).
+- **Global Search:** Command palette (Ctrl+K) for searching orders, files, and navigation.
+- **Theme System:** Light/Dark/Auto mode support (`components/theme`).
 
 ### Security Fixes (Critical)
 4 bugs fixed where queries didn't filter by company_id:
@@ -503,15 +510,6 @@ bg-gray-600    // Cancelled
 2. `app/orders/page.tsx` - Added `.eq('company_id', userProfile.company_id)`
 3. `app/inventory/[id]/page.tsx` - Added company_id check
 4. `app/inventory/[id]/edit/page.tsx` - Added auth + company_id check
-
-### UX Improvements
-- Loading skeletons: `app/loading.tsx`, `app/orders/loading.tsx`, etc.
-- Error boundaries: `app/error.tsx`, `app/orders/error.tsx`
-- Improved empty states with icons and CTAs
-
-### Build Fixes (Vercel)
-- Migrated `app/auth/confirm/route.ts` from deprecated `@supabase/auth-helpers-nextjs` to `@supabase/ssr`
-- Fixed TypeScript error in `lib/dashboard-queries.ts` (creator type handling)
 
 ---
 
