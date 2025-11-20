@@ -8,6 +8,9 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useEffect, useState } from 'react'
 import type { PricingEstimateResponse } from '@/types/pricing'
+import { useSmartPricing } from '@/hooks/useSmartPricing'
+import SmartEstimateCard from '@/components/orders/SmartEstimateCard'
+import SimilarOrdersWidget from '@/components/orders/SimilarOrdersWidget'
 
 const orderSchema = z.object({
   order_number: z.string().min(1, 'Order number required'),
@@ -18,7 +21,7 @@ const orderSchema = z.object({
   deadline: z.string().min(1, 'Deadline required'),
   status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
   notes: z.string().optional(),
-  // DAY 14-15: Pricing calculator fields (nullable to handle empty inputs)
+  // DAY 14-15: Pricing calculator fields
   length: z.union([z.number(), z.nan()]).optional().nullable(),
   width: z.union([z.number(), z.nan()]).optional().nullable(),
   height: z.union([z.number(), z.nan()]).optional().nullable(),
@@ -56,105 +59,37 @@ export default function AddOrderPage() {
     },
   })
 
-  // Watch cost fields and auto-calculate total
+  // Watch fields for Local Intelligence
+  const partName = watch('part_name') || ''
+  const material = watch('material') || ''
+  const quantity = watch('quantity') || 1
+  
+  // Watch cost fields for auto-calculation
   const materialCost = watch('material_cost') || 0
   const laborCost = watch('labor_cost') || 0
   const overheadCost = watch('overhead_cost') || 0
+
+  // Use Local Intelligence Hook
+  const { estimate: localEstimate, similarOrders, loading: localLoading } = useSmartPricing(partName, material)
 
   useEffect(() => {
     const total = materialCost + laborCost + overheadCost
     setValue('total_cost', total)
   }, [materialCost, laborCost, overheadCost, setValue])
 
-  // Calculate pricing estimate
-  const handleCalculatePricing = async () => {
-    const material = watch('material')
-    const quantity = watch('quantity')
-    const complexity = watch('complexity')
-
-    if (!material) {
-      toast.error('Proszę wybrać materiał')
-      return
-    }
-    if (!quantity || quantity < 1) {
-      toast.error('Proszę podać ilość (min. 1)')
-      return
-    }
-    if (!complexity) {
-      toast.error('Proszę wybrać złożoność')
-      return
-    }
-
-    setIsCalculating(true)
-    const loadingToast = toast.loading('Obliczam wycenę...')
-
-    try {
-      const response = await fetch('/api/pricing/estimate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          partName: watch('part_name') || '',
-          material,
-          length: watch('length'),
-          width: watch('width'),
-          height: watch('height'),
-          quantity,
-          complexity,
-          notes: watch('notes') || '',
-        }),
-      })
-
-      toast.dismiss(loadingToast)
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Błąd kalkulacji')
-      }
-
-      const data: PricingEstimateResponse = await response.json()
-      setPricingEstimate(data)
-      toast.success('Wycena gotowa!')
-    } catch (error) {
-      toast.dismiss(loadingToast)
-      toast.error(error instanceof Error ? error.message : 'Nie udało się obliczyć wyceny')
-      console.error('Pricing calculation error:', error)
-    } finally {
-      setIsCalculating(false)
-    }
+  // Apply Local Estimate Price
+  const handleApplyLocalPrice = (price: number) => {
+    // Calculate price per unit based on estimate
+    const totalSuggested = price * quantity
+    setValue('total_cost', totalSuggested)
+    
+    // Distribute costs (simplified heuristic)
+    setValue('material_cost', totalSuggested * 0.4)
+    setValue('labor_cost', totalSuggested * 0.4)
+    setValue('overhead_cost', totalSuggested * 0.2)
+    
+    toast.success(`Zastosowano cenę: ${price} PLN/szt`)
   }
-
-  // Accept pricing estimate
-  const handleAcceptEstimate = () => {
-    if (!pricingEstimate) return
-
-    setValue('material_cost', pricingEstimate.breakdown.materialCost)
-    setValue('labor_cost', pricingEstimate.breakdown.machiningCost)
-    setValue('overhead_cost', pricingEstimate.breakdown.setupCost)
-    setValue('total_cost', pricingEstimate.suggestedPrice)
-
-    toast.success('Wycena zaakceptowana i wypełniona!')
-  }
-
-  // Keyboard shortcuts for pricing calculator
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (!pricingEstimate) return
-
-      // Escape → Close pricing result card
-      if (e.key === 'Escape') {
-        setPricingEstimate(null)
-        toast.success('Wycena zamknięta')
-      }
-
-      // Ctrl+Enter → Accept estimate and fill form
-      if (e.key === 'Enter' && e.ctrlKey) {
-        handleAcceptEstimate()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyPress)
-    return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [pricingEstimate, handleAcceptEstimate])
 
   const onSubmit = async (data: OrderFormData) => {
     const loadingToast = toast.loading('Creating order...')
@@ -205,431 +140,195 @@ export default function AddOrderPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-8">Add New Order</h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-slate-800 p-8 rounded-lg border border-slate-700">
-          {/* 2-Column Grid - Responsive */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-            {/* LEFT COLUMN */}
-
-            {/* Order Number */}
-            <div>
-              <label htmlFor="order_number" className="block text-slate-300 mb-2">Order Number *</label>
-              <input
-                id="order_number"
-                autoFocus
-                {...register('order_number')}
-                onBlur={() => trigger('order_number')}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                placeholder="ORD-001"
-              />
-              {errors.order_number && (
-                <p className="text-red-400 text-sm mt-1">{errors.order_number.message}</p>
-              )}
-            </div>
-
-            {/* Material */}
-            <div>
-              <label htmlFor="material" className="block text-slate-300 mb-2">Materiał *</label>
-              <select
-                id="material"
-                {...register('material')}
-                onBlur={() => trigger('material')}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-              >
-                <option value="">Wybierz materiał...</option>
-                <option value="aluminum">Aluminium (ogólnie)</option>
-                <option value="aluminum_6061">Aluminium 6061</option>
-                <option value="steel">Stal (ogólnie)</option>
-                <option value="steel_c45">Stal C45</option>
-                <option value="stainless">Stal nierdzewna (ogólnie)</option>
-                <option value="stainless_304">Stal nierdzewna 304</option>
-                <option value="brass">Mosiądz</option>
-                <option value="bronze">Brąz</option>
-                <option value="copper">Miedź</option>
-                <option value="plastic">Plastik (ogólnie)</option>
-                <option value="plastic_abs">Plastik ABS</option>
-                <option value="plastic_pom">Plastik POM (Delrin)</option>
-              </select>
-            </div>
-
-            {/* Customer Name */}
-            <div>
-              <label htmlFor="customer_name" className="block text-slate-300 mb-2">Customer Name *</label>
-              <input
-                id="customer_name"
-                {...register('customer_name')}
-                onBlur={() => trigger('customer_name')}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                placeholder="Metal-Precyzja Sp. z o.o."
-              />
-              {errors.customer_name && (
-                <p className="text-red-400 text-sm mt-1">{errors.customer_name.message}</p>
-              )}
-            </div>
-
-            {/* Deadline */}
-            <div>
-              <label htmlFor="deadline" className="block text-slate-300 mb-2">Deadline *</label>
-              <input
-                id="deadline"
-                {...register('deadline')}
-                onBlur={() => trigger('deadline')}
-                type="date"
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-              />
-              {errors.deadline && (
-                <p className="text-red-400 text-sm mt-1">{errors.deadline.message}</p>
-              )}
-            </div>
-
-            {/* Quantity */}
-            <div>
-              <label htmlFor="quantity" className="block text-slate-300 mb-2">Quantity *</label>
-              <input
-                id="quantity"
-                {...register('quantity', { valueAsNumber: true })}
-                onBlur={() => trigger('quantity')}
-                type="number"
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                placeholder="100"
-              />
-              {errors.quantity && (
-                <p className="text-red-400 text-sm mt-1">{errors.quantity.message}</p>
-              )}
-            </div>
-
-            {/* Status */}
-            <div>
-              <label htmlFor="status" className="block text-slate-300 mb-2">Status *</label>
-              <select
-                id="status"
-                {...register('status')}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-              >
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="completed">Completed</option>
-                <option value="delayed">Delayed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-
-            {/* Part Name */}
-            <div>
-              <label htmlFor="part_name" className="block text-slate-300 mb-2">Nazwa Części (Opcjonalnie)</label>
-              <input
-                id="part_name"
-                {...register('part_name')}
-                onBlur={() => trigger('part_name')}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                placeholder="Kołnierz 50mm"
-              />
-            </div>
-
-            {/* Complexity */}
-            <div>
-              <label htmlFor="complexity" className="block text-slate-300 mb-2">Złożoność *</label>
-              <select
-                id="complexity"
-                {...register('complexity')}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-              >
-                <option value="simple">Proste (1-2h obróbki)</option>
-                <option value="medium">Średnie (3-6h obróbki)</option>
-                <option value="complex">Złożone (8-20h obróbki)</option>
-              </select>
-            </div>
-
-            {/* Dimensions Section - Full Width */}
-            <div className="col-span-2">
-              <h4 className="text-slate-300 font-semibold mb-3">📐 Wymiary (mm) - Opcjonalnie</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {/* Length */}
-                <div>
-                  <label htmlFor="length" className="block text-slate-400 mb-2 text-sm">Długość (mm)</label>
-                  <input
-                    id="length"
-                    {...register('length', { valueAsNumber: true })}
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                    placeholder="100"
-                  />
-                </div>
-
-                {/* Width */}
-                <div>
-                  <label htmlFor="width" className="block text-slate-400 mb-2 text-sm">Szerokość (mm)</label>
-                  <input
-                    id="width"
-                    {...register('width', { valueAsNumber: true })}
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                    placeholder="50"
-                  />
-                </div>
-
-                {/* Height */}
-                <div>
-                  <label htmlFor="height" className="block text-slate-400 mb-2 text-sm">Wysokość (mm)</label>
-                  <input
-                    id="height"
-                    {...register('height', { valueAsNumber: true })}
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                    placeholder="25"
-                  />
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
+          {/* LEFT COLUMN - FORM */}
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-slate-800 p-8 rounded-lg border border-slate-700">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              {/* Order Number */}
+              <div>
+                <label htmlFor="order_number" className="block text-slate-300 mb-2">Order Number *</label>
+                <input
+                  id="order_number"
+                  autoFocus
+                  {...register('order_number')}
+                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  placeholder="ORD-001"
+                />
+                {errors.order_number && <p className="text-red-400 text-sm mt-1">{errors.order_number.message}</p>}
               </div>
-              <p className="text-slate-500 text-xs mt-2">
-                💡 Podaj wymiary dla dokładniejszej wyceny. Bez wymiarów kalkulacja będzie szacunkowa.
-              </p>
-            </div>
 
-            {/* Notes - Full Width */}
-            <div className="col-span-2">
-              <label htmlFor="notes" className="block text-slate-300 mb-2">Notatki (Opcjonalnie)</label>
-              <textarea
-                id="notes"
-                {...register('notes')}
-                rows={3}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                placeholder="Dodatkowe informacje o zamówieniu..."
-              />
-            </div>
-          </div>
-
-          {/* DAY 14-15: PRICING CALCULATOR SECTION */}
-          <div className="mb-6">
-            <button
-              type="button"
-              onClick={handleCalculatePricing}
-              disabled={isCalculating}
-              className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-3 shadow-lg"
-            >
-              {isCalculating ? (
-                <>
-                  <span className="animate-spin text-xl">⏳</span>
-                  <span>Obliczam wycenę...</span>
-                </>
-              ) : (
-                <>
-                  <span className="text-xl">🧮</span>
-                  <span>Oblicz Wycenę Automatycznie</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Pricing Estimate Result */}
-          {pricingEstimate && (
-            <div className="mb-6 p-6 bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-2 border-purple-500 rounded-lg shadow-xl">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span className="text-2xl">🧮</span>
-                  <span>Automatyczna Wycena</span>
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setPricingEstimate(null)}
-                  className="text-slate-400 hover:text-white transition"
-                  title="Zamknij"
+              {/* Material */}
+              <div>
+                <label htmlFor="material" className="block text-slate-300 mb-2">Materiał *</label>
+                <select
+                  id="material"
+                  {...register('material')}
+                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
                 >
-                  ✕
-                </button>
+                  <option value="">Wybierz materiał...</option>
+                  <option value="aluminum">Aluminium (ogólnie)</option>
+                  <option value="steel">Stal (ogólnie)</option>
+                  <option value="stainless">Stal nierdzewna</option>
+                  <option value="brass">Mosiądz</option>
+                  <option value="plastic">Tworzywo</option>
+                </select>
               </div>
 
-              <div className="space-y-4">
-                {/* Price Display */}
-                <div className="bg-slate-800/50 p-4 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-slate-300">Sugerowana Cena (łącznie):</span>
-                    <span className="text-3xl font-bold text-green-400">
-                      {pricingEstimate.suggestedPrice.toFixed(2)} PLN
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-400">Cena za sztukę:</span>
-                    <span className="text-lg font-semibold text-green-300">
-                      {pricingEstimate.pricePerUnit.toFixed(2)} PLN/szt
-                    </span>
-                  </div>
-                </div>
-
-                {/* Confidence Bar */}
-                <div className="flex items-center gap-3">
-                  <span className="text-slate-300 text-sm">Pewność:</span>
-                  <div className="flex-1 h-3 bg-slate-700 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full transition-all ${
-                        pricingEstimate.confidence >= 80
-                          ? 'bg-green-500'
-                          : pricingEstimate.confidence >= 60
-                          ? 'bg-yellow-500'
-                          : 'bg-orange-500'
-                      }`}
-                      style={{ width: `${pricingEstimate.confidence}%` }}
-                    />
-                  </div>
-                  <span className="text-white font-semibold text-sm w-12 text-right">
-                    {pricingEstimate.confidence}%
-                  </span>
-                </div>
-
-                {/* Reasoning */}
-                <div className="pt-3 border-t border-slate-700">
-                  <p className="text-xs text-slate-400 mb-1">Uzasadnienie:</p>
-                  <p className="text-sm text-slate-200">{pricingEstimate.reasoning}</p>
-                </div>
-
-                {/* Breakdown */}
-                <div className="pt-3 border-t border-slate-700">
-                  <p className="text-xs text-slate-400 mb-2">Szczegóły kalkulacji:</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-slate-300">Materiał:</span>
-                      <span className="text-white font-medium">
-                        {pricingEstimate.breakdown.materialCost.toFixed(2)} PLN
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-300">Obróbka:</span>
-                      <span className="text-white font-medium">
-                        {pricingEstimate.breakdown.machiningCost.toFixed(2)} PLN
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-300">Setup:</span>
-                      <span className="text-white font-medium">
-                        {pricingEstimate.breakdown.setupCost.toFixed(2)} PLN
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-300">Marża:</span>
-                      <span className="text-white font-medium">
-                        {pricingEstimate.breakdown.marginPercentage}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={handleAcceptEstimate}
-                    className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition shadow-lg"
-                  >
-                    ✓ Akceptuj i Wypełnij
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPricingEstimate(null)}
-                    className="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition"
-                  >
-                    ✕ Odrzuć
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* DAY 12: COST BREAKDOWN SECTION */}
-          <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
-            <h3 className="text-lg font-semibold text-white mb-4">💰 Kalkulacja Kosztów</h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-              {/* Material Cost */}
+              {/* Customer Name */}
               <div>
-                <label htmlFor="material_cost" className="block text-slate-300 mb-2">Koszt Materiału (PLN)</label>
+                <label htmlFor="customer_name" className="block text-slate-300 mb-2">Customer Name *</label>
                 <input
-                  id="material_cost"
-                  {...register('material_cost', { valueAsNumber: true })}
-                  onBlur={() => trigger('material_cost')}
-                  type="number"
-                  step="0.01"
-                  min="0"
+                  id="customer_name"
+                  {...register('customer_name')}
                   className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                  placeholder="0.00"
+                  placeholder="Firma XYZ"
                 />
-                {errors.material_cost && (
-                  <p className="text-red-400 text-sm mt-1">{errors.material_cost.message}</p>
-                )}
               </div>
 
-              {/* Labor Cost */}
+              {/* Deadline */}
               <div>
-                <label htmlFor="labor_cost" className="block text-slate-300 mb-2">Koszt Pracy (PLN)</label>
+                <label htmlFor="deadline" className="block text-slate-300 mb-2">Deadline *</label>
                 <input
-                  id="labor_cost"
-                  {...register('labor_cost', { valueAsNumber: true })}
-                  onBlur={() => trigger('labor_cost')}
-                  type="number"
-                  step="0.01"
-                  min="0"
+                  id="deadline"
+                  {...register('deadline')}
+                  type="date"
                   className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                  placeholder="0.00"
                 />
-                {errors.labor_cost && (
-                  <p className="text-red-400 text-sm mt-1">{errors.labor_cost.message}</p>
-                )}
               </div>
 
-              {/* Overhead Cost */}
+              {/* Quantity */}
               <div>
-                <label htmlFor="overhead_cost" className="block text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
+                <label htmlFor="quantity" className="block text-slate-300 mb-2">Quantity *</label>
                 <input
-                  id="overhead_cost"
-                  {...register('overhead_cost', { valueAsNumber: true })}
-                  onBlur={() => trigger('overhead_cost')}
+                  id="quantity"
+                  {...register('quantity', { valueAsNumber: true })}
                   type="number"
-                  step="0.01"
-                  min="0"
                   className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                  placeholder="0.00"
                 />
-                {errors.overhead_cost && (
-                  <p className="text-red-400 text-sm mt-1">{errors.overhead_cost.message}</p>
-                )}
+              </div>
+
+              {/* Status */}
+              <div>
+                <label htmlFor="status" className="block text-slate-300 mb-2">Status *</label>
+                <select
+                  id="status"
+                  {...register('status')}
+                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+
+              {/* Part Name - Connected to Intelligence */}
+              <div className="col-span-2">
+                <label htmlFor="part_name" className="block text-slate-300 mb-2">
+                  Nazwa Części (Podpowiada cenę!)
+                </label>
+                <input
+                  id="part_name"
+                  {...register('part_name')}
+                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-blue-500/50 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 focus:outline-none transition"
+                  placeholder="np. Wałek napędowy, Kołnierz..."
+                  autoComplete="off"
+                />
+                <p className="text-xs text-blue-400 mt-1">
+                  💡 Wpisz nazwę, aby zobaczyć historię podobnych zleceń.
+                </p>
               </div>
             </div>
 
-            {/* Total Cost Display */}
-            <div className="pt-4 border-t border-slate-600">
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-semibold text-slate-200">Łączny Koszt:</span>
-                <span className="text-3xl font-bold text-green-400">
+            {/* Cost Section */}
+            <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
+              <h3 className="text-lg font-semibold text-white mb-4">💰 Kalkulacja Kosztów</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-slate-300 mb-2 text-sm">Materiał (PLN)</label>
+                  <input
+                    {...register('material_cost', { valueAsNumber: true })}
+                    type="number"
+                    step="0.01"
+                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-300 mb-2 text-sm">Praca (PLN)</label>
+                  <input
+                    {...register('labor_cost', { valueAsNumber: true })}
+                    type="number"
+                    step="0.01"
+                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-300 mb-2 text-sm">Setup/Inne (PLN)</label>
+                  <input
+                    {...register('overhead_cost', { valueAsNumber: true })}
+                    type="number"
+                    step="0.01"
+                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
+                  />
+                </div>
+              </div>
+              <div className="mt-4 flex justify-between items-center border-t border-slate-600 pt-4">
+                <span className="text-slate-300 font-medium">Łączny Koszt:</span>
+                <span className="text-2xl font-bold text-green-400">
                   {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
                 </span>
               </div>
             </div>
-          </div>
 
-          {/* Submit */}
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 font-semibold transition"
-            >
-              {isSubmitting ? 'Creating Order...' : 'Create Order'}
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push('/orders')}
-              className="px-8 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
-            >
-              Cancel
-            </button>
+            {/* Submit Buttons */}
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition"
+              >
+                {isSubmitting ? 'Zapisywanie...' : 'Utwórz Zamówienie'}
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push('/orders')}
+                className="px-8 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
+              >
+                Anuluj
+              </button>
+            </div>
+          </form>
+
+          {/* RIGHT COLUMN - LOCAL INTELLIGENCE SIDEBAR */}
+          <div className="space-y-6">
+            {/* Smart Estimate Card */}
+            <div className="sticky top-6">
+              <SmartEstimateCard
+                estimate={localEstimate}
+                loading={localLoading}
+                onApplyPrice={handleApplyLocalPrice}
+              />
+              
+              <SimilarOrdersWidget
+                orders={similarOrders}
+                loading={localLoading}
+              />
+
+              {/* Help Tip */}
+              {!localEstimate && !localLoading && (
+                <div className="mt-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg text-sm text-blue-300">
+                  <p className="font-semibold mb-1">💡 Jak to działa?</p>
+                  <p>
+                    System analizuje Twoją historię zleceń. Wpisz nazwę części lub wybierz materiał, 
+                    aby zobaczyć średnie ceny i czasy realizacji z przeszłości.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
