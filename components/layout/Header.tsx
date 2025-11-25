@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import NotificationBell from './NotificationBell';
 import ThemeToggle from '@/components/theme/ThemeToggle';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface HeaderProps {
   isSidebarOpen?: boolean;
@@ -12,6 +13,7 @@ interface HeaderProps {
 }
 
 export default function Header({ isSidebarOpen = true, onToggleSidebar }: HeaderProps) {
+  const { t } = useTranslation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userName, setUserName] = useState<string>('');
   const [userRole, setUserRole] = useState<string>('');
@@ -64,16 +66,8 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
   };
 
   const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'owner':
-        return 'Właściciel';
-      case 'admin':
-        return 'Administrator';
-      case 'operator':
-        return 'Operator';
-      default:
-        return role;
-    }
+    const roleKey = role as 'owner' | 'admin' | 'manager' | 'operator' | 'viewer' | 'pending';
+    return t('roles', roleKey);
   };
 
   return (
@@ -83,7 +77,7 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
         <button
           onClick={onToggleSidebar}
           className="lg:hidden text-white hover:bg-slate-700 p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-          aria-label="Toggle sidebar"
+          aria-label={t('nav', 'toggleSidebar')}
         >
           <svg
             className="w-6 h-6"
@@ -176,7 +170,7 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
               onClick={() => setIsDropdownOpen(false)}
             >
               <span className="text-lg">👤</span>
-              <span>Mój Profil</span>
+              <span>{t('nav', 'profile')}</span>
             </Link>
 
             <Link
@@ -185,7 +179,7 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
               onClick={() => setIsDropdownOpen(false)}
             >
               <span className="text-lg">⚙️</span>
-              <span>Ustawienia</span>
+              <span>{t('nav', 'settings')}</span>
             </Link>
 
             <div className="border-t border-slate-600" />
@@ -196,7 +190,7 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
               onClick={() => setIsDropdownOpen(false)}
             >
               <span className="text-lg">🚪</span>
-              <span>Wyloguj</span>
+              <span>{t('nav', 'logout')}</span>
             </Link>
           </div>
         )}

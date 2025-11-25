@@ -2,11 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslation } from '@/hooks/useTranslation';
+
+type NavKey = 'dashboard' | 'orders' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'reports' | 'tags' | 'users';
 
 interface SidebarLink {
   href: string;
   icon: string;
-  label: string;
+  labelKey: NavKey;
 }
 
 interface SidebarProps {
@@ -14,28 +17,29 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-const links: SidebarLink[] = [
-  { href: '/', icon: '📊', label: 'Dashboard' },
-  { href: '/orders', icon: '📦', label: 'Zamówienia' },
-  { href: '/inventory', icon: '🏭', label: 'Magazyn' },
-  { href: '/documents', icon: '📄', label: 'Wydania' },
-  { href: '/files', icon: '📁', label: 'Pliki' },
-  { href: '/time-tracking', icon: '⏱️', label: 'Czas Pracy' },
-  { href: '/reports', icon: '📈', label: 'Raporty' },
-  { href: '/tags', icon: '🏷️', label: 'Tagi' },
-  { href: '/users', icon: '👥', label: 'Użytkownicy' },
+const linkDefinitions: SidebarLink[] = [
+  { href: '/', icon: '📊', labelKey: 'dashboard' },
+  { href: '/orders', icon: '📦', labelKey: 'orders' },
+  { href: '/inventory', icon: '🏭', labelKey: 'inventory' },
+  { href: '/documents', icon: '📄', labelKey: 'documents' },
+  { href: '/files', icon: '📁', labelKey: 'files' },
+  { href: '/time-tracking', icon: '⏱️', labelKey: 'timeTracking' },
+  { href: '/reports', icon: '📈', labelKey: 'reports' },
+  { href: '/tags', icon: '🏷️', labelKey: 'tags' },
+  { href: '/users', icon: '👥', labelKey: 'users' },
 ];
 
 export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   return (
     <aside className="w-64 bg-slate-800 border-r border-slate-700 flex flex-col h-screen">
       {/* Logo/Header */}
       <div className="p-6 border-b border-slate-700 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-white">CNC-Pilot</h1>
-          <p className="text-xs text-slate-400 mt-1">Production Management</p>
+          <h1 className="text-xl font-bold text-white">{t('common', 'appName')}</h1>
+          <p className="text-xs text-slate-400 mt-1">{t('common', 'tagline')}</p>
         </div>
 
         {/* Close button - only visible on mobile */}
@@ -43,7 +47,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
           <button
             onClick={onClose}
             className="lg:hidden text-slate-400 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-slate-400"
-            aria-label="Zamknij menu"
+            aria-label={t('nav', 'closeMenu')}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -54,7 +58,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
 
       {/* Navigation Links */}
       <nav className="flex-1 overflow-y-auto py-4">
-        {links.map((link) => {
+        {linkDefinitions.map((link) => {
           const isActive = pathname === link.href;
           return (
             <Link
@@ -68,7 +72,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
               }`}
             >
               <span className="text-xl">{link.icon}</span>
-              <span className="font-medium">{link.label}</span>
+              <span className="font-medium">{t('nav', link.labelKey)}</span>
             </Link>
           );
         })}
@@ -82,7 +86,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
           className="flex items-center gap-3 px-4 py-3 text-sm text-slate-300 hover:bg-red-600/20 hover:text-red-400 rounded-lg transition-colors group focus:outline-none focus:ring-2 focus:ring-red-500"
         >
           <span className="text-xl">🚪</span>
-          <span className="font-medium">Wyloguj</span>
+          <span className="font-medium">{t('nav', 'logout')}</span>
         </Link>
       </div>
 

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from 'react-hot-toast'
+import { Providers } from '@/components/Providers'
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,7 +23,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "CNC-Pilot MVP",
-  description: "Production Management System for CNC Workshops",
+  description: "System Zarządzania Produkcją dla Warsztatów CNC",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -37,11 +38,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pl">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
         <Toaster position="bottom-right" />
       </body>
     </html>

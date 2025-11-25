@@ -5,6 +5,8 @@
 
 'use client';
 
+import { useTranslation } from '@/hooks/useTranslation';
+
 interface Order {
   id: string;
   order_number: string;
@@ -40,19 +42,21 @@ export default function TimeLogFilters({
   onStatusChange,
   onDateRangeChange
 }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
-      <h3 className="font-semibold mb-4">Filters</h3>
+      <h3 className="font-semibold mb-4">{t('timeTracking', 'filters')}</h3>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Order Filter */}
         <div>
-          <label className="block text-sm font-medium mb-2">Order</label>
+          <label className="block text-sm font-medium mb-2">{t('timeTracking', 'order')}</label>
           <select
             value={selectedOrderId}
             onChange={(e) => onOrderChange(e.target.value)}
             className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">All Orders</option>
+            <option value="all">{t('timeTracking', 'allOrders')}</option>
             {orders.map(order => (
               <option key={order.id} value={order.id}>
                 {order.order_number}
@@ -63,13 +67,13 @@ export default function TimeLogFilters({
 
         {/* User Filter */}
         <div>
-          <label className="block text-sm font-medium mb-2">Operator</label>
+          <label className="block text-sm font-medium mb-2">{t('timeTracking', 'operator')}</label>
           <select
             value={selectedUserId}
             onChange={(e) => onUserChange(e.target.value)}
             className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">All Operators</option>
+            <option value="all">{t('timeTracking', 'allOperators')}</option>
             {users.map(user => (
               <option key={user.id} value={user.id}>
                 {user.full_name}
@@ -80,31 +84,31 @@ export default function TimeLogFilters({
 
         {/* Status Filter */}
         <div>
-          <label className="block text-sm font-medium mb-2">Status</label>
+          <label className="block text-sm font-medium mb-2">{t('common', 'status')}</label>
           <select
             value={selectedStatus}
             onChange={(e) => onStatusChange(e.target.value)}
             className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">All Status</option>
-            <option value="running">Running</option>
-            <option value="paused">Paused</option>
-            <option value="completed">Completed</option>
+            <option value="all">{t('timeTracking', 'allStatus')}</option>
+            <option value="running">{t('timeTracking', 'running')}</option>
+            <option value="paused">{t('timeTracking', 'paused')}</option>
+            <option value="completed">{t('timeTracking', 'completedStatus')}</option>
           </select>
         </div>
 
         {/* Date Range Filter */}
         <div>
-          <label className="block text-sm font-medium mb-2">Date Range</label>
+          <label className="block text-sm font-medium mb-2">{t('timeTracking', 'dateRange')}</label>
           <select
             value={dateRange}
             onChange={(e) => onDateRangeChange(e.target.value)}
             className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">All Time</option>
-            <option value="today">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
+            <option value="all">{t('timeTracking', 'allTime')}</option>
+            <option value="today">{t('orderFilters', 'today')}</option>
+            <option value="week">{t('orderFilters', 'thisWeek')}</option>
+            <option value="month">{t('orderFilters', 'thisMonth')}</option>
           </select>
         </div>
       </div>

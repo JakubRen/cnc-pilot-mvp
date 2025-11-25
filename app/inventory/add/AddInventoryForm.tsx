@@ -6,27 +6,43 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { useTranslation } from '@/hooks/useTranslation'
 
-const inventorySchema = z.object({
-  sku: z.string().min(1, 'SKU required'),
-  name: z.string().min(2, 'Name required'),
-  description: z.string().optional(),
-  category: z.enum(['raw_material', 'part', 'tool', 'consumable', 'finished_good']),
-  quantity: z.number().min(0, 'Quantity must be positive'),
-  unit: z.string().min(1, 'Unit required'),
-  low_stock_threshold: z.number().min(0, 'Threshold must be positive'),
-  location: z.string().optional(),
-  supplier: z.string().optional(),
-  unit_cost: z.number().min(0).optional(),
-  batch_number: z.string().optional(),
-  expiry_date: z.string().optional(),
-  notes: z.string().optional(),
-})
-
-type InventoryFormData = z.infer<typeof inventorySchema>
+type InventoryFormData = {
+  sku: string
+  name: string
+  description?: string
+  category: 'raw_material' | 'part' | 'tool' | 'consumable' | 'finished_good'
+  quantity: number
+  unit: string
+  low_stock_threshold: number
+  location?: string
+  supplier?: string
+  unit_cost?: number
+  batch_number?: string
+  expiry_date?: string
+  notes?: string
+}
 
 export default function AddInventoryForm() {
   const router = useRouter()
+  const { t } = useTranslation()
+
+  const inventorySchema = z.object({
+    sku: z.string().min(1, t('inventory', 'skuRequired')),
+    name: z.string().min(2, t('inventory', 'nameRequired')),
+    description: z.string().optional(),
+    category: z.enum(['raw_material', 'part', 'tool', 'consumable', 'finished_good']),
+    quantity: z.number().min(0, t('inventory', 'quantityPositive')),
+    unit: z.string().min(1, t('inventory', 'unitRequired')),
+    low_stock_threshold: z.number().min(0, t('inventory', 'thresholdPositive')),
+    location: z.string().optional(),
+    supplier: z.string().optional(),
+    unit_cost: z.number().min(0).optional(),
+    batch_number: z.string().optional(),
+    expiry_date: z.string().optional(),
+    notes: z.string().optional(),
+  })
 
   const {
     register,
@@ -43,13 +59,13 @@ export default function AddInventoryForm() {
   })
 
   const onSubmit = async (data: InventoryFormData) => {
-    const loadingToast = toast.loading('Creating inventory item...')
+    const loadingToast = toast.loading(t('inventory', 'creatingItem'))
 
     // Get current user
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       toast.dismiss(loadingToast)
-      toast.error('Not authenticated')
+      toast.error(t('inventory', 'notAuthenticated'))
       return
     }
 
@@ -62,7 +78,7 @@ export default function AddInventoryForm() {
 
     if (!userData?.company_id) {
       toast.dismiss(loadingToast)
-      toast.error('User company not found')
+      toast.error(t('auth', 'companyNotFound'))
       return
     }
 
@@ -83,9 +99,9 @@ export default function AddInventoryForm() {
     if (itemError) {
       toast.dismiss(loadingToast)
       if (itemError.code === '23505') {
-        toast.error('SKU already exists for this company')
+        toast.error(t('inventory', 'skuExists'))
       } else {
-        toast.error('Failed to create item: ' + itemError.message)
+        toast.error(t('inventory', 'itemCreateFailed') + ': ' + itemError.message)
       }
       return
     }
@@ -107,7 +123,7 @@ export default function AddInventoryForm() {
     }
 
     toast.dismiss(loadingToast)
-    toast.success('Inventory item created successfully!')
+    toast.success(t('inventory', 'itemCreated'))
     router.push('/inventory')
     router.refresh()
   }
@@ -117,12 +133,12 @@ export default function AddInventoryForm() {
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* SKU */}
         <div>
-          <label htmlFor="sku" className="block text-slate-300 mb-2">SKU *</label>
+          <label htmlFor="sku" className="block text-slate-300 mb-2">{t('inventory', 'sku')} *</label>
           <input
             id="sku"
             autoFocus
             {...register('sku')}
-            placeholder="e.g., ALU-6061-100"
+            placeholder="ALU-6061-100"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-mono"
           />
           {errors.sku && <p className="text-red-400 text-sm mt-1">{errors.sku.message}</p>}
@@ -130,27 +146,27 @@ export default function AddInventoryForm() {
 
         {/* Category */}
         <div>
-          <label htmlFor="category" className="block text-slate-300 mb-2">Category *</label>
+          <label htmlFor="category" className="block text-slate-300 mb-2">{t('inventory', 'category')} *</label>
           <select
             id="category"
             {...register('category')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           >
-            <option value="raw_material">Raw Material</option>
-            <option value="part">Part</option>
-            <option value="tool">Tool</option>
-            <option value="consumable">Consumable</option>
-            <option value="finished_good">Finished Good</option>
+            <option value="raw_material">{t('inventory', 'rawMaterial')}</option>
+            <option value="part">{t('inventory', 'part')}</option>
+            <option value="tool">{t('inventory', 'tool')}</option>
+            <option value="consumable">{t('inventory', 'consumable')}</option>
+            <option value="finished_good">{t('inventory', 'finishedGood')}</option>
           </select>
         </div>
 
         {/* Name - Full Width */}
         <div className="col-span-2">
-          <label htmlFor="name" className="block text-slate-300 mb-2">Name *</label>
+          <label htmlFor="name" className="block text-slate-300 mb-2">{t('common', 'name')} *</label>
           <input
             id="name"
             {...register('name')}
-            placeholder="e.g., Aluminum 6061 Bar 100mm"
+            placeholder="Aluminum 6061 Bar 100mm"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
           {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
@@ -158,7 +174,7 @@ export default function AddInventoryForm() {
 
         {/* Quantity */}
         <div>
-          <label htmlFor="quantity" className="block text-slate-300 mb-2">Quantity *</label>
+          <label htmlFor="quantity" className="block text-slate-300 mb-2">{t('common', 'quantity')} *</label>
           <input
             id="quantity"
             {...register('quantity', { valueAsNumber: true })}
@@ -172,11 +188,11 @@ export default function AddInventoryForm() {
 
         {/* Unit */}
         <div>
-          <label htmlFor="unit" className="block text-slate-300 mb-2">Unit *</label>
+          <label htmlFor="unit" className="block text-slate-300 mb-2">{t('inventory', 'unit')} *</label>
           <input
             id="unit"
             {...register('unit')}
-            placeholder="e.g., pcs, kg, m, L"
+            placeholder="pcs, kg, m, L"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
           {errors.unit && <p className="text-red-400 text-sm mt-1">{errors.unit.message}</p>}
@@ -184,7 +200,7 @@ export default function AddInventoryForm() {
 
         {/* Low Stock Threshold */}
         <div>
-          <label htmlFor="low_stock_threshold" className="block text-slate-300 mb-2">Low Stock Threshold *</label>
+          <label htmlFor="low_stock_threshold" className="block text-slate-300 mb-2">{t('inventory', 'lowStockThreshold')} *</label>
           <input
             id="low_stock_threshold"
             {...register('low_stock_threshold', { valueAsNumber: true })}
@@ -198,29 +214,29 @@ export default function AddInventoryForm() {
 
         {/* Location */}
         <div>
-          <label htmlFor="location" className="block text-slate-300 mb-2">Location</label>
+          <label htmlFor="location" className="block text-slate-300 mb-2">{t('inventory', 'location')}</label>
           <input
             id="location"
             {...register('location')}
-            placeholder="e.g., A1, Shelf-3"
+            placeholder="A1, Shelf-3"
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         {/* Supplier */}
         <div>
-          <label htmlFor="supplier" className="block text-slate-300 mb-2">Supplier</label>
+          <label htmlFor="supplier" className="block text-slate-300 mb-2">{t('inventory', 'supplier')}</label>
           <input
             id="supplier"
             {...register('supplier')}
-            placeholder="Supplier name"
+            placeholder={t('inventory', 'supplier')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         {/* Unit Cost */}
         <div>
-          <label htmlFor="unit_cost" className="block text-slate-300 mb-2">Unit Cost (PLN)</label>
+          <label htmlFor="unit_cost" className="block text-slate-300 mb-2">{t('inventory', 'unitCost')}</label>
           <input
             id="unit_cost"
             {...register('unit_cost', { valueAsNumber: true })}
@@ -233,18 +249,18 @@ export default function AddInventoryForm() {
 
         {/* Batch Number */}
         <div>
-          <label htmlFor="batch_number" className="block text-slate-300 mb-2">Batch/Lot Number</label>
+          <label htmlFor="batch_number" className="block text-slate-300 mb-2">{t('inventory', 'batchNumber')}</label>
           <input
             id="batch_number"
             {...register('batch_number')}
-            placeholder="For traceability"
+            placeholder={t('inventory', 'forTraceability')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-mono"
           />
         </div>
 
         {/* Expiry Date */}
         <div>
-          <label htmlFor="expiry_date" className="block text-slate-300 mb-2">Expiry Date</label>
+          <label htmlFor="expiry_date" className="block text-slate-300 mb-2">{t('inventory', 'expiryDate')}</label>
           <input
             id="expiry_date"
             {...register('expiry_date')}
@@ -255,24 +271,24 @@ export default function AddInventoryForm() {
 
         {/* Description */}
         <div className="col-span-2">
-          <label htmlFor="description" className="block text-slate-300 mb-2">Description</label>
+          <label htmlFor="description" className="block text-slate-300 mb-2">{t('common', 'description')}</label>
           <textarea
             id="description"
             {...register('description')}
             rows={2}
-            placeholder="Additional details..."
+            placeholder={t('inventory', 'additionalDetails')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         {/* Notes */}
         <div className="col-span-2">
-          <label htmlFor="notes" className="block text-slate-300 mb-2">Notes</label>
+          <label htmlFor="notes" className="block text-slate-300 mb-2">{t('common', 'notes')}</label>
           <textarea
             id="notes"
             {...register('notes')}
             rows={2}
-            placeholder="Internal notes..."
+            placeholder={t('inventory', 'internalNotes')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
@@ -285,14 +301,14 @@ export default function AddInventoryForm() {
           disabled={isSubmitting}
           className="flex-1 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold transition"
         >
-          {isSubmitting ? 'Creating Item...' : 'Create Item'}
+          {isSubmitting ? t('inventory', 'creatingItem') : t('inventory', 'createItem')}
         </button>
         <button
           type="button"
           onClick={() => router.push('/inventory')}
           className="px-8 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
         >
-          Cancel
+          {t('common', 'cancel')}
         </button>
       </div>
     </form>

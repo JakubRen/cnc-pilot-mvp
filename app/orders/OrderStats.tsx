@@ -1,6 +1,7 @@
 'use client'
 
 import { FilterState } from './OrderFilters'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface OrderStatsProps {
   orders: any[]
@@ -8,6 +9,8 @@ interface OrderStatsProps {
 }
 
 export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
+  const { t } = useTranslation()
+
   // Calculate statistics
   const stats = {
     total: orders.length,
@@ -37,7 +40,7 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
         onClick={() => onFilterClick({ status: 'all', deadline: 'all', search: '', sortBy: 'deadline' })}
         className="bg-slate-800 p-4 rounded-lg border border-slate-700 cursor-pointer hover:bg-slate-700 transition"
       >
-        <p className="text-slate-400 text-xs mb-1">Total Orders</p>
+        <p className="text-slate-400 text-xs mb-1">{t('orderStats', 'totalOrders')}</p>
         <p className="text-2xl font-bold text-white">{stats.total}</p>
       </div>
 
@@ -46,7 +49,7 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
         onClick={() => onFilterClick({ status: 'in_progress', deadline: 'all', search: '', sortBy: 'deadline' })}
         className="bg-slate-800 p-4 rounded-lg border border-blue-700 cursor-pointer hover:bg-slate-700 transition"
       >
-        <p className="text-slate-400 text-xs mb-1">In Progress</p>
+        <p className="text-slate-400 text-xs mb-1">{t('orderStats', 'inProgress')}</p>
         <p className="text-2xl font-bold text-blue-400">{stats.in_progress}</p>
       </div>
 
@@ -55,9 +58,9 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
         onClick={() => onFilterClick({ status: 'all', deadline: 'urgent', search: '', sortBy: 'deadline' })}
         className="bg-slate-800 p-4 rounded-lg border border-yellow-700 cursor-pointer hover:bg-slate-700 transition"
       >
-        <p className="text-slate-400 text-xs mb-1">Urgent</p>
+        <p className="text-slate-400 text-xs mb-1">{t('orderStats', 'urgentLabel')}</p>
         <p className="text-2xl font-bold text-yellow-400">{stats.urgent}</p>
-        <p className="text-xs text-slate-500 mt-1">≤ 3 days</p>
+        <p className="text-xs text-slate-500 mt-1">{t('orderStats', 'urgentDays')}</p>
       </div>
 
       {/* Overdue - Click to filter */}
@@ -65,39 +68,39 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
         onClick={() => onFilterClick({ status: 'all', deadline: 'overdue', search: '', sortBy: 'deadline' })}
         className="bg-slate-800 p-4 rounded-lg border border-red-700 cursor-pointer hover:bg-slate-700 transition"
       >
-        <p className="text-slate-400 text-xs mb-1">Overdue</p>
+        <p className="text-slate-400 text-xs mb-1">{t('orderStats', 'overdueLabel')}</p>
         <p className="text-2xl font-bold text-red-400">{stats.overdue}</p>
       </div>
 
       {/* Status Breakdown */}
       <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
-        <p className="text-slate-400 text-xs mb-3">Status Breakdown</p>
+        <p className="text-slate-400 text-xs mb-3">{t('orderStats', 'statusBreakdown')}</p>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-yellow-600"></div>
-              <span className="text-slate-300 text-xs">Pending</span>
+              <span className="text-slate-300 text-xs">{t('orderStatus', 'pending')}</span>
             </div>
             <span className="text-white text-xs font-semibold">{stats.pending}</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-blue-600"></div>
-              <span className="text-slate-300 text-xs">In Progress</span>
+              <span className="text-slate-300 text-xs">{t('orderStatus', 'in_progress')}</span>
             </div>
             <span className="text-white text-xs font-semibold">{stats.in_progress}</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-600"></div>
-              <span className="text-slate-300 text-xs">Completed</span>
+              <span className="text-slate-300 text-xs">{t('orderStatus', 'completed')}</span>
             </div>
             <span className="text-white text-xs font-semibold">{stats.completed}</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-red-600"></div>
-              <span className="text-slate-300 text-xs">Delayed</span>
+              <span className="text-slate-300 text-xs">{t('orderStatus', 'delayed')}</span>
             </div>
             <span className="text-white text-xs font-semibold">{stats.delayed}</span>
           </div>
@@ -107,7 +110,7 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
         {stats.total > 0 && (
           <div className="mt-3 pt-3 border-t border-slate-700">
             <div className="flex justify-between text-xs text-slate-400 mb-2">
-              <span>Progress</span>
+              <span>{t('orderStats', 'progress')}</span>
               <span>{Math.round((stats.completed / stats.total) * 100)}%</span>
             </div>
             <div className="w-full bg-slate-700 rounded-full h-2">
