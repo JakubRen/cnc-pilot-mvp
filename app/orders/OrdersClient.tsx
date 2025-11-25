@@ -11,6 +11,7 @@ import OrderList from './OrderList'
 import EmptyState from '@/components/ui/EmptyState'
 import TagFilter from '@/components/tags/TagFilter'
 import SavedFilters from '@/components/filters/SavedFilters'
+import { Button } from '@/components/ui/Button'
 
 interface OrdersClientProps {
   orders: any[]
@@ -93,7 +94,7 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
     )
     if (!confirmed) return
 
-    const loadingToast = toast.loading(`Updating ${selectedOrders.size} orders...`)
+    const loadingToast = toast.loading(`Aktualizacja ${selectedOrders.size} zamówień...`)
 
     try {
       const { error } = await supabase
@@ -104,16 +105,16 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
       toast.dismiss(loadingToast)
 
       if (error) {
-        toast.error('Failed to update orders: ' + error.message)
+        toast.error('Nie udało się zaktualizować zamówień: ' + error.message)
         return
       }
 
-      toast.success(`Successfully updated ${selectedOrders.size} orders`)
+      toast.success(`Pomyślnie zaktualizowano ${selectedOrders.size} zamówień`)
       setSelectedOrders(new Set()) // Clear selection
       router.refresh() // Refresh data
     } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error('Error updating orders')
+      toast.error('Błąd aktualizacji zamówień')
       console.error('Bulk update error:', error)
     }
   }
@@ -245,53 +246,60 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
         <div className="flex justify-between items-center mb-4">
           <div className="text-slate-400 text-sm">
             {filteredOrders.length !== orders.length && (
-              <span>Showing {filteredOrders.length} of {orders.length} orders</span>
+              <span>Wyświetlanie {filteredOrders.length} z {orders.length} zamówień</span>
             )}
           </div>
-          <button
+          <Button
             onClick={handleExportCSV}
             disabled={filteredOrders.length === 0}
-            className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center gap-2"
+            variant="primary"
+            size="sm"
+            className="flex items-center gap-2"
           >
             <span>📥</span>
-            Export CSV ({filteredOrders.length})
-          </button>
+            Eksportuj CSV ({filteredOrders.length})
+          </Button>
         </div>
 
         {/* Bulk Actions Bar */}
         {selectedOrders.size > 0 && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-slate-800 border-2 border-blue-500 rounded-lg shadow-2xl p-4 flex items-center gap-4">
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-slate-800 border-2 border-blue-500 rounded-lg shadow-2xl p-4 flex items-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-200">
             <span className="text-white font-semibold">
-              {selectedOrders.size} selected
+              {selectedOrders.size} zaznaczono
             </span>
             <div className="h-6 w-px bg-slate-600" />
             <div className="flex gap-2">
-              <button
+              <Button
                 onClick={() => handleBulkStatusChange('in_progress')}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition"
+                variant="primary"
+                size="sm"
               >
-                Mark In Progress
-              </button>
-              <button
+                Oznacz w toku
+              </Button>
+              <Button
                 onClick={() => handleBulkStatusChange('completed')}
-                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition"
+                variant="primary"
+                size="sm"
+                className="bg-green-600 hover:bg-green-700 shadow-green-900/20"
               >
-                Mark Completed
-              </button>
-              <button
+                Oznacz jako zakończone
+              </Button>
+              <Button
                 onClick={() => handleBulkStatusChange('delayed')}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition"
+                variant="danger"
+                size="sm"
               >
-                Mark Delayed
-              </button>
+                Oznacz jako opóźnione
+              </Button>
             </div>
             <div className="h-6 w-px bg-slate-600" />
-            <button
+            <Button
               onClick={handleDeselectAll}
-              className="text-slate-400 hover:text-white text-sm"
+              variant="ghost"
+              size="sm"
             >
-              Cancel
-            </button>
+              Anuluj
+            </Button>
           </div>
         )}
 

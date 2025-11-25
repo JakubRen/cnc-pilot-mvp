@@ -12,8 +12,10 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const unreadOnly = searchParams.get('unread_only') === 'true';
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const rawLimit = parseInt(searchParams.get('limit') || '20');
+    const rawOffset = parseInt(searchParams.get('offset') || '0');
+    const limit = Math.min(Math.max(1, rawLimit || 20), 100); // min 1, max 100
+    const offset = Math.max(0, rawOffset || 0); // min 0
 
     let notifications;
     let unreadCount = 0;

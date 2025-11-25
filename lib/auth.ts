@@ -59,7 +59,7 @@ export interface UserProfile {
   id: number
   email: string
   full_name: string
-  role: 'owner' | 'manager' | 'operator' | 'viewer'
+  role: 'owner' | 'admin' | 'manager' | 'operator' | 'viewer' | 'pending'
   company_id: string | null
   hourly_rate?: number | null
 }

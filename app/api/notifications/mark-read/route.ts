@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     if (mark_all) {
       success = await markAllNotificationsAsRead(user.id, user.company_id);
     } else if (notification_id) {
-      success = await markNotificationAsRead(notification_id);
+      success = await markNotificationAsRead(notification_id, user.id, user.company_id);
     } else {
       return NextResponse.json(
         { error: 'Either notification_id or mark_all must be provided' },

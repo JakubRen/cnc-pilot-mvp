@@ -6,9 +6,10 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
 import EmptyState from '@/components/ui/EmptyState'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
 
 export const metadata = {
   title: 'Wydania | CNC Pilot',
@@ -40,6 +41,21 @@ export default async function DocumentsPage() {
     console.error('Error fetching documents:', error)
   }
 
+  const getDocTypeBadge = (type: string) => {
+    switch (type) {
+      case 'PW': return <Badge variant="success">PW</Badge>
+      case 'RW': return <Badge variant="default">RW</Badge>
+      case 'WZ': return <Badge variant="warning">WZ</Badge>
+      default: return <Badge variant="secondary">{type}</Badge>
+    }
+  }
+
+  const getStatusBadge = (status: string) => {
+    return status === 'confirmed'
+      ? <Badge variant="success">Zatwierdzony</Badge>
+      : <Badge variant="warning">Szkic</Badge>
+  }
+
   return (
     <AppLayout>
       <div className="p-8">
@@ -52,12 +68,9 @@ export default async function DocumentsPage() {
                 Dokumenty magazynowe: PW (Przyjęcie), RW (Rozchód), WZ (Wydanie)
               </p>
             </div>
-            <Link
-              href="/documents/add"
-              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-lg"
-            >
+            <Button href="/documents/add" variant="primary">
               + Nowy Dokument
-            </Link>
+            </Button>
           </div>
 
           {/* Documents Table or Empty State */}
@@ -105,25 +118,10 @@ export default async function DocumentsPage() {
                       ? doc.creator[0]?.full_name
                       : doc.creator?.full_name
 
-                    // Kolory dla typów dokumentów
-                    const docTypeColors: Record<string, string> = {
-                      PW: 'bg-green-600',
-                      RW: 'bg-blue-600',
-                      WZ: 'bg-orange-600'
-                    }
-                    const docTypeColor = docTypeColors[doc.document_type] || 'bg-slate-600'
-
-                    // Kolory dla statusów
-                    const statusColor = doc.status === 'confirmed'
-                      ? 'bg-green-600'
-                      : 'bg-yellow-600'
-
                     return (
                       <tr key={doc.id} className="hover:bg-slate-700/50 transition">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${docTypeColor}`}>
-                            {doc.document_type}
-                          </span>
+                          {getDocTypeBadge(doc.document_type)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-white font-semibold">
                           {doc.document_number}
@@ -132,9 +130,7 @@ export default async function DocumentsPage() {
                           {doc.contractor}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${statusColor}`}>
-                            {doc.status === 'confirmed' ? 'Zatwierdzony' : 'Szkic'}
-                          </span>
+                          {getStatusBadge(doc.status)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                           {new Date(doc.created_at).toLocaleDateString('pl-PL')}
@@ -142,20 +138,14 @@ export default async function DocumentsPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                           {creatorName || '-'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <Link
-                            href={`/documents/${doc.id}`}
-                            className="text-blue-400 hover:text-blue-300 mr-4 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          >
-                            View
-                          </Link>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                          <Button href={`/documents/${doc.id}`} variant="ghost" size="sm">
+                            Podgląd
+                          </Button>
                           {doc.status === 'draft' && (
-                            <Link
-                              href={`/documents/${doc.id}/edit`}
-                              className="text-slate-300 hover:text-white font-medium focus:outline-none focus:ring-2 focus:ring-slate-400"
-                            >
-                              Edit
-                            </Link>
+                            <Button href={`/documents/${doc.id}/edit`} variant="ghost" size="sm">
+                              Edytuj
+                            </Button>
                           )}
                         </td>
                       </tr>

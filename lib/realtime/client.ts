@@ -17,7 +17,14 @@ export function subscribeToOrders(
       },
       callback
     )
-    .subscribe()
+    .subscribe((status, err) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('Realtime: subscribed to orders')
+      }
+      if (status === 'CHANNEL_ERROR' || err) {
+        console.error('Realtime orders subscription error:', { status, err })
+      }
+    })
 }
 
 export function subscribeToNotifications(
@@ -36,7 +43,14 @@ export function subscribeToNotifications(
       },
       callback
     )
-    .subscribe()
+    .subscribe((status, err) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('Realtime: subscribed to notifications')
+      }
+      if (status === 'CHANNEL_ERROR' || err) {
+        console.error('Realtime notifications subscription error:', { status, err })
+      }
+    })
 }
 
 export function subscribeToTimeLogs(
@@ -55,7 +69,14 @@ export function subscribeToTimeLogs(
       },
       callback
     )
-    .subscribe()
+    .subscribe((status, err) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('Realtime: subscribed to time_logs')
+      }
+      if (status === 'CHANNEL_ERROR' || err) {
+        console.error('Realtime time_logs subscription error:', { status, err })
+      }
+    })
 }
 
 export function subscribeToInventory(
@@ -74,5 +95,12 @@ export function subscribeToInventory(
       },
       callback
     )
-    .subscribe()
+    .subscribe((status, err) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('Realtime: subscribed to inventory')
+      }
+      if (status === 'CHANNEL_ERROR' || err) {
+        console.error('Realtime inventory subscription error:', { status, err })
+      }
+    })
 }

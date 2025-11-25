@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Button } from './Button'
 
 interface EmptyStateProps {
   icon: string
@@ -34,12 +34,9 @@ export default function EmptyState({
 
       {/* Action Button (optional) */}
       {actionLabel && actionHref && (
-        <Link
-          href={actionHref}
-          className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-xl"
-        >
+        <Button href={actionHref} variant="primary">
           {actionLabel}
-        </Link>
+        </Button>
       )}
     </div>
   )

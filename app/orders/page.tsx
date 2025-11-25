@@ -2,8 +2,8 @@ import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import Link from 'next/link'
 import OrdersClient from './OrdersClient'
+import { Button } from '@/components/ui/Button'
 
 export default async function OrdersPage() {
   const userProfile = await getUserProfile()
@@ -72,12 +72,9 @@ export default async function OrdersPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-4xl font-bold text-white">Zamówienia</h1>
-            <Link
-              href="/orders/add"
-              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-lg"
-            >
+            <Button href="/orders/add" variant="primary">
               + Dodaj Zamówienie
-            </Link>
+            </Button>
           </div>
 
           <OrdersClient orders={ordersWithTags} currentUserRole={userProfile.role} />

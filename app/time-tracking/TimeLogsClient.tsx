@@ -9,7 +9,7 @@ import { useState, useMemo } from 'react';
 import TimeLogFilters from './TimeLogFilters';
 import TimeLogList from './TimeLogList';
 import TimeStats from '@/components/time-tracking/TimeStats';
-import Link from 'next/link';
+import { Button } from '@/components/ui/Button';
 
 interface TimeLog {
   id: string;
@@ -138,12 +138,12 @@ export default function TimeLogsClient({
 
       {/* Add New Entry Button */}
       <div className="flex justify-end">
-        <Link
+        <Button
           href="/time-tracking/add"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition"
+          variant="primary"
         >
-          + Add Manual Entry
-        </Link>
+          + Dodaj wpis ręczny
+        </Button>
       </div>
 
       {/* Filters */}

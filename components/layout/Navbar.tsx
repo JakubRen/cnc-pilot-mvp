@@ -33,9 +33,11 @@ export default function Navbar({ user }: NavbarProps) {
   const getRoleBadgeColor = () => {
     const colors = {
       owner: 'bg-purple-600',
+      admin: 'bg-indigo-600',
       manager: 'bg-blue-600',
       operator: 'bg-green-600',
       viewer: 'bg-gray-600',
+      pending: 'bg-yellow-600',
     }
     return colors[user.role] || colors.operator
   }

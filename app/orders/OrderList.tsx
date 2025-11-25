@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
 
 interface OrderListProps {
   orders: any[]
@@ -35,12 +37,12 @@ export default function OrderList({
 
   const handleDelete = async (orderId: string, orderNumber: string) => {
     const confirmed = confirm(
-      `Are you sure you want to delete order #${orderNumber}?\n\nThis action cannot be undone.`
+      `Czy na pewno chcesz usunąć zamówienie #${orderNumber}?\n\nTej operacji nie można cofnąć.`
     )
 
     if (!confirmed) return
 
-    const loadingToast = toast.loading('Deleting order...')
+    const loadingToast = toast.loading('Usuwanie zamówienia...')
 
     const { error } = await supabase
       .from('orders')
@@ -50,11 +52,11 @@ export default function OrderList({
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error('Failed to delete order: ' + error.message)
+      toast.error('Nie udało się usunąć zamówienia: ' + error.message)
       return
     }
 
-    toast.success(`Order #${orderNumber} deleted successfully`)
+    toast.success(`Zamówienie #${orderNumber} zostało usunięte`)
     router.refresh()
   }
 
@@ -62,16 +64,26 @@ export default function OrderList({
     return (
       <div className="text-center py-16 text-slate-400 bg-slate-800 border border-slate-700 rounded-lg">
         <div className="text-6xl mb-4">📦</div>
-        <h3 className="text-xl font-semibold text-white mb-2">No orders yet</h3>
-        <p className="text-slate-400 mb-6">Get started by creating your first order</p>
-        <Link
+        <h3 className="text-xl font-semibold text-white mb-2">Brak zamówień</h3>
+        <p className="text-slate-400 mb-6">Rozpocznij od utworzenia pierwszego zamówienia</p>
+        <Button
           href="/orders/add"
-          className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
+          variant="primary"
         >
-          + Create First Order
-        </Link>
+          + Utwórz pierwsze zamówienie
+        </Button>
       </div>
     )
+  }
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'completed': return <Badge variant="success">Zakończone</Badge>
+      case 'in_progress': return <Badge variant="default">W toku</Badge>
+      case 'delayed': return <Badge variant="warning">Opóźnione</Badge>
+      case 'cancelled': return <Badge variant="secondary">Anulowane</Badge>
+      default: return <Badge variant="outline">Oczekujące</Badge>
+    }
   }
 
   return (
@@ -85,20 +97,20 @@ export default function OrderList({
                 checked={allSelected}
                 onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
                 className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-800 cursor-pointer"
-                title={allSelected ? 'Deselect all' : 'Select all'}
+                title={allSelected ? 'Odznacz wszystkie' : 'Zaznacz wszystkie'}
               />
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Order #
+              Nr Zam.
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Customer
+              Klient
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Quantity
+              Ilość
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Deadline
+              Termin
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
               Status
@@ -106,8 +118,8 @@ export default function OrderList({
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
               Koszt
             </th>
-            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Actions
+            <th className="px-6 py-3 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Akcje
             </th>
           </tr>
         </thead>
@@ -146,20 +158,12 @@ export default function OrderList({
                     {new Date(order.deadline).toLocaleDateString()}
                   </span>
                   {isOrderOverdue(order.deadline, order.status) && (
-                    <span className="text-xs text-red-400">⚠️ Overdue</span>
+                    <Badge variant="danger">PO TERMINIE</Badge>
                   )}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                  order.status === 'completed' ? 'bg-green-600 text-white' :
-                  order.status === 'in_progress' ? 'bg-blue-600 text-white' :
-                  order.status === 'delayed' ? 'bg-red-600 text-white' :
-                  order.status === 'cancelled' ? 'bg-gray-600 text-white' :
-                  'bg-yellow-600 text-white'
-                }`}>
-                  {order.status.replace('_', ' ')}
-                </span>
+                {getStatusBadge(order.status)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">
                 {order.total_cost && order.total_cost > 0 ? (
@@ -174,26 +178,22 @@ export default function OrderList({
                   <span className="text-slate-500 text-xs">-</span>
                 )}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm">
-                <Link
-                  href={`/orders/${order.id}`}
-                  className="text-slate-300 hover:text-white mr-4 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  View
-                </Link>
-                <Link
-                  href={`/orders/${order.id}/edit`}
-                  className="text-blue-400 hover:text-blue-300 mr-4 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  Edit
-                </Link>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
+                <Button href={`/orders/${order.id}`} variant="ghost" size="sm">
+                  Podgląd
+                </Button>
+                <Button href={`/orders/${order.id}/edit`} variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">
+                  Edytuj
+                </Button>
                 {currentUserRole === 'owner' && (
-                  <button
+                  <Button
                     onClick={() => handleDelete(order.id, order.order_number)}
-                    className="text-red-400 hover:text-red-300 font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
                   >
-                    Delete
-                  </button>
+                    Usuń
+                  </Button>
                 )}
               </td>
             </tr>

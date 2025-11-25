@@ -5,11 +5,12 @@
 
 'use client';
 
-import Link from 'next/link';
-import { formatDurationHuman, getStatusBadgeColor } from '@/lib/time-utils';
+import { formatDurationHuman } from '@/lib/time-utils';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import EmptyState from '@/components/ui/EmptyState';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 
 interface TimeLog {
   id: string;
@@ -42,7 +43,7 @@ export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }
   const router = useRouter();
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this time log?')) {
+    if (!confirm('Czy na pewno chcesz usunąć ten wpis czasu?')) {
       return;
     }
 
@@ -57,7 +58,7 @@ export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }
       router.refresh();
     } catch (error) {
       console.error('Error deleting time log:', error);
-      alert('Failed to delete time log');
+      alert('Nie udało się usunąć wpisu.');
     }
   };
 
@@ -70,6 +71,15 @@ export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }
       minute: '2-digit'
     }).format(date);
   };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'running': return <Badge variant="success">W toku</Badge>
+      case 'completed': return <Badge variant="default">Zakończone</Badge>
+      case 'paused': return <Badge variant="warning">Wstrzymane</Badge>
+      default: return <Badge variant="secondary">{status}</Badge>
+    }
+  }
 
   const canDelete = currentUserRole === 'owner' || currentUserRole === 'manager';
 
@@ -94,28 +104,28 @@ export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }
           <thead className="bg-slate-700">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
-                Order
+                Zlecenie
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                 Operator
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
-                Start Time
+                Start
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
-                End Time
+                Koniec
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
-                Duration
+                Czas trwania
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
-                Cost
+                Koszt
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
-                Actions
+              <th className="px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">
+                Akcje
               </th>
             </tr>
           </thead>
@@ -123,53 +133,55 @@ export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }
             {timeLogs.map((log) => (
               <tr key={log.id} className="hover:bg-slate-700/50 transition">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <Link
+                  <Button
                     href={`/orders/${log.order_id}`}
-                    className="text-blue-400 hover:text-blue-300 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    variant="ghost"
+                    size="sm"
+                    className="text-blue-400 hover:text-blue-300 p-0 h-auto"
                   >
                     {log.orders.order_number}
-                  </Link>
+                  </Button>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap text-slate-300 text-sm">
                   {log.users.full_name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                   {formatDateTime(log.start_time)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                   {log.end_time ? formatDateTime(log.end_time) : (
-                    <span className="text-green-400">Running...</span>
+                    <span className="text-green-400 font-medium animate-pulse">W toku...</span>
                   )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-300">
                   {formatDurationHuman(log.duration_seconds)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeColor(log.status)}`}>
-                    {log.status.toUpperCase()}
-                  </span>
+                  {getStatusBadge(log.status)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   {log.status === 'completed' ? (
-                    <span className="font-medium">{log.total_cost.toFixed(2)} PLN</span>
+                    <span className="font-medium text-slate-300">{log.total_cost.toFixed(2)} PLN</span>
                   ) : (
-                    <span className="text-slate-400">-</span>
+                    <span className="text-slate-500">-</span>
                   )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm space-x-3">
-                  <Link
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
+                  <Button
                     href={`/time-tracking/${log.id}`}
-                    className="text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    variant="ghost"
+                    size="sm"
                   >
-                    View
-                  </Link>
+                    Podgląd
+                  </Button>
                   {canDelete && (
-                    <button
+                    <Button
                       onClick={() => handleDelete(log.id)}
-                      className="text-red-400 hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      variant="danger"
+                      size="sm"
                     >
-                      Delete
-                    </button>
+                      Usuń
+                    </Button>
                   )}
                 </td>
               </tr>

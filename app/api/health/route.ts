@@ -20,20 +20,13 @@ export async function GET() {
 
     if (ordersError) throw ordersError
 
-    // Test inventory tables
+    // Test inventory table
     const { error: inventoryError } = await supabase
-      .from('inventory_items')
+      .from('inventory')
       .select('count')
       .limit(1)
 
     if (inventoryError) throw inventoryError
-
-    const { error: transactionsError } = await supabase
-      .from('inventory_transactions')
-      .select('count')
-      .limit(1)
-
-    if (transactionsError) throw transactionsError
 
     return Response.json({
       status: 'ok',
@@ -42,10 +35,9 @@ export async function GET() {
       tables: {
         users: 'ok',
         orders: 'ok',
-        inventory_items: 'ok',
-        inventory_transactions: 'ok',
+        inventory: 'ok',
       },
-      version: 'Day 7',
+      version: 'Day 11',
     })
   } catch (error: any) {
     return Response.json(

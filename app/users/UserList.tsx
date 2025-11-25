@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
 
 type User = {
   id: string
@@ -49,18 +50,28 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
     toast.success(`Użytkownik "${userName}" został usunięty!`)
   }
 
+  const getRoleBadge = (role: string) => {
+    switch (role) {
+      case 'owner': return <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/20">👑 Właściciel</Badge>
+      case 'admin': return <Badge variant="danger">🔑 Admin</Badge>
+      case 'operator': return <Badge variant="success">⚙️ Operator</Badge>
+      case 'pending': return <Badge variant="warning">⏳ Oczekujący</Badge>
+      default: return <Badge variant="secondary">{role}</Badge>
+    }
+  }
+
   return (
     <div>
       {/* Toggle Button */}
       <div className="mb-6">
-        <button
+        <Button
           onClick={() => setShowDetails(!showDetails)}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+          variant="secondary"
         >
-          {showDetails ? '👁️ Hide Details' : '👁️‍🗨️ Show Details'}
-        </button>
+          {showDetails ? '👁️ Ukryj szczegóły' : '👁️‍🗨️ Pokaż szczegóły'}
+        </Button>
         <p className="mt-2 text-slate-400 text-sm">
-          Click to toggle user details visibility
+          Kliknij przycisk aby przełączyć widoczność szczegółów
         </p>
       </div>
 
@@ -80,45 +91,34 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
                   <p className="text-slate-400">
                     <span className="text-slate-500">Email:</span> {user.email}
                   </p>
-                  <p className="text-slate-400 flex items-center gap-2">
-                    <span className="text-slate-500">Role:</span>{' '}
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      user.role === 'pending'
-                        ? 'bg-yellow-600/20 text-yellow-400'
-                        : user.role === 'owner'
-                        ? 'bg-purple-600/20 text-purple-400'
-                        : user.role === 'admin'
-                        ? 'bg-red-600/20 text-red-400'
-                        : 'bg-green-600/20 text-green-400'
-                    }`}>
-                      {user.role === 'pending' ? '⏳ Oczekujący' :
-                       user.role === 'owner' ? '👑 Właściciel' :
-                       user.role === 'admin' ? '🔑 Admin' :
-                       user.role === 'operator' ? '⚙️ Operator' : user.role}
-                    </span>
-                  </p>
+                  <div className="text-slate-400 flex items-center gap-2">
+                    <span className="text-slate-500">Rola:</span>
+                    {getRoleBadge(user.role)}
+                  </div>
                   <p className="text-xs text-slate-500">
-                    Created: {new Date(user.created_at).toLocaleDateString()}
+                    Utworzono: {new Date(user.created_at).toLocaleDateString('pl-PL')}
                   </p>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-2">
-                  <Link
+                  <Button
                     href={`/users/${user.id}/edit`}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium transition text-center"
+                    variant="primary"
+                    size="sm"
                   >
                     Edytuj
-                  </Link>
+                  </Button>
 
                   {/* Only owner can delete */}
                   {currentUserRole === 'owner' && (
-                    <button
+                    <Button
                       onClick={() => handleDelete(user.id, user.full_name)}
-                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium transition"
+                      variant="danger"
+                      size="sm"
                     >
                       Usuń
-                    </button>
+                    </Button>
                   )}
 
                   <div className="text-xs text-slate-500 text-center mt-1">
@@ -131,7 +131,7 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
         ) : (
           <div className="text-center py-12 bg-slate-800/50 rounded-lg border border-slate-700">
             <p className="text-slate-400 text-lg">
-              👁️‍🗨️ Details hidden - Click "Show Details" to view users
+              👁️‍🗨️ Szczegóły ukryte - Kliknij "Pokaż szczegóły"
             </p>
           </div>
         )}
@@ -139,7 +139,7 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
 
       {/* User Count */}
       <div className="mt-6 text-center text-slate-400">
-        Total users: <span className="font-bold text-white">{users.length}</span>
+        Liczba użytkowników: <span className="font-bold text-white">{users.length}</span>
       </div>
     </div>
   )

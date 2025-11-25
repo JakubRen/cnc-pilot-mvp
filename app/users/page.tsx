@@ -3,7 +3,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import UserList from './UserList'
-import Link from 'next/link'
+import { Button } from '@/components/ui/Button'
 
 export default async function UsersPage() {
   const userProfile = await getUserProfile()
@@ -37,12 +37,12 @@ export default async function UsersPage() {
           {/* Header with Add Button */}
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-4xl font-bold text-white">Użytkownicy</h1>
-            <Link
+            <Button
               href="/users/add"
-              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-lg hover:shadow-xl"
+              variant="primary"
             >
               + Dodaj Użytkownika
-            </Link>
+            </Button>
           </div>
 
           {/* Pass data + currentUserRole to Client Component */}

@@ -63,17 +63,28 @@ export async function getAllNotifications(
   return data || [];
 }
 
-// Mark notification as read
-export async function markNotificationAsRead(notificationId: string) {
+// Mark notification as read (with IDOR protection)
+export async function markNotificationAsRead(
+  notificationId: string,
+  userId: number,
+  companyId: string
+) {
   const supabase = await createClient();
 
-  const { error } = await supabase
+  const { error, count } = await supabase
     .from('notifications')
     .update({ read: true })
-    .eq('id', notificationId);
+    .eq('id', notificationId)
+    .eq('user_id', userId)
+    .eq('company_id', companyId);
 
   if (error) {
     console.error('Error marking notification as read:', error);
+    return false;
+  }
+
+  if (count === 0) {
+    console.warn('Notification not found or access denied:', notificationId);
     return false;
   }
 
