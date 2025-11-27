@@ -98,14 +98,14 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Order #{order.order_number}</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">Zamówienie #{order.order_number}</h1>
             <div className="flex gap-3 items-center">
               <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white uppercase ${getStatusColor(order.status)}`}>
-                {order.status.replace('_', ' ')}
+                {order.status === 'pending' ? 'Oczekujące' : order.status === 'in_progress' ? 'W realizacji' : order.status === 'completed' ? 'Ukończone' : order.status === 'delayed' ? 'Opóźnione' : order.status === 'cancelled' ? 'Anulowane' : order.status}
               </span>
               {isOverdue && (
                 <span className="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-red-700 animate-pulse">
-                  ⚠️ OVERDUE
+                  ⚠️ PO TERMINIE
                 </span>
               )}
             </div>
@@ -115,13 +115,13 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               href={`/orders/${id}/edit`}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
             >
-              Edit Order
+              Edytuj
             </Link>
             <Link
               href="/orders"
               className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
             >
-              Back to Orders
+              Wróć do zamówień
             </Link>
           </div>
         </div>
@@ -130,10 +130,10 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
         <div className="grid grid-cols-2 gap-6">
           {/* Customer Information */}
           <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-            <h2 className="text-xl font-semibold text-white mb-4">Customer Information</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Informacje o kliencie</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-400 text-sm">Customer Name</p>
+                <p className="text-slate-400 text-sm">Nazwa klienta</p>
                 <p className="text-white font-semibold text-lg">{order.customer_name}</p>
               </div>
             </div>
@@ -141,39 +141,39 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 
           {/* Order Details */}
           <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-            <h2 className="text-xl font-semibold text-white mb-4">Order Details</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Szczegóły zamówienia</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-400 text-sm">Part Name</p>
-                <p className="text-white font-semibold">{order.part_name || 'N/A'}</p>
+                <p className="text-slate-400 text-sm">Nazwa części</p>
+                <p className="text-white font-semibold">{order.part_name || 'Brak'}</p>
               </div>
               <div>
-                <p className="text-slate-400 text-sm">Material</p>
-                <p className="text-white font-semibold">{order.material || 'N/A'}</p>
+                <p className="text-slate-400 text-sm">Materiał</p>
+                <p className="text-white font-semibold">{order.material || 'Brak'}</p>
               </div>
               <div>
-                <p className="text-slate-400 text-sm">Quantity</p>
-                <p className="text-white font-semibold">{order.quantity} pcs</p>
+                <p className="text-slate-400 text-sm">Ilość</p>
+                <p className="text-white font-semibold">{order.quantity} szt</p>
               </div>
             </div>
           </div>
 
           {/* Timeline */}
           <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-            <h2 className="text-xl font-semibold text-white mb-4">Timeline</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Oś czasu</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-400 text-sm">Deadline</p>
+                <p className="text-slate-400 text-sm">Termin</p>
                 <p className={`font-semibold text-lg ${isOverdue ? 'text-red-400' : 'text-white'}`}>
                   {formatDate(order.deadline)}
                 </p>
               </div>
               <div>
-                <p className="text-slate-400 text-sm">Created At</p>
+                <p className="text-slate-400 text-sm">Data utworzenia</p>
                 <p className="text-white">{formatDate(order.created_at)}</p>
               </div>
               <div>
-                <p className="text-slate-400 text-sm">Last Updated</p>
+                <p className="text-slate-400 text-sm">Ostatnia aktualizacja</p>
                 <p className="text-white">{formatDate(order.updated_at)}</p>
               </div>
             </div>
@@ -181,22 +181,22 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 
           {/* Creator Information */}
           <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-            <h2 className="text-xl font-semibold text-white mb-4">Created By</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Utworzone przez</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-400 text-sm">Name</p>
-                <p className="text-white font-semibold">{order.creator?.full_name || 'Unknown'}</p>
+                <p className="text-slate-400 text-sm">Imię i nazwisko</p>
+                <p className="text-white font-semibold">{order.creator?.full_name || 'Nieznany'}</p>
               </div>
               <div>
                 <p className="text-slate-400 text-sm">Email</p>
-                <p className="text-white">{order.creator?.email || 'N/A'}</p>
+                <p className="text-white">{order.creator?.email || 'Brak'}</p>
               </div>
             </div>
           </div>
 
           {/* Quick Status Change */}
           <div className="bg-slate-800 p-6 rounded-lg border border-blue-700">
-            <h2 className="text-xl font-semibold text-white mb-4">Quick Status Change</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Szybka zmiana statusu</h2>
             <StatusDropdown orderId={order.id} currentStatus={order.status} />
           </div>
 
@@ -214,7 +214,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           {order.total_cost && order.total_cost > 0 && (
             <div className="col-span-2 bg-gradient-to-br from-green-900/20 to-slate-800 p-6 rounded-lg border border-green-700/50">
               <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <span>💰</span> Cost Breakdown
+                <span>💰</span> Podział kosztów
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -254,7 +254,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           {/* Notes (Full Width if exists) */}
           {order.notes && (
             <div className="col-span-2 bg-slate-800 p-6 rounded-lg border border-slate-700">
-              <h2 className="text-xl font-semibold text-white mb-4">Notes</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">Notatki</h2>
               <p className="text-slate-300 whitespace-pre-wrap">{order.notes}</p>
             </div>
           )}

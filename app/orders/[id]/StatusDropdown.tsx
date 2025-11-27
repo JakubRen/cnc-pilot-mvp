@@ -32,12 +32,19 @@ export default function StatusDropdown({ orderId, currentStatus }: StatusDropdow
     setIsUpdating(false)
 
     if (error) {
-      toast.error('Failed to update status: ' + error.message)
+      toast.error('Nie udało się zmienić statusu: ' + error.message)
       setStatus(currentStatus) // Revert on error
       return
     }
 
-    toast.success(`Status updated to: ${newStatus.replace('_', ' ')}`)
+    const statusLabels: Record<string, string> = {
+      pending: 'Oczekujące',
+      in_progress: 'W realizacji',
+      completed: 'Ukończone',
+      delayed: 'Opóźnione',
+      cancelled: 'Anulowane'
+    }
+    toast.success(`Status zmieniony na: ${statusLabels[newStatus] || newStatus}`)
     router.refresh()
   }
 
@@ -60,20 +67,20 @@ export default function StatusDropdown({ orderId, currentStatus }: StatusDropdow
         disabled={isUpdating}
         className={`w-full px-4 py-3 rounded-lg border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-semibold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${getStatusColor(status)}`}
       >
-        <option value="pending" className="bg-slate-800">Pending</option>
-        <option value="in_progress" className="bg-slate-800">In Progress</option>
-        <option value="completed" className="bg-slate-800">Completed</option>
-        <option value="delayed" className="bg-slate-800">Delayed</option>
-        <option value="cancelled" className="bg-slate-800">Cancelled</option>
+        <option value="pending" className="bg-slate-800">Oczekujące</option>
+        <option value="in_progress" className="bg-slate-800">W realizacji</option>
+        <option value="completed" className="bg-slate-800">Ukończone</option>
+        <option value="delayed" className="bg-slate-800">Opóźnione</option>
+        <option value="cancelled" className="bg-slate-800">Anulowane</option>
       </select>
       {isUpdating && (
         <div className="mt-2 flex items-center gap-2">
           <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400 text-xs">Updating status...</p>
+          <p className="text-slate-400 text-xs">Aktualizowanie statusu...</p>
         </div>
       )}
       <p className="text-slate-400 text-xs mt-2">
-        Change status without opening edit form
+        Zmień status bez otwierania formularza edycji
       </p>
     </div>
   )

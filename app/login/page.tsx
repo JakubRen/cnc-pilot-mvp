@@ -8,9 +8,12 @@ import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useTranslation } from '@/hooks/useTranslation'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
+import { Starfield } from '@/components/ui/Starfield'
+import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
 
 export default function LoginPage() {
-  const { t, lang } = useTranslation()
+  const { t } = useTranslation()
 
   const loginSchema = z.object({
     email: z.string().email(t('auth', 'invalidEmail')),
@@ -54,47 +57,94 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-black text-white selection:bg-blue-500/30">
+      {/* Cosmic Background */}
+      <Starfield starCount={400} speed={0.05} className="opacity-60" />
+      
+      {/* Ambient Glow (Bottom) */}
+      <div className="absolute bottom-0 left-0 right-0 h-[50vh] bg-gradient-to-t from-blue-900/20 via-transparent to-transparent pointer-events-none z-0" />
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-md w-full relative z-10 p-6"
+      >
         {/* Language Selector - Top Right */}
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-6 opacity-70 hover:opacity-100 transition-opacity">
           <LanguageSelector variant="flags" />
         </div>
 
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">{t('common', 'appName')}</h1>
-          <p className="text-slate-400">{t('common', 'tagline')}</p>
+        <div className="text-center mb-10">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 1 }}
+            className="relative inline-block"
+          >
+            {/* Logo Glow Effect */}
+            <div className="absolute -inset-4 bg-blue-500/20 blur-2xl rounded-full opacity-50 animate-pulse" />
+            <h1 className="relative text-5xl font-extralight tracking-tight text-white mb-2 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+              {t('common', 'appName') || 'CNC Pilot'}
+            </h1>
+          </motion.div>
+          <p className="text-blue-200/50 tracking-widest text-sm uppercase font-medium mt-2">
+            {t('common', 'tagline') || 'Precision Manufacturing OS'}
+          </p>
         </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-white mb-6">{t('auth', 'login')}</h2>
+        {/* Glassmorphic Card */}
+        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-8 shadow-2xl ring-1 ring-white/5">
+          <h2 className="text-xl font-medium text-white/90 mb-6 text-center tracking-wide">
+            {t('auth', 'login')}
+          </h2>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Email */}
-            <div>
-              <label className="block text-slate-300 mb-2">{t('auth', 'email')}</label>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-blue-200/70 uppercase tracking-wider ml-1">
+                {t('auth', 'email')}
+              </label>
               <input
                 {...register('email')}
                 type="email"
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                className={cn(
+                  "w-full px-4 py-3.5 rounded-xl bg-black/20 border border-white/10 text-white",
+                  "placeholder:text-white/20 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 focus:bg-black/40 focus:outline-none",
+                  "transition-all duration-300"
+                )}
                 placeholder={t('auth', 'emailPlaceholder')}
               />
               {errors.email && (
-                <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
+                <p className="text-red-400 text-xs ml-1 font-medium">{errors.email.message}</p>
               )}
             </div>
 
             {/* Password */}
-            <div>
-              <label className="block text-slate-300 mb-2">{t('auth', 'password')}</label>
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center ml-1">
+                <label className="block text-xs font-medium text-blue-200/70 uppercase tracking-wider">
+                  {t('auth', 'password')}
+                </label>
+                <Link 
+                  href="/forgot-password" 
+                  className="text-xs text-blue-400/70 hover:text-blue-300 hover:underline transition-colors"
+                >
+                  {t('auth', 'forgotPassword')}
+                </Link>
+              </div>
               <input
                 {...register('password')}
                 type="password"
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                className={cn(
+                  "w-full px-4 py-3.5 rounded-xl bg-black/20 border border-white/10 text-white",
+                  "placeholder:text-white/20 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 focus:bg-black/40 focus:outline-none",
+                  "transition-all duration-300"
+                )}
                 placeholder={t('auth', 'passwordPlaceholder')}
               />
               {errors.password && (
-                <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+                <p className="text-red-400 text-xs ml-1 font-medium">{errors.password.message}</p>
               )}
             </div>
 
@@ -102,28 +152,42 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold transition"
+              className={cn(
+                "w-full py-3.5 mt-2 rounded-xl font-medium tracking-wide transition-all duration-300",
+                "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]",
+                "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none border border-blue-500/50"
+              )}
             >
-              {isSubmitting ? t('auth', 'loggingIn') : t('auth', 'loginBtn')}
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  {t('auth', 'loggingIn')}
+                </span>
+              ) : (
+                t('auth', 'loginBtn')
+              )}
             </button>
           </form>
 
-          {/* Forgot Password */}
-          <div className="mt-4 text-center">
-            <Link href="/forgot-password" className="text-slate-400 hover:text-slate-300 text-sm">
-              {t('auth', 'forgotPassword')}
-            </Link>
-          </div>
-
           {/* Register Link */}
-          <div className="mt-6 text-center text-slate-400">
+          <div className="mt-8 text-center text-sm text-blue-200/40">
             {t('auth', 'noAccount')}{' '}
-            <Link href="/register" className="text-blue-400 hover:text-blue-300">
+            <Link href="/register" className="text-white hover:text-blue-300 font-medium transition-colors border-b border-transparent hover:border-blue-300">
               {t('auth', 'registerBtn')}
             </Link>
           </div>
         </div>
-      </div>
+        
+        {/* Footer Quote or Info */}
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="text-center text-white/10 text-xs mt-8 font-light"
+        >
+          System v2.0 • Secure Connection • 2025
+        </motion.p>
+      </motion.div>
     </div>
   )
 }

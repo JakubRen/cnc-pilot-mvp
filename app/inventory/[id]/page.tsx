@@ -81,7 +81,7 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
   // Stock status
   const isLowStock = Number(item.quantity) <= Number(item.low_stock_threshold)
   const isOutOfStock = Number(item.quantity) === 0
-  const stockStatus = isOutOfStock ? 'OUT OF STOCK' : isLowStock ? 'LOW STOCK' : 'OK'
+  const stockStatus = isOutOfStock ? 'BRAK' : isLowStock ? 'NISKI STAN' : 'OK'
   const stockColor = isOutOfStock ? 'bg-gray-600' : isLowStock ? 'bg-red-600' : 'bg-green-600'
 
   // Calculate total value
@@ -104,7 +104,7 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
               </span>
               {item.batch_number && (
                 <span className="px-3 py-1 rounded text-xs font-mono text-slate-300 bg-slate-700">
-                  Batch: {item.batch_number}
+                  Partia: {item.batch_number}
                 </span>
               )}
             </div>
@@ -114,13 +114,13 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
               href={`/inventory/${id}/edit`}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
             >
-              Edit Item
+              Edytuj
             </Link>
             <Link
               href="/inventory"
               className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
             >
-              Back to Inventory
+              Wróć do magazynu
             </Link>
           </div>
         </div>
@@ -129,24 +129,24 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
         <div className="grid grid-cols-2 gap-6 mb-8">
           {/* Stock Information */}
           <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-            <h2 className="text-xl font-semibold text-white mb-4">Stock Information</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Informacje o stanie</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-400 text-sm">Current Stock</p>
+                <p className="text-slate-400 text-sm">Aktualny stan</p>
                 <p className="text-white font-semibold text-2xl">{item.quantity} {item.unit}</p>
               </div>
               <div>
-                <p className="text-slate-400 text-sm">Low Stock Threshold</p>
+                <p className="text-slate-400 text-sm">Próg niskiego stanu</p>
                 <p className="text-white font-semibold">{item.low_stock_threshold} {item.unit}</p>
               </div>
               {item.unit_cost && (
                 <>
                   <div>
-                    <p className="text-slate-400 text-sm">Unit Cost</p>
+                    <p className="text-slate-400 text-sm">Koszt jednostkowy</p>
                     <p className="text-white font-semibold">{Number(item.unit_cost).toFixed(2)} PLN</p>
                   </div>
                   <div>
-                    <p className="text-slate-400 text-sm">Total Value</p>
+                    <p className="text-slate-400 text-sm">Wartość całkowita</p>
                     <p className="text-white font-semibold">{totalValue} PLN</p>
                   </div>
                 </>
@@ -156,19 +156,19 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
 
           {/* Location & Supplier */}
           <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-            <h2 className="text-xl font-semibold text-white mb-4">Location & Supplier</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Lokalizacja i dostawca</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-400 text-sm">Location</p>
-                <p className="text-white font-semibold">{item.location || 'Not specified'}</p>
+                <p className="text-slate-400 text-sm">Lokalizacja</p>
+                <p className="text-white font-semibold">{item.location || 'Nie określono'}</p>
               </div>
               <div>
-                <p className="text-slate-400 text-sm">Supplier</p>
-                <p className="text-white font-semibold">{item.supplier || 'Not specified'}</p>
+                <p className="text-slate-400 text-sm">Dostawca</p>
+                <p className="text-white font-semibold">{item.supplier || 'Nie określono'}</p>
               </div>
               {item.expiry_date && (
                 <div>
-                  <p className="text-slate-400 text-sm">Expiry Date</p>
+                  <p className="text-slate-400 text-sm">Data ważności</p>
                   <p className="text-white font-semibold">{formatDate(item.expiry_date)}</p>
                 </div>
               )}
@@ -188,18 +188,18 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
           {/* Traceability (Audit Info) */}
           {item.batch_number && (
             <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 border-l-4 border-l-blue-500">
-              <h2 className="text-xl font-semibold text-white mb-4">🔍 Traceability (Audit)</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">🔍 Śledzenie (Audyt)</h2>
               <div className="space-y-3">
                 <div>
-                  <p className="text-slate-400 text-sm">Batch/Lot Number</p>
+                  <p className="text-slate-400 text-sm">Numer partii/serii</p>
                   <p className="text-white font-semibold font-mono">{item.batch_number}</p>
                 </div>
                 <div>
-                  <p className="text-slate-400 text-sm">Created By</p>
-                  <p className="text-white font-semibold">{item.creator?.full_name || 'Unknown'}</p>
+                  <p className="text-slate-400 text-sm">Utworzył</p>
+                  <p className="text-white font-semibold">{item.creator?.full_name || 'Nieznany'}</p>
                 </div>
                 <div>
-                  <p className="text-slate-400 text-sm">Created At</p>
+                  <p className="text-slate-400 text-sm">Data utworzenia</p>
                   <p className="text-white">{formatDate(item.created_at)}</p>
                 </div>
               </div>
@@ -209,18 +209,18 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
           {/* Creator Information */}
           {!item.batch_number && (
             <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-              <h2 className="text-xl font-semibold text-white mb-4">Created By</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">Utworzone przez</h2>
               <div className="space-y-3">
                 <div>
-                  <p className="text-slate-400 text-sm">Name</p>
-                  <p className="text-white font-semibold">{item.creator?.full_name || 'Unknown'}</p>
+                  <p className="text-slate-400 text-sm">Imię i nazwisko</p>
+                  <p className="text-white font-semibold">{item.creator?.full_name || 'Nieznany'}</p>
                 </div>
                 <div>
                   <p className="text-slate-400 text-sm">Email</p>
-                  <p className="text-white">{item.creator?.email || 'N/A'}</p>
+                  <p className="text-white">{item.creator?.email || 'Brak'}</p>
                 </div>
                 <div>
-                  <p className="text-slate-400 text-sm">Created At</p>
+                  <p className="text-slate-400 text-sm">Data utworzenia</p>
                   <p className="text-white">{formatDate(item.created_at)}</p>
                 </div>
               </div>
@@ -230,16 +230,16 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
           {/* Description & Notes */}
           {(item.description || item.notes) && (
             <div className="col-span-2 bg-slate-800 p-6 rounded-lg border border-slate-700">
-              <h2 className="text-xl font-semibold text-white mb-4">Additional Information</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">Dodatkowe informacje</h2>
               {item.description && (
                 <div className="mb-3">
-                  <p className="text-slate-400 text-sm mb-1">Description</p>
+                  <p className="text-slate-400 text-sm mb-1">Opis</p>
                   <p className="text-slate-300">{item.description}</p>
                 </div>
               )}
               {item.notes && (
                 <div>
-                  <p className="text-slate-400 text-sm mb-1">Notes</p>
+                  <p className="text-slate-400 text-sm mb-1">Notatki</p>
                   <p className="text-slate-300">{item.notes}</p>
                 </div>
               )}
@@ -249,7 +249,7 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
 
         {/* Transaction History */}
         <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-6">
-          <h2 className="text-xl font-semibold text-white mb-4">📋 Transaction History (Audit Trail)</h2>
+          <h2 className="text-xl font-semibold text-white mb-4">📋 Historia transakcji (Ścieżka audytu)</h2>
 
           {transactions && transactions.length > 0 ? (
             <div className="space-y-3">
@@ -257,6 +257,14 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
                 const isPositive = txn.transaction_type === 'in' || txn.transaction_type === 'initial'
                 const txnColor = isPositive ? 'text-green-400' : txn.transaction_type === 'out' ? 'text-red-400' : 'text-yellow-400'
                 const txnIcon = isPositive ? '+' : txn.transaction_type === 'out' ? '-' : '~'
+
+                // Translate transaction types
+                const txnTypeLabels: Record<string, string> = {
+                  'in': 'Przyjęcie',
+                  'out': 'Wydanie',
+                  'initial': 'Stan początkowy',
+                  'adjustment': 'Korekta'
+                }
 
                 return (
                   <div key={txn.id} className="flex items-start gap-4 p-4 bg-slate-900 rounded-lg border border-slate-700">
@@ -266,8 +274,8 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-1">
                         <div>
-                          <span className="text-white font-semibold capitalize">
-                            {txn.transaction_type.replace('_', ' ')}
+                          <span className="text-white font-semibold">
+                            {txnTypeLabels[txn.transaction_type] || txn.transaction_type}
                           </span>
                           {txn.reason && (
                             <span className="text-slate-400 text-sm ml-2">- {txn.reason}</span>
@@ -277,16 +285,16 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
                       </div>
                       <div className="flex gap-4 text-sm">
                         <span className="text-slate-400">
-                          Stock after: <span className="text-white font-semibold">{txn.quantity_after} {item.unit}</span>
+                          Stan po: <span className="text-white font-semibold">{txn.quantity_after} {item.unit}</span>
                         </span>
                         {txn.batch_number && (
                           <span className="text-slate-400">
-                            Batch: <span className="font-mono text-white">{txn.batch_number}</span>
+                            Partia: <span className="font-mono text-white">{txn.batch_number}</span>
                           </span>
                         )}
                         {txn.creator && (
                           <span className="text-slate-400">
-                            By: <span className="text-white">{txn.creator.full_name}</span>
+                            Przez: <span className="text-white">{txn.creator.full_name}</span>
                           </span>
                         )}
                       </div>
@@ -299,7 +307,7 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
               })}
             </div>
           ) : (
-            <p className="text-slate-400 text-center py-8">No transactions yet</p>
+            <p className="text-slate-400 text-center py-8">Brak transakcji</p>
           )}
         </div>
 

@@ -9,13 +9,13 @@ import toast from 'react-hot-toast'
 import { useEffect } from 'react'
 
 const inventorySchema = z.object({
-  sku: z.string().min(1, 'SKU required'),
-  name: z.string().min(2, 'Name required'),
+  sku: z.string().min(1, 'SKU wymagane'),
+  name: z.string().min(2, 'Nazwa wymagana'),
   description: z.string().optional(),
   category: z.enum(['raw_material', 'part', 'tool', 'consumable', 'finished_good']),
-  quantity: z.number().min(0, 'Quantity must be positive'),
-  unit: z.string().min(1, 'Unit required'),
-  low_stock_threshold: z.number().min(0, 'Threshold must be positive'),
+  quantity: z.number().min(0, 'Ilość musi być dodatnia'),
+  unit: z.string().min(1, 'Jednostka wymagana'),
+  low_stock_threshold: z.number().min(0, 'Próg musi być dodatni'),
   location: z.string().optional(),
   supplier: z.string().optional(),
   unit_cost: z.number().min(0).optional(),
@@ -60,7 +60,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
   }, [item, setValue])
 
   const onSubmit = async (data: InventoryFormData) => {
-    const loadingToast = toast.loading('Updating item...')
+    const loadingToast = toast.loading('Aktualizowanie pozycji...')
 
     const { error } = await supabase
       .from('inventory')
@@ -77,14 +77,14 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
     if (error) {
       if (error.code === '23505') {
-        toast.error('SKU already exists')
+        toast.error('SKU już istnieje')
       } else {
-        toast.error('Failed to update: ' + error.message)
+        toast.error('Nie udało się zaktualizować: ' + error.message)
       }
       return
     }
 
-    toast.success('Item updated successfully!')
+    toast.success('Pozycja zaktualizowana!')
     router.push('/inventory')
     router.refresh()
   }
@@ -105,23 +105,23 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Category */}
         <div>
-          <label htmlFor="edit_category" className="block text-slate-300 mb-2">Category *</label>
+          <label htmlFor="edit_category" className="block text-slate-300 mb-2">Kategoria *</label>
           <select
             id="edit_category"
             {...register('category')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           >
-            <option value="raw_material">Raw Material</option>
-            <option value="part">Part</option>
-            <option value="tool">Tool</option>
-            <option value="consumable">Consumable</option>
-            <option value="finished_good">Finished Good</option>
+            <option value="raw_material">Materiał surowy</option>
+            <option value="part">Część</option>
+            <option value="tool">Narzędzie</option>
+            <option value="consumable">Materiał zużywalny</option>
+            <option value="finished_good">Gotowy produkt</option>
           </select>
         </div>
 
         {/* Name */}
         <div className="col-span-2">
-          <label htmlFor="edit_name" className="block text-slate-300 mb-2">Name *</label>
+          <label htmlFor="edit_name" className="block text-slate-300 mb-2">Nazwa *</label>
           <input
             id="edit_name"
             {...register('name')}
@@ -132,7 +132,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Quantity */}
         <div>
-          <label htmlFor="edit_quantity" className="block text-slate-300 mb-2">Quantity *</label>
+          <label htmlFor="edit_quantity" className="block text-slate-300 mb-2">Ilość *</label>
           <input
             id="edit_quantity"
             {...register('quantity', { valueAsNumber: true })}
@@ -145,7 +145,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Unit */}
         <div>
-          <label htmlFor="edit_unit" className="block text-slate-300 mb-2">Unit *</label>
+          <label htmlFor="edit_unit" className="block text-slate-300 mb-2">Jednostka *</label>
           <input
             id="edit_unit"
             {...register('unit')}
@@ -156,7 +156,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Low Stock Threshold */}
         <div>
-          <label htmlFor="edit_low_stock_threshold" className="block text-slate-300 mb-2">Low Stock Threshold *</label>
+          <label htmlFor="edit_low_stock_threshold" className="block text-slate-300 mb-2">Próg niskiego stanu *</label>
           <input
             id="edit_low_stock_threshold"
             {...register('low_stock_threshold', { valueAsNumber: true })}
@@ -169,7 +169,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Location */}
         <div>
-          <label htmlFor="edit_location" className="block text-slate-300 mb-2">Location</label>
+          <label htmlFor="edit_location" className="block text-slate-300 mb-2">Lokalizacja</label>
           <input
             id="edit_location"
             {...register('location')}
@@ -179,7 +179,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Supplier */}
         <div>
-          <label htmlFor="edit_supplier" className="block text-slate-300 mb-2">Supplier</label>
+          <label htmlFor="edit_supplier" className="block text-slate-300 mb-2">Dostawca</label>
           <input
             id="edit_supplier"
             {...register('supplier')}
@@ -189,7 +189,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Unit Cost */}
         <div>
-          <label htmlFor="edit_unit_cost" className="block text-slate-300 mb-2">Unit Cost (PLN)</label>
+          <label htmlFor="edit_unit_cost" className="block text-slate-300 mb-2">Koszt jednostkowy (PLN)</label>
           <input
             id="edit_unit_cost"
             {...register('unit_cost', { valueAsNumber: true })}
@@ -201,7 +201,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Batch Number */}
         <div>
-          <label htmlFor="edit_batch_number" className="block text-slate-300 mb-2">Batch/Lot Number</label>
+          <label htmlFor="edit_batch_number" className="block text-slate-300 mb-2">Numer partii/serii</label>
           <input
             id="edit_batch_number"
             {...register('batch_number')}
@@ -211,7 +211,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Expiry Date */}
         <div>
-          <label htmlFor="edit_expiry_date" className="block text-slate-300 mb-2">Expiry Date</label>
+          <label htmlFor="edit_expiry_date" className="block text-slate-300 mb-2">Data ważności</label>
           <input
             id="edit_expiry_date"
             {...register('expiry_date')}
@@ -222,7 +222,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Description */}
         <div className="col-span-2">
-          <label htmlFor="edit_description" className="block text-slate-300 mb-2">Description</label>
+          <label htmlFor="edit_description" className="block text-slate-300 mb-2">Opis</label>
           <textarea
             id="edit_description"
             {...register('description')}
@@ -233,7 +233,7 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
 
         {/* Notes */}
         <div className="col-span-2">
-          <label htmlFor="edit_notes" className="block text-slate-300 mb-2">Notes</label>
+          <label htmlFor="edit_notes" className="block text-slate-300 mb-2">Notatki</label>
           <textarea
             id="edit_notes"
             {...register('notes')}
@@ -250,14 +250,14 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
           disabled={isSubmitting}
           className="flex-1 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold transition"
         >
-          {isSubmitting ? 'Updating...' : 'Update Item'}
+          {isSubmitting ? 'Aktualizowanie...' : 'Zapisz zmiany'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/inventory')}
           className="px-8 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
         >
-          Cancel
+          Anuluj
         </button>
       </div>
     </form>

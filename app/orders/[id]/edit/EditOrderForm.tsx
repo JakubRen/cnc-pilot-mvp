@@ -9,19 +9,19 @@ import toast from 'react-hot-toast'
 import { useEffect } from 'react'
 
 const orderSchema = z.object({
-  order_number: z.string().min(1, 'Order number required'),
-  customer_name: z.string().min(2, 'Customer name required'),
-  quantity: z.number().min(1, 'Quantity must be at least 1'),
+  order_number: z.string().min(1, 'Numer zamówienia wymagany'),
+  customer_name: z.string().min(2, 'Nazwa klienta wymagana'),
+  quantity: z.number().min(1, 'Ilość musi być minimum 1'),
   part_name: z.string().optional(),
   material: z.string().optional(),
-  deadline: z.string().min(1, 'Deadline required'),
+  deadline: z.string().min(1, 'Termin wymagany'),
   status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
   notes: z.string().optional(),
   // DAY 12: Cost tracking fields
-  material_cost: z.number().min(0, 'Material cost must be positive'),
-  labor_cost: z.number().min(0, 'Labor cost must be positive'),
-  overhead_cost: z.number().min(0, 'Overhead cost must be positive'),
-  total_cost: z.number().min(0, 'Total cost must be positive'),
+  material_cost: z.number().min(0, 'Koszt materiału musi być dodatni'),
+  labor_cost: z.number().min(0, 'Koszt pracy musi być dodatni'),
+  overhead_cost: z.number().min(0, 'Koszty ogólne muszą być dodatnie'),
+  total_cost: z.number().min(0, 'Całkowity koszt musi być dodatni'),
 })
 
 type OrderFormData = z.infer<typeof orderSchema>
@@ -79,7 +79,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
   }, [order, setValue])
 
   const onSubmit = async (data: OrderFormData) => {
-    const loadingToast = toast.loading('Updating order...')
+    const loadingToast = toast.loading('Aktualizowanie zamówienia...')
 
     const { error } = await supabase
       .from('orders')
@@ -92,11 +92,11 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error('Failed to update order: ' + error.message)
+      toast.error('Nie udało się zaktualizować zamówienia: ' + error.message)
       return
     }
 
-    toast.success('Order updated successfully!')
+    toast.success('Zamówienie zaktualizowane!')
     router.push('/orders')
     router.refresh()
   }
@@ -109,7 +109,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Order Number */}
         <div>
-          <label htmlFor="edit_order_number" className="block text-slate-300 mb-2">Order Number *</label>
+          <label htmlFor="edit_order_number" className="block text-slate-300 mb-2">Numer zamówienia *</label>
           <input
             id="edit_order_number"
             {...register('order_number')}
@@ -123,7 +123,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Material */}
         <div>
-          <label htmlFor="edit_material" className="block text-slate-300 mb-2">Material (Optional)</label>
+          <label htmlFor="edit_material" className="block text-slate-300 mb-2">Materiał</label>
           <input
             id="edit_material"
             {...register('material')}
@@ -134,7 +134,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Customer Name */}
         <div>
-          <label htmlFor="edit_customer_name" className="block text-slate-300 mb-2">Customer Name *</label>
+          <label htmlFor="edit_customer_name" className="block text-slate-300 mb-2">Nazwa klienta *</label>
           <input
             id="edit_customer_name"
             {...register('customer_name')}
@@ -148,7 +148,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Deadline */}
         <div>
-          <label htmlFor="edit_deadline" className="block text-slate-300 mb-2">Deadline *</label>
+          <label htmlFor="edit_deadline" className="block text-slate-300 mb-2">Termin *</label>
           <input
             id="edit_deadline"
             {...register('deadline')}
@@ -162,7 +162,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Quantity */}
         <div>
-          <label htmlFor="edit_quantity" className="block text-slate-300 mb-2">Quantity *</label>
+          <label htmlFor="edit_quantity" className="block text-slate-300 mb-2">Ilość *</label>
           <input
             id="edit_quantity"
             {...register('quantity', { valueAsNumber: true })}
@@ -183,17 +183,17 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
             {...register('status')}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
           >
-            <option value="pending">Pending</option>
-            <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="delayed">Delayed</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="pending">Oczekujące</option>
+            <option value="in_progress">W realizacji</option>
+            <option value="completed">Ukończone</option>
+            <option value="delayed">Opóźnione</option>
+            <option value="cancelled">Anulowane</option>
           </select>
         </div>
 
         {/* Part Name */}
         <div>
-          <label htmlFor="edit_part_name" className="block text-slate-300 mb-2">Part Name (Optional)</label>
+          <label htmlFor="edit_part_name" className="block text-slate-300 mb-2">Nazwa części</label>
           <input
             id="edit_part_name"
             {...register('part_name')}
@@ -204,13 +204,13 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Notes - Full Width */}
         <div className="col-span-2">
-          <label htmlFor="edit_notes" className="block text-slate-300 mb-2">Notes (Optional)</label>
+          <label htmlFor="edit_notes" className="block text-slate-300 mb-2">Notatki</label>
           <textarea
             id="edit_notes"
             {...register('notes')}
             rows={3}
             className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-            placeholder="Additional notes about this order..."
+            placeholder="Dodatkowe uwagi dotyczące zamówienia..."
           />
         </div>
       </div>
@@ -290,14 +290,14 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
           disabled={isSubmitting}
           className="flex-1 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold transition"
         >
-          {isSubmitting ? 'Updating Order...' : 'Update Order'}
+          {isSubmitting ? 'Aktualizowanie...' : 'Zapisz zmiany'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/orders')}
           className="px-8 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
         >
-          Cancel
+          Anuluj
         </button>
       </div>
     </form>
