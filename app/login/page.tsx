@@ -89,10 +89,10 @@ export default function LoginPage() {
               {t('common', 'appName') || 'CNC Pilot'}
             </h1>
           </motion.div>
-          <p className="text-blue-200/50 tracking-widest text-sm uppercase font-medium mt-2">
-            {t('common', 'tagline') || 'Precision Manufacturing OS'}
-          </p>
         </div>
+        
+        {/* Inspirational Quote */}
+        <QuoteWidget />
 
         {/* Glassmorphic Card */}
         <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-8 shadow-2xl ring-1 ring-white/5">
