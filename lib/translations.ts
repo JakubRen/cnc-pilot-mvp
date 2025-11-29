@@ -60,6 +60,7 @@ export const translations = {
     milimeters: { pl: 'mm', en: 'mm' },
     hours: { pl: 'godz.', en: 'hours' },
     minutes: { pl: 'min.', en: 'min.' },
+    undoOperation: { pl: 'Tej operacji nie można cofnąć.', en: 'This operation cannot be undone.' },
   },
 
   // ============================================

@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface OrderListProps {
   orders: any[]
@@ -25,6 +26,7 @@ export default function OrderList({
   onDeselectAll,
 }: OrderListProps) {
   const router = useRouter()
+  const { t, lang } = useTranslation()
   const allSelected = orders.length > 0 && orders.every(order => selectedOrders.has(order.id))
 
   // Check if order is overdue
@@ -37,12 +39,12 @@ export default function OrderList({
 
   const handleDelete = async (orderId: string, orderNumber: string) => {
     const confirmed = confirm(
-      `Czy na pewno chcesz usunąć zamówienie #${orderNumber}?\n\nTej operacji nie można cofnąć.`
+      `${t('orders', 'deleteConfirm', lang)} #${orderNumber}?\n\n${t('common', 'undoOperation', lang)}`
     )
 
     if (!confirmed) return
 
-    const loadingToast = toast.loading('Usuwanie zamówienia...')
+    const loadingToast = toast.loading(t('orders', 'deleting', lang))
 
     const { error } = await supabase
       .from('orders')
@@ -52,11 +54,11 @@ export default function OrderList({
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error('Nie udało się usunąć zamówienia: ' + error.message)
+      toast.error(`${t('orders', 'deleteFailed', lang)}: ${error.message}`)
       return
     }
 
-    toast.success(`Zamówienie #${orderNumber} zostało usunięte`)
+    toast.success(`${t('orders', 'order', lang)} #${orderNumber} ${t('orders', 'deleted', lang)}`)
     router.refresh()
   }
 
@@ -64,11 +66,11 @@ export default function OrderList({
     return (
       <div className="text-center py-16 text-slate-400 bg-slate-800 border border-slate-700 rounded-lg">
         <div className="text-6xl mb-4">📦</div>
-        <h3 className="text-xl font-semibold text-white mb-2">Brak zamówień</h3>
-        <p className="text-slate-400 mb-6">Rozpocznij od utworzenia pierwszego zamówienia</p>
+        <h3 className="text-xl font-semibold text-white mb-2">{t('orders', 'noOrders', lang)}</h3>
+        <p className="text-slate-400 mb-6">{t('orders', 'startCreating', lang)}</p>
         <Link href="/orders/add">
           <Button variant="primary">
-            + Utwórz pierwsze zamówienie
+            {t('orders', 'createFirst', lang)}
           </Button>
         </Link>
       </div>
@@ -77,11 +79,11 @@ export default function OrderList({
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed': return <Badge variant="success">Zakończone</Badge>
-      case 'in_progress': return <Badge variant="default">W toku</Badge>
-      case 'delayed': return <Badge variant="warning">Opóźnione</Badge>
-      case 'cancelled': return <Badge variant="secondary">Anulowane</Badge>
-      default: return <Badge variant="outline">Oczekujące</Badge>
+      case 'completed': return <Badge variant="success">{t('orderStatus', 'completed', lang)}</Badge>
+      case 'in_progress': return <Badge variant="default">{t('orderStatus', 'in_progress', lang)}</Badge>
+      case 'delayed': return <Badge variant="warning">{t('orderStatus', 'delayed', lang)}</Badge>
+      case 'cancelled': return <Badge variant="secondary">{t('orderStatus', 'cancelled', lang)}</Badge>
+      default: return <Badge variant="outline">{t('orderStatus', 'pending', lang)}</Badge>
     }
   }
 
@@ -96,29 +98,29 @@ export default function OrderList({
                 checked={allSelected}
                 onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
                 className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-800 cursor-pointer"
-                title={allSelected ? 'Odznacz wszystkie' : 'Zaznacz wszystkie'}
+                title={allSelected ? t('orders', 'deselectAll', lang) : t('orders', 'selectAll', lang)}
               />
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Nr Zam.
+              {t('orders', 'orderNumber', lang)}
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Klient
+              {t('orders', 'customer', lang)}
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Ilość
+              {t('common', 'quantity', lang)}
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Termin
+              {t('orders', 'deadline', lang)}
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Status
+              {t('common', 'status', lang)}
             </th>
             <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Koszt
+              {t('common', 'cost', lang)}
             </th>
             <th className="px-6 py-3 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Akcje
+              {t('common', 'actions', lang)}
             </th>
           </tr>
         </thead>
@@ -157,7 +159,7 @@ export default function OrderList({
                     {new Date(order.deadline).toLocaleDateString()}
                   </span>
                   {isOrderOverdue(order.deadline, order.status) && (
-                    <Badge variant="danger">PO TERMINIE</Badge>
+                    <Badge variant="danger">{t('orderStatus', 'overdue', lang)}</Badge>
                   )}
                 </div>
               </td>
@@ -170,7 +172,7 @@ export default function OrderList({
                     order.total_cost > 5000 ? 'text-red-400' :
                     order.total_cost > 2000 ? 'text-yellow-400' :
                     'text-green-400'
-                  }`}>
+                  }`}> 
                     {order.total_cost.toFixed(2)} PLN
                   </span>
                 ) : (
@@ -180,12 +182,12 @@ export default function OrderList({
               <td className="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
                 <Link href={`/orders/${order.id}`}>
                   <Button variant="ghost" size="sm">
-                    Podgląd
+                    {t('common', 'view', lang)}
                   </Button>
                 </Link>
                 <Link href={`/orders/${order.id}/edit`}>
                   <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">
-                    Edytuj
+                    {t('common', 'edit', lang)}
                   </Button>
                 </Link>
                 {currentUserRole === 'owner' && (
@@ -195,7 +197,7 @@ export default function OrderList({
                     size="sm"
                     className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
                   >
-                    Usuń
+                    {t('common', 'delete', lang)}
                   </Button>
                 )}
               </td>

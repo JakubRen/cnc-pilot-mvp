@@ -18,7 +18,7 @@ interface OrderFiltersProps {
 }
 
 export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation() // Add lang for translations
 
   const [filters, setFilters] = useState<FilterState>({
     status: 'all',
@@ -47,30 +47,30 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
   }
 
   const statusOptions = [
-    { value: 'all', label: t('orderStatus', 'all') },
-    { value: 'pending', label: t('orderStatus', 'pending') },
-    { value: 'in_progress', label: t('orderStatus', 'in_progress') },
-    { value: 'completed', label: t('orderStatus', 'completed') },
-    { value: 'delayed', label: t('orderStatus', 'delayed') },
-    { value: 'cancelled', label: t('orderStatus', 'cancelled') },
+    { value: 'all', label: t('orderStatus', 'all', lang) },
+    { value: 'pending', label: t('orderStatus', 'pending', lang) },
+    { value: 'in_progress', label: t('orderStatus', 'in_progress', lang) },
+    { value: 'completed', label: t('orderStatus', 'completed', lang) },
+    { value: 'delayed', label: t('orderStatus', 'delayed', lang) },
+    { value: 'cancelled', label: t('orderStatus', 'cancelled', lang) },
   ]
 
   const deadlineOptions = [
-    { value: 'all', label: t('orderFilters', 'allDeadlines') },
-    { value: 'urgent', label: t('orderFilters', 'urgent') },
-    { value: 'overdue', label: t('orderFilters', 'overdue') },
-    { value: 'today', label: t('orderFilters', 'today') },
-    { value: 'this_week', label: t('orderFilters', 'thisWeek') },
-    { value: 'this_month', label: t('orderFilters', 'thisMonth') },
-    { value: 'next_month', label: t('orderFilters', 'nextMonth') },
+    { value: 'all', label: t('orderFilters', 'allDeadlines', lang) },
+    { value: 'urgent', label: t('orderFilters', 'urgent', lang) },
+    { value: 'overdue', label: t('orderFilters', 'overdue', lang) },
+    { value: 'today', label: t('orderFilters', 'today', lang) },
+    { value: 'this_week', label: t('orderFilters', 'thisWeek', lang) },
+    { value: 'this_month', label: t('orderFilters', 'thisMonth', lang) },
+    { value: 'next_month', label: t('orderFilters', 'nextMonth', lang) },
   ]
 
   const sortOptions = [
-    { value: 'deadline', label: t('orderFilters', 'sortDeadline') },
-    { value: 'cost_desc', label: t('orderFilters', 'sortCostHigh') },
-    { value: 'cost_asc', label: t('orderFilters', 'sortCostLow') },
-    { value: 'created_desc', label: t('orderFilters', 'sortNewest') },
-    { value: 'created_asc', label: t('orderFilters', 'sortOldest') },
+    { value: 'deadline', label: t('orderFilters', 'sortDeadline', lang) },
+    { value: 'cost_desc', label: t('orderFilters', 'sortCostHigh', lang) },
+    { value: 'cost_asc', label: t('orderFilters', 'sortCostLow', lang) },
+    { value: 'created_desc', label: t('orderFilters', 'sortNewest', lang) },
+    { value: 'created_asc', label: t('orderFilters', 'sortOldest', lang) },
   ]
 
   return (
@@ -82,7 +82,7 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
           type="text"
           value={filters.search}
           onChange={(e) => handleChange('search', e.target.value)}
-          placeholder={t('common', 'search')}
+          placeholder={t('common', 'search', lang)}
           className="flex-1 min-w-[150px]"
         />
 
@@ -120,7 +120,7 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
             variant="secondary"
             className="whitespace-nowrap"
           >
-            {t('common', 'clear')} ({activeFiltersCount})
+            {t('common', 'clear', lang)} ({activeFiltersCount})
           </Button>
         )}
       </div>
