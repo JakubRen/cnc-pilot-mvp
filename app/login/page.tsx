@@ -179,9 +179,6 @@ export default function LoginPage() {
           </div>
         </div>
         
-        {/* Inspirational Quote */}
-        <QuoteWidget />
-        
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
