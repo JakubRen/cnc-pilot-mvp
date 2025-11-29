@@ -150,6 +150,7 @@ export const translations = {
   // ============================================
   orders: {
     title: { pl: 'Zamówienia', en: 'Orders' },
+    order: { pl: 'Zamówienie', en: 'Order' },
     addOrder: { pl: '+ Dodaj Zamówienie', en: '+ Add Order' },
     createFirst: { pl: '+ Utwórz pierwsze zamówienie', en: '+ Create first order' },
     noOrders: { pl: 'Brak zamówień', en: 'No orders' },

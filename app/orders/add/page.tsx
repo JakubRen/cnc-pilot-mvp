@@ -479,30 +479,54 @@ export default function AddOrderPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        onBlur={handleCostBlur}
-                        {...register('material_cost', { valueAsNumber: true })}
-                      />
+                      {(() => {
+                        const { onBlur, ...rest } = register('material_cost', { valueAsNumber: true })
+                        return (
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...rest}
+                            onBlur={(e) => {
+                              onBlur(e)
+                              handleCostBlur()
+                            }}
+                          />
+                        )
+                      })()}
                     </div>
                     <div>
                       <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        onBlur={handleCostBlur}
-                        {...register('labor_cost', { valueAsNumber: true })}
-                      />
+                      {(() => {
+                        const { onBlur, ...rest } = register('labor_cost', { valueAsNumber: true })
+                        return (
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...rest}
+                            onBlur={(e) => {
+                              onBlur(e)
+                              handleCostBlur()
+                            }}
+                          />
+                        )
+                      })()}
                     </div>
                     <div>
                       <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        onBlur={handleCostBlur}
-                        {...register('overhead_cost', { valueAsNumber: true })}
-                      />
+                      {(() => {
+                        const { onBlur, ...rest } = register('overhead_cost', { valueAsNumber: true })
+                        return (
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...rest}
+                            onBlur={(e) => {
+                              onBlur(e)
+                              handleCostBlur()
+                            }}
+                          />
+                        )
+                      })()}
                     </div>
                   </div>
                   <div className="mt-4 flex justify-between items-center border-t border-slate-600 pt-4">

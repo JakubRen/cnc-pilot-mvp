@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useTranslation } from '@/hooks/useTranslation'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { Starfield } from '@/components/ui/Starfield'
+import QuoteWidget from '@/components/auth/QuoteWidget'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
@@ -178,7 +179,9 @@ export default function LoginPage() {
           </div>
         </div>
         
-        {/* Footer Quote or Info */}
+        {/* Inspirational Quote */}
+        <QuoteWidget />
+        
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
