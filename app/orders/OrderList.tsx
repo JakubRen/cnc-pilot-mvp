@@ -66,12 +66,11 @@ export default function OrderList({
         <div className="text-6xl mb-4">📦</div>
         <h3 className="text-xl font-semibold text-white mb-2">Brak zamówień</h3>
         <p className="text-slate-400 mb-6">Rozpocznij od utworzenia pierwszego zamówienia</p>
-        <Button
-          href="/orders/add"
-          variant="primary"
-        >
-          + Utwórz pierwsze zamówienie
-        </Button>
+        <Link href="/orders/add">
+          <Button variant="primary">
+            + Utwórz pierwsze zamówienie
+          </Button>
+        </Link>
       </div>
     )
   }
@@ -179,12 +178,16 @@ export default function OrderList({
                 )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
-                <Button href={`/orders/${order.id}`} variant="ghost" size="sm">
-                  Podgląd
-                </Button>
-                <Button href={`/orders/${order.id}/edit`} variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">
-                  Edytuj
-                </Button>
+                <Link href={`/orders/${order.id}`}>
+                  <Button variant="ghost" size="sm">
+                    Podgląd
+                  </Button>
+                </Link>
+                <Link href={`/orders/${order.id}/edit`}>
+                  <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">
+                    Edytuj
+                  </Button>
+                </Link>
                 {currentUserRole === 'owner' && (
                   <Button
                     onClick={() => handleDelete(order.id, order.order_number)}

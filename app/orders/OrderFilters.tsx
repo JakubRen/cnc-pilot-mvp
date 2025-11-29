@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import { useTranslation } from '@/hooks/useTranslation'
+import { Input } from '@/components/ui/Input'
+import { Select } from '@/components/ui/Select'
+import { Button } from '@/components/ui/Button'
 
 export interface FilterState {
   status: string
@@ -24,7 +27,7 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
     sortBy: 'deadline',
   })
 
-  const handleChange = (key: keyof FilterState, value: string) => {
+  const handleChange = (key: keyof FilterState, value: string | number) => {
     const newFilters = { ...filters, [key]: value }
     setFilters(newFilters)
     onFilterChange(newFilters)
@@ -43,69 +46,82 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
     onFilterChange(resetFilters)
   }
 
+  const statusOptions = [
+    { value: 'all', label: t('orderStatus', 'all') },
+    { value: 'pending', label: t('orderStatus', 'pending') },
+    { value: 'in_progress', label: t('orderStatus', 'in_progress') },
+    { value: 'completed', label: t('orderStatus', 'completed') },
+    { value: 'delayed', label: t('orderStatus', 'delayed') },
+    { value: 'cancelled', label: t('orderStatus', 'cancelled') },
+  ]
+
+  const deadlineOptions = [
+    { value: 'all', label: t('orderFilters', 'allDeadlines') },
+    { value: 'urgent', label: t('orderFilters', 'urgent') },
+    { value: 'overdue', label: t('orderFilters', 'overdue') },
+    { value: 'today', label: t('orderFilters', 'today') },
+    { value: 'this_week', label: t('orderFilters', 'thisWeek') },
+    { value: 'this_month', label: t('orderFilters', 'thisMonth') },
+    { value: 'next_month', label: t('orderFilters', 'nextMonth') },
+  ]
+
+  const sortOptions = [
+    { value: 'deadline', label: t('orderFilters', 'sortDeadline') },
+    { value: 'cost_desc', label: t('orderFilters', 'sortCostHigh') },
+    { value: 'cost_asc', label: t('orderFilters', 'sortCostLow') },
+    { value: 'created_desc', label: t('orderFilters', 'sortNewest') },
+    { value: 'created_asc', label: t('orderFilters', 'sortOldest') },
+  ]
+
   return (
     <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 mb-4">
       {/* Single Row - All filters in one line */}
       <div className="flex gap-3 items-center flex-wrap">
         {/* Search - Smaller */}
-        <input
+        <Input
           type="text"
           value={filters.search}
           onChange={(e) => handleChange('search', e.target.value)}
           placeholder={t('common', 'search')}
-          className="flex-1 min-w-[150px] px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+          className="flex-1 min-w-[150px]"
         />
 
         {/* Status Filter - Compact */}
-        <select
-          value={filters.status}
-          onChange={(e) => handleChange('status', e.target.value)}
-          className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
-        >
-          <option value="all">{t('orderStatus', 'all')}</option>
-          <option value="pending">{t('orderStatus', 'pending')}</option>
-          <option value="in_progress">{t('orderStatus', 'in_progress')}</option>
-          <option value="completed">{t('orderStatus', 'completed')}</option>
-          <option value="delayed">{t('orderStatus', 'delayed')}</option>
-          <option value="cancelled">{t('orderStatus', 'cancelled')}</option>
-        </select>
+        <div className="w-[180px]">
+          <Select
+            options={statusOptions}
+            value={filters.status}
+            onChange={(value) => handleChange('status', value)}
+          />
+        </div>
 
         {/* Deadline Filter - Compact */}
-        <select
-          value={filters.deadline}
-          onChange={(e) => handleChange('deadline', e.target.value)}
-          className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
-        >
-          <option value="all">{t('orderFilters', 'allDeadlines')}</option>
-          <option value="urgent">{t('orderFilters', 'urgent')}</option>
-          <option value="overdue">{t('orderFilters', 'overdue')}</option>
-          <option value="today">{t('orderFilters', 'today')}</option>
-          <option value="this_week">{t('orderFilters', 'thisWeek')}</option>
-          <option value="this_month">{t('orderFilters', 'thisMonth')}</option>
-          <option value="next_month">{t('orderFilters', 'nextMonth')}</option>
-        </select>
+        <div className="w-[180px]">
+          <Select
+            options={deadlineOptions}
+            value={filters.deadline}
+            onChange={(value) => handleChange('deadline', value)}
+          />
+        </div>
 
         {/* Sort By - Compact */}
-        <select
-          value={filters.sortBy}
-          onChange={(e) => handleChange('sortBy', e.target.value)}
-          className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-sm focus:border-blue-500 focus:outline-none"
-        >
-          <option value="deadline">{t('orderFilters', 'sortDeadline')}</option>
-          <option value="cost_desc">{t('orderFilters', 'sortCostHigh')}</option>
-          <option value="cost_asc">{t('orderFilters', 'sortCostLow')}</option>
-          <option value="created_desc">{t('orderFilters', 'sortNewest')}</option>
-          <option value="created_asc">{t('orderFilters', 'sortOldest')}</option>
-        </select>
+        <div className="w-[180px]">
+          <Select
+            options={sortOptions}
+            value={filters.sortBy}
+            onChange={(value) => handleChange('sortBy', value)}
+          />
+        </div>
 
         {/* Clear Filters Button - Compact */}
         {activeFiltersCount > 0 && (
-          <button
+          <Button
             onClick={handleClearAll}
-            className="px-4 py-2 bg-slate-700 text-white text-sm rounded-lg hover:bg-slate-600 transition whitespace-nowrap"
+            variant="secondary"
+            className="whitespace-nowrap"
           >
             {t('common', 'clear')} ({activeFiltersCount})
-          </button>
+          </Button>
         )}
       </div>
     </div>

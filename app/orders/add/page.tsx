@@ -14,37 +14,43 @@ import SimilarOrdersWidget from '@/components/orders/SimilarOrdersWidget'
 import { logAiCorrection } from '@/lib/ai/feedback-logger'
 import { useMaterials, useParts } from '@/hooks/useInventoryItems'
 import InventorySelect from '@/components/inventory/InventorySelect'
-
-const orderSchema = z.object({
-  order_number: z.string().min(1, 'Numer zamówienia wymagany'),
-  customer_name: z.string().min(2, 'Nazwa klienta wymagana'),
-  quantity: z.number().min(1, 'Ilość musi być minimum 1'),
-  part_name: z.string().optional(),
-  material: z.string().optional(),
-  deadline: z.string().min(1, 'Termin wymagany'),
-  status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
-  notes: z.string().optional(),
-  // DAY 14-15: Pricing calculator fields
-  length: z.union([z.number(), z.nan()]).optional().nullable(),
-  width: z.union([z.number(), z.nan()]).optional().nullable(),
-  height: z.union([z.number(), z.nan()]).optional().nullable(),
-  complexity: z.enum(['simple', 'medium', 'complex']).optional().nullable(),
-  // DAY 12: Cost tracking fields
-  material_cost: z.number().min(0, 'Koszt materiału musi być dodatni'),
-  labor_cost: z.number().min(0, 'Koszt pracy musi być dodatni'),
-  overhead_cost: z.number().min(0, 'Koszty ogólne muszą być dodatnie'),
-  total_cost: z.number().min(0, 'Całkowity koszt musi być dodatni'),
-})
-
-type OrderFormData = z.infer<typeof orderSchema>
+import { Input } from '@/components/ui/Input'
+import { Select } from '@/components/ui/Select'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { useTranslation } from '@/hooks/useTranslation'
 
 export default function AddOrderPage() {
   const router = useRouter()
+  const { t, lang } = useTranslation() // Initialize useTranslation
   const [pricingEstimate, setPricingEstimate] = useState<PricingEstimateResponse | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
 
   // AI Feedback Loop: Track what AI suggested vs what user enters
   const aiSuggestedPrice = useRef<number | null>(null)
+
+  const orderSchema = z.object({
+    order_number: z.string().min(1, t('orders', 'orderNumberRequired', lang)),
+    customer_name: z.string().min(2, t('orders', 'customerNameRequired', lang)),
+    quantity: z.number().min(1, t('orders', 'quantityRequired', lang)),
+    part_name: z.string().optional(),
+    material: z.string().optional(),
+    deadline: z.string().min(1, t('orders', 'deadlineRequired', lang)),
+    status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
+    notes: z.string().optional(),
+    // DAY 14-15: Pricing calculator fields
+    length: z.union([z.number(), z.nan()]).optional().nullable(),
+    width: z.union([z.number(), z.nan()]).optional().nullable(),
+    height: z.union([z.number(), z.nan()]).optional().nullable(),
+    complexity: z.enum(['simple', 'medium', 'complex']).optional().nullable(),
+    // DAY 12: Cost tracking fields
+    material_cost: z.number().min(0, t('orders', 'materialCostPositive', lang)),
+    labor_cost: z.number().min(0, t('orders', 'laborCostPositive', lang)),
+    overhead_cost: z.number().min(0, t('orders', 'overheadCostPositive', lang)),
+    total_cost: z.number().min(0, t('orders', 'totalCostPositive', lang)),
+  })
+
+  type OrderFormData = z.infer<typeof orderSchema>
 
   const {
     register,
@@ -101,7 +107,7 @@ export default function AddOrderPage() {
     // AI Feedback Loop: Store what AI suggested for later comparison
     aiSuggestedPrice.current = totalSuggested
 
-    toast.success(`Zastosowano cenę: ${price} PLN/szt`)
+    toast.success(t('orders', 'localPriceApplied', lang, { price: price.toFixed(2) }))
   }
 
   // AI Feedback Loop: Log correction when user changes cost after AI suggestion
@@ -132,12 +138,12 @@ export default function AddOrderPage() {
     const currentComplexity = watch('complexity')
 
     if (!currentMaterial || !currentQuantity) {
-      toast.error('Wypełnij materiał i ilość przed kalkulacją')
+      toast.error(t('orders', 'fillMaterialQuantity', lang))
       return
     }
 
     setIsCalculating(true)
-    const loadingToast = toast.loading('Obliczam wycenę...')
+    const loadingToast = toast.loading(t('orders', 'calculating', lang))
 
     try {
       const response = await fetch('/api/pricing/estimate', {
@@ -159,15 +165,15 @@ export default function AddOrderPage() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Błąd kalkulacji')
+        throw new Error(error.error || t('orders', 'pricingCalculationError', lang))
       }
 
       const data: PricingEstimateResponse = await response.json()
       setPricingEstimate(data)
-      toast.success('Wycena gotowa!')
+      toast.success(t('orders', 'pricingEstimateReady', lang))
     } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error(error instanceof Error ? error.message : 'Nie udało się obliczyć wyceny')
+      toast.error(error instanceof Error ? error.message : t('orders', 'pricingCalculationError', lang))
       console.error('Pricing estimate error:', error)
     } finally {
       setIsCalculating(false)
@@ -187,18 +193,18 @@ export default function AddOrderPage() {
     // Track for feedback loop
     aiSuggestedPrice.current = pricingEstimate.suggestedPrice
 
-    toast.success('Wycena zastosowana!')
+    toast.success(t('orders', 'pricingApplied', lang))
   }
 
   const onSubmit = async (data: OrderFormData) => {
-    const loadingToast = toast.loading('Tworzenie zamówienia...')
+    const loadingToast = toast.loading(t('orders', 'savingOrder', lang))
 
     // Get current user and company
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
       toast.dismiss(loadingToast)
-      toast.error('Nie jesteś zalogowany')
+      toast.error(t('orders', 'notLoggedIn', lang))
       return
     }
 
@@ -210,7 +216,7 @@ export default function AddOrderPage() {
 
     if (!userProfile?.company_id) {
       toast.dismiss(loadingToast)
-      toast.error('Użytkownik nie przypisany do firmy')
+      toast.error(t('orders', 'noCompanyAssigned', lang))
       return
     }
 
@@ -228,304 +234,306 @@ export default function AddOrderPage() {
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error('Nie udało się utworzyć zamówienia: ' + error.message)
+      toast.error(`${t('orders', 'createOrderFailed', lang)}: ${error.message}`)
       return
     }
 
-    toast.success('Zamówienie utworzone!')
+    toast.success(t('orders', 'orderCreated', lang))
     router.push('/orders')
     router.refresh()
   }
 
+  const complexityOptions = [
+    { value: 'simple', label: t('orders', 'complexitySimple', lang) },
+    { value: 'medium', label: t('orders', 'complexityMedium', lang) },
+    { value: 'complex', label: t('orders', 'complexityComplex', lang) },
+  ]
+
+  const statusOptions = [
+    { value: 'pending', label: t('orderStatus', 'pending', lang) },
+    { value: 'in_progress', label: t('orderStatus', 'in_progress', lang) },
+    { value: 'completed', label: t('orderStatus', 'completed', lang) },
+  ]
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">Dodaj nowe zamówienie</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">{t('orders', 'addNewOrder', lang)}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
           {/* LEFT COLUMN - FORM */}
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-slate-800 p-8 rounded-lg border border-slate-700">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-              {/* Order Number */}
-              <div>
-                <label htmlFor="order_number" className="block text-slate-300 mb-2">Numer zamówienia *</label>
-                <input
-                  id="order_number"
-                  autoFocus
-                  {...register('order_number')}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                  placeholder="ORD-001"
-                />
-                {errors.order_number && <p className="text-red-400 text-sm mt-1">{errors.order_number.message}</p>}
-              </div>
-
-              {/* Material - from Inventory (raw_material category) */}
-              <div>
-                <InventorySelect
-                  items={materialItems}
-                  loading={materialsLoading}
-                  value={material}
-                  onChange={(value) => setValue('material', value)}
-                  label="Materiał"
-                  placeholder="Wybierz materiał z magazynu..."
-                  emptyMessage="Brak materiałów w magazynie. Dodaj materiały w zakładce Magazyn."
-                  allowCustom={true}
-                />
-              </div>
-
-              {/* Customer Name */}
-              <div>
-                <label htmlFor="customer_name" className="block text-slate-300 mb-2">Nazwa klienta *</label>
-                <input
-                  id="customer_name"
-                  {...register('customer_name')}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                  placeholder="Firma XYZ"
-                />
-              </div>
-
-              {/* Deadline */}
-              <div>
-                <label htmlFor="deadline" className="block text-slate-300 mb-2">Termin *</label>
-                <input
-                  id="deadline"
-                  {...register('deadline')}
-                  type="date"
-                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              {/* Quantity */}
-              <div>
-                <label htmlFor="quantity" className="block text-slate-300 mb-2">Ilość *</label>
-                <input
-                  id="quantity"
-                  {...register('quantity', { valueAsNumber: true })}
-                  type="number"
-                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              {/* Status */}
-              <div>
-                <label htmlFor="status" className="block text-slate-300 mb-2">Status *</label>
-                <select
-                  id="status"
-                  {...register('status')}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-                >
-                  <option value="pending">Oczekujące</option>
-                  <option value="in_progress">W realizacji</option>
-                  <option value="completed">Ukończone</option>
-                </select>
-              </div>
-
-              {/* Part Name - from Inventory (part/finished_good categories) */}
-              <div className="col-span-2">
-                <InventorySelect
-                  items={partItems}
-                  loading={partsLoading}
-                  value={partName}
-                  onChange={(value) => setValue('part_name', value)}
-                  label="Nazwa Części (Podpowiada cenę!)"
-                  placeholder="Wybierz część z magazynu lub wpisz nową..."
-                  emptyMessage="Brak części w magazynie. Możesz wpisać nową nazwę."
-                  allowCustom={true}
-                />
-                <p className="text-xs text-blue-400 mt-1">
-                  💡 Wybierz z magazynu lub wpisz nową nazwę, aby zobaczyć historię podobnych zleceń.
-                </p>
-              </div>
-            </div>
-
-            {/* DAY 14-15: AI Pricing Calculator Section */}
-            <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-purple-500/30">
-              <h3 className="text-lg font-semibold text-white mb-4">🤖 Kalkulator Wyceny AI</h3>
-
-              {/* Dimensions */}
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                <div>
-                  <label className="block text-slate-300 mb-2 text-sm">Długość (mm)</label>
-                  <input
-                    {...register('length', { valueAsNumber: true })}
-                    type="number"
-                    placeholder="np. 100"
-                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-300 mb-2 text-sm">Szerokość (mm)</label>
-                  <input
-                    {...register('width', { valueAsNumber: true })}
-                    type="number"
-                    placeholder="np. 50"
-                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-300 mb-2 text-sm">Wysokość (mm)</label>
-                  <input
-                    {...register('height', { valueAsNumber: true })}
-                    type="number"
-                    placeholder="np. 20"
-                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
-                  />
-                </div>
-              </div>
-
-              {/* Complexity */}
-              <div className="mb-4">
-                <label className="block text-slate-300 mb-2 text-sm">Złożoność</label>
-                <select
-                  {...register('complexity')}
-                  className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
-                >
-                  <option value="simple">Proste (1-2h obróbki)</option>
-                  <option value="medium">Średnie (3-6h obróbki)</option>
-                  <option value="complex">Złożone (8-20h obróbki)</option>
-                </select>
-              </div>
-
-              {/* Calculate Button */}
-              <button
-                type="button"
-                onClick={handleGetPricingEstimate}
-                disabled={isCalculating}
-                className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isCalculating ? (
-                  <>
-                    <span className="animate-spin">⏳</span>
-                    Obliczam...
-                  </>
-                ) : (
-                  <>
-                    <span>🧠</span>
-                    Oblicz Wycenę AI
-                  </>
-                )}
-              </button>
-
-              {/* AI Estimate Result */}
-              {pricingEstimate && (
-                <div className="mt-4 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500 rounded-lg">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-slate-300">Sugerowana cena:</span>
-                    <span className="text-2xl font-bold text-green-400">
-                      {pricingEstimate.suggestedPrice.toFixed(2)} PLN
-                    </span>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Card className="mb-6 bg-slate-800 border-slate-700">
+              <CardContent className="p-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                  {/* Order Number */}
+                  <div>
+                    <label htmlFor="order_number" className="block text-slate-300 mb-2">{t('orders', 'orderNumber', lang)} *</label>
+                    <Input
+                      id="order_number"
+                      autoFocus
+                      placeholder="ORD-001"
+                      {...register('order_number')}
+                    />
+                    {errors.order_number && <p className="text-red-400 text-sm mt-1">{errors.order_number.message}</p>}
                   </div>
 
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-slate-300">Cena za sztukę:</span>
-                    <span className="text-lg text-white">
-                      {pricingEstimate.pricePerUnit.toFixed(2)} PLN
-                    </span>
+                  {/* Material - from Inventory (raw_material category) */}
+                  <div>
+                    <InventorySelect
+                      items={materialItems}
+                      loading={materialsLoading}
+                      value={material}
+                      onChange={(value) => setValue('material', value)}
+                      label={`${t('common', 'material', lang)}`}
+                      placeholder={t('inventory', 'selectMaterial', lang)}
+                      emptyMessage={t('inventory', 'noMaterialsInStock', lang)}
+                      allowCustom={true}
+                    />
                   </div>
 
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-slate-300">Pewność:</span>
-                    <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-green-500"
-                        style={{ width: `${pricingEstimate.confidence}%` }}
+                  {/* Customer Name */}
+                  <div>
+                    <label htmlFor="customer_name" className="block text-slate-300 mb-2">{t('orders', 'customer', lang)} *</label>
+                    <Input
+                      id="customer_name"
+                      placeholder="Firma XYZ"
+                      {...register('customer_name')}
+                    />
+                  </div>
+
+                  {/* Deadline */}
+                  <div>
+                    <label htmlFor="deadline" className="block text-slate-300 mb-2">{t('orders', 'deadline', lang)} *</label>
+                    <Input
+                      id="deadline"
+                      type="date"
+                      {...register('deadline')}
+                    />
+                  </div>
+
+                  {/* Quantity */}
+                  <div>
+                    <label htmlFor="quantity" className="block text-slate-300 mb-2">{t('common', 'quantity', lang)} *</label>
+                    <Input
+                      id="quantity"
+                      type="number"
+                      {...register('quantity', { valueAsNumber: true })}
+                    />
+                  </div>
+
+                  {/* Status */}
+                  <div>
+                    <label htmlFor="status" className="block text-slate-300 mb-2">{t('common', 'status', lang)} *</label>
+                    <Select
+                      id="status"
+                      options={statusOptions}
+                      value={watch('status')}
+                      onChange={(value) => setValue('status', value as "pending" | "in_progress" | "completed" | "delayed" | "cancelled")}
+                    />
+                  </div>
+
+                  {/* Part Name - from Inventory (part/finished_good categories) */}
+                  <div className="col-span-2">
+                    <InventorySelect
+                      items={partItems}
+                      loading={partsLoading}
+                      value={partName}
+                      onChange={(value) => setValue('part_name', value)}
+                      label={`${t('orders', 'partName', lang)} (${t('common', 'suggestedPrice', lang)}!)`}
+                      placeholder={t('inventory', 'selectPart', lang)}
+                      emptyMessage={t('inventory', 'noPartsInStock', lang)}
+                      allowCustom={true}
+                    />
+                    <p className="text-xs text-blue-400 mt-1">
+                      {t('orders', 'partNameHint', lang)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* DAY 14-15: AI Pricing Calculator Section */}
+                <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-purple-500/30">
+                  <h3 className="text-lg font-semibold text-white mb-4">🤖 {t('orders', 'aiPricingCalculatorTitle', lang)}</h3>
+
+                  {/* Dimensions */}
+                  <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'length', lang)} ({t('common', 'milimeters', lang)})</label>
+                      <Input
+                        type="number"
+                        placeholder="np. 100"
+                        {...register('length', { valueAsNumber: true })}
                       />
                     </div>
-                    <span className="text-white font-semibold">{pricingEstimate.confidence}%</span>
+                    <div>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'width', lang)} ({t('common', 'milimeters', lang)})</label>
+                      <Input
+                        type="number"
+                        placeholder="np. 50"
+                        {...register('width', { valueAsNumber: true })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'height', lang)} ({t('common', 'milimeters', lang)})</label>
+                      <Input
+                        type="number"
+                        placeholder="np. 20"
+                        {...register('height', { valueAsNumber: true })}
+                      />
+                    </div>
                   </div>
 
-                  <div className="mb-4 p-3 bg-slate-800/50 rounded text-sm text-slate-300">
-                    <p className="font-medium text-white mb-1">Uzasadnienie:</p>
-                    {pricingEstimate.reasoning}
+                  {/* Complexity */}
+                  <div className="mb-4">
+                    <label className="block text-slate-300 mb-2 text-sm">{t('common', 'complexity', lang)}</label>
+                    <Select
+                      options={complexityOptions}
+                      value={watch('complexity') || 'medium'}
+                      onChange={(value) => setValue('complexity', value as "simple" | "medium" | "complex")}
+                    />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-xs text-slate-400 mb-4">
-                    <div>Materiał: {pricingEstimate.breakdown.materialCost.toFixed(2)} PLN</div>
-                    <div>Obróbka: {pricingEstimate.breakdown.machiningCost.toFixed(2)} PLN</div>
-                    <div>Setup: {pricingEstimate.breakdown.setupCost.toFixed(2)} PLN</div>
-                    <div>Marża: {pricingEstimate.breakdown.marginPercentage}%</div>
+                  {/* Calculate Button */}
+                  <Button
+                    type="button"
+                    onClick={handleGetPricingEstimate}
+                    disabled={isCalculating}
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-0"
+                  >
+                    {isCalculating ? (
+                      <>
+                        <span className="animate-spin mr-2">⏳</span>
+                        {t('orders', 'calculating', lang)}
+                      </>
+                    ) : (
+                      <>
+                        <span className="mr-2">🧠</span>
+                        {t('orders', 'calculateAiPrice', lang)}
+                      </>
+                    )}
+                  </Button>
+
+                  {/* AI Estimate Result */}
+                  {pricingEstimate && (
+                    <div className="mt-4 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500 rounded-lg">
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-slate-300">{t('orders', 'suggestedPrice', lang)}:</span>
+                        <span className="text-2xl font-bold text-green-400">
+                          {pricingEstimate.suggestedPrice.toFixed(2)} PLN
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-slate-300">{t('orders', 'pricePerUnit', lang)}:</span>
+                        <span className="text-lg text-white">
+                          {pricingEstimate.pricePerUnit.toFixed(2)} PLN
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-slate-300">{t('common', 'confidence', lang)}:</span>
+                        <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-green-500"
+                            style={{ width: `${pricingEstimate.confidence}%` }}
+                          />
+                        </div>
+                        <span className="text-white font-semibold">{pricingEstimate.confidence}%</span>
+                      </div>
+
+                      <div className="mb-4 p-3 bg-slate-800/50 rounded text-sm text-slate-300">
+                        <p className="font-medium text-white mb-1">{t('common', 'reasoning', lang)}:</p>
+                        {pricingEstimate.reasoning}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs text-slate-400 mb-4">
+                        <div>{t('common', 'material', lang)}: {pricingEstimate.breakdown.materialCost.toFixed(2)} PLN</div>
+                        <div>{t('common', 'labor', lang)}: {pricingEstimate.breakdown.machiningCost.toFixed(2)} PLN</div>
+                        <div>{t('common', 'overhead', lang)}: {pricingEstimate.breakdown.setupCost.toFixed(2)} PLN</div>
+                        <div>{t('common', 'margin', lang)}: {pricingEstimate.breakdown.marginPercentage}%</div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <Button
+                          type="button"
+                          onClick={handleApplyPricingEstimate}
+                          className="flex-1 bg-green-600 hover:bg-green-700 border-0"
+                        >
+                          ✅ {t('common', 'apply', lang)}
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => setPricingEstimate(null)}
+                          variant="secondary"
+                          className="flex-1"
+                        >
+                          ❌ {t('common', 'discard', lang)}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Cost Section */}
+                <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
+                  <h3 className="text-lg font-semibold text-white mb-4">💰 {t('orders', 'costCalculationTitle', lang)}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel', lang)}</label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        onBlur={handleCostBlur}
+                        {...register('material_cost', { valueAsNumber: true })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel', lang)}</label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        onBlur={handleCostBlur}
+                        {...register('labor_cost', { valueAsNumber: true })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel', lang)}</label>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        onBlur={handleCostBlur}
+                        {...register('overhead_cost', { valueAsNumber: true })}
+                      />
+                    </div>
                   </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={handleApplyPricingEstimate}
-                      className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition"
-                    >
-                      ✅ Zastosuj
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPricingEstimate(null)}
-                      className="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white font-semibold rounded-lg transition"
-                    >
-                      ❌ Odrzuć
-                    </button>
+                  <div className="mt-4 flex justify-between items-center border-t border-slate-600 pt-4">
+                    <span className="text-slate-300 font-medium">{t('orders', 'totalCostCalculated', lang)}</span>
+                    <span className="text-2xl font-bold text-green-400">
+                      {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
+                    </span>
                   </div>
                 </div>
-              )}
-            </div>
 
-            {/* Cost Section */}
-            <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
-              <h3 className="text-lg font-semibold text-white mb-4">💰 Kalkulacja Kosztów</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-slate-300 mb-2 text-sm">Materiał (PLN)</label>
-                  <input
-                    {...register('material_cost', { valueAsNumber: true })}
-                    type="number"
-                    step="0.01"
-                    onBlur={handleCostBlur}
-                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
-                  />
+                {/* Submit Buttons */}
+                <div className="flex gap-4">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 bg-green-600 hover:bg-green-700 border-0"
+                  >
+                    {isSubmitting ? t('orders', 'savingOrder', lang) : t('orders', 'createOrderBtn', lang)}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => router.push('/orders')}
+                    variant="secondary"
+                    className="px-8"
+                  >
+                    {t('common', 'cancel', lang)}
+                  </Button>
                 </div>
-                <div>
-                  <label className="block text-slate-300 mb-2 text-sm">Praca (PLN)</label>
-                  <input
-                    {...register('labor_cost', { valueAsNumber: true })}
-                    type="number"
-                    step="0.01"
-                    onBlur={handleCostBlur}
-                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-300 mb-2 text-sm">Setup/Inne (PLN)</label>
-                  <input
-                    {...register('overhead_cost', { valueAsNumber: true })}
-                    type="number"
-                    step="0.01"
-                    onBlur={handleCostBlur}
-                    className="w-full px-3 py-2 rounded bg-slate-900 border border-slate-700 text-white"
-                  />
-                </div>
-              </div>
-              <div className="mt-4 flex justify-between items-center border-t border-slate-600 pt-4">
-                <span className="text-slate-300 font-medium">Łączny Koszt:</span>
-                <span className="text-2xl font-bold text-green-400">
-                  {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
-                </span>
-              </div>
-            </div>
-
-            {/* Submit Buttons */}
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition"
-              >
-                {isSubmitting ? 'Zapisywanie...' : 'Utwórz Zamówienie'}
-              </button>
-              <button
-                type="button"
-                onClick={() => router.push('/orders')}
-                className="px-8 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
-              >
-                Anuluj
-              </button>
-            </div>
+              </CardContent>
+            </Card>
           </form>
 
           {/* RIGHT COLUMN - LOCAL INTELLIGENCE SIDEBAR */}
@@ -546,10 +554,9 @@ export default function AddOrderPage() {
               {/* Help Tip */}
               {!localEstimate && !localLoading && (
                 <div className="mt-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg text-sm text-blue-300">
-                  <p className="font-semibold mb-1">💡 Jak to działa?</p>
+                  <p className="font-semibold mb-1">{t('orders', 'howItWorksTitle', lang)}</p>
                   <p>
-                    System analizuje Twoją historię zleceń. Wpisz nazwę części lub wybierz materiał, 
-                    aby zobaczyć średnie ceny i czasy realizacji z przeszłości.
+                    {t('orders', 'howItWorksDesc', lang)}
                   </p>
                 </div>
               )}
