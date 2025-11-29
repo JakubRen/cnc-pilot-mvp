@@ -14,7 +14,7 @@ export function LanguageSelector({
   className = '',
   showLabel = true
 }: LanguageSelectorProps) {
-  const { lang, setLang, t } = useTranslation();
+  const { lang, setLanguage, t } = useTranslation();
 
   const languages: { code: Language; name: string; flag: string }[] = [
     { code: 'pl', name: 'Polski', flag: '🇵🇱' },
@@ -27,7 +27,7 @@ export function LanguageSelector({
         {languages.map((language) => (
           <button
             key={language.code}
-            onClick={() => setLang(language.code)}
+            onClick={() => setLanguage(language.code)}
             className={`text-2xl p-2 rounded-lg transition-all ${
               lang === language.code
                 ? 'bg-blue-600 ring-2 ring-blue-400'
@@ -46,7 +46,7 @@ export function LanguageSelector({
     return (
       <select
         value={lang}
-        onChange={(e) => setLang(e.target.value as Language)}
+        onChange={(e) => setLanguage(e.target.value as Language)}
         className={`bg-slate-700 text-white text-sm rounded-lg px-2 py-1 border border-slate-600 focus:border-blue-500 focus:outline-none cursor-pointer ${className}`}
       >
         {languages.map((language) => (
@@ -70,7 +70,7 @@ export function LanguageSelector({
         {languages.map((language) => (
           <button
             key={language.code}
-            onClick={() => setLang(language.code)}
+            onClick={() => setLanguage(language.code)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
               lang === language.code
                 ? 'bg-blue-600 text-white ring-2 ring-blue-400'
