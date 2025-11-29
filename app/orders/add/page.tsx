@@ -16,13 +16,13 @@ import { useMaterials, useParts } from '@/hooks/useInventoryItems'
 import InventorySelect from '@/components/inventory/InventorySelect'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { useTranslation } from '@/hooks/useTranslation'
 
 export default function AddOrderPage() {
   const router = useRouter()
-  const { t, lang } = useTranslation() // Initialize useTranslation
+  const { t } = useTranslation() // Initialize useTranslation, removing lang as it's handled internally
   const [pricingEstimate, setPricingEstimate] = useState<PricingEstimateResponse | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
 
@@ -30,12 +30,12 @@ export default function AddOrderPage() {
   const aiSuggestedPrice = useRef<number | null>(null)
 
   const orderSchema = z.object({
-    order_number: z.string().min(1, t('orders', 'orderNumberRequired', lang)),
-    customer_name: z.string().min(2, t('orders', 'customerNameRequired', lang)),
-    quantity: z.number().min(1, t('orders', 'quantityRequired', lang)),
+    order_number: z.string().min(1, t('orders', 'orderNumberRequired')),
+    customer_name: z.string().min(2, t('orders', 'customerNameRequired')),
+    quantity: z.number().min(1, t('orders', 'quantityRequired')),
     part_name: z.string().optional(),
     material: z.string().optional(),
-    deadline: z.string().min(1, t('orders', 'deadlineRequired', lang)),
+    deadline: z.string().min(1, t('orders', 'deadlineRequired')),
     status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
     notes: z.string().optional(),
     // DAY 14-15: Pricing calculator fields
@@ -44,10 +44,10 @@ export default function AddOrderPage() {
     height: z.union([z.number(), z.nan()]).optional().nullable(),
     complexity: z.enum(['simple', 'medium', 'complex']).optional().nullable(),
     // DAY 12: Cost tracking fields
-    material_cost: z.number().min(0, t('orders', 'materialCostPositive', lang)),
-    labor_cost: z.number().min(0, t('orders', 'laborCostPositive', lang)),
-    overhead_cost: z.number().min(0, t('orders', 'overheadCostPositive', lang)),
-    total_cost: z.number().min(0, t('orders', 'totalCostPositive', lang)),
+    material_cost: z.number().min(0, t('orders', 'materialCostPositive')),
+    labor_cost: z.number().min(0, t('orders', 'laborCostPositive')),
+    overhead_cost: z.number().min(0, t('orders', 'overheadCostPositive')),
+    total_cost: z.number().min(0, t('orders', 'totalCostPositive')),
   })
 
   type OrderFormData = z.infer<typeof orderSchema>
@@ -107,7 +107,7 @@ export default function AddOrderPage() {
     // AI Feedback Loop: Store what AI suggested for later comparison
     aiSuggestedPrice.current = totalSuggested
 
-    toast.success(t('orders', 'localPriceApplied', lang, { price: price.toFixed(2) }))
+    toast.success(t('orders', 'localPriceApplied', { price: price.toFixed(2) }))
   }
 
   // AI Feedback Loop: Log correction when user changes cost after AI suggestion
@@ -138,12 +138,12 @@ export default function AddOrderPage() {
     const currentComplexity = watch('complexity')
 
     if (!currentMaterial || !currentQuantity) {
-      toast.error(t('orders', 'fillMaterialQuantity', lang))
+      toast.error(t('orders', 'fillMaterialQuantity'))
       return
     }
 
     setIsCalculating(true)
-    const loadingToast = toast.loading(t('orders', 'calculating', lang))
+    const loadingToast = toast.loading(t('orders', 'calculating'))
 
     try {
       const response = await fetch('/api/pricing/estimate', {
@@ -165,15 +165,15 @@ export default function AddOrderPage() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || t('orders', 'pricingCalculationError', lang))
+        throw new Error(error.error || t('orders', 'pricingCalculationError'))
       }
 
       const data: PricingEstimateResponse = await response.json()
       setPricingEstimate(data)
-      toast.success(t('orders', 'pricingEstimateReady', lang))
+      toast.success(t('orders', 'pricingEstimateReady'))
     } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error(error instanceof Error ? error.message : t('orders', 'pricingCalculationError', lang))
+      toast.error(error instanceof Error ? error.message : t('orders', 'pricingCalculationError'))
       console.error('Pricing estimate error:', error)
     } finally {
       setIsCalculating(false)
@@ -193,18 +193,18 @@ export default function AddOrderPage() {
     // Track for feedback loop
     aiSuggestedPrice.current = pricingEstimate.suggestedPrice
 
-    toast.success(t('orders', 'pricingApplied', lang))
+    toast.success(t('orders', 'pricingApplied'))
   }
 
   const onSubmit = async (data: OrderFormData) => {
-    const loadingToast = toast.loading(t('orders', 'savingOrder', lang))
+    const loadingToast = toast.loading(t('orders', 'savingOrder'))
 
     // Get current user and company
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
       toast.dismiss(loadingToast)
-      toast.error(t('orders', 'notLoggedIn', lang))
+      toast.error(t('orders', 'notLoggedIn'))
       return
     }
 
@@ -216,7 +216,7 @@ export default function AddOrderPage() {
 
     if (!userProfile?.company_id) {
       toast.dismiss(loadingToast)
-      toast.error(t('orders', 'noCompanyAssigned', lang))
+      toast.error(t('orders', 'noCompanyAssigned'))
       return
     }
 
@@ -234,31 +234,31 @@ export default function AddOrderPage() {
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error(`${t('orders', 'createOrderFailed', lang)}: ${error.message}`)
+      toast.error(`${t('orders', 'createOrderFailed')}: ${error.message}`)
       return
     }
 
-    toast.success(t('orders', 'orderCreated', lang))
+    toast.success(t('orders', 'orderCreated'))
     router.push('/orders')
     router.refresh()
   }
 
   const complexityOptions = [
-    { value: 'simple', label: t('orders', 'complexitySimple', lang) },
-    { value: 'medium', label: t('orders', 'complexityMedium', lang) },
-    { value: 'complex', label: t('orders', 'complexityComplex', lang) },
+    { value: 'simple', label: t('orders', 'complexitySimple') },
+    { value: 'medium', label: t('orders', 'complexityMedium') },
+    { value: 'complex', label: t('orders', 'complexityComplex') },
   ]
 
   const statusOptions = [
-    { value: 'pending', label: t('orderStatus', 'pending', lang) },
-    { value: 'in_progress', label: t('orderStatus', 'in_progress', lang) },
-    { value: 'completed', label: t('orderStatus', 'completed', lang) },
+    { value: 'pending', label: t('orderStatus', 'pending') },
+    { value: 'in_progress', label: t('orderStatus', 'in_progress') },
+    { value: 'completed', label: t('orderStatus', 'completed') },
   ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">{t('orders', 'addNewOrder', lang)}</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">{t('orders', 'addNewOrder')}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
           {/* LEFT COLUMN - FORM */}
@@ -268,7 +268,7 @@ export default function AddOrderPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   {/* Order Number */}
                   <div>
-                    <label htmlFor="order_number" className="block text-slate-300 mb-2">{t('orders', 'orderNumber', lang)} *</label>
+                    <label htmlFor="order_number" className="block text-slate-300 mb-2">{t('orders', 'orderNumber')} *</label>
                     <Input
                       id="order_number"
                       autoFocus
@@ -285,16 +285,16 @@ export default function AddOrderPage() {
                       loading={materialsLoading}
                       value={material}
                       onChange={(value) => setValue('material', value)}
-                      label={`${t('common', 'material', lang)}`}
-                      placeholder={t('inventory', 'selectMaterial', lang)}
-                      emptyMessage={t('inventory', 'noMaterialsInStock', lang)}
+                      label={`${t('common', 'material')}`}
+                      placeholder={t('inventory', 'selectMaterial')}
+                      emptyMessage={t('inventory', 'noMaterialsInStock')}
                       allowCustom={true}
                     />
                   </div>
 
                   {/* Customer Name */}
                   <div>
-                    <label htmlFor="customer_name" className="block text-slate-300 mb-2">{t('orders', 'customer', lang)} *</label>
+                    <label htmlFor="customer_name" className="block text-slate-300 mb-2">{t('orders', 'customer')} *</label>
                     <Input
                       id="customer_name"
                       placeholder="Firma XYZ"
@@ -304,7 +304,7 @@ export default function AddOrderPage() {
 
                   {/* Deadline */}
                   <div>
-                    <label htmlFor="deadline" className="block text-slate-300 mb-2">{t('orders', 'deadline', lang)} *</label>
+                    <label htmlFor="deadline" className="block text-slate-300 mb-2">{t('orders', 'deadline')} *</label>
                     <Input
                       id="deadline"
                       type="date"
@@ -314,7 +314,7 @@ export default function AddOrderPage() {
 
                   {/* Quantity */}
                   <div>
-                    <label htmlFor="quantity" className="block text-slate-300 mb-2">{t('common', 'quantity', lang)} *</label>
+                    <label htmlFor="quantity" className="block text-slate-300 mb-2">{t('common', 'quantity')} *</label>
                     <Input
                       id="quantity"
                       type="number"
@@ -324,9 +324,8 @@ export default function AddOrderPage() {
 
                   {/* Status */}
                   <div>
-                    <label htmlFor="status" className="block text-slate-300 mb-2">{t('common', 'status', lang)} *</label>
+                    <label htmlFor="status" className="block text-slate-300 mb-2">{t('common', 'status')} *</label>
                     <Select
-                      id="status"
                       options={statusOptions}
                       value={watch('status')}
                       onChange={(value) => setValue('status', value as "pending" | "in_progress" | "completed" | "delayed" | "cancelled")}
@@ -340,25 +339,25 @@ export default function AddOrderPage() {
                       loading={partsLoading}
                       value={partName}
                       onChange={(value) => setValue('part_name', value)}
-                      label={`${t('orders', 'partName', lang)} (${t('common', 'suggestedPrice', lang)}!)`}
-                      placeholder={t('inventory', 'selectPart', lang)}
-                      emptyMessage={t('inventory', 'noPartsInStock', lang)}
+                      label={`${t('orders', 'partName')} (${t('orders', 'suggestedPrice')}!)`}
+                      placeholder={t('inventory', 'selectPart')}
+                      emptyMessage={t('inventory', 'noPartsInStock')}
                       allowCustom={true}
                     />
                     <p className="text-xs text-blue-400 mt-1">
-                      {t('orders', 'partNameHint', lang)}
+                      {t('orders', 'partNameHint')}
                     </p>
                   </div>
                 </div>
 
                 {/* DAY 14-15: AI Pricing Calculator Section */}
                 <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-purple-500/30">
-                  <h3 className="text-lg font-semibold text-white mb-4">🤖 {t('orders', 'aiPricingCalculatorTitle', lang)}</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">🤖 {t('orders', 'aiPricingCalculatorTitle')}</h3>
 
                   {/* Dimensions */}
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'length', lang)} ({t('common', 'milimeters', lang)})</label>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'length')} ({t('common', 'milimeters')})</label>
                       <Input
                         type="number"
                         placeholder="np. 100"
@@ -366,7 +365,7 @@ export default function AddOrderPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'width', lang)} ({t('common', 'milimeters', lang)})</label>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'width')} ({t('common', 'milimeters')})</label>
                       <Input
                         type="number"
                         placeholder="np. 50"
@@ -374,7 +373,7 @@ export default function AddOrderPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'height', lang)} ({t('common', 'milimeters', lang)})</label>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'height')} ({t('common', 'milimeters')})</label>
                       <Input
                         type="number"
                         placeholder="np. 20"
@@ -385,7 +384,7 @@ export default function AddOrderPage() {
 
                   {/* Complexity */}
                   <div className="mb-4">
-                    <label className="block text-slate-300 mb-2 text-sm">{t('common', 'complexity', lang)}</label>
+                    <label className="block text-slate-300 mb-2 text-sm">{t('common', 'complexity')}</label>
                     <Select
                       options={complexityOptions}
                       value={watch('complexity') || 'medium'}
@@ -403,12 +402,12 @@ export default function AddOrderPage() {
                     {isCalculating ? (
                       <>
                         <span className="animate-spin mr-2">⏳</span>
-                        {t('orders', 'calculating', lang)}
+                        {t('orders', 'calculating')}
                       </>
                     ) : (
                       <>
                         <span className="mr-2">🧠</span>
-                        {t('orders', 'calculateAiPrice', lang)}
+                        {t('orders', 'calculateAiPrice')}
                       </>
                     )}
                   </Button>
@@ -417,21 +416,21 @@ export default function AddOrderPage() {
                   {pricingEstimate && (
                     <div className="mt-4 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500 rounded-lg">
                       <div className="flex justify-between items-center mb-3">
-                        <span className="text-slate-300">{t('orders', 'suggestedPrice', lang)}:</span>
+                        <span className="text-slate-300">{t('orders', 'suggestedPrice')}:</span>
                         <span className="text-2xl font-bold text-green-400">
                           {pricingEstimate.suggestedPrice.toFixed(2)} PLN
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center mb-3">
-                        <span className="text-slate-300">{t('orders', 'pricePerUnit', lang)}:</span>
+                        <span className="text-slate-300">{t('orders', 'pricePerUnit')}:</span>
                         <span className="text-lg text-white">
                           {pricingEstimate.pricePerUnit.toFixed(2)} PLN
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="text-slate-300">{t('common', 'confidence', lang)}:</span>
+                        <span className="text-slate-300">{t('common', 'confidence')}:</span>
                         <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-green-500"
@@ -442,15 +441,15 @@ export default function AddOrderPage() {
                       </div>
 
                       <div className="mb-4 p-3 bg-slate-800/50 rounded text-sm text-slate-300">
-                        <p className="font-medium text-white mb-1">{t('common', 'reasoning', lang)}:</p>
+                        <p className="font-medium text-white mb-1">{t('common', 'reasoning')}:</p>
                         {pricingEstimate.reasoning}
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 text-xs text-slate-400 mb-4">
-                        <div>{t('common', 'material', lang)}: {pricingEstimate.breakdown.materialCost.toFixed(2)} PLN</div>
-                        <div>{t('common', 'labor', lang)}: {pricingEstimate.breakdown.machiningCost.toFixed(2)} PLN</div>
-                        <div>{t('common', 'overhead', lang)}: {pricingEstimate.breakdown.setupCost.toFixed(2)} PLN</div>
-                        <div>{t('common', 'margin', lang)}: {pricingEstimate.breakdown.marginPercentage}%</div>
+                        <div>{t('common', 'material')}: {pricingEstimate.breakdown.materialCost.toFixed(2)} PLN</div>
+                        <div>{t('common', 'labor')}: {pricingEstimate.breakdown.machiningCost.toFixed(2)} PLN</div>
+                        <div>{t('common', 'overhead')}: {pricingEstimate.breakdown.setupCost.toFixed(2)} PLN</div>
+                        <div>{t('common', 'margin')}: {pricingEstimate.breakdown.marginPercentage}%</div>
                       </div>
 
                       <div className="flex gap-3">
@@ -459,7 +458,7 @@ export default function AddOrderPage() {
                           onClick={handleApplyPricingEstimate}
                           className="flex-1 bg-green-600 hover:bg-green-700 border-0"
                         >
-                          ✅ {t('common', 'apply', lang)}
+                          ✅ {t('common', 'apply')}
                         </Button>
                         <Button
                           type="button"
@@ -467,7 +466,7 @@ export default function AddOrderPage() {
                           variant="secondary"
                           className="flex-1"
                         >
-                          ❌ {t('common', 'discard', lang)}
+                          ❌ {t('common', 'discard')}
                         </Button>
                       </div>
                     </div>
@@ -476,10 +475,10 @@ export default function AddOrderPage() {
 
                 {/* Cost Section */}
                 <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
-                  <h3 className="text-lg font-semibold text-white mb-4">💰 {t('orders', 'costCalculationTitle', lang)}</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">💰 {t('orders', 'costCalculationTitle')}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel', lang)}</label>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
                       <Input
                         type="number"
                         step="0.01"
@@ -488,7 +487,7 @@ export default function AddOrderPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel', lang)}</label>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
                       <Input
                         type="number"
                         step="0.01"
@@ -497,7 +496,7 @@ export default function AddOrderPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel', lang)}</label>
+                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
                       <Input
                         type="number"
                         step="0.01"
@@ -507,7 +506,7 @@ export default function AddOrderPage() {
                     </div>
                   </div>
                   <div className="mt-4 flex justify-between items-center border-t border-slate-600 pt-4">
-                    <span className="text-slate-300 font-medium">{t('orders', 'totalCostCalculated', lang)}</span>
+                    <span className="text-slate-300 font-medium">{t('orders', 'totalCostCalculated')}</span>
                     <span className="text-2xl font-bold text-green-400">
                       {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
                     </span>
@@ -521,7 +520,7 @@ export default function AddOrderPage() {
                     disabled={isSubmitting}
                     className="flex-1 bg-green-600 hover:bg-green-700 border-0"
                   >
-                    {isSubmitting ? t('orders', 'savingOrder', lang) : t('orders', 'createOrderBtn', lang)}
+                    {isSubmitting ? t('orders', 'savingOrder') : t('orders', 'createOrderBtn')}
                   </Button>
                   <Button
                     type="button"
@@ -529,7 +528,7 @@ export default function AddOrderPage() {
                     variant="secondary"
                     className="px-8"
                   >
-                    {t('common', 'cancel', lang)}
+                    {t('common', 'cancel')}
                   </Button>
                 </div>
               </CardContent>
@@ -554,9 +553,9 @@ export default function AddOrderPage() {
               {/* Help Tip */}
               {!localEstimate && !localLoading && (
                 <div className="mt-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg text-sm text-blue-300">
-                  <p className="font-semibold mb-1">{t('orders', 'howItWorksTitle', lang)}</p>
+                  <p className="font-semibold mb-1">{t('orders', 'howItWorksTitle')}</p>
                   <p>
-                    {t('orders', 'howItWorksDesc', lang)}
+                    {t('orders', 'howItWorksDesc')}
                   </p>
                 </div>
               )}

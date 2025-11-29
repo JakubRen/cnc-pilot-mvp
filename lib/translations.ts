@@ -51,6 +51,7 @@ export const translations = {
     material: { pl: 'Materiał', en: 'Material' },
     labor: { pl: 'Praca', en: 'Labor' },
     overhead: { pl: 'Koszty ogólne', en: 'Overhead' },
+    margin: { pl: 'Marża', en: 'Margin' },
     apply: { pl: 'Zastosuj', en: 'Apply' },
     discard: { pl: 'Odrzuć', en: 'Discard' },
     perUnit: { pl: '/szt', en: '/unit' },
@@ -292,6 +293,11 @@ export const translations = {
     skuExists: { pl: 'SKU już istnieje dla tej firmy', en: 'SKU already exists for this company' },
     notAuthenticated: { pl: 'Nie jesteś zalogowany', en: 'Not authenticated' },
     companyNotFound: { pl: 'Firma użytkownika nie znaleziona', en: 'User company not found' },
+    // Specific to InventorySelect
+    noMaterialsInStock: { pl: 'Brak materiałów w magazynie. Dodaj materiały w zakładce Magazyn.', en: 'No materials in stock. Add materials in the Inventory section.' },
+    noPartsInStock: { pl: 'Brak części w magazynie. Możesz wpisać nową nazwę.', en: 'No parts in stock. You can enter a new name.' },
+    selectMaterial: { pl: 'Wybierz materiał z magazynu...', en: 'Select material from inventory...' },
+    selectPart: { pl: 'Wybierz część z magazynu lub wpisz nową...', en: 'Select part from inventory or enter a new one...' },
   },
 
   // ============================================
