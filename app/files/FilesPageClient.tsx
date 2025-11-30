@@ -1,17 +1,24 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import FileUploader from '@/components/files/FileUploader'
 import FileBrowser from '@/components/files/FileBrowser'
 
+interface FileRecord {
+  id: string
+  file_name: string
+  file_path: string
+  file_size: number
+  mime_type: string
+  created_at: string
+}
+
 interface FilesPageClientProps {
-  initialFiles: any[]
+  initialFiles: FileRecord[]
 }
 
 export default function FilesPageClient({ initialFiles }: FilesPageClientProps) {
   const router = useRouter()
-  const [files, setFiles] = useState(initialFiles)
 
   const handleUploadComplete = () => {
     router.refresh()

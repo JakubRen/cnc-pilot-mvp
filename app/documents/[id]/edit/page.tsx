@@ -102,7 +102,6 @@ export default async function EditDocumentPage({ params }: { params: Promise<{ i
             document={document}
             items={items || []}
             inventoryItems={inventoryItems || []}
-            userId={user.id}
             companyId={user.company_id}
           />
         </div>

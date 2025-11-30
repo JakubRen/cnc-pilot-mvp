@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     try {
       // Verify the OTP token
       const { error } = await supabase.auth.verifyOtp({
-        type: type as any,
+        type: type as 'signup' | 'recovery' | 'invite' | 'email' | 'magiclink',
         token_hash,
       });
 

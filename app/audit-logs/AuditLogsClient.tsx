@@ -10,7 +10,7 @@ interface AuditLog {
   action: string
   entity_type: string
   entity_id: string | null
-  changes: any
+  changes: Record<string, unknown> | null
   ip_address: string | null
   user_agent: string | null
   created_at: string

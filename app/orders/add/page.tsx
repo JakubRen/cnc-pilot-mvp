@@ -57,7 +57,6 @@ export default function AddOrderPage() {
     handleSubmit,
     watch,
     setValue,
-    trigger,
     formState: { errors, isSubmitting },
   } = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
@@ -221,7 +220,7 @@ export default function AddOrderPage() {
     }
 
     // Exclude pricing calculator fields (not in database)
-    const { length, width, height, complexity, ...orderData } = data
+    const { length: _length, width: _width, height: _height, complexity: _complexity, ...orderData } = data
 
     const { error } = await supabase
       .from('orders')

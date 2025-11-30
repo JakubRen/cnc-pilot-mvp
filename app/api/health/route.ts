@@ -125,7 +125,7 @@ export async function GET() {
     return Response.json(response, {
       status: status === 'error' ? 503 : 200,
     })
-  } catch (error: unknown) {
+  } catch {
     const response: HealthResponse = {
       status: 'error',
       timestamp: new Date().toISOString(),

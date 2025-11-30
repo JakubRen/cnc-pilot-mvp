@@ -3,7 +3,6 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import EmptyState from '@/components/ui/EmptyState'
-import { Button } from '@/components/ui/Button'
 import InventoryTable from '@/components/inventory/InventoryTable'
 
 export default async function InventoryPage() {

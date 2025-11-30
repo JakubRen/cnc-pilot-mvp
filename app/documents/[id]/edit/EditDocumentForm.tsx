@@ -33,7 +33,7 @@ interface ExistingItem {
   inventory_id: string
   quantity: number
   notes: string | null
-  inventory: any
+  inventory: InventoryItem | null
 }
 
 interface Props {
@@ -41,11 +41,10 @@ interface Props {
   document: Document
   items: ExistingItem[]
   inventoryItems: InventoryItem[]
-  userId: number
   companyId: string
 }
 
-export default function EditDocumentForm({ documentId, document, items: existingItems, inventoryItems, userId, companyId }: Props) {
+export default function EditDocumentForm({ documentId, document, items: existingItems, inventoryItems, companyId }: Props) {
   const router = useRouter()
 
   // Form state

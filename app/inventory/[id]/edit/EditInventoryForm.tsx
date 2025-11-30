@@ -26,8 +26,25 @@ const inventorySchema = z.object({
 
 type InventoryFormData = z.infer<typeof inventorySchema>
 
+interface InventoryItem {
+  id: string
+  sku: string
+  name: string
+  description: string | null
+  category: 'raw_material' | 'part' | 'tool' | 'consumable' | 'finished_good'
+  quantity: number
+  unit: string
+  low_stock_threshold: number
+  location: string | null
+  supplier: string | null
+  unit_cost: number | null
+  batch_number: string | null
+  expiry_date: string | null
+  notes: string | null
+}
+
 interface EditInventoryFormProps {
-  item: any
+  item: InventoryItem
 }
 
 export default function EditInventoryForm({ item }: EditInventoryFormProps) {

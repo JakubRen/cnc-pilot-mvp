@@ -8,8 +8,18 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { useTranslation } from '@/hooks/useTranslation'
 
+interface Order {
+  id: string
+  order_number: string
+  customer_name: string
+  quantity: number
+  deadline: string
+  status: string
+  total_cost: number | null
+}
+
 interface OrderListProps {
-  orders: any[]
+  orders: Order[]
   currentUserRole: string
   selectedOrders: Set<string>
   onToggleSelect: (orderId: string) => void
@@ -26,7 +36,7 @@ export default function OrderList({
   onDeselectAll,
 }: OrderListProps) {
   const router = useRouter()
-  const { t, lang } = useTranslation()
+  const { t } = useTranslation()
   const allSelected = orders.length > 0 && orders.every(order => selectedOrders.has(order.id))
 
   // Check if order is overdue
@@ -125,7 +135,7 @@ export default function OrderList({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700">
-            {orders.map((order: any) => (
+            {orders.map((order) => (
               <tr
                 key={order.id}
                 className={`hover:bg-slate-700/50 transition ${selectedOrders.has(order.id) ? 'bg-blue-900/20' : ''}`}

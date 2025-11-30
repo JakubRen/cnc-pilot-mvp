@@ -46,13 +46,14 @@ export default function LoginPage() {
 
       toast.success(t('auth', 'loginSuccess'))
       // loginAction will redirect automatically
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.dismiss(loadingToast)
       // Server Action redirect throws NEXT_REDIRECT - this is normal
-      if (error?.message?.includes('NEXT_REDIRECT')) {
+      const err = error as Error | null
+      if (err?.message?.includes('NEXT_REDIRECT')) {
         toast.success(t('auth', 'loginSuccess'))
       } else {
-        toast.error(t('auth', 'loginFailed') + ': ' + (error?.message || 'Unknown error'))
+        toast.error(t('auth', 'loginFailed') + ': ' + (err?.message || 'Unknown error'))
       }
     }
   }

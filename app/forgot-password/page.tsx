@@ -26,8 +26,9 @@ export default function ForgotPasswordPage() {
 
       setSuccess(true);
       toast.success('Link resetujący został wysłany!');
-    } catch (err: any) {
-      toast.error(err.message || 'Wystąpił błąd. Spróbuj ponownie.');
+    } catch (err: unknown) {
+      const error = err as Error | null
+      toast.error(error?.message || 'Wystąpił błąd. Spróbuj ponownie.');
     } finally {
       setLoading(false);
     }
