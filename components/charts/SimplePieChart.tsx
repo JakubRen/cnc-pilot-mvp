@@ -4,8 +4,12 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
 
+interface PieChartDataItem {
+  [key: string]: string | number
+}
+
 interface SimplePieChartProps {
-  data: any[]
+  data: PieChartDataItem[]
   nameKey: string
   valueKey: string
   height?: number

@@ -149,11 +149,11 @@ export default async function TimeLogDetailsPage({ params }: { params: Promise<{
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <div className="text-sm text-slate-400 mb-1">Operator Name</div>
-                  <div className="font-medium">{(timeLog.users as any).full_name}</div>
+                  <div className="font-medium">{(timeLog.users as unknown as { full_name: string }).full_name}</div>
                 </div>
                 <div>
                   <div className="text-sm text-slate-400 mb-1">Email</div>
-                  <div className="font-medium text-slate-300">{(timeLog.users as any).email}</div>
+                  <div className="font-medium text-slate-300">{(timeLog.users as unknown as { email: string }).email}</div>
                 </div>
               </div>
             </div>

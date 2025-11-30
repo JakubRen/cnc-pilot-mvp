@@ -13,12 +13,37 @@ import RevenueChart from './RevenueChart'
 import TopCustomersChart from './TopCustomersChart'
 import ProductivityChart from './ProductivityChart'
 
+interface DashboardData {
+  metrics: {
+    totalOrders: number
+    activeOrders: number
+    completedThisWeek: number
+    overdueCount: number
+    activeTimers: number
+    lowStockCount: number
+    revenueThisMonth: number
+  }
+  urgentTasks: {
+    overdueOrders: Array<{ id: string; order_number: string; customer_name: string; deadline: string }>
+    ordersDueToday: Array<{ id: string; order_number: string; customer_name: string }>
+    lowStockItems: Array<{ id: string; name: string; quantity: number; unit: string; low_stock_threshold: number }>
+    staleTimers: Array<{ id: string; start_time: string; order?: { order_number: string }; user?: { name: string } }>
+  }
+  productionPlan: Array<{ id: string; order_number: string; customer_name: string; deadline: string; status: string }>
+  recentActivity: Array<{ type: string; title: string; subtitle: string; actor: string; timestamp: string }>
+  topCustomers: Array<{ name: string; revenue: number; count: number }>
+  ordersChartData: Array<{ date: string; orders: number }>
+  revenueChartData: Array<{ date: string; revenue: number }>
+  topCustomersAnalyticsData: Array<{ customer: string; revenue: number; orders: number }>
+  productivityData: Array<{ employee: string; hours: number; earnings: number; ordersCompleted: number }>
+}
+
 interface Props {
   userId: number
   userName: string
   companyName: string
   initialPreferences: DashboardPreferences
-  dashboardData: any
+  dashboardData: DashboardData
 }
 
 export default function DashboardClient({

@@ -84,8 +84,9 @@ export default function ManualTimeEntryForm({
 
       router.push('/time-tracking');
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || 'Failed to create time entry');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to create time entry';
+      setError(message);
       console.error('Create error:', err);
     } finally {
       setLoading(false);

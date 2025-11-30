@@ -129,7 +129,7 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
         ) : (
           <div className="text-center py-12 bg-slate-800/50 rounded-lg border border-slate-700">
             <p className="text-slate-400 text-lg">
-              👁️‍🗨️ Szczegóły ukryte - Kliknij "Pokaż szczegóły"
+              Szczegoly ukryte - Kliknij &quot;Pokaz szczegoly&quot;
             </p>
           </div>
         )}
