@@ -1,4 +1,9 @@
 import type { NextConfig } from "next";
+import bundleAnalyzer from "@next/bundle-analyzer";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const nextConfig: NextConfig = {
   // Wyłączamy PWA tymczasowo - next-pwa nie wspiera Turbopack
@@ -6,4 +11,4 @@ const nextConfig: NextConfig = {
   turbopack: {}, // Wyłącza warning Turbopack
 }
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);
