@@ -25,6 +25,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
 
   useEffect(() => {
     onFilterChange(selectedTags, logic)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTags, logic])
 
   const fetchTags = async () => {

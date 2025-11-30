@@ -26,8 +26,17 @@ const passwordSchema = z
 type ProfileFormData = z.infer<typeof profileSchema>;
 type PasswordFormData = z.infer<typeof passwordSchema>;
 
+interface UserProfile {
+  id: number
+  email: string
+  auth_email: string
+  full_name: string
+  role: string
+  hourly_rate?: number | null
+}
+
 interface Props {
-  user: any;
+  user: UserProfile;
 }
 
 export default function ProfileClient({ user }: Props) {

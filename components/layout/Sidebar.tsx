@@ -29,7 +29,7 @@ const linkDefinitions: SidebarLink[] = [
   { href: '/users', icon: '👥', labelKey: 'users' },
 ];
 
-export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
+export default function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const { t } = useTranslation();
 

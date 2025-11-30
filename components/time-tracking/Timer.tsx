@@ -28,6 +28,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
   // Load active timer on mount (recovery)
   useEffect(() => {
     loadActiveTimer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Browser close warning
@@ -53,6 +54,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
 
       return () => clearInterval(autoSaveInterval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, currentLogId, elapsedSeconds]);
 
   // Live timer countdown

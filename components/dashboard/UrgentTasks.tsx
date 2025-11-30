@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { formatDuration, formatRelativeTime } from '@/lib/dashboard-utils';
 
 interface UrgentTasksProps {
   urgentTasks: {

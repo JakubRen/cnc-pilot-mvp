@@ -18,9 +18,24 @@ const companySchema = z.object({
 
 type CompanyFormData = z.infer<typeof companySchema>;
 
+interface Company {
+  id: string
+  name: string
+  address: string | null
+  phone: string | null
+  timezone: string | null
+  logo_url: string | null
+}
+
+interface EmailDomain {
+  id: string
+  domain: string
+  created_at: string
+}
+
 interface Props {
-  company: any;
-  emailDomains: any[];
+  company: Company;
+  emailDomains: EmailDomain[];
   userRole: string;
 }
 

@@ -4,9 +4,19 @@ import { useState } from 'react';
 import { exportToCSV } from '@/lib/reports/export-utils';
 import type { OrderReportData } from '@/lib/reports/orders-report';
 
+interface OrdersSummary {
+  total: number
+  pending: number
+  in_progress: number
+  completed: number
+  delayed: number
+  cancelled: number
+  total_revenue: number
+}
+
 interface Props {
   orders: OrderReportData[];
-  summary: any;
+  summary: OrdersSummary;
 }
 
 export default function OrdersReportClient({ orders, summary }: Props) {

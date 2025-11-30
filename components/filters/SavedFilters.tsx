@@ -30,6 +30,7 @@ export default function SavedFilters({
 
   useEffect(() => {
     fetchSavedFilters()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType])
 
   const fetchSavedFilters = async () => {

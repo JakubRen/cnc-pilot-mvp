@@ -83,8 +83,9 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
 
       router.push(`/time-tracking/${timeLog.id}`);
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || 'Failed to update time log');
+    } catch (err: unknown) {
+      const error = err as Error | null
+      setError(error?.message || 'Failed to update time log');
       console.error('Update error:', err);
     } finally {
       setLoading(false);
@@ -103,7 +104,7 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
         </Link>
         <h1 className="text-3xl font-bold mb-2">Edit Time Log</h1>
         <p className="text-slate-400">
-          Update time log for Order #{(timeLog.orders as any).order_number}
+          Update time log for Order #{(timeLog.orders as unknown as { order_number: string }).order_number}
         </p>
       </div>
 

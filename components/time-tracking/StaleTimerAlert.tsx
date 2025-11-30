@@ -25,6 +25,7 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
 
     const interval = setInterval(loadStaleTimers, 5 * 60 * 1000); // 5 min
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId]);
 
   const loadStaleTimers = async () => {

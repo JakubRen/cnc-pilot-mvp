@@ -81,10 +81,10 @@ export default async function TimeLogDetailsPage({ params }: { params: Promise<{
               <div>
                 <div className="text-sm text-slate-400 mb-1">Order</div>
                 <Link
-                  href={`/orders/${(timeLog.orders as any).id}`}
+                  href={`/orders/${(timeLog.orders as unknown as { id: string }).id}`}
                   className="text-2xl font-bold text-blue-400 hover:text-blue-300"
                 >
-                  {(timeLog.orders as any).order_number}
+                  {(timeLog.orders as unknown as { order_number: string }).order_number}
                 </Link>
               </div>
               <span className={`px-4 py-2 rounded-full text-sm font-medium ${getStatusBadgeColor(timeLog.status)}`}>

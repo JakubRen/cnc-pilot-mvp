@@ -20,11 +20,18 @@ export default async function InventoryReportPage() {
     getInventoryCategories(user.company_id),
   ]);
 
+  const safeSummary = summary ?? {
+    total_items: 0,
+    total_value: 0,
+    low_stock_count: 0,
+    categories: 0,
+  };
+
   return (
     <div>
       <InventoryReportClient
         items={items}
-        summary={summary}
+        summary={safeSummary}
         categories={categories}
       />
     </div>

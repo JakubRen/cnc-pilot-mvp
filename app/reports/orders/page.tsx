@@ -15,9 +15,19 @@ export default async function OrdersReportPage() {
     getOrdersReportSummary(user.company_id),
   ]);
 
+  const safeSummary = summary ?? {
+    total: 0,
+    pending: 0,
+    in_progress: 0,
+    completed: 0,
+    delayed: 0,
+    cancelled: 0,
+    total_revenue: 0,
+  };
+
   return (
     <div>
-      <OrdersReportClient orders={orders} summary={summary} />
+      <OrdersReportClient orders={orders} summary={safeSummary} />
     </div>
   );
 }

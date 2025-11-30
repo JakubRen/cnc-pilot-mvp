@@ -20,9 +20,17 @@ export default async function TimeReportPage() {
     getTimeTrackingUsers(user.company_id),
   ]);
 
+  const safeSummary = summary ?? {
+    total_entries: 0,
+    total_hours: 0,
+    total_cost: 0,
+    active_timers: 0,
+    completed_timers: 0,
+  };
+
   return (
     <div>
-      <TimeReportClient logs={logs} summary={summary} users={users} />
+      <TimeReportClient logs={logs} summary={safeSummary} users={users} />
     </div>
   );
 }

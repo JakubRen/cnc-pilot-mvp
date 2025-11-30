@@ -4,9 +4,16 @@ import { useState } from 'react';
 import { exportToCSV } from '@/lib/reports/export-utils';
 import type { InventoryReportData } from '@/lib/reports/inventory-report';
 
+interface InventorySummary {
+  total_items: number
+  total_value: number
+  low_stock_count: number
+  categories: number
+}
+
 interface Props {
   items: InventoryReportData[];
-  summary: any;
+  summary: InventorySummary;
   categories: string[];
 }
 

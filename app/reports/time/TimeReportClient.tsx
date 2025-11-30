@@ -4,9 +4,17 @@ import { useState } from 'react';
 import { exportToCSV } from '@/lib/reports/export-utils';
 import type { TimeReportData } from '@/lib/reports/time-report';
 
+interface TimeSummary {
+  total_entries: number
+  total_hours: number
+  total_cost: number
+  active_timers: number
+  completed_timers: number
+}
+
 interface Props {
   logs: TimeReportData[];
-  summary: any;
+  summary: TimeSummary;
   users: Array<{ id: number; name: string }>;
 }
 

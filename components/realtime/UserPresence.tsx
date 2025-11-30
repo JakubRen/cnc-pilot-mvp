@@ -20,10 +20,10 @@ export default function UserPresence({ companyId, userId }: UserPresenceProps) {
         const users = Object.values(state).flat()
         setOnlineUsers(users as any[])
       })
-      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+      .on('presence', { event: 'join' }, ({ newPresences }) => {
         console.log('User joined:', newPresences)
       })
-      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+      .on('presence', { event: 'leave' }, ({ leftPresences }) => {
         console.log('User left:', leftPresences)
       })
       .subscribe(async (status) => {

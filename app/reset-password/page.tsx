@@ -52,8 +52,9 @@ export default function ResetPasswordPage() {
         router.push('/login?reset=success');
       }, 3000);
 
-    } catch (err: any) {
-      toast.error(err.message || 'Wystąpił błąd. Spróbuj ponownie.');
+    } catch (err: unknown) {
+      const error = err as Error | null
+      toast.error(error?.message || 'Wystąpił błąd. Spróbuj ponownie.');
     } finally {
       setLoading(false);
     }
