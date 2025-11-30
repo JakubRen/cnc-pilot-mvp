@@ -176,7 +176,7 @@ export default function OrderTimeTracking({
         <div className="text-center py-8 text-slate-400">
           <div className="text-4xl mb-2">⏱️</div>
           <div>No time logged yet</div>
-          <div className="text-sm">Click "Start Timer" to begin tracking</div>
+          <div className="text-sm">Click &quot;Start Timer&quot; to begin tracking</div>
         </div>
       )}
     </div>

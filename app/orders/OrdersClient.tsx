@@ -15,8 +15,18 @@ import { Button } from '@/components/ui/Button'
 import { useOrderFiltering } from '@/hooks/useOrderFiltering'
 import { useOrderSelection } from '@/hooks/useOrderSelection'
 
+interface OrderWithTags {
+  id: string
+  order_number: string
+  customer_name: string
+  quantity: number
+  deadline: string
+  status: string
+  tags: Array<{ id: string; name: string; color: string }>
+}
+
 interface OrdersClientProps {
-  orders: any[]
+  orders: OrderWithTags[]
   currentUserRole: string
 }
 
@@ -59,7 +69,7 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
   }
 
   // Load saved filter
-  const handleLoadSavedFilter = (config: any) => {
+  const handleLoadSavedFilter = (config: { status?: string; deadline?: string; search?: string; sortBy?: string; tagIds?: string[]; tagLogic?: 'AND' | 'OR' }) => {
     if (config.status !== undefined || config.deadline !== undefined || config.search !== undefined || config.sortBy !== undefined) {
       setFilters({
         status: config.status || 'all',

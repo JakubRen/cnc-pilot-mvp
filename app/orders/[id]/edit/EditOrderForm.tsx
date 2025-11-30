@@ -26,8 +26,24 @@ const orderSchema = z.object({
 
 type OrderFormData = z.infer<typeof orderSchema>
 
+interface OrderData {
+  id: string
+  order_number: string
+  customer_name: string
+  quantity: number
+  part_name: string | null
+  material: string | null
+  deadline: string
+  status: 'pending' | 'in_progress' | 'completed' | 'delayed' | 'cancelled'
+  notes: string | null
+  material_cost: number | null
+  labor_cost: number | null
+  overhead_cost: number | null
+  total_cost: number | null
+}
+
 interface EditOrderFormProps {
-  order: any
+  order: OrderData
 }
 
 export default function EditOrderForm({ order }: EditOrderFormProps) {

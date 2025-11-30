@@ -1,7 +1,8 @@
 'use client'
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SimpleLineChartProps {
   data: any[]
   xKey: string

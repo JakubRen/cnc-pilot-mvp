@@ -59,9 +59,10 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     .eq('entity_id', id)
 
   // Transform tags data to flat array
+  type TagRecord = { id: string; name: string; color: string }
   const tags = (orderTags || [])
-    .map((et: any) => et.tags)
-    .filter((tag: any) => tag !== null)
+    .map((et) => et.tags as unknown as TagRecord | null)
+    .filter((tag): tag is TagRecord => tag !== null)
 
   // Format dates in Polish locale
   const formatDate = (dateString: string) => {

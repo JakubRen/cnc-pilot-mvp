@@ -14,6 +14,7 @@ export default function PendingActivationPage() {
 
   useEffect(() => {
     checkUserStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkUserStatus = async () => {

@@ -3,8 +3,14 @@
 import { FilterState } from './OrderFilters'
 import { useTranslation } from '@/hooks/useTranslation'
 
+interface OrderForStats {
+  id: string
+  status: string
+  deadline: string
+}
+
 interface OrderStatsProps {
-  orders: any[]
+  orders: OrderForStats[]
   onFilterClick: (filters: FilterState) => void
 }
 

@@ -37,14 +37,17 @@ export default async function OrdersPage() {
     .in('entity_id', (orders || []).map(o => o.id))
 
   // Create a map of order_id -> tags[]
-  const orderTagsMap: Record<string, any[]> = {}
+  type TagData = { id: string; name: string; color: string }
+  const orderTagsMap: Record<string, TagData[]> = {}
   if (orderTags) {
-    orderTags.forEach((et: any) => {
-      if (!orderTagsMap[et.entity_id]) {
-        orderTagsMap[et.entity_id] = []
+    orderTags.forEach((et) => {
+      const entityId = et.entity_id as string
+      const tagData = et.tags as unknown as TagData | null
+      if (!orderTagsMap[entityId]) {
+        orderTagsMap[entityId] = []
       }
-      if (et.tags) {
-        orderTagsMap[et.entity_id].push(et.tags)
+      if (tagData) {
+        orderTagsMap[entityId].push(tagData)
       }
     })
   }

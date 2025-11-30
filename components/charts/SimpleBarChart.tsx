@@ -1,7 +1,8 @@
 'use client'
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SimpleBarChartProps {
   data: any[]
   xKey: string

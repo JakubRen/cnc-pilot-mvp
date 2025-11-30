@@ -220,7 +220,8 @@ export default function AddOrderPage() {
     }
 
     // Exclude pricing calculator fields (not in database)
-    const { length: _length, width: _width, height: _height, complexity: _complexity, ...orderData } = data
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { length, width, height, complexity, ...orderData } = data
 
     const { error } = await supabase
       .from('orders')

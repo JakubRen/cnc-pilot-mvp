@@ -45,7 +45,7 @@ export default function RegisterPage() {
       const registeringToast = toast.loading('Tworzenie konta...')
 
       // KROK 2: Rejestracja użytkownika w Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
@@ -72,9 +72,10 @@ export default function RegisterPage() {
 
       router.push('/')
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.dismiss(loadingToast)
-      toast.error(err.message || 'Wystąpił błąd. Spróbuj ponownie.')
+      const error = err as Error | null
+      toast.error(error?.message || 'Wystąpił błąd. Spróbuj ponownie.')
     }
   }
 

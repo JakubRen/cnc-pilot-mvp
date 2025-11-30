@@ -39,7 +39,7 @@ interface Props {
   currentUserRole: string;
 }
 
-export default function TimeLogList({ timeLogs, currentUserId, currentUserRole }: Props) {
+export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
   const router = useRouter();
 
   const handleDelete = async (id: string) => {

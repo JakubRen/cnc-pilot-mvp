@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
@@ -23,7 +22,6 @@ type UserListProps = {
 export default function UserList({ users: initialUsers, currentUserRole }: UserListProps) {
   const [showDetails, setShowDetails] = useState(true)
   const [users, setUsers] = useState(initialUsers)
-  const router = useRouter()
 
   const handleDelete = async (userId: string, userName: string) => {
     const confirmed = window.confirm(
