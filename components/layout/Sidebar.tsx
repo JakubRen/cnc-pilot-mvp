@@ -93,7 +93,15 @@ export default function Sidebar({ onClose }: SidebarProps) {
       {/* Footer */}
       <div className="px-6 py-3 border-t border-slate-700">
         <div className="text-xs text-slate-500">
-          <p>Day 10: Multi-Tenancy + Auth</p>
+          <a
+            href="https://stats.uptimerobot.com/g4Pua2N0Z3"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 hover:text-slate-300 transition-colors"
+          >
+            <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+            System Status
+          </a>
           <p className="mt-1">© 2024 CNC-Pilot</p>
         </div>
       </div>
