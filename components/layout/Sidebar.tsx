@@ -3,13 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from '@/hooks/useTranslation';
+import { usePermissions } from '@/hooks/usePermissions';
+import type { AppModule } from '@/types/permissions';
 
-type NavKey = 'dashboard' | 'orders' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'reports' | 'tags' | 'users';
+type NavKey = 'dashboard' | 'orders' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'reports' | 'tags' | 'users' | 'settings';
 
 interface SidebarLink {
   href: string;
   icon: string;
   labelKey: NavKey;
+  module: AppModule; // Moduł do sprawdzenia uprawnień
 }
 
 interface SidebarProps {
@@ -18,20 +21,28 @@ interface SidebarProps {
 }
 
 const linkDefinitions: SidebarLink[] = [
-  { href: '/', icon: '📊', labelKey: 'dashboard' },
-  { href: '/orders', icon: '📦', labelKey: 'orders' },
-  { href: '/inventory', icon: '🏭', labelKey: 'inventory' },
-  { href: '/documents', icon: '📄', labelKey: 'documents' },
-  { href: '/files', icon: '📁', labelKey: 'files' },
-  { href: '/time-tracking', icon: '⏱️', labelKey: 'timeTracking' },
-  { href: '/reports', icon: '📈', labelKey: 'reports' },
-  { href: '/tags', icon: '🏷️', labelKey: 'tags' },
-  { href: '/users', icon: '👥', labelKey: 'users' },
+  { href: '/', icon: '📊', labelKey: 'dashboard', module: 'dashboard' },
+  { href: '/orders', icon: '📦', labelKey: 'orders', module: 'orders' },
+  { href: '/inventory', icon: '🏭', labelKey: 'inventory', module: 'inventory' },
+  { href: '/documents', icon: '📄', labelKey: 'documents', module: 'documents' },
+  { href: '/files', icon: '📁', labelKey: 'files', module: 'files' },
+  { href: '/time-tracking', icon: '⏱️', labelKey: 'timeTracking', module: 'time-tracking' },
+  { href: '/reports', icon: '📈', labelKey: 'reports', module: 'reports' },
+  { href: '/tags', icon: '🏷️', labelKey: 'tags', module: 'tags' },
+  { href: '/users', icon: '👥', labelKey: 'users', module: 'users' },
+  { href: '/settings', icon: '⚙️', labelKey: 'settings', module: 'users' }, // tylko admin/owner mają users:access
 ];
 
 export default function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const { canAccess, loading } = usePermissions();
+
+  // Filtruj linki na podstawie uprawnień
+  // Podczas loading pokazuj wszystkie - unika migania
+  const visibleLinks = loading
+    ? linkDefinitions
+    : linkDefinitions.filter((link) => canAccess(link.module));
 
   return (
     <aside className="w-64 bg-slate-800 border-r border-slate-700 flex flex-col h-screen">
@@ -58,13 +69,13 @@ export default function Sidebar({ onClose }: SidebarProps) {
 
       {/* Navigation Links */}
       <nav className="flex-1 overflow-y-auto py-4">
-        {linkDefinitions.map((link) => {
+        {visibleLinks.map((link) => {
           const isActive = pathname === link.href;
           return (
             <Link
               key={link.href}
               href={link.href}
-              onClick={onClose} // Close sidebar on mobile after click
+              onClick={onClose}
               className={`flex items-center gap-3 px-6 py-3 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isActive
                   ? 'bg-blue-600 text-white border-r-4 border-blue-400'

@@ -5,6 +5,7 @@
 
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
+import { canAccessModule } from '@/lib/permissions-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import EmptyState from '@/components/ui/EmptyState'
@@ -22,6 +23,12 @@ export default async function DocumentsPage() {
 
   if (!user || !user.company_id) {
     redirect('/login')
+  }
+
+  // Permission check - documents access
+  const hasAccess = await canAccessModule('documents')
+  if (!hasAccess) {
+    redirect('/no-access')
   }
 
   // Fetch warehouse documents z relacjami

@@ -1,5 +1,8 @@
 'use client'
 
+import { usePermissions } from '@/hooks/usePermissions';
+import { PriceDisplay } from '@/components/permissions';
+
 interface TopCustomersProps {
   customers: Array<{
     name: string;
@@ -9,6 +12,8 @@ interface TopCustomersProps {
 }
 
 export default function TopCustomers({ customers }: TopCustomersProps) {
+  const { canViewPrices } = usePermissions();
+  const showRevenue = canViewPrices('dashboard');
   const maxRevenue = customers[0]?.revenue || 1;
 
   if (customers.length === 0) {
@@ -53,25 +58,33 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
                 </span>
               </div>
               <div className="text-right">
-                <div className="font-bold text-green-400">
-                  {customer.revenue.toFixed(2)} PLN
-                </div>
+                {showRevenue ? (
+                  <PriceDisplay
+                    value={customer.revenue}
+                    module="dashboard"
+                    className="font-bold text-green-400"
+                  />
+                ) : (
+                  <div className="font-bold text-slate-400">---</div>
+                )}
                 <div className="text-xs text-slate-400">
                   {customer.count} {customer.count === 1 ? 'zlecenie' : customer.count < 5 ? 'zlecenia' : 'zleceń'}
                 </div>
               </div>
             </div>
-            {/* Progress bar */}
-            <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-              <div
-                className={`h-full transition-all duration-500 ${
-                  index === 0 ? 'bg-gradient-to-r from-green-600 to-green-400' :
-                  index === 1 ? 'bg-gradient-to-r from-blue-600 to-blue-400' :
-                  'bg-gradient-to-r from-slate-600 to-slate-500'
-                }`}
-                style={{ width: `${(customer.revenue / maxRevenue) * 100}%` }}
-              />
-            </div>
+            {/* Progress bar - tylko gdy widoczne revenue */}
+            {showRevenue && (
+              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-500 ${
+                    index === 0 ? 'bg-gradient-to-r from-green-600 to-green-400' :
+                    index === 1 ? 'bg-gradient-to-r from-blue-600 to-blue-400' :
+                    'bg-gradient-to-r from-slate-600 to-slate-500'
+                  }`}
+                  style={{ width: `${(customer.revenue / maxRevenue) * 100}%` }}
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>

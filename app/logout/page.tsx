@@ -1,25 +1,30 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { signOut } from '@/lib/auth';
 
 export default function LogoutPage() {
-  const router = useRouter();
-
   useEffect(() => {
     const logout = async () => {
-      await signOut();
+      try {
+        await signOut();
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+      // Clear permissions cache
+      localStorage.removeItem('cnc-pilot-permissions');
+      localStorage.removeItem('cnc-pilot-permissions-ts');
       // Clear all cookies
       document.cookie.split(";").forEach((c) => {
         document.cookie = c
           .replace(/^ +/, "")
           .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
       });
-      router.push('/login');
+      // Użyj window.location zamiast router.push dla pewności
+      window.location.href = '/login';
     };
     logout();
-  }, [router]);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-900">

@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
+import { canAccessModule } from '@/lib/permissions-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import EmptyState from '@/components/ui/EmptyState'
@@ -11,6 +12,12 @@ export default async function InventoryPage() {
 
   if (!user) {
     redirect('/login')
+  }
+
+  // Permission check - inventory access
+  const hasAccess = await canAccessModule('inventory')
+  if (!hasAccess) {
+    redirect('/no-access')
   }
 
   // Fetch inventory items (filtered by company)

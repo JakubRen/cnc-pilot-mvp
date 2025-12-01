@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import AppLayout from '@/components/layout/AppLayout'
 import TagManager from '@/components/tags/TagManager'
 import { getUserProfile } from '@/lib/auth-server'
+import { canAccessModule } from '@/lib/permissions-server'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
@@ -12,6 +13,12 @@ export const metadata: Metadata = {
 export default async function TagsPage() {
   const userProfile = await getUserProfile()
   if (!userProfile) redirect('/login')
+
+  // Permission check - tags access
+  const hasAccess = await canAccessModule('tags')
+  if (!hasAccess) {
+    redirect('/no-access')
+  }
 
   return (
     <AppLayout>

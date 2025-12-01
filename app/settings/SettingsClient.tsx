@@ -37,9 +37,10 @@ interface Props {
   company: Company;
   emailDomains: EmailDomain[];
   userRole: string;
+  canManagePermissions: boolean;
 }
 
-export default function SettingsClient({ company, emailDomains, userRole }: Props) {
+export default function SettingsClient({ company, emailDomains, userRole, canManagePermissions }: Props) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -94,6 +95,49 @@ export default function SettingsClient({ company, emailDomains, userRole }: Prop
 
   return (
     <div className="space-y-6">
+      {/* Quick Links */}
+      {(canManagePermissions || userRole === 'owner') && (
+        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+          <h2 className="text-2xl font-bold text-white mb-4">Szybkie linki</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {canManagePermissions && (
+              <a
+                href="/settings/permissions"
+                className="p-4 bg-slate-700 rounded-lg hover:bg-slate-600 transition group"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">🔐</span>
+                  <div>
+                    <h3 className="font-semibold text-white group-hover:text-blue-400">
+                      Zarządzanie uprawnieniami
+                    </h3>
+                    <p className="text-sm text-slate-400">
+                      Konfiguruj dostęp i uprawnienia użytkowników
+                    </p>
+                  </div>
+                </div>
+              </a>
+            )}
+            <a
+              href="/users"
+              className="p-4 bg-slate-700 rounded-lg hover:bg-slate-600 transition group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">👥</span>
+                <div>
+                  <h3 className="font-semibold text-white group-hover:text-blue-400">
+                    Zarządzanie użytkownikami
+                  </h3>
+                  <p className="text-sm text-slate-400">
+                    Dodawaj i edytuj użytkowników firmy
+                  </p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Company Information Form */}
       <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
         <h2 className="text-2xl font-bold text-white mb-6">Informacje o firmie</h2>

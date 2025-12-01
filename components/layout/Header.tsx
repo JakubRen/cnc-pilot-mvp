@@ -22,18 +22,36 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
   useEffect(() => {
     // Get current user profile
     const fetchUserProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('full_name, role')
-          .eq('auth_id', user.id)
-          .single();
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile, error } = await supabase
+            .from('users')
+            .select('full_name, role')
+            .eq('auth_id', user.id)
+            .single();
 
-        if (profile) {
-          setUserName(profile.full_name || user.email || 'User');
-          setUserRole(profile.role || 'operator');
+          if (error) {
+            console.error('Error fetching profile:', error);
+            // Fallback do email
+            setUserName(user.email || 'User');
+            setUserRole('operator');
+            return;
+          }
+
+          if (profile) {
+            setUserName(profile.full_name || user.email || 'User');
+            setUserRole(profile.role || 'operator');
+          } else {
+            // Brak profilu - użyj email
+            setUserName(user.email || 'User');
+            setUserRole('operator');
+          }
         }
+      } catch (error) {
+        console.error('Error in fetchUserProfile:', error);
+        setUserName('User');
+        setUserRole('operator');
       }
     };
 

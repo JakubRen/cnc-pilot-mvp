@@ -1,4 +1,5 @@
 import { getUserProfile } from '@/lib/auth-server';
+import { hasPermission } from '@/lib/permissions-server';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase-server';
 import AppLayout from '@/components/layout/AppLayout';
@@ -32,6 +33,9 @@ export default async function SettingsPage() {
     .eq('company_id', user.company_id)
     .order('domain', { ascending: true });
 
+  // Check if user can manage permissions
+  const canManagePermissions = user.role === 'owner' || await hasPermission('users:permissions');
+
   return (
     <AppLayout>
       <div className="p-8">
@@ -41,6 +45,7 @@ export default async function SettingsPage() {
             company={company}
             emailDomains={emailDomains || []}
             userRole={user.role}
+            canManagePermissions={canManagePermissions}
           />
         </div>
       </div>

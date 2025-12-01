@@ -7,6 +7,8 @@ import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { useTranslation } from '@/hooks/useTranslation'
+import { usePermissions } from '@/hooks/usePermissions'
+import { PriceDisplay } from '@/components/permissions'
 
 interface Order {
   id: string
@@ -37,6 +39,8 @@ export default function OrderList({
 }: OrderListProps) {
   const router = useRouter()
   const { t } = useTranslation()
+  const { canViewPrices } = usePermissions()
+  const showPrices = canViewPrices('orders')
   const allSelected = orders.length > 0 && orders.every(order => selectedOrders.has(order.id))
 
   // Check if order is overdue
@@ -126,9 +130,11 @@ export default function OrderList({
               <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
                 {t('common', 'status')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                {t('common', 'cost')}
-              </th>
+              {showPrices && (
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  {t('common', 'cost')}
+                </th>
+              )}
               <th className="px-6 py-3 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">
                 {t('common', 'actions')}
               </th>
@@ -176,19 +182,23 @@ export default function OrderList({
                 <td className="px-6 py-4 whitespace-nowrap">
                   {getStatusBadge(order.status)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {order.total_cost && order.total_cost > 0 ? (
-                    <span className={`font-semibold ${
-                      order.total_cost > 5000 ? 'text-red-400' :
-                      order.total_cost > 2000 ? 'text-yellow-400' :
-                      'text-green-400'
-                    }`}>
-                      {order.total_cost.toFixed(2)} PLN
-                    </span>
-                  ) : (
-                    <span className="text-slate-500 text-xs">-</span>
-                  )}
-                </td>
+                {showPrices && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {order.total_cost && order.total_cost > 0 ? (
+                      <PriceDisplay
+                        value={order.total_cost}
+                        module="orders"
+                        className={`font-semibold ${
+                          order.total_cost > 5000 ? 'text-red-400' :
+                          order.total_cost > 2000 ? 'text-yellow-400' :
+                          'text-green-400'
+                        }`}
+                      />
+                    ) : (
+                      <span className="text-slate-500 text-xs">-</span>
+                    )}
+                  </td>
+                )}
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
                   <Link href={`/orders/${order.id}`}>
                     <Button variant="ghost" size="sm">

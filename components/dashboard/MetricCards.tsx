@@ -1,5 +1,8 @@
+'use client';
+
 import MetricCard from './MetricCard';
 import { formatRevenue, formatNumber } from '@/lib/dashboard-utils';
+import { PermissionGuard } from '@/components/permissions';
 
 interface MetricCardsProps {
   metrics: {
@@ -36,14 +39,16 @@ export default function MetricCards({ metrics }: MetricCardsProps) {
         link="/orders"
       />
 
-      {/* Revenue This Month */}
-      <MetricCard
-        title="Przychód (Miesiąc)"
-        value={formatRevenue(metrics.revenueThisMonth)}
-        icon="💰"
-        subtitle={`${metrics.completedThisWeek} ukończonych w tym tygodniu`}
-        color="green"
-      />
+      {/* Revenue This Month - TYLKO DLA UPRAWNIONYCH */}
+      <PermissionGuard prices="dashboard">
+        <MetricCard
+          title="Przychód (Miesiąc)"
+          value={formatRevenue(metrics.revenueThisMonth)}
+          icon="💰"
+          subtitle={`${metrics.completedThisWeek} ukończonych w tym tygodniu`}
+          color="green"
+        />
+      </PermissionGuard>
 
       {/* Active Timers */}
       <MetricCard

@@ -5,6 +5,7 @@
 
 import { createClient } from '@/lib/supabase-server';
 import { getUserProfile } from '@/lib/auth-server';
+import { canAccessModule } from '@/lib/permissions-server';
 import { redirect } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout';
 import TimeLogsClient from './TimeLogsClient';
@@ -21,6 +22,12 @@ export default async function TimeTrackingPage() {
 
   if (!currentUser || !currentUser.company_id) {
     redirect('/login');
+  }
+
+  // Permission check - time-tracking access
+  const hasAccess = await canAccessModule('time-tracking');
+  if (!hasAccess) {
+    redirect('/no-access');
   }
 
   // Fetch time logs with relations

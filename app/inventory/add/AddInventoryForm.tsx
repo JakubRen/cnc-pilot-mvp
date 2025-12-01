@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useTranslation } from '@/hooks/useTranslation'
+import { usePermissions } from '@/hooks/usePermissions'
 
 type InventoryFormData = {
   sku: string
@@ -27,6 +28,8 @@ type InventoryFormData = {
 export default function AddInventoryForm() {
   const router = useRouter()
   const { t } = useTranslation()
+  const { canViewPrices } = usePermissions()
+  const showPrices = canViewPrices('inventory')
 
   const inventorySchema = z.object({
     sku: z.string().min(1, t('inventory', 'skuRequired')),
@@ -234,18 +237,20 @@ export default function AddInventoryForm() {
           />
         </div>
 
-        {/* Unit Cost */}
-        <div>
-          <label htmlFor="unit_cost" className="block text-slate-300 mb-2">{t('inventory', 'unitCost')}</label>
-          <input
-            id="unit_cost"
-            {...register('unit_cost', { valueAsNumber: true })}
-            type="number"
-            step="0.01"
-            placeholder="0.00"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-          />
-        </div>
+        {/* Unit Cost - TYLKO DLA UPRAWNIONYCH */}
+        {showPrices && (
+          <div>
+            <label htmlFor="unit_cost" className="block text-slate-300 mb-2">{t('inventory', 'unitCost')}</label>
+            <input
+              id="unit_cost"
+              {...register('unit_cost', { valueAsNumber: true })}
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+        )}
 
         {/* Batch Number */}
         <div>

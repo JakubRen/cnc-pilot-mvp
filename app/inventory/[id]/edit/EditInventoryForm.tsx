@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useEffect } from 'react'
+import { usePermissions } from '@/hooks/usePermissions'
 
 const inventorySchema = z.object({
   sku: z.string().min(1, 'SKU wymagane'),
@@ -49,6 +50,8 @@ interface EditInventoryFormProps {
 
 export default function EditInventoryForm({ item }: EditInventoryFormProps) {
   const router = useRouter()
+  const { canViewPrices } = usePermissions()
+  const showPrices = canViewPrices('inventory')
 
   const {
     register,
@@ -204,17 +207,19 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
           />
         </div>
 
-        {/* Unit Cost */}
-        <div>
-          <label htmlFor="edit_unit_cost" className="block text-slate-300 mb-2">Koszt jednostkowy (PLN)</label>
-          <input
-            id="edit_unit_cost"
-            {...register('unit_cost', { valueAsNumber: true })}
-            type="number"
-            step="0.01"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-          />
-        </div>
+        {/* Unit Cost - TYLKO DLA UPRAWNIONYCH */}
+        {showPrices && (
+          <div>
+            <label htmlFor="edit_unit_cost" className="block text-slate-300 mb-2">Koszt jednostkowy (PLN)</label>
+            <input
+              id="edit_unit_cost"
+              {...register('unit_cost', { valueAsNumber: true })}
+              type="number"
+              step="0.01"
+              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+        )}
 
         {/* Batch Number */}
         <div>

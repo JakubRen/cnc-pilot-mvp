@@ -2,15 +2,20 @@
 
 import { ReactNode } from 'react';
 import { TranslationProvider } from '@/hooks/useTranslation';
+import { PermissionsProvider } from '@/hooks/usePermissions';
+import type { UserPermissionsMap } from '@/types/permissions';
 
 interface ProvidersProps {
   children: ReactNode;
+  initialPermissions?: UserPermissionsMap;
 }
 
-export function Providers({ children }: ProvidersProps) {
+export function Providers({ children, initialPermissions }: ProvidersProps) {
   return (
     <TranslationProvider>
-      {children}
+      <PermissionsProvider initialPermissions={initialPermissions}>
+        {children}
+      </PermissionsProvider>
     </TranslationProvider>
   );
 }

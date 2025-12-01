@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import AppLayout from '@/components/layout/AppLayout'
 import FilesPageClient from './FilesPageClient'
 import { getUserProfile } from '@/lib/auth-server'
+import { canAccessModule } from '@/lib/permissions-server'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 
@@ -15,6 +16,12 @@ export const dynamic = 'force-dynamic'
 export default async function FilesPage() {
   const userProfile = await getUserProfile()
   if (!userProfile) redirect('/login')
+
+  // Permission check - files access
+  const hasAccess = await canAccessModule('files')
+  if (!hasAccess) {
+    redirect('/no-access')
+  }
 
   const supabase = await createClient()
 

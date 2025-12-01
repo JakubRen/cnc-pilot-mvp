@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation';
 import EmptyState from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { usePermissions } from '@/hooks/usePermissions';
+import { PriceDisplay } from '@/components/permissions';
 
 interface TimeLog {
   id: string;
@@ -41,6 +43,8 @@ interface Props {
 
 export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
   const router = useRouter();
+  const { canViewPrices } = usePermissions();
+  const showPrices = canViewPrices('time-tracking');
 
   const handleDelete = async (id: string) => {
     if (!confirm('Czy na pewno chcesz usunąć ten wpis czasu?')) {
@@ -121,9 +125,11 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
-                Koszt
-              </th>
+              {showPrices && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                  Koszt
+                </th>
+              )}
               <th className="px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">
                 Akcje
               </th>
@@ -159,13 +165,19 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
                 <td className="px-6 py-4 whitespace-nowrap">
                   {getStatusBadge(log.status)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {log.status === 'completed' ? (
-                    <span className="font-medium text-slate-300">{log.total_cost.toFixed(2)} PLN</span>
-                  ) : (
-                    <span className="text-slate-500">-</span>
-                  )}
-                </td>
+                {showPrices && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {log.status === 'completed' ? (
+                      <PriceDisplay
+                        value={log.total_cost}
+                        module="time-tracking"
+                        className="font-medium text-slate-300"
+                      />
+                    ) : (
+                      <span className="text-slate-500">-</span>
+                    )}
+                  </td>
+                )}
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
                   <Button
                     href={`/time-tracking/${log.id}`}

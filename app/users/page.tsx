@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
+import { canAccessModule } from '@/lib/permissions-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import UserList from './UserList'
@@ -10,6 +11,12 @@ export default async function UsersPage() {
 
   if (!userProfile) {
     redirect('/login')
+  }
+
+  // Permission check - users access
+  const hasAccess = await canAccessModule('users')
+  if (!hasAccess) {
+    redirect('/no-access')
   }
 
   const supabase = await createClient()

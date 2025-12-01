@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getUserProfile } from '@/lib/auth-server'
+import { canAccessModule } from '@/lib/permissions-server'
 import { redirect } from 'next/navigation'
 
 export default async function ReportsDashboard() {
@@ -7,6 +8,12 @@ export default async function ReportsDashboard() {
 
   if (!user) {
     redirect('/login')
+  }
+
+  // Permission check - reports access
+  const hasAccess = await canAccessModule('reports')
+  if (!hasAccess) {
+    redirect('/no-access')
   }
 
   const reports = [

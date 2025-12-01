@@ -8,6 +8,7 @@ import { getUserProfile } from '@/lib/auth-server';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { formatDuration, formatDurationHuman, getStatusBadgeColor } from '@/lib/time-utils';
+import { PermissionGuard, PriceDisplay } from '@/components/permissions';
 
 export default async function TimeLogDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -126,22 +127,33 @@ export default async function TimeLogDetailsPage({ params }: { params: Promise<{
               </div>
             </div>
 
-            {/* Cost Information */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-slate-300">Cost Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-slate-400 mb-1">Hourly Rate</div>
-                  <div className="font-medium text-xl">{timeLog.hourly_rate.toFixed(2)} PLN/h</div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-400 mb-1">Total Cost</div>
-                  <div className="font-medium text-xl text-green-400">
-                    {timeLog.total_cost.toFixed(2)} PLN
+            {/* Cost Information - TYLKO DLA UPRAWNIONYCH */}
+            <PermissionGuard prices="time-tracking">
+              <div>
+                <h3 className="text-lg font-semibold mb-4 text-slate-300">Informacje o kosztach</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm text-slate-400 mb-1">Stawka godzinowa</div>
+                    <div className="font-medium text-xl">
+                      <PriceDisplay
+                        value={timeLog.hourly_rate}
+                        module="time-tracking"
+                        suffix="/h"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-slate-400 mb-1">Całkowity koszt</div>
+                    <div className="font-medium text-xl text-green-400">
+                      <PriceDisplay
+                        value={timeLog.total_cost}
+                        module="time-tracking"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </PermissionGuard>
 
             {/* Operator Information */}
             <div>

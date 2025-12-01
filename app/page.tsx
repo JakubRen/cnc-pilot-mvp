@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase-server';
 import { getDashboardSummary } from '@/lib/dashboard-queries';
+import { canAccessModule } from '@/lib/permissions-server';
 import AppLayout from '@/components/layout/AppLayout';
 import DashboardClient from '@/components/dashboard/DashboardClient';
 import { DashboardPreferences, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard';
@@ -33,6 +34,12 @@ export default async function HomePage() {
   if (!currentUser || !currentUser.company_id) {
     console.log('[HOME] No currentUser or company_id - redirecting to /login');
     redirect('/login');
+  }
+
+  // Permission check - dashboard access
+  const hasAccess = await canAccessModule('dashboard');
+  if (!hasAccess) {
+    redirect('/no-access');
   }
 
   // Fetch dashboard data

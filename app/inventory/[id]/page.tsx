@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import InventoryHistory from '@/components/inventory/InventoryHistory'
 import TagSelect from '@/components/tags/TagSelect'
+import { PermissionGuard, PriceDisplay } from '@/components/permissions'
 
 export default async function InventoryDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -140,18 +141,25 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
                 <p className="text-slate-400 text-sm">Próg niskiego stanu</p>
                 <p className="text-white font-semibold">{item.low_stock_threshold} {item.unit}</p>
               </div>
-              {item.unit_cost && (
-                <>
-                  <div>
-                    <p className="text-slate-400 text-sm">Koszt jednostkowy</p>
-                    <p className="text-white font-semibold">{Number(item.unit_cost).toFixed(2)} PLN</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-sm">Wartość całkowita</p>
-                    <p className="text-white font-semibold">{totalValue} PLN</p>
-                  </div>
-                </>
-              )}
+              {/* Koszty - TYLKO DLA UPRAWNIONYCH */}
+              <PermissionGuard prices="inventory">
+                {item.unit_cost && (
+                  <>
+                    <div>
+                      <p className="text-slate-400 text-sm">Koszt jednostkowy</p>
+                      <p className="text-white font-semibold">
+                        <PriceDisplay value={Number(item.unit_cost)} module="inventory" />
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 text-sm">Wartość całkowita</p>
+                      <p className="text-white font-semibold">
+                        <PriceDisplay value={Number(item.quantity) * Number(item.unit_cost)} module="inventory" />
+                      </p>
+                    </div>
+                  </>
+                )}
+              </PermissionGuard>
             </div>
           </div>
 
