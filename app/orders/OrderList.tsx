@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState, useRef, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
@@ -44,6 +45,19 @@ export default function OrderList({
   const { canViewPrices } = usePermissions()
   const showPrices = canViewPrices('orders')
   const allSelected = orders.length > 0 && orders.every(order => selectedOrders.has(order.id))
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenuId(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Check if order is overdue
   const isOrderOverdue = (deadline: string, status: string) => {
@@ -77,29 +91,29 @@ export default function OrderList({
       toast.success(`${t('orders', 'order')} #${orderNumber} ${t('orders', 'deleted')}`)
       router.refresh()
     }
-  
+
     const handleDuplicate = async (orderId: string, orderNumber: string) => {
       const confirmed = confirm(
-        `Czy na pewno chcesz zduplikować zamówienie #${orderNumber}?`
+        `${t('orders', 'duplicateConfirm')} #${orderNumber}?`
       )
       if (!confirmed) return
 
-      const loadingToast = toast.loading(`Duplikowanie zamówienia #${orderNumber}...`)
+      const loadingToast = toast.loading(t('orders', 'duplicating'))
 
       const { success, error, newOrderId } = await duplicateOrder(orderId)
 
       toast.dismiss(loadingToast)
 
       if (!success) {
-        toast.error(`Nie udało się zduplikować zamówienia: ${error}`)
+        toast.error(`${t('orders', 'duplicateFailed')}: ${error}`)
         return
       }
 
-      toast.success(`Zamówienie #${orderNumber} zduplikowane pomyślnie!`)
-      router.push(`/orders/${newOrderId}/edit`) // Optionally redirect to edit new order
+      toast.success(`${t('orders', 'order')} #${orderNumber} ${t('orders', 'duplicated')}`)
+      router.push(`/orders/${newOrderId}/edit`)
       router.refresh()
     }
-  
+
     if (!orders || orders.length === 0) {
       return (
         <div className="text-center py-16 text-slate-400 bg-slate-800 border border-slate-700 rounded-lg">
@@ -162,7 +176,7 @@ export default function OrderList({
                   {t('common', 'cost')}
                 </th>
               )}
-              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">
                 {t('common', 'actions')}
               </th>
             </tr>
@@ -202,7 +216,7 @@ export default function OrderList({
                       {new Date(order.deadline).toLocaleDateString()}
                     </span>
                     {isOrderOverdue(order.deadline, order.status) && (
-                      <Badge variant="danger">{t('orderStatus', 'overdue')}</Badge>
+                      <Badge variant="danger" size="sm" className="w-fit">{t('orderStatus', 'overdue')}</Badge>
                     )}
                   </div>
                 </td>
@@ -233,35 +247,47 @@ export default function OrderList({
                     )}
                   </td>
                 )}
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
-                  <Link href={`/orders/${order.id}`}>
-                    <Button variant="ghost" size="sm">
-                      {t('common', 'view')}
-                    </Button>
-                  </Link>
-                  <Link href={`/orders/${order.id}/edit`}>
-                    <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">
-                      {t('common', 'edit')}
-                    </Button>
-                  </Link>
-                  <Button
-                    onClick={() => handleDuplicate(order.id, order.order_number)}
-                    variant="ghost"
-                    size="sm"
-                    className="text-orange-400 hover:text-orange-300"
-                  >
-                    Duplikuj
-                  </Button>
-                  {currentUserRole === 'owner' && (
-                    <Button
-                      onClick={() => handleDelete(order.id, order.order_number)}
-                      variant="ghost"
-                      size="sm"
-                      className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-right">
+                  <div className="relative inline-block" ref={openMenuId === order.id ? menuRef : null}>
+                    <button
+                      onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
+                      className="p-2 hover:bg-slate-700 rounded-lg transition"
                     >
-                      {t('common', 'delete')}
-                    </Button>
-                  )}
+                      <span className="text-slate-400">⋮</span>
+                    </button>
+                    {openMenuId === order.id && (
+                      <div className="absolute right-0 top-full mt-1 w-36 bg-slate-700 border border-slate-600 rounded-lg shadow-xl z-10 py-1">
+                        <Link
+                          href={`/orders/${order.id}`}
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-slate-200 hover:bg-slate-600"
+                          onClick={() => setOpenMenuId(null)}
+                        >
+                          <span>👁</span> {t('common', 'view')}
+                        </Link>
+                        <Link
+                          href={`/orders/${order.id}/edit`}
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-blue-400 hover:bg-slate-600"
+                          onClick={() => setOpenMenuId(null)}
+                        >
+                          <span>✏️</span> {t('common', 'edit')}
+                        </Link>
+                        <button
+                          onClick={() => { handleDuplicate(order.id, order.order_number); setOpenMenuId(null); }}
+                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-orange-400 hover:bg-slate-600"
+                        >
+                          <span>📋</span> {t('common', 'duplicate')}
+                        </button>
+                        {currentUserRole === 'owner' && (
+                          <button
+                            onClick={() => { handleDelete(order.id, order.order_number); setOpenMenuId(null); }}
+                            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-slate-600"
+                          >
+                            <span>🗑</span> {t('common', 'delete')}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
