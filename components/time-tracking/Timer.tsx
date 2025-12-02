@@ -129,9 +129,10 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
         .maybeSingle();
 
       if (existingTimer) {
-        const orderNumber = (existingTimer.orders as any)?.[0]?.order_number || 'Unknown';
+        const orders = existingTimer.orders as { order_number: string } | { order_number: string }[] | null;
+        const orderNum = Array.isArray(orders) ? orders[0]?.order_number : orders?.order_number;
         const shouldStop = confirm(
-          `You have an active timer on Order #${orderNumber}. Stop it and start new timer?`
+          `You have an active timer on Order #${orderNum || 'Unknown'}. Stop it and start new timer?`
         );
 
         if (!shouldStop) {
@@ -169,8 +170,9 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
       setCurrentLogId(data.id);
       setStatus('running');
       setElapsedSeconds(0);
-    } catch (err: any) {
-      setError(err.message || 'Failed to start timer');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to start timer';
+      setError(message);
       console.error('Start timer error:', err);
     } finally {
       setLoading(false);
@@ -195,8 +197,9 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
       if (error) throw error;
 
       setStatus('paused');
-    } catch (err: any) {
-      setError(err.message || 'Failed to pause timer');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to pause timer';
+      setError(message);
       console.error('Pause timer error:', err);
     } finally {
       setLoading(false);
@@ -218,8 +221,9 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
       if (error) throw error;
 
       setStatus('running');
-    } catch (err: any) {
-      setError(err.message || 'Failed to resume timer');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to resume timer';
+      setError(message);
       console.error('Resume timer error:', err);
     } finally {
       setLoading(false);
@@ -247,8 +251,9 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
       setStatus('idle');
       setElapsedSeconds(0);
       setCurrentLogId(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to stop timer');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to stop timer';
+      setError(message);
       console.error('Stop timer error:', err);
     } finally {
       setLoading(false);

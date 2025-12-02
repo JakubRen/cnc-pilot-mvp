@@ -16,6 +16,15 @@ interface StaleTimer {
   duration_seconds: number;
 }
 
+// Type for Supabase join result (relations come as arrays or objects)
+interface TimeLogWithRelations {
+  id: string;
+  start_time: string;
+  duration_seconds: number;
+  orders: { order_number: string }[] | { order_number: string } | null;
+  users: { full_name: string }[] | { full_name: string } | null;
+}
+
 export default function StaleTimerAlert({ companyId }: { companyId: string }) {
   const [staleTimers, setStaleTimers] = useState<StaleTimer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,13 +57,22 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
 
       if (error) throw error;
 
-      const formatted = data?.map(log => ({
-        id: log.id,
-        order_number: log.orders && !Array.isArray(log.orders) ? log.orders.order_number : 'Unknown',
-        user_name: log.users && !Array.isArray(log.users) ? log.users.full_name : 'Unknown',
-        start_time: log.start_time,
-        duration_seconds: log.duration_seconds
-      })) || [];
+      const logs = data as unknown as TimeLogWithRelations[] | null;
+      const formatted = logs?.map(log => {
+        const orderNum = Array.isArray(log.orders)
+          ? log.orders[0]?.order_number
+          : log.orders?.order_number;
+        const userName = Array.isArray(log.users)
+          ? log.users[0]?.full_name
+          : log.users?.full_name;
+        return {
+          id: log.id,
+          order_number: orderNum ?? 'Unknown',
+          user_name: userName ?? 'Unknown',
+          start_time: log.start_time,
+          duration_seconds: log.duration_seconds
+        };
+      }) || [];
 
       setStaleTimers(formatted);
     } catch (err) {
