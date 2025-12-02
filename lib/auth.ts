@@ -53,6 +53,11 @@ export async function getSession() {
 }
 
 /**
+ * Interface mode type - controls what UI the user sees
+ */
+export type InterfaceMode = 'kiosk_only' | 'full_access' | 'both'
+
+/**
  * User profile interface with role information
  */
 export interface UserProfile {
@@ -62,4 +67,5 @@ export interface UserProfile {
   role: 'owner' | 'admin' | 'manager' | 'operator' | 'viewer' | 'pending'
   company_id: string | null
   hourly_rate?: number | null
+  interface_mode?: InterfaceMode
 }

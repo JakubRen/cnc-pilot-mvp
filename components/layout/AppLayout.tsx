@@ -9,6 +9,8 @@ import CommandPalette from '@/components/ui/CommandPalette';
 import MobileBottomNav from './MobileBottomNav';
 import { supabase } from '@/lib/supabase';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import InterfaceModeGuard from './InterfaceModeGuard';
+import type { InterfaceMode } from '@/lib/auth';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -18,26 +20,28 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
   const [userRole, setUserRole] = useState<string | undefined>();
+  const [interfaceMode, setInterfaceMode] = useState<InterfaceMode | undefined>();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Fetch user role for CommandPalette
+  // Fetch user role and interface_mode for CommandPalette and ViewModeToggle
   useEffect(() => {
-    async function fetchUserRole() {
+    async function fetchUserData() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         const { data: userProfile } = await supabase
           .from('users')
-          .select('role')
+          .select('role, interface_mode')
           .eq('auth_id', user.id)
           .single()
 
         setUserRole(userProfile?.role)
+        setInterfaceMode(userProfile?.interface_mode as InterfaceMode | undefined)
       }
     }
-    fetchUserRole()
+    fetchUserData()
   }, [])
 
   // Enable global keyboard shortcuts
@@ -47,6 +51,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <ThemeProvider>
+      <InterfaceModeGuard>
       <div className="flex min-h-screen bg-slate-900">
       {/* Sidebar - Hidden on mobile by default, shown when toggled */}
       <div
@@ -57,7 +62,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} interfaceMode={interfaceMode} />
       </div>
 
       {/* Overlay for mobile - click to close sidebar */}
@@ -105,6 +110,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </span>
       </button>
       </div>
+      </InterfaceModeGuard>
     </ThemeProvider>
   );
 }

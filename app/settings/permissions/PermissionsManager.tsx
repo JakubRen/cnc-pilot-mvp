@@ -11,11 +11,14 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
 
+type InterfaceMode = 'kiosk_only' | 'full_access' | 'both';
+
 interface User {
   id: number;
   full_name: string;
   email: string;
   role: string;
+  interface_mode?: InterfaceMode;
 }
 
 interface PermissionDef {
@@ -77,6 +80,19 @@ const ACTION_LABELS: Record<string, string> = {
   permissions: 'Uprawnienia',
 };
 
+// Interface mode labels in Polish
+const INTERFACE_MODE_LABELS: Record<InterfaceMode, string> = {
+  kiosk_only: 'Tylko Kiosk',
+  full_access: 'Pełny dostęp',
+  both: 'Oba (z przełącznikiem)',
+};
+
+const INTERFACE_MODE_DESCRIPTIONS: Record<InterfaceMode, string> = {
+  kiosk_only: 'Użytkownik widzi tylko uproszczony widok kioskowy',
+  full_access: 'Użytkownik ma pełny dostęp do aplikacji',
+  both: 'Użytkownik może przełączać między widokami',
+};
+
 export default function PermissionsManager({
   users,
   permissionDefs,
@@ -86,6 +102,7 @@ export default function PermissionsManager({
   const router = useRouter();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [overrides, setOverrides] = useState<Record<string, boolean | null>>({});
+  const [interfaceMode, setInterfaceMode] = useState<InterfaceMode>('full_access');
   const [saving, setSaving] = useState(false);
 
   // Group permissions by module
@@ -128,6 +145,8 @@ export default function PermissionsManager({
     // Load existing overrides for this user
     const existingOverrides = getUserOverrides(user.id);
     setOverrides(existingOverrides);
+    // Load interface mode
+    setInterfaceMode(user.interface_mode || 'full_access');
   };
 
   // Handle permission toggle
@@ -150,7 +169,7 @@ export default function PermissionsManager({
     }
   };
 
-  // Save overrides
+  // Save overrides and interface mode
   const handleSave = async () => {
     if (!selectedUser) return;
 
@@ -158,6 +177,14 @@ export default function PermissionsManager({
     const loadingToast = toast.loading('Zapisywanie uprawnień...');
 
     try {
+      // Update interface mode for user
+      const { error: modeError } = await supabase
+        .from('users')
+        .update({ interface_mode: interfaceMode })
+        .eq('id', selectedUser.id);
+
+      if (modeError) throw modeError;
+
       // Delete existing overrides for this user
       await supabase
         .from('user_permissions')
@@ -264,6 +291,32 @@ export default function PermissionsManager({
               <Button onClick={handleSave} disabled={saving} variant="primary">
                 {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
               </Button>
+            </div>
+
+            {/* Interface Mode Selector */}
+            <div className="mb-6 p-4 bg-slate-700/50 rounded-lg border border-slate-600">
+              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                <span className="text-xl">🖥️</span>
+                Tryb interfejsu
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {(Object.keys(INTERFACE_MODE_LABELS) as InterfaceMode[]).map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => setInterfaceMode(mode)}
+                    className={`p-3 rounded-lg text-left transition border-2 ${
+                      interfaceMode === mode
+                        ? 'bg-blue-600 border-blue-400 text-white'
+                        : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-slate-500'
+                    }`}
+                  >
+                    <div className="font-medium">{INTERFACE_MODE_LABELS[mode]}</div>
+                    <div className="text-xs mt-1 opacity-70">
+                      {INTERFACE_MODE_DESCRIPTIONS[mode]}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Legend */}

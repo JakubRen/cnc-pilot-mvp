@@ -33,7 +33,7 @@ export default async function PermissionsPage() {
   // Fetch all users in the company
   const { data: users } = await supabase
     .from('users')
-    .select('id, full_name, email, role')
+    .select('id, full_name, email, role, interface_mode')
     .eq('company_id', user.company_id)
     .order('full_name', { ascending: true });
 

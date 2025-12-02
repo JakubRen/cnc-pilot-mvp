@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useTranslation } from '@/hooks/useTranslation';
 import { usePermissions } from '@/hooks/usePermissions';
 import type { AppModule } from '@/types/permissions';
+import type { InterfaceMode } from '@/lib/auth';
+import ViewModeToggle from './ViewModeToggle';
 
 type NavKey = 'dashboard' | 'orders' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'reports' | 'tags' | 'users' | 'settings';
 
@@ -18,6 +20,7 @@ interface SidebarLink {
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  interfaceMode?: InterfaceMode;
 }
 
 const linkDefinitions: SidebarLink[] = [
@@ -33,7 +36,7 @@ const linkDefinitions: SidebarLink[] = [
   { href: '/settings', icon: '⚙️', labelKey: 'settings', module: 'users' }, // tylko admin/owner mają users:access
 ];
 
-export default function Sidebar({ onClose }: SidebarProps) {
+export default function Sidebar({ onClose, interfaceMode }: SidebarProps) {
   const pathname = usePathname();
   const { t } = useTranslation();
   const { canAccess, loading } = usePermissions();
@@ -88,6 +91,9 @@ export default function Sidebar({ onClose }: SidebarProps) {
           );
         })}
       </nav>
+
+      {/* View Mode Toggle (Kiosk/Full) */}
+      <ViewModeToggle interfaceMode={interfaceMode} />
 
       {/* Logout Button */}
       <div className="p-4 border-t border-slate-700">
