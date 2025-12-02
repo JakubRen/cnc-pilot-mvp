@@ -7,15 +7,15 @@ import toast from 'react-hot-toast'
 interface SavedFilter {
   id: string
   name: string
-  filter_config: any
+  filter_config: Record<string, unknown>
   is_default: boolean
   created_at: string
 }
 
 interface SavedFiltersProps {
   filterType: 'order' | 'inventory'
-  currentFilters: any
-  onLoadFilter: (config: any) => void
+  currentFilters: Record<string, unknown>
+  onLoadFilter: (config: Record<string, unknown>) => void
 }
 
 export default function SavedFilters({
@@ -102,9 +102,10 @@ export default function SavedFilters({
       setIsModalOpen(false)
       setFilterName('')
       fetchSavedFilters()
-    } catch (error: any) {
+    } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error(error.message || 'Błąd podczas zapisywania')
+      const message = error instanceof Error ? error.message : 'Błąd podczas zapisywania'
+      toast.error(message)
     }
   }
 
@@ -129,9 +130,10 @@ export default function SavedFilters({
       toast.dismiss(loadingToast)
       toast.success('Filtr usunięty!')
       fetchSavedFilters()
-    } catch (error: any) {
+    } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error(error.message || 'Błąd podczas usuwania')
+      const message = error instanceof Error ? error.message : 'Błąd podczas usuwania'
+      toast.error(message)
     }
   }
 

@@ -2,19 +2,10 @@
 
 import { useRouter } from 'next/navigation'
 import FileUploader from '@/components/files/FileUploader'
-import FileBrowser from '@/components/files/FileBrowser'
-
-interface FileRecord {
-  id: string
-  file_name: string
-  file_path: string
-  file_size: number
-  mime_type: string
-  created_at: string
-}
+import FileBrowser, { FileBrowserFile } from '@/components/files/FileBrowser'
 
 interface FilesPageClientProps {
-  initialFiles: FileRecord[]
+  initialFiles: FileBrowserFile[]
 }
 
 export default function FilesPageClient({ initialFiles }: FilesPageClientProps) {
