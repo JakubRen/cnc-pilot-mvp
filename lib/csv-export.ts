@@ -6,14 +6,14 @@
 export interface OrderExportData {
   order_number: string;
   customer_name: string;
-  part_name?: string;
-  quantity: number;
-  material?: string;
+  part_name?: string | null;
+  quantity?: number | null;
+  material?: string | null;
   deadline: string;
   status: string;
-  total_cost?: number;
-  created_at: string;
-  notes?: string;
+  total_cost?: number | null;
+  created_at?: string;
+  notes?: string | null;
 }
 
 /**
@@ -47,12 +47,12 @@ export function convertOrdersToCSV(orders: OrderExportData[]): string {
       escapeCSVValue(order.order_number),
       escapeCSVValue(order.customer_name),
       escapeCSVValue(order.part_name || '-'),
-      order.quantity,
+      order.quantity ?? '-',
       escapeCSVValue(order.material || '-'),
       formatDate(order.deadline),
       translateStatus(order.status),
       order.total_cost ? order.total_cost.toFixed(2) : '-',
-      formatDate(order.created_at),
+      order.created_at ? formatDate(order.created_at) : '-',
       escapeCSVValue(order.notes || '-'),
     ].join(',');
   });

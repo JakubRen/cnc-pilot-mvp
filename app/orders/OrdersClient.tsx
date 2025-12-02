@@ -21,6 +21,11 @@ interface OrderWithTags {
   status: string
   tags: Array<{ id: string; name: string; color: string }>
   assigned_operator_name?: string | null
+  total_cost?: number | null
+  part_name?: string | null
+  created_at?: string
+  material?: string | null
+  notes?: string | null
 }
 
 interface OrdersClientProps {

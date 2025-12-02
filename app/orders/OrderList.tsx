@@ -19,8 +19,10 @@ interface Order {
   quantity: number
   deadline: string
   status: string
-  total_cost: number | null
+  total_cost?: number | null
   assigned_operator_name?: string | null
+  part_name?: string | null
+  tags?: Array<{ id: string; name: string; color: string }>
 }
 
 interface OrderListProps {

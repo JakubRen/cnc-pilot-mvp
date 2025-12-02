@@ -47,9 +47,8 @@ export default function OrderCostAnalysis({
   materialCost,
   laborCost,
   overheadCost,
-  totalCost,
+  // totalCost and marginPercent from props are not used - we calculate them dynamically
   sellingPrice: initialSellingPrice,
-  marginPercent: initialMarginPercent,
   timeLogs,
   onUpdate,
 }: OrderCostAnalysisProps) {

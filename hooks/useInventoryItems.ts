@@ -20,9 +20,13 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
   const [error, setError] = useState<string | null>(null)
 
   // Stabilize the filter for useEffect dependency
-  const filterKey = useMemo(() =>
-    Array.isArray(categoryFilter) ? categoryFilter.sort().join(',') : categoryFilter,
-    [Array.isArray(categoryFilter) ? categoryFilter.join(',') : categoryFilter]
+  const categoryFilterString = Array.isArray(categoryFilter)
+    ? categoryFilter.slice().sort().join(',')
+    : categoryFilter
+
+  const filterKey = useMemo(
+    () => categoryFilterString,
+    [categoryFilterString]
   )
 
   useEffect(() => {

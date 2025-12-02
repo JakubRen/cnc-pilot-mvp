@@ -54,7 +54,7 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
         const filePath = `${userProfile.company_id}/${fileName}`
 
         // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('files')
           .upload(filePath, file, {
             cacheControl: '3600',

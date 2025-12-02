@@ -1,7 +1,25 @@
 import { useMemo } from 'react'
 import { FilterState } from '@/app/orders/OrderFilters'
 
-export const useOrderFiltering = (orders: any[], filters: FilterState, selectedTagIds: string[], tagLogic: 'AND' | 'OR') => {
+interface OrderTag {
+  id: string
+  name?: string
+  color?: string
+}
+
+interface BaseOrder {
+  id: string
+  order_number: string
+  customer_name: string
+  part_name?: string | null
+  deadline: string
+  status: string
+  total_cost?: number | null
+  created_at?: string
+  tags?: OrderTag[]
+}
+
+export const useOrderFiltering = <T extends BaseOrder>(orders: T[], filters: FilterState, selectedTagIds: string[], tagLogic: 'AND' | 'OR'): T[] => {
   const filteredOrders = useMemo(() => {
     let result = orders
 
@@ -65,7 +83,7 @@ export const useOrderFiltering = (orders: any[], filters: FilterState, selectedT
     // Tag filter
     if (selectedTagIds.length > 0) {
       result = result.filter(order => {
-        const orderTagIds = (order.tags || []).map((tag: any) => tag.id)
+        const orderTagIds = (order.tags || []).map((tag: OrderTag) => tag.id)
 
         if (tagLogic === 'AND') {
           // Order must have ALL selected tags
@@ -85,9 +103,9 @@ export const useOrderFiltering = (orders: any[], filters: FilterState, selectedT
         case 'cost_asc':
           return (a.total_cost || 0) - (b.total_cost || 0)
         case 'created_desc':
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
         case 'created_asc':
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
         case 'deadline':
         default:
           return new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
