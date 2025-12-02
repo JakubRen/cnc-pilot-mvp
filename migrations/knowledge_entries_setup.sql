@@ -101,9 +101,10 @@ CREATE INDEX IF NOT EXISTS idx_knowledge_entries_transcription ON knowledge_entr
 CREATE INDEX IF NOT EXISTS idx_knowledge_comments_entry ON knowledge_comments(entry_id);
 
 -- Full-text search index (dla przyszłego wyszukiwania)
+-- Używamy 'simple' bo 'polish' nie jest dostępne domyślnie w Supabase
 CREATE INDEX IF NOT EXISTS idx_knowledge_entries_search
 ON knowledge_entries USING GIN (
-  to_tsvector('polish', COALESCE(title, '') || ' ' || COALESCE(content, '') || ' ' || COALESCE(transcription_text, ''))
+  to_tsvector('simple', COALESCE(title, '') || ' ' || COALESCE(content, '') || ' ' || COALESCE(transcription_text, ''))
 );
 
 -- RLS
