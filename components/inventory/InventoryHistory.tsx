@@ -137,7 +137,7 @@ export default function InventoryHistory({ history, unit }: Props) {
                       Zatwierdził: <span className="text-white">{item.changerName}</span>
                     </p>
                     {item.notes && (
-                      <p className="text-slate-500 text-xs italic">"{item.notes}"</p>
+                      <p className="text-slate-500 text-xs italic">&quot;{item.notes}&quot;</p>
                     )}
                   </div>
                 </div>

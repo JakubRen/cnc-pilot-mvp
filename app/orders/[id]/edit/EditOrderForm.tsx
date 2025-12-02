@@ -83,7 +83,6 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
   const linkedInventoryItemId = watch('linked_inventory_item_id')
 
   const { items: materialItems, loading: materialsLoading } = useMaterials()
-  const { items: partItems, loading: partsLoading } = useParts()
 
   const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
   const currentMaterialNameForDisplay = currentMaterialItem?.name || ''

@@ -144,7 +144,7 @@ export default function InventorySelect({
             <div className="p-4 text-slate-400 text-center">
               {search ? (
                 <>
-                  Nie znaleziono "{search}"
+                  Nie znaleziono &quot;{search}&quot;
                   {allowCustom && (
                     <p className="text-xs mt-1 text-blue-400">
                       Możesz użyć tej nazwy jako nowej
