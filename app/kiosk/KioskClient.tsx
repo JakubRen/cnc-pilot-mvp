@@ -8,8 +8,17 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { startTimer, stopTimer } from '@/app/time-tracking/actions'
 
+interface Order {
+  id: string
+  order_number: string
+  part_name: string | null
+  material: string | null
+  customer_name: string
+  quantity: number
+}
+
 interface KioskClientProps {
-  currentOrder: any // TODO: Define a more specific type for order
+  currentOrder: Order | null
   activeTimeLogId: string | null
   currentOrderStatus: 'idle' | 'running' | 'paused'
 }

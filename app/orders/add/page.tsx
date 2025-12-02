@@ -81,10 +81,6 @@ export default function AddOrderPage() {
   const linkedInventoryItemId = watch('linked_inventory_item_id')
   const quantity = watch('quantity') || 1
   
-  // Get current selected material object for display in InventorySelect
-  const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
-  const currentMaterialNameForDisplay = currentMaterialItem?.name || ''
-  
   // Watch cost fields for auto-calculation
   const materialCost = watch('material_cost') || 0
   const laborCost = watch('labor_cost') || 0
@@ -94,12 +90,12 @@ export default function AddOrderPage() {
   const { items: materialItems, loading: materialsLoading } = useMaterials()
   const { items: partItems, loading: partsLoading } = useParts()
 
-  // Use Local Intelligence Hook
-  const { estimate: localEstimate, similarOrders, loading: localLoading } = useSmartPricing(partName, materialString)
-
   // Get current selected material object for display in InventorySelect
   const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
   const currentMaterialNameForDisplay = currentMaterialItem?.name || ''
+
+  // Use Local Intelligence Hook
+  const { estimate: localEstimate, similarOrders, loading: localLoading } = useSmartPricing(partName, materialString)
   
   useEffect(() => {
     const total = materialCost + laborCost + overheadCost

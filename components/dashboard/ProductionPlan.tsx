@@ -1,8 +1,21 @@
 import Link from 'next/link';
 import { getOrderPriorityColor, getStatusBadgeColor } from '@/lib/dashboard-utils';
 
+interface PlanOrder {
+  id: string;
+  order_number: string;
+  customer_name: string;
+  deadline: string;
+  status: string;
+  quantity: number;
+  assigned_operator?: {
+    name: string;
+  };
+  total_cost?: string | number;
+}
+
 interface ProductionPlanProps {
-  productionPlan: any[];
+  productionPlan: PlanOrder[];
 }
 
 export default function ProductionPlan({ productionPlan }: ProductionPlanProps) {

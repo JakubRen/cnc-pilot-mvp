@@ -12,7 +12,7 @@ interface TimeLogActionResponse {
 }
 
 export async function startTimer(orderId: string): Promise<TimeLogActionResponse> {
-  const supabase = createClient()
+  const supabase = await createClient()
   const userProfile = await getUserProfile()
 
   if (!userProfile) {
@@ -135,7 +135,7 @@ export async function startTimer(orderId: string): Promise<TimeLogActionResponse
 }
 
 export async function stopTimer(timeLogId: string, finalOrderStatus: string = 'completed'): Promise<TimeLogActionResponse> {
-  const supabase = createClient()
+  const supabase = await createClient()
   const userProfile = await getUserProfile()
 
   if (!userProfile) {

@@ -1,11 +1,37 @@
 import Link from 'next/link';
 
+interface OverdueOrder {
+  id: string;
+  order_number: string;
+  customer_name: string;
+  deadline: string;
+}
+
+interface LowStockItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  low_stock_threshold: number;
+}
+
+interface StaleTimer {
+  id: string;
+  start_time: string;
+  order?: {
+    order_number: string;
+  };
+  user?: {
+    name: string;
+  };
+}
+
 interface UrgentTasksProps {
   urgentTasks: {
-    overdueOrders: any[];
-    ordersDueToday: any[];
-    lowStockItems: any[];
-    staleTimers: any[];
+    overdueOrders: OverdueOrder[];
+    ordersDueToday: OverdueOrder[];
+    lowStockItems: LowStockItem[];
+    staleTimers: StaleTimer[];
   };
 }
 
