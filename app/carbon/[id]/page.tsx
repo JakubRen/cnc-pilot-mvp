@@ -3,7 +3,6 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import Link from 'next/link'
-import { Button } from '@/components/ui/Button'
 import CarbonPassportPDF from './CarbonPassportPDF'
 
 interface Props {

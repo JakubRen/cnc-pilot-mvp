@@ -21,7 +21,6 @@ interface ProfitabilityWidgetProps {
 
 export default function ProfitabilityWidget({ data }: ProfitabilityWidgetProps) {
   const isProfitable = data.totalProfit >= 0
-  const totalWithPrice = data.profitableOrders + data.unprofitableOrders
 
   return (
     <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">

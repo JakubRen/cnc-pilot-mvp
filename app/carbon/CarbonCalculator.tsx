@@ -107,7 +107,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
       const material = materials.find(m => m.id === selectedMaterial)
       const energy = energies.find(e => e.id === selectedEnergy)
 
-      const { data: report, error } = await supabase
+      const { error } = await supabase
         .from('carbon_reports')
         .insert({
           company_id: companyId,
@@ -126,8 +126,6 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
           co2_per_unit: co2PerUnit,
           created_by: userId
         })
-        .select()
-        .single()
 
       if (error) throw error
 

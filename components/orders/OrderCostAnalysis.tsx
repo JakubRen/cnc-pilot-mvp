@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Input } from '@/components/ui/Input'
@@ -17,7 +17,6 @@ interface TimeLog {
 
 interface OrderCostAnalysisProps {
   orderId: string
-  orderNumber: string
   quantity: number
   // Szacowane koszty (z formularza)
   estimatedMaterialCost: number
@@ -40,7 +39,6 @@ interface OrderCostAnalysisProps {
 
 export default function OrderCostAnalysis({
   orderId,
-  orderNumber,
   quantity,
   estimatedMaterialCost,
   estimatedLaborCost,

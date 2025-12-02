@@ -5,26 +5,6 @@ import AppLayout from '@/components/layout/AppLayout'
 import Link from 'next/link'
 import CostFilters from './CostFilters'
 
-interface OrderWithCosts {
-  id: string
-  order_number: string
-  customer_name: string
-  part_name: string | null
-  quantity: number
-  status: string
-  deadline: string
-  material_cost: number
-  labor_cost: number
-  overhead_cost: number
-  total_cost: number
-  actual_labor_cost: number | null
-  actual_labor_hours: number | null
-  selling_price: number | null
-  margin_amount: number | null
-  margin_percent: number | null
-  created_at: string
-}
-
 export default async function CostsPage({
   searchParams,
 }: {

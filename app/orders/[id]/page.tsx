@@ -268,7 +268,6 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           <div className="col-span-2">
             <OrderCostAnalysis
               orderId={order.id}
-              orderNumber={order.order_number}
               quantity={order.quantity || 1}
               estimatedMaterialCost={order.estimated_material_cost || order.material_cost || 0}
               estimatedLaborCost={order.estimated_labor_cost || order.labor_cost || 0}
