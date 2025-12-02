@@ -5,8 +5,19 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
 
+interface FileBrowserFile {
+  id: string
+  original_filename: string
+  filename: string
+  mime_type: string
+  size_bytes: number
+  storage_path: string
+  public_url: string
+  created_at: string
+}
+
 interface FileBrowserProps {
-  files: any[]
+  files: FileBrowserFile[]
   onFileDeleted?: () => void
 }
 
@@ -14,7 +25,7 @@ type ViewMode = 'grid' | 'list'
 
 export default function FileBrowser({ files, onFileDeleted }: FileBrowserProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
-  const [previewFile, setPreviewFile] = useState<any | null>(null)
+  const [previewFile, setPreviewFile] = useState<FileBrowserFile | null>(null)
   const [filterType, setFilterType] = useState<string>('all')
 
   // Filter files by type
@@ -28,7 +39,7 @@ export default function FileBrowser({ files, onFileDeleted }: FileBrowserProps) 
   })
 
   // Download file
-  const handleDownload = async (file: any) => {
+  const handleDownload = async (file: FileBrowserFile) => {
     try {
       const { data, error } = await supabase.storage
         .from('files')
@@ -54,7 +65,7 @@ export default function FileBrowser({ files, onFileDeleted }: FileBrowserProps) 
   }
 
   // Delete file
-  const handleDelete = async (file: any) => {
+  const handleDelete = async (file: FileBrowserFile) => {
     if (!confirm(`Czy na pewno chcesz usunąć plik: ${file.original_filename}?`)) return
 
     const loadingToast = toast.loading('Usuwanie...')

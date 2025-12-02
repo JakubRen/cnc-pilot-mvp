@@ -111,7 +111,7 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
                 )}
                 {order.total_cost && (
                   <span>
-                    Wartość: {parseFloat(order.total_cost).toFixed(2)} PLN
+                    Wartość: {parseFloat(String(order.total_cost)).toFixed(2)} PLN
                   </span>
                 )}
               </div>

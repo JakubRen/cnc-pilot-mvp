@@ -25,11 +25,20 @@ interface DashboardData {
   }
   urgentTasks: {
     overdueOrders: Array<{ id: string; order_number: string; customer_name: string; deadline: string }>
-    ordersDueToday: Array<{ id: string; order_number: string; customer_name: string }>
+    ordersDueToday: Array<{ id: string; order_number: string; customer_name: string; deadline: string }>
     lowStockItems: Array<{ id: string; name: string; quantity: number; unit: string; low_stock_threshold: number }>
     staleTimers: Array<{ id: string; start_time: string; order?: { order_number: string }; user?: { name: string } }>
   }
-  productionPlan: Array<{ id: string; order_number: string; customer_name: string; deadline: string; status: string }>
+  productionPlan: Array<{ 
+    id: string; 
+    order_number: string; 
+    customer_name: string; 
+    deadline: string; 
+    status: string;
+    quantity: number;
+    assigned_operator?: { name: string };
+    total_cost?: string | number; 
+  }>
   recentActivity: Array<{ type: string; title: string; subtitle: string; actor: string; timestamp: string }>
   topCustomers: Array<{ name: string; revenue: number; count: number }>
   ordersChartData: Array<{ date: string; orders: number }>
