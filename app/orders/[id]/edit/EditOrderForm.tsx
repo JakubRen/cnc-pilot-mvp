@@ -7,6 +7,11 @@ import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useEffect } from 'react'
+import { InventoryItem, useMaterials, useParts } from '@/hooks/useInventoryItems' // Import useMaterials and useParts
+import InventorySelect from '@/components/inventory/InventorySelect' // Import InventorySelect
+import { Input } from '@/components/ui/Input' // Import Input
+import { Select } from '@/components/ui/Select' // Import Select
+import { Button } from '@/components/ui/Button' // Import Button
 
 const orderSchema = z.object({
   order_number: z.string().min(1, 'Numer zamówienia wymagany'),
@@ -22,6 +27,9 @@ const orderSchema = z.object({
   labor_cost: z.number().min(0, 'Koszt pracy musi być dodatni'),
   overhead_cost: z.number().min(0, 'Koszty ogólne muszą być dodatnie'),
   total_cost: z.number().min(0, 'Całkowity koszt musi być dodatni'),
+  // Auto-Deduct fields
+  linked_inventory_item_id: z.string().uuid().optional().nullable(),
+  material_quantity_needed: z.number().min(0, 'Ilość materiału na jednostkę musi być większa lub równa 0').optional().nullable(),
 })
 
 type OrderFormData = z.infer<typeof orderSchema>
@@ -40,6 +48,8 @@ interface OrderData {
   labor_cost: number | null
   overhead_cost: number | null
   total_cost: number | null
+  linked_inventory_item_id: string | null
+  material_quantity_needed: number | null
 }
 
 interface EditOrderFormProps {
@@ -62,13 +72,24 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
       labor_cost: 0,
       overhead_cost: 0,
       total_cost: 0,
+      linked_inventory_item_id: null,
+      material_quantity_needed: null,
     },
   })
 
-  // Watch cost fields and auto-calculate total
   const materialCost = watch('material_cost') || 0
   const laborCost = watch('labor_cost') || 0
   const overheadCost = watch('overhead_cost') || 0
+
+  const materialString = watch('material') || ''
+  const linkedInventoryItemId = watch('linked_inventory_item_id')
+
+  const { items: materialItems, loading: materialsLoading } = useMaterials()
+  const { items: partItems, loading: partsLoading } = useParts()
+
+  const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
+  const currentMaterialNameForDisplay = currentMaterialItem?.name || ''
+
 
   // Auto-calculate total cost
   useEffect(() => {
@@ -87,20 +108,28 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
     setValue('deadline', order.deadline?.split('T')[0] || '')
     setValue('status', order.status)
     setValue('notes', order.notes || '')
-    // DAY 12: Pre-fill cost fields
     setValue('material_cost', order.material_cost || 0)
     setValue('labor_cost', order.labor_cost || 0)
     setValue('overhead_cost', order.overhead_cost || 0)
     setValue('total_cost', order.total_cost || 0)
+    setValue('linked_inventory_item_id', order.linked_inventory_item_id || null)
+    setValue('material_quantity_needed', order.material_quantity_needed || null)
   }, [order, setValue])
 
   const onSubmit = async (data: OrderFormData) => {
     const loadingToast = toast.loading('Aktualizowanie zamówienia...')
 
+    const finalOrderData = {
+      ...data,
+      material: materialString, // Ensure the material name is stored
+      linked_inventory_item_id: data.linked_inventory_item_id,
+      material_quantity_needed: data.material_quantity_needed,
+    };
+
     const { error } = await supabase
       .from('orders')
       .update({
-        ...data,
+        ...finalOrderData,
         updated_at: new Date().toISOString(),
       })
       .eq('id', order.id)
@@ -137,15 +166,35 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
           )}
         </div>
 
-        {/* Material */}
+        {/* Material - from Inventory (raw_material category) */}
         <div>
-          <label htmlFor="edit_material" className="block text-slate-300 mb-2">Materiał</label>
-          <input
-            id="edit_material"
-            {...register('material')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
-            placeholder="Stainless steel 304"
+          <InventorySelect
+            items={materialItems}
+            loading={materialsLoading}
+            value={currentMaterialNameForDisplay}
+            onChange={(value, item) => {
+              setValue('material', value) // Keep material name as string
+              setValue('linked_inventory_item_id', item?.id || null)
+            }}
+            label="Materiał"
+            placeholder="Wybierz materiał"
+            emptyMessage="Brak materiałów w magazynie"
+            allowCustom={true}
+            error={errors.linked_inventory_item_id?.message || errors.material?.message}
           />
+        </div>
+
+        {/* Material Quantity Needed per unit */}
+        <div>
+          <label htmlFor="material_quantity_needed" className="block text-slate-300 mb-2">Ilość materiału na jednostkę *</label>
+          <Input
+            id="material_quantity_needed"
+            type="number"
+            step="0.01"
+            placeholder="np. 0.5 (kg/szt)"
+            {...register('material_quantity_needed', { valueAsNumber: true })}
+          />
+          {errors.material_quantity_needed && <p className="text-red-400 text-sm mt-1">{errors.material_quantity_needed.message}</p>}
         </div>
 
         {/* Customer Name */}

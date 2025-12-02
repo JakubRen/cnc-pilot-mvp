@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge'
 import { useTranslation } from '@/hooks/useTranslation'
 import { usePermissions } from '@/hooks/usePermissions'
 import { PriceDisplay } from '@/components/permissions'
+import { duplicateOrder } from '@/app/orders/actions'
 
 interface Order {
   id: string
@@ -73,6 +74,28 @@ export default function OrderList({
       }
   
       toast.success(`${t('orders', 'order')} #${orderNumber} ${t('orders', 'deleted')}`)
+      router.refresh()
+    }
+  
+    const handleDuplicate = async (orderId: string, orderNumber: string) => {
+      const confirmed = confirm(
+        `Czy na pewno chcesz zduplikować zamówienie #${orderNumber}?`
+      )
+      if (!confirmed) return
+
+      const loadingToast = toast.loading(`Duplikowanie zamówienia #${orderNumber}...`)
+
+      const { success, error, newOrderId } = await duplicateOrder(orderId)
+
+      toast.dismiss(loadingToast)
+
+      if (!success) {
+        toast.error(`Nie udało się zduplikować zamówienia: ${error}`)
+        return
+      }
+
+      toast.success(`Zamówienie #${orderNumber} zduplikowane pomyślnie!`)
+      router.push(`/orders/${newOrderId}/edit`) // Optionally redirect to edit new order
       router.refresh()
     }
   
@@ -210,6 +233,14 @@ export default function OrderList({
                       {t('common', 'edit')}
                     </Button>
                   </Link>
+                  <Button
+                    onClick={() => handleDuplicate(order.id, order.order_number)}
+                    variant="ghost"
+                    size="sm"
+                    className="text-orange-400 hover:text-orange-300"
+                  >
+                    Duplikuj
+                  </Button>
                   {currentUserRole === 'owner' && (
                     <Button
                       onClick={() => handleDelete(order.id, order.order_number)}

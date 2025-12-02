@@ -48,6 +48,9 @@ export default function AddOrderPage() {
     labor_cost: z.number().min(0, t('orders', 'laborCostPositive')),
     overhead_cost: z.number().min(0, t('orders', 'overheadCostPositive')),
     total_cost: z.number().min(0, t('orders', 'totalCostPositive')),
+    // Auto-Deduct fields
+    linked_inventory_item_id: z.string().uuid().optional().nullable(),
+    material_quantity_needed: z.number().min(0, 'Ilość materiału na jednostkę musi być większa lub równa 0').optional().nullable(),
   })
 
   type OrderFormData = z.infer<typeof orderSchema>
@@ -67,13 +70,20 @@ export default function AddOrderPage() {
       labor_cost: 0,
       overhead_cost: 0,
       total_cost: 0,
+      linked_inventory_item_id: null,
+      material_quantity_needed: null,
     },
   })
 
   // Watch fields for Local Intelligence
   const partName = watch('part_name') || ''
-  const material = watch('material') || ''
+  const materialString = watch('material') || '' // Changed to avoid conflict with `material` object
+  const linkedInventoryItemId = watch('linked_inventory_item_id')
   const quantity = watch('quantity') || 1
+  
+  // Get current selected material object for display in InventorySelect
+  const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
+  const currentMaterialNameForDisplay = currentMaterialItem?.name || ''
   
   // Watch cost fields for auto-calculation
   const materialCost = watch('material_cost') || 0
@@ -223,10 +233,18 @@ export default function AddOrderPage() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { length, width, height, complexity, ...orderData } = data
 
+    // Ensure material is stored as string but linked_inventory_item_id is also set
+    const finalOrderData = {
+      ...orderData,
+      material: materialString, // Ensure the material name is stored
+      linked_inventory_item_id: data.linked_inventory_item_id,
+      material_quantity_needed: data.material_quantity_needed,
+    };
+
     const { error } = await supabase
       .from('orders')
       .insert({
-        ...orderData,
+        ...finalOrderData,
         created_by: userProfile.id,
         company_id: userProfile.company_id,
       })
@@ -283,13 +301,30 @@ export default function AddOrderPage() {
                     <InventorySelect
                       items={materialItems}
                       loading={materialsLoading}
-                      value={material}
-                      onChange={(value) => setValue('material', value)}
+                      value={currentMaterialNameForDisplay}
+                      onChange={(value, item) => {
+                        setValue('material', value) // Keep material name as string
+                        setValue('linked_inventory_item_id', item?.id || null)
+                      }}
                       label={`${t('common', 'material')}`}
                       placeholder={t('inventory', 'selectMaterial')}
                       emptyMessage={t('inventory', 'noMaterialsInStock')}
                       allowCustom={true}
+                      error={errors.linked_inventory_item_id?.message || errors.material?.message}
                     />
+                  </div>
+
+                  {/* Material Quantity Needed per unit */}
+                  <div>
+                    <label htmlFor="material_quantity_needed" className="block text-slate-300 mb-2">Ilość materiału na jednostkę *</label>
+                    <Input
+                      id="material_quantity_needed"
+                      type="number"
+                      step="0.01"
+                      placeholder="np. 0.5 (kg/szt)"
+                      {...register('material_quantity_needed', { valueAsNumber: true })}
+                    />
+                    {errors.material_quantity_needed && <p className="text-red-400 text-sm mt-1">{errors.material_quantity_needed.message}</p>}
                   </div>
 
                   {/* Customer Name */}
