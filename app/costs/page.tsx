@@ -24,12 +24,17 @@ export default async function CostsPage({
   const profitableFilter = typeof params.profitable === 'string' ? params.profitable : 'all'
   const days = typeof params.days === 'string' ? parseInt(params.days) : 30
 
+  // Calculate date filter (extracted to avoid impure function call in query chain)
+  const dateFilter = new Date()
+  dateFilter.setDate(dateFilter.getDate() - days)
+  const dateFilterISO = dateFilter.toISOString()
+
   // Build query
   let query = supabase
     .from('orders')
     .select('*')
     .eq('company_id', user.company_id)
-    .gte('created_at', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString())
+    .gte('created_at', dateFilterISO)
     .order('created_at', { ascending: false })
 
   if (statusFilter !== 'all') {
