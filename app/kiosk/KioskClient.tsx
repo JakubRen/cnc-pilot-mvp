@@ -60,11 +60,11 @@ export default function KioskClient({ currentOrder, activeTimeLogId, currentOrde
         <>
           <Badge
             variant={
-              currentOrderStatus === 'running' ? 'success' :
+              currentOrderStatus === 'running' ? 'default' :
               currentOrderStatus === 'paused' ? 'warning' :
-              'default'
+              'outline'
             }
-            className="text-lg px-4 py-2 mb-4"
+            className={`text-lg px-4 py-2 mb-4 ${currentOrderStatus === 'running' ? 'bg-green-600 hover:bg-green-700' : ''}`}
           >
             {currentOrderStatus === 'running' ? 'W TOKU' : currentOrderStatus === 'paused' ? 'ZATRZYMANO' : 'OCZEKUJĄCE'}
           </Badge>
@@ -86,9 +86,9 @@ export default function KioskClient({ currentOrder, activeTimeLogId, currentOrde
             ) : (
               <Button
                 onClick={handleStartWork}
-                variant="success"
+                variant="primary"
                 size="lg"
-                className="w-full text-3xl py-8"
+                className="w-full text-3xl py-8 bg-green-600 hover:bg-green-700"
                 disabled={isLoading}
               >
                 START PRACY

@@ -7,11 +7,9 @@ import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useEffect } from 'react'
-import { InventoryItem, useMaterials, useParts } from '@/hooks/useInventoryItems' // Import useMaterials and useParts
+import { useMaterials, useParts } from '@/hooks/useInventoryItems' // Import useMaterials and useParts
 import InventorySelect from '@/components/inventory/InventorySelect' // Import InventorySelect
 import { Input } from '@/components/ui/Input' // Import Input
-import { Select } from '@/components/ui/Select' // Import Select
-import { Button } from '@/components/ui/Button' // Import Button
 
 const orderSchema = z.object({
   order_number: z.string().min(1, 'Numer zamówienia wymagany'),

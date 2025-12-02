@@ -1,8 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
 import Link from 'next/link'
 import KioskClient from './KioskClient'
 
@@ -18,7 +16,7 @@ export default async function KioskPage() {
     redirect('/no-access') // Or redirect to their regular dashboard
   }
 
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Fetch the current active time log for this user
   const { data: activeTimeLog, error: timeLogError } = await supabase
@@ -37,11 +35,15 @@ export default async function KioskPage() {
   }
 
   let currentOrder = null
-  let currentOrderStatus = 'idle' // 'idle', 'running', 'paused'
+  let currentOrderStatus: 'idle' | 'running' | 'paused' = 'idle'
 
   if (activeTimeLog && activeTimeLog.orders) {
     currentOrder = activeTimeLog.orders
-    currentOrderStatus = activeTimeLog.status
+    // Validate/cast status
+    const status = activeTimeLog.status
+    if (status === 'running' || status === 'paused') {
+      currentOrderStatus = status
+    }
   } else {
     // If no active time log, try to find the next pending order assigned to this operator
     const { data: nextOrder, error: nextOrderError } = await supabase

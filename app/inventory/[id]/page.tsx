@@ -86,9 +86,6 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
   const stockStatus = isOutOfStock ? 'BRAK' : isLowStock ? 'NISKI STAN' : 'OK'
   const stockColor = isOutOfStock ? 'bg-gray-600' : isLowStock ? 'bg-red-600' : 'bg-green-600'
 
-  // Calculate total value
-  const totalValue = item.unit_cost ? (Number(item.quantity) * Number(item.unit_cost)).toFixed(2) : 'N/A'
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
       <div className="max-w-7xl mx-auto">

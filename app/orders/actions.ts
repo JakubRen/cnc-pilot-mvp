@@ -5,7 +5,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { revalidatePath } from 'next/cache'
 
 export async function duplicateOrder(orderId: string): Promise<{ success: boolean; newOrderId?: string; error?: string }> {
-  const supabase = createClient()
+  const supabase = await createClient()
   const userProfile = await getUserProfile()
 
   if (!userProfile) {
