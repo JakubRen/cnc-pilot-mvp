@@ -21,10 +21,16 @@ export default async function OrdersPage() {
 
   const supabase = await createClient()
 
-  // Fetch orders filtered by company
+  // Fetch orders filtered by company with assigned operator
   const { data: orders, error } = await supabase
     .from('orders')
-    .select('*')
+    .select(`
+      *,
+      assigned_operator:users!orders_assigned_operator_id_fkey (
+        id,
+        full_name
+      )
+    `)
     .eq('company_id', userProfile.company_id)
     .order('deadline', { ascending: true })
 
@@ -59,11 +65,19 @@ export default async function OrdersPage() {
     })
   }
 
-  // Attach tags to each order
-  const ordersWithTags = (orders || []).map(order => ({
-    ...order,
-    tags: orderTagsMap[order.id] || []
-  }))
+  // Attach tags to each order and normalize operator data
+  const ordersWithTags = (orders || []).map(order => {
+    // Handle Supabase join result (can be array or object)
+    const operator = Array.isArray(order.assigned_operator)
+      ? order.assigned_operator[0]
+      : order.assigned_operator
+
+    return {
+      ...order,
+      tags: orderTagsMap[order.id] || [],
+      assigned_operator_name: operator?.full_name || null,
+    }
+  })
 
   if (error) {
     return (

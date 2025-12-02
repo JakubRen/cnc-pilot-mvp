@@ -23,6 +23,7 @@ interface OrderWithTags {
   deadline: string
   status: string
   tags: Array<{ id: string; name: string; color: string }>
+  assigned_operator_name?: string | null
 }
 
 interface OrdersClientProps {

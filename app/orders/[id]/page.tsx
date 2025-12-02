@@ -15,12 +15,16 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     redirect('/login')
   }
 
-  // Fetch order with creator info (join query)
+  // Fetch order with creator and assigned operator info (join query)
   const { data: order, error } = await supabase
     .from('orders')
     .select(`
       *,
       creator:users!created_by (
+        full_name,
+        email
+      ),
+      assigned_operator:users!orders_assigned_operator_id_fkey (
         full_name,
         email
       )
@@ -192,6 +196,27 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                 <p className="text-slate-400 text-sm">Email</p>
                 <p className="text-white">{order.creator?.email || 'Brak'}</p>
               </div>
+            </div>
+          </div>
+
+          {/* Assigned Operator */}
+          <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+            <h2 className="text-xl font-semibold text-white mb-4">Przypisany operator</h2>
+            <div className="space-y-3">
+              {order.assigned_operator ? (
+                <>
+                  <div>
+                    <p className="text-slate-400 text-sm">Imię i nazwisko</p>
+                    <p className="text-white font-semibold">{order.assigned_operator.full_name}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-400 text-sm">Email</p>
+                    <p className="text-white">{order.assigned_operator.email}</p>
+                  </div>
+                </>
+              ) : (
+                <p className="text-slate-500">Brak przypisanego operatora</p>
+              )}
             </div>
           </div>
 

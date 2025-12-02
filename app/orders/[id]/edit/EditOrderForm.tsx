@@ -10,6 +10,8 @@ import { useEffect } from 'react'
 import { useMaterials } from '@/hooks/useInventoryItems' // Import useMaterials
 import InventorySelect from '@/components/inventory/InventorySelect' // Import InventorySelect
 import { Input } from '@/components/ui/Input' // Import Input
+import { Select } from '@/components/ui/Select'
+import { useOperators } from '@/hooks/useOperators'
 
 const orderSchema = z.object({
   order_number: z.string().min(1, 'Numer zamówienia wymagany'),
@@ -28,6 +30,8 @@ const orderSchema = z.object({
   // Auto-Deduct fields
   linked_inventory_item_id: z.string().uuid().optional().nullable(),
   material_quantity_needed: z.number().min(0, 'Ilość materiału na jednostkę musi być większa lub równa 0').optional().nullable(),
+  // Operator assignment
+  assigned_operator_id: z.number().optional().nullable(),
 })
 
 type OrderFormData = z.infer<typeof orderSchema>
@@ -48,6 +52,7 @@ interface OrderData {
   total_cost: number | null
   linked_inventory_item_id: string | null
   material_quantity_needed: number | null
+  assigned_operator_id: number | null
 }
 
 interface EditOrderFormProps {
@@ -72,6 +77,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
       total_cost: 0,
       linked_inventory_item_id: null,
       material_quantity_needed: null,
+      assigned_operator_id: null,
     },
   })
 
@@ -83,6 +89,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
   const linkedInventoryItemId = watch('linked_inventory_item_id')
 
   const { items: materialItems, loading: materialsLoading } = useMaterials()
+  const { operators, loading: operatorsLoading } = useOperators()
 
   const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
   const currentMaterialNameForDisplay = currentMaterialItem?.name || ''
@@ -111,6 +118,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
     setValue('total_cost', order.total_cost || 0)
     setValue('linked_inventory_item_id', order.linked_inventory_item_id || null)
     setValue('material_quantity_needed', order.material_quantity_needed || null)
+    setValue('assigned_operator_id', order.assigned_operator_id || null)
   }, [order, setValue])
 
   const onSubmit = async (data: OrderFormData) => {
@@ -121,6 +129,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
       material: materialString, // Ensure the material name is stored
       linked_inventory_item_id: data.linked_inventory_item_id,
       material_quantity_needed: data.material_quantity_needed,
+      assigned_operator_id: data.assigned_operator_id,
     };
 
     const { error } = await supabase
@@ -251,6 +260,19 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
             <option value="delayed">Opóźnione</option>
             <option value="cancelled">Anulowane</option>
           </select>
+        </div>
+
+        {/* Assigned Operator */}
+        <div>
+          <label htmlFor="assigned_operator_id" className="block text-slate-300 mb-2">Przypisany operator</label>
+          <Select
+            options={[
+              { value: '', label: operatorsLoading ? 'Ładowanie...' : 'Brak przypisania' },
+              ...operators.map(op => ({ value: String(op.id), label: op.full_name }))
+            ]}
+            value={watch('assigned_operator_id') ? String(watch('assigned_operator_id')) : ''}
+            onChange={(value) => setValue('assigned_operator_id', value ? Number(value) : null)}
+          />
         </div>
 
         {/* Part Name */}

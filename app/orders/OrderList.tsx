@@ -19,6 +19,7 @@ interface Order {
   deadline: string
   status: string
   total_cost: number | null
+  assigned_operator_name?: string | null
 }
 
 interface OrderListProps {
@@ -153,6 +154,9 @@ export default function OrderList({
               <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
                 {t('common', 'status')}
               </th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                Operator
+              </th>
               {showPrices && (
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
                   {t('common', 'cost')}
@@ -204,6 +208,13 @@ export default function OrderList({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {getStatusBadge(order.status)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  {order.assigned_operator_name ? (
+                    <span className="text-slate-300">{order.assigned_operator_name}</span>
+                  ) : (
+                    <span className="text-slate-500 text-xs">-</span>
+                  )}
                 </td>
                 {showPrices && (
                   <td className="px-6 py-4 whitespace-nowrap text-sm">

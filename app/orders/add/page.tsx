@@ -19,6 +19,7 @@ import { Select } from '@/components/ui/Select'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useOperators } from '@/hooks/useOperators'
 
 export default function AddOrderPage() {
   const router = useRouter()
@@ -51,6 +52,8 @@ export default function AddOrderPage() {
     // Auto-Deduct fields
     linked_inventory_item_id: z.string().uuid().optional().nullable(),
     material_quantity_needed: z.number().min(0, 'Ilość materiału na jednostkę musi być większa lub równa 0').optional().nullable(),
+    // Operator assignment
+    assigned_operator_id: z.number().optional().nullable(),
   })
 
   type OrderFormData = z.infer<typeof orderSchema>
@@ -72,6 +75,7 @@ export default function AddOrderPage() {
       total_cost: 0,
       linked_inventory_item_id: null,
       material_quantity_needed: null,
+      assigned_operator_id: null,
     },
   })
 
@@ -89,6 +93,9 @@ export default function AddOrderPage() {
   // Inventory hooks for Material and Part Name dropdowns
   const { items: materialItems, loading: materialsLoading } = useMaterials()
   const { items: partItems, loading: partsLoading } = useParts()
+
+  // Operators hook for assignment dropdown
+  const { operators, loading: operatorsLoading } = useOperators()
 
   // Get current selected material object for display in InventorySelect
   const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
@@ -239,6 +246,7 @@ export default function AddOrderPage() {
       material: materialString, // Ensure the material name is stored
       linked_inventory_item_id: data.linked_inventory_item_id,
       material_quantity_needed: data.material_quantity_needed,
+      assigned_operator_id: data.assigned_operator_id,
     };
 
     const { error } = await supabase
@@ -364,6 +372,19 @@ export default function AddOrderPage() {
                       options={statusOptions}
                       value={watch('status')}
                       onChange={(value) => setValue('status', value as "pending" | "in_progress" | "completed" | "delayed" | "cancelled")}
+                    />
+                  </div>
+
+                  {/* Assigned Operator */}
+                  <div>
+                    <label htmlFor="assigned_operator_id" className="block text-slate-300 mb-2">Przypisany operator</label>
+                    <Select
+                      options={[
+                        { value: '', label: operatorsLoading ? 'Ładowanie...' : 'Brak przypisania' },
+                        ...operators.map(op => ({ value: String(op.id), label: op.full_name }))
+                      ]}
+                      value={watch('assigned_operator_id') ? String(watch('assigned_operator_id')) : ''}
+                      onChange={(value) => setValue('assigned_operator_id', value ? Number(value) : null)}
                     />
                   </div>
 
