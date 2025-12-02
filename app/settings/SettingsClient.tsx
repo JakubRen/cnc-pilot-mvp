@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import NotificationSettings from '@/components/settings/NotificationSettings';
 
 const companySchema = z.object({
   name: z.string().min(2, 'Nazwa firmy musi mieć co najmniej 2 znaki'),
@@ -33,14 +34,28 @@ interface EmailDomain {
   created_at: string
 }
 
+interface NotificationPreferences {
+  email_enabled: boolean
+  order_created: boolean
+  order_status_changed: boolean
+  deadline_approaching: boolean
+  deadline_days_before: number
+  low_stock_alert: boolean
+  team_changes: boolean
+  daily_summary: boolean
+  weekly_report: boolean
+}
+
 interface Props {
   company: Company;
   emailDomains: EmailDomain[];
   userRole: string;
   canManagePermissions: boolean;
+  userId: number;
+  notificationPreferences?: NotificationPreferences;
 }
 
-export default function SettingsClient({ company, emailDomains, userRole, canManagePermissions }: Props) {
+export default function SettingsClient({ company, emailDomains, userRole, canManagePermissions, userId, notificationPreferences }: Props) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -276,6 +291,22 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
           </p>
         </div>
       </div>
+
+      {/* Notification Settings */}
+      <NotificationSettings
+        userId={userId}
+        initialPreferences={notificationPreferences || {
+          email_enabled: true,
+          order_created: true,
+          order_status_changed: true,
+          deadline_approaching: true,
+          deadline_days_before: 3,
+          low_stock_alert: true,
+          team_changes: true,
+          daily_summary: false,
+          weekly_report: false,
+        }}
+      />
 
       {/* Danger Zone (Owner only) */}
       {userRole === 'owner' && (

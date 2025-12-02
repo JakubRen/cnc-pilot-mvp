@@ -12,6 +12,7 @@ import OrdersChart from './OrdersChart'
 import RevenueChart from './RevenueChart'
 import TopCustomersChart from './TopCustomersChart'
 import ProductivityChart from './ProductivityChart'
+import ProfitabilityWidget from './ProfitabilityWidget'
 
 interface DashboardData {
   metrics: {
@@ -45,6 +46,18 @@ interface DashboardData {
   revenueChartData: Array<{ date: string; revenue: number }>
   topCustomersAnalyticsData: Array<{ customer: string; revenue: number; orders: number }>
   productivityData: Array<{ employee: string; hours: number; earnings: number; ordersCompleted: number }>
+  profitabilitySummary: {
+    totalRevenue: number
+    totalCost: number
+    totalProfit: number
+    avgMarginPercent: number
+    profitableOrders: number
+    unprofitableOrders: number
+    ordersWithoutPrice: number
+    totalLaborHours: number
+    totalLaborCost: number
+    totalMaterialCost: number
+  }
 }
 
 interface Props {
@@ -168,7 +181,7 @@ export default function DashboardClient({
         )}
 
         {/* Analytics Charts Grid (3 columns) */}
-        {(preferences.revenueChart || preferences.topCustomersAnalyticsChart || preferences.productivityChart) && (
+        {(preferences.revenueChart || preferences.topCustomersAnalyticsChart || preferences.productivityChart || preferences.profitabilityWidget) && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {/* Revenue Chart */}
             {preferences.revenueChart && (
@@ -188,6 +201,13 @@ export default function DashboardClient({
             {preferences.productivityChart && (
               <div className="lg:col-span-1">
                 <ProductivityChart data={dashboardData.productivityData || []} />
+              </div>
+            )}
+
+            {/* Profitability Widget */}
+            {preferences.profitabilityWidget && dashboardData.profitabilitySummary && (
+              <div className="lg:col-span-1">
+                <ProfitabilityWidget data={dashboardData.profitabilitySummary} />
               </div>
             )}
           </div>

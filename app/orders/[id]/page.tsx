@@ -5,6 +5,8 @@ import Link from 'next/link'
 import StatusDropdown from './StatusDropdown'
 import OrderTimeTracking from './OrderTimeTracking'
 import TagSelect from '@/components/tags/TagSelect'
+import GenerateClientLink from '@/components/client-portal/GenerateClientLink'
+import OrderCostAnalysis from '@/components/orders/OrderCostAnalysis'
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -62,6 +64,31 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     .eq('entity_type', 'order')
     .eq('entity_id', id)
 
+  // Fetch QC measurements for this order
+  const { data: qcMeasurements } = await supabase
+    .from('quality_measurements')
+    .select(`
+      *,
+      quality_control_items (
+        name,
+        nominal_value,
+        tolerance_plus,
+        tolerance_minus,
+        unit,
+        is_critical
+      ),
+      quality_control_plans!inner (
+        id,
+        name
+      ),
+      users (
+        full_name
+      )
+    `)
+    .eq('order_id', id)
+    .order('measured_at', { ascending: false })
+    .limit(20)
+
   // Transform tags data to flat array
   type TagRecord = { id: string; name: string; color: string }
   const tags = (orderTags || [])
@@ -115,7 +142,8 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               )}
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
+            <GenerateClientLink customerName={order.customer_name} />
             <Link
               href={`/orders/${id}/edit`}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
@@ -236,46 +264,25 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             />
           </div>
 
-          {/* DAY 12: COST BREAKDOWN - Show only if total_cost > 0 */}
-          {order.total_cost && order.total_cost > 0 && (
-            <div className="col-span-2 bg-gradient-to-br from-green-900/20 to-slate-800 p-6 rounded-lg border border-green-700/50">
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <span>💰</span> Podział kosztów
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {/* Material Cost */}
-                {order.material_cost > 0 && (
-                  <div className="bg-slate-800/50 p-4 rounded-lg">
-                    <p className="text-slate-400 text-sm mb-1">Koszt Materiału</p>
-                    <p className="text-white font-bold text-xl">{order.material_cost.toFixed(2)} PLN</p>
-                  </div>
-                )}
-
-                {/* Labor Cost */}
-                {order.labor_cost > 0 && (
-                  <div className="bg-slate-800/50 p-4 rounded-lg">
-                    <p className="text-slate-400 text-sm mb-1">Koszt Pracy</p>
-                    <p className="text-white font-bold text-xl">{order.labor_cost.toFixed(2)} PLN</p>
-                  </div>
-                )}
-
-                {/* Overhead Cost */}
-                {order.overhead_cost > 0 && (
-                  <div className="bg-slate-800/50 p-4 rounded-lg">
-                    <p className="text-slate-400 text-sm mb-1">Koszty Ogólne</p>
-                    <p className="text-white font-bold text-xl">{order.overhead_cost.toFixed(2)} PLN</p>
-                  </div>
-                )}
-
-                {/* Total Cost - Always show if total_cost > 0 */}
-                <div className="bg-green-900/30 p-4 rounded-lg border-2 border-green-600">
-                  <p className="text-green-300 text-sm mb-1 font-semibold">ŁĄCZNY KOSZT</p>
-                  <p className="text-green-400 font-bold text-2xl">{order.total_cost.toFixed(2)} PLN</p>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* COST ANALYSIS - Enhanced cost breakdown with profitability */}
+          <div className="col-span-2">
+            <OrderCostAnalysis
+              orderId={order.id}
+              orderNumber={order.order_number}
+              quantity={order.quantity || 1}
+              estimatedMaterialCost={order.estimated_material_cost || order.material_cost || 0}
+              estimatedLaborCost={order.estimated_labor_cost || order.labor_cost || 0}
+              estimatedOverheadCost={order.estimated_overhead_cost || order.overhead_cost || 0}
+              estimatedHours={order.estimated_hours || null}
+              materialCost={order.material_cost || 0}
+              laborCost={order.labor_cost || 0}
+              overheadCost={order.overhead_cost || 0}
+              totalCost={order.total_cost || 0}
+              sellingPrice={order.selling_price || 0}
+              marginPercent={order.margin_percent || 0}
+              timeLogs={timeLogs || []}
+            />
+          </div>
 
           {/* Notes (Full Width if exists) */}
           {order.notes && (
@@ -296,6 +303,133 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               companyId={user.company_id}
               hourlyRate={user.hourly_rate || 150}
             />
+          </div>
+
+          {/* Quality Control Section (Full Width) */}
+          <div className="col-span-2 bg-slate-800 p-6 rounded-lg border border-slate-700">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                <span>✅</span> Kontrola Jakości
+              </h2>
+              <Link
+                href="/quality-control"
+                className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
+              >
+                Otwórz moduł QC
+              </Link>
+            </div>
+
+            {!qcMeasurements || qcMeasurements.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-5xl mb-4">📏</div>
+                <p className="text-slate-400 mb-2">Brak pomiarów dla tego zamówienia</p>
+                <p className="text-slate-500 text-sm">
+                  Pomiary zostaną wyświetlone tutaj po dodaniu ich w module Kontroli Jakości
+                </p>
+              </div>
+            ) : (
+              <div>
+                {/* QC Stats */}
+                {(() => {
+                  const totalMeasurements = qcMeasurements.length
+                  const passedCount = qcMeasurements.filter(m => m.is_pass).length
+                  const failedCount = totalMeasurements - passedCount
+                  const passRate = Math.round((passedCount / totalMeasurements) * 100)
+
+                  return (
+                    <div className="grid grid-cols-4 gap-4 mb-6">
+                      <div className="bg-slate-700/50 p-3 rounded-lg text-center">
+                        <p className="text-slate-400 text-xs">Pomiary</p>
+                        <p className="text-2xl font-bold text-white">{totalMeasurements}</p>
+                      </div>
+                      <div className="bg-green-900/30 p-3 rounded-lg text-center border border-green-700/50">
+                        <p className="text-slate-400 text-xs">Zgodne</p>
+                        <p className="text-2xl font-bold text-green-400">{passedCount}</p>
+                      </div>
+                      <div className="bg-red-900/30 p-3 rounded-lg text-center border border-red-700/50">
+                        <p className="text-slate-400 text-xs">Niezgodne</p>
+                        <p className="text-2xl font-bold text-red-400">{failedCount}</p>
+                      </div>
+                      <div className={`p-3 rounded-lg text-center ${passRate >= 95 ? 'bg-green-900/30 border border-green-700/50' : passRate >= 80 ? 'bg-yellow-900/30 border border-yellow-700/50' : 'bg-red-900/30 border border-red-700/50'}`}>
+                        <p className="text-slate-400 text-xs">Zgodność</p>
+                        <p className={`text-2xl font-bold ${passRate >= 95 ? 'text-green-400' : passRate >= 80 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          {passRate}%
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })()}
+
+                {/* Measurements Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-slate-700">
+                      <tr>
+                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-300">Wymiar</th>
+                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-300">Nominał</th>
+                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-300">Pomiar</th>
+                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-300">Wynik</th>
+                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-300">Operator</th>
+                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-300">Data</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-700">
+                      {qcMeasurements.slice(0, 10).map((measurement) => {
+                        const item = measurement.quality_control_items
+                        return (
+                          <tr key={measurement.id} className="hover:bg-slate-700/50">
+                            <td className="px-4 py-2">
+                              <div className="flex items-center gap-2">
+                                <span className="text-white text-sm">{item?.name || '-'}</span>
+                                {item?.is_critical && (
+                                  <span className="px-1.5 py-0.5 bg-red-600/30 text-red-400 text-[10px] rounded">
+                                    KRYT
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-4 py-2 text-slate-400 text-sm font-mono">
+                              {item?.nominal_value} ±{Math.max(item?.tolerance_plus || 0, item?.tolerance_minus || 0)} {item?.unit}
+                            </td>
+                            <td className="px-4 py-2 text-white text-sm font-mono font-semibold">
+                              {measurement.measured_value} {item?.unit}
+                            </td>
+                            <td className="px-4 py-2">
+                              {measurement.is_pass ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">
+                                  <span>✓</span> OK
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded-full">
+                                  <span>✕</span> NOK
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-2 text-slate-400 text-sm">
+                              {measurement.users?.full_name || '-'}
+                            </td>
+                            <td className="px-4 py-2 text-slate-500 text-xs">
+                              {new Date(measurement.measured_at).toLocaleString('pl-PL', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {qcMeasurements.length > 10 && (
+                  <p className="text-center text-slate-500 text-sm mt-4">
+                    Wyświetlono 10 z {qcMeasurements.length} pomiarów
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

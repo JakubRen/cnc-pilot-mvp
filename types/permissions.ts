@@ -12,9 +12,15 @@ export type AppModule =
   | 'documents'
   | 'files'
   | 'time-tracking'
+  | 'quality-control'
+  | 'cooperation'
+  | 'machines'
+  | 'carbon'
+  | 'costs'
   | 'reports'
   | 'tags'
-  | 'users';
+  | 'users'
+  | 'calendar';
 
 /**
  * Akcje/operacje
@@ -114,9 +120,15 @@ export const PATH_TO_MODULE: Record<string, AppModule> = {
   '/documents': 'documents',
   '/files': 'files',
   '/time-tracking': 'time-tracking',
+  '/quality-control': 'quality-control',
+  '/cooperation': 'cooperation',
+  '/machines': 'machines',
+  '/carbon': 'carbon',
+  '/costs': 'costs',
   '/reports': 'reports',
   '/tags': 'tags',
   '/users': 'users',
+  '/calendar': 'calendar',
 };
 
 /**
@@ -125,10 +137,16 @@ export const PATH_TO_MODULE: Record<string, AppModule> = {
 export const MODULE_ORDER: AppModule[] = [
   'dashboard',
   'orders',
+  'calendar',
   'inventory',
   'documents',
   'files',
   'time-tracking',
+  'quality-control',
+  'cooperation',
+  'machines',
+  'carbon',
+  'costs',
   'reports',
   'tags',
   'users',

@@ -10,6 +10,7 @@ export interface DashboardPreferences {
   revenueChart: boolean
   topCustomersAnalyticsChart: boolean
   productivityChart: boolean
+  profitabilityWidget: boolean
 }
 
 export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
@@ -22,6 +23,7 @@ export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
   revenueChart: true,
   topCustomersAnalyticsChart: true,
   productivityChart: true,
+  profitabilityWidget: true,
 }
 
 export interface DashboardWidget {
@@ -85,5 +87,11 @@ export const DASHBOARD_WIDGETS: DashboardWidget[] = [
     label: 'Wykres Produktywności',
     description: 'Produktywność pracowników (godziny, zarobki)',
     icon: '⚡',
+  },
+  {
+    key: 'profitabilityWidget',
+    label: 'Rentowność',
+    description: 'Analiza zysków i marży (30 dni)',
+    icon: '💰',
   },
 ]

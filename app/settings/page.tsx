@@ -33,6 +33,13 @@ export default async function SettingsPage() {
     .eq('company_id', user.company_id)
     .order('domain', { ascending: true });
 
+  // Fetch user's notification preferences
+  const { data: userData } = await supabase
+    .from('users')
+    .select('notification_preferences')
+    .eq('id', user.id)
+    .single()
+
   // Check if user can manage permissions
   const canManagePermissions = user.role === 'owner' || await hasPermission('users:permissions');
 
@@ -46,6 +53,8 @@ export default async function SettingsPage() {
             emailDomains={emailDomains || []}
             userRole={user.role}
             canManagePermissions={canManagePermissions}
+            userId={user.id}
+            notificationPreferences={userData?.notification_preferences}
           />
         </div>
       </div>

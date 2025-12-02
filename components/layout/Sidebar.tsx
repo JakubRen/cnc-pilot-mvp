@@ -8,7 +8,7 @@ import type { AppModule } from '@/types/permissions';
 import type { InterfaceMode } from '@/lib/auth';
 import ViewModeToggle from './ViewModeToggle';
 
-type NavKey = 'dashboard' | 'orders' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'reports' | 'tags' | 'users' | 'settings';
+type NavKey = 'dashboard' | 'orders' | 'calendar' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'qualityControl' | 'cooperation' | 'machines' | 'carbon' | 'costs' | 'reports' | 'tags' | 'users' | 'settings';
 
 interface SidebarLink {
   href: string;
@@ -26,10 +26,16 @@ interface SidebarProps {
 const linkDefinitions: SidebarLink[] = [
   { href: '/', icon: '📊', labelKey: 'dashboard', module: 'dashboard' },
   { href: '/orders', icon: '📦', labelKey: 'orders', module: 'orders' },
+  { href: '/calendar', icon: '📅', labelKey: 'calendar', module: 'calendar' },
   { href: '/inventory', icon: '🏭', labelKey: 'inventory', module: 'inventory' },
   { href: '/documents', icon: '📄', labelKey: 'documents', module: 'documents' },
   { href: '/files', icon: '📁', labelKey: 'files', module: 'files' },
   { href: '/time-tracking', icon: '⏱️', labelKey: 'timeTracking', module: 'time-tracking' },
+  { href: '/quality-control', icon: '✅', labelKey: 'qualityControl', module: 'quality-control' },
+  { href: '/cooperation', icon: '🚚', labelKey: 'cooperation', module: 'cooperation' },
+  { href: '/machines', icon: '🔧', labelKey: 'machines', module: 'machines' },
+  { href: '/carbon', icon: '🌱', labelKey: 'carbon', module: 'carbon' },
+  { href: '/costs', icon: '💰', labelKey: 'costs', module: 'costs' },
   { href: '/reports', icon: '📈', labelKey: 'reports', module: 'reports' },
   { href: '/tags', icon: '🏷️', labelKey: 'tags', module: 'tags' },
   { href: '/users', icon: '👥', labelKey: 'users', module: 'users' },

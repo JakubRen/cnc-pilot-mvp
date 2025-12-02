@@ -434,6 +434,69 @@ export async function getDashboardStatsRPC(companyId: string): Promise<Dashboard
 }
 
 // ============================================
+// PROFITABILITY SUMMARY
+// ============================================
+
+export async function getProfitabilitySummary(companyId: string, days = 30) {
+  const supabase = await createClient();
+
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - days);
+
+  const { data: orders, error } = await supabase
+    .from('orders')
+    .select('total_cost, selling_price, actual_labor_cost, labor_cost, material_cost, actual_labor_hours, status')
+    .eq('company_id', companyId)
+    .gte('created_at', startDate.toISOString())
+    .neq('status', 'cancelled');
+
+  if (error) {
+    console.error('Error fetching profitability data:', error);
+    return {
+      totalRevenue: 0,
+      totalCost: 0,
+      totalProfit: 0,
+      avgMarginPercent: 0,
+      profitableOrders: 0,
+      unprofitableOrders: 0,
+      ordersWithoutPrice: 0,
+      totalLaborHours: 0,
+      totalLaborCost: 0,
+      totalMaterialCost: 0,
+    };
+  }
+
+  const ordersWithPrice = (orders || []).filter(o => o.selling_price && o.selling_price > 0);
+  const ordersWithoutPrice = (orders || []).filter(o => !o.selling_price || o.selling_price === 0);
+
+  const totalRevenue = ordersWithPrice.reduce((sum, o) => sum + (o.selling_price || 0), 0);
+  const totalCost = (orders || []).reduce((sum, o) => sum + (o.total_cost || 0), 0);
+  const totalProfit = ordersWithPrice.reduce((sum, o) => sum + ((o.selling_price || 0) - (o.total_cost || 0)), 0);
+
+  const profitableOrders = ordersWithPrice.filter(o => (o.selling_price || 0) > (o.total_cost || 0)).length;
+  const unprofitableOrders = ordersWithPrice.filter(o => (o.selling_price || 0) < (o.total_cost || 0)).length;
+
+  const avgMarginPercent = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
+
+  const totalLaborHours = (orders || []).reduce((sum, o) => sum + (o.actual_labor_hours || 0), 0);
+  const totalLaborCost = (orders || []).reduce((sum, o) => sum + (o.actual_labor_cost || o.labor_cost || 0), 0);
+  const totalMaterialCost = (orders || []).reduce((sum, o) => sum + (o.material_cost || 0), 0);
+
+  return {
+    totalRevenue,
+    totalCost,
+    totalProfit,
+    avgMarginPercent,
+    profitableOrders,
+    unprofitableOrders,
+    ordersWithoutPrice: ordersWithoutPrice.length,
+    totalLaborHours,
+    totalLaborCost,
+    totalMaterialCost,
+  };
+}
+
+// ============================================
 // DASHBOARD SUMMARY (all data in one call)
 // ============================================
 
@@ -456,6 +519,7 @@ export async function getDashboardSummary(companyId: string) {
     revenueChartData,
     topCustomersAnalyticsData,
     productivityData,
+    profitabilitySummary,
   ] = await Promise.all([
     getTotalOrders(companyId),
     getActiveOrders(companyId),
@@ -473,6 +537,7 @@ export async function getDashboardSummary(companyId: string) {
     getRevenueOverTime(companyId, 30),
     getTopCustomersAnalytics(companyId, 10),
     getEmployeeProductivity(companyId),
+    getProfitabilitySummary(companyId),
   ]);
 
   return {
@@ -498,5 +563,6 @@ export async function getDashboardSummary(companyId: string) {
     revenueChartData,
     topCustomersAnalyticsData,
     productivityData,
+    profitabilitySummary,
   };
 }
