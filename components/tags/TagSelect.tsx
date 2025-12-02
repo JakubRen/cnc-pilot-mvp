@@ -105,8 +105,9 @@ export default function TagSelect({
         const newTags = [...selectedTags, tag]
         onTagsChange?.(newTags)
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Błąd podczas aktualizacji tagów')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Błąd podczas aktualizacji tagów'
+      toast.error(message)
     }
   }
 

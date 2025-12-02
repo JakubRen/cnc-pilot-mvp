@@ -9,6 +9,11 @@ interface PresenceUser {
   // Add other properties if available in presence state
 }
 
+interface UserPresenceProps {
+  companyId: string
+  userId: number
+}
+
 export default function UserPresence({ companyId, userId }: UserPresenceProps) {
   const [onlineUsers, setOnlineUsers] = useState<PresenceUser[]>([])
 

@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useEffect } from 'react'
-import { useMaterials, useParts } from '@/hooks/useInventoryItems' // Import useMaterials and useParts
+import { useMaterials } from '@/hooks/useInventoryItems' // Import useMaterials
 import InventorySelect from '@/components/inventory/InventorySelect' // Import InventorySelect
 import { Input } from '@/components/ui/Input' // Import Input
 

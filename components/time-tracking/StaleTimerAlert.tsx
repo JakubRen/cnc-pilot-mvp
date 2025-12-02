@@ -50,8 +50,8 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
 
       const formatted = data?.map(log => ({
         id: log.id,
-        order_number: (log.orders as any)?.order_number || 'Unknown',
-        user_name: (log.users as any)?.full_name || 'Unknown',
+        order_number: log.orders && !Array.isArray(log.orders) ? log.orders.order_number : 'Unknown',
+        user_name: log.users && !Array.isArray(log.users) ? log.users.full_name : 'Unknown',
         start_time: log.start_time,
         duration_seconds: log.duration_seconds
       })) || [];

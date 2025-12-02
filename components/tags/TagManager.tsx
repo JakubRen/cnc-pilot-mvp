@@ -122,9 +122,10 @@ export default function TagManager() {
       setEditingTag(null)
       setFormData({ name: '', color: PRESET_COLORS[0] })
       fetchTags()
-    } catch (error: any) {
+    } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error(error.message || 'Błąd podczas zapisywania')
+      const message = error instanceof Error ? error.message : 'Błąd podczas zapisywania'
+      toast.error(message)
     }
   }
 
@@ -150,9 +151,10 @@ export default function TagManager() {
       toast.dismiss(loadingToast)
       toast.success('Tag usunięty!')
       fetchTags()
-    } catch (error: any) {
+    } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error(error.message || 'Błąd podczas usuwania')
+      const message = error instanceof Error ? error.message : 'Błąd podczas usuwania'
+      toast.error(message)
     }
   }
 

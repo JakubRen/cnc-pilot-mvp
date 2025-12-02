@@ -222,7 +222,7 @@ export default function GlobalSearch() {
           <Command.List className="p-2 max-h-96 overflow-y-auto">
             {results.length === 0 && !loading && search && (
               <div className="py-8 text-center text-slate-400">
-                Nie znaleziono wyników dla "{search}"
+                Nie znaleziono wyników dla &quot;{search}&quot;
               </div>
             )}
 
