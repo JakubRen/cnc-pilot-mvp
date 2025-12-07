@@ -25,11 +25,11 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // Start local server for testing (CI uses production build)
-  webServer: {
-    command: process.env.CI ? 'npm start' : 'npm run dev',
+  // Start local server for testing (disabled in CI - server started manually in workflow)
+  webServer: process.env.CI ? undefined : {
+    command: 'npm run dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 180 * 1000,
   },
 })
