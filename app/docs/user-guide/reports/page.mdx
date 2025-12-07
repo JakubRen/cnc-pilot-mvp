@@ -1,0 +1,267 @@
+# Raporty i analityka
+
+System raportowania pozwala analizować dane i podejmować lepsze decyzje biznesowe.
+
+## Dashboard - Szybki przegląd
+
+### Metryki główne
+
+**Kafelki na górze:**
+- **Łączne zamówienia** - Wszystkie zlecenia w systemie
+- **Aktywne zamówienia** - W realizacji obecnie
+- **Ukończone ten tydzień** - Zamknięte w ostatnich 7 dniach
+- **Opóźnione** - Deadline minął, status ≠ Ukończone
+
+### Wykresy
+
+**Zamówienia według statusu** (wykres kołowy)
+- Podział na: Oczekujące, W realizacji, Ukończone, Opóźnione, Anulowane
+
+**Trend zamówień** (wykres liniowy)
+- Jak liczba zamówień zmienia się w czasie
+- Można filtrować: ostatnie 7/30/90 dni
+
+## Raport zamówień
+
+### Filtry zaawansowane
+
+Generuj raporty według:
+
+**Okresu:**
+- Dziś / Ten tydzień / Ten miesiąc
+- Zakres niestandardowy (od-do)
+- Rok obrotowy
+
+**Statusu:**
+- Wszystkie
+- Aktywne (Oczekujące + W realizacji)
+- Zakończone (Ukończone + Anulowane)
+- Tylko opóźnione
+
+**Klienta:**
+- Wybierz z listy
+- Lub wpisz nazwę
+
+**Pracownika:**
+- Kto utworzył
+- Kto pracował nad
+
+### Metryki raportu
+
+Dla wybranych zamówień:
+
+- **Liczba zamówień**
+- **Średni czas realizacji**
+- **On-time delivery rate** - % zamówień na czas
+- **Najczęstsi klienci** - Top 10
+- **Najpopularniejsze materiały**
+
+### Eksport
+
+- **CSV** - Import do Excel
+- **Excel** - Gotowy plik .xlsx
+- **PDF** - Raport do wydruku
+- **Email** - Wyślij raport
+
+## Raport czasu pracy
+
+### Produktywność zespołu
+
+**Według pracownika:**
+- Kto ile godzin przepracował
+- Średnia dzienna/tygodniowa
+- Trend (czy produktywność rośnie/spada)
+
+**Według zamówienia:**
+- Ile łącznie czasu na zlecenie
+- Kto pracował
+- Czy mieszczą się w budżecie czasowym
+
+### Koszty robocizny
+
+Jeśli masz ustawione stawki:
+
+- **Koszt na zamówienie** - Suma wszystkich sesji × stawki
+- **Koszt na pracownika** - Ile kosztuje zespół
+- **Porównanie plan vs rzeczywistość** - Czy szacunki były realne
+
+### Wykorzystanie czasu
+
+**Analiza:**
+- Ile % czasu produktywny (timer aktywny)
+- Ile % pauzy
+- Najproduktywniejsze godziny dnia
+- Dni tygodnia (Pn-Pt)
+
+## Raport magazynowy
+
+### Wartość magazynu
+
+- **Łączna wartość** - Suma wszystkich pozycji
+- **Według kategorii** - Podział na materiały
+- **Trend wartości** - Czy magazyn rośnie/maleje
+
+### Zużycie materiałów
+
+**Top materiały:**
+- Co najczęściej używane
+- Średnie zużycie miesięczne
+- Prognoza na przyszłość
+
+**Marnotrawstwo:**
+- Materiały które nie ruszają się
+- Dead stock (>90 dni bez ruchu)
+- Sugestie: wyprzedać/zwrócić
+
+### Alerty
+
+- **Niski stan** - Lista pozycji do zamówienia
+- **Brak ruchu** - Materiały zamrożone
+- **Nadmiar** - Gdzie za dużo (>6 miesięcy zapasu)
+
+## Raport finansowy
+
+*Wymaga konfiguracji cen i kosztów*
+
+### Przychody
+
+- **Wartość zamówień** - Suma cen sprzedaży
+- **Według klienta** - Kto generuje najwięcej
+- **Według miesiąca** - Sezonowość
+
+### Koszty
+
+- **Materiały** - Wydane z magazynu
+- **Robocizna** - Czas pracy × stawki
+- **Łącznie** - Suma kosztów
+
+### Marża i rentowność
+
+- **Marża brutto** - Przychód - Koszty
+- **% marży** - Rentowność
+- **Według zamówienia** - Które najbardziej opłacalne
+
+## Dashboard kierownika
+
+*Dla Manager/Admin/Owner*
+
+### Obciążenie zespołu
+
+**Wizualizacja:**
+- Kto ile ma aktywnych zamówień
+- Kto jest przeciążony (>5 zamówień)
+- Kto ma luz (< 2 zamówienia)
+
+**Akcje:**
+- Przekaż zamówienie innemu
+- Zaplanuj urlopy
+- Zatrudnij więcej (jeśli wszyscy przeciążeni)
+
+### Terminy i deadline'y
+
+**Kalendarz:**
+- Wszystkie zbliżające się deadline'y
+- Kolorowanie: zielony (OK), żółty (blisko), czerwony (opóźnione)
+
+**Prognoza:**
+- Czy damy radę na czas?
+- Co wymaga przyspieszenia
+
+## Zapisywanie raportów
+
+### Ulubione raporty
+
+Często generujesz ten sam raport?
+
+1. Ustaw filtry
+2. Kliknij "Zapisz raport"
+3. Nadaj nazwę (np. "Zamówienia - styczeń 2025")
+4. Raport pojawi się w zakładce "Zapisane"
+
+**Szybki dostęp:**
+- Kliknij zapisany raport
+- Automatycznie stosuje filtry
+- Możesz edytować przed wygenerowaniem
+
+### Harmonogram raportów
+
+**Automatyczne raporty email:**
+
+1. Utwórz raport
+2. Kliknij "Harmonogram"
+3. Wybierz częstotliwość:
+   - Codziennie (rano)
+   - Co tydzień (Poniedziałek 8:00)
+   - Co miesiąc (1. dzień miesiąca)
+4. Wprowadź odbiorców email
+5. Zapisz
+
+**Raport przychodzi automatycznie w PDF.**
+
+## Wizualizacje
+
+### Typy wykresów
+
+System wspiera:
+- **Liniowy** - Trendy w czasie
+- **Kołowy** - Podział proporcji
+- **Słupkowy** - Porównania
+- **Tabela** - Szczegółowe dane
+
+### Interaktywne
+
+- Najedź na punkt - szczegóły
+- Kliknij legendę - ukryj/pokaż serię
+- Zoom (wykres liniowy)
+
+## Best practices
+
+### Regularne przeglądy
+
+**Co tydzień:**
+- Dashboard - szybki health check
+- Opóźnione zamówienia - co naprawić
+- Produktywność - czy zespół OK
+
+**Co miesiąc:**
+- Raport zamówień - co się działo
+- Raport magazynu - optymalizacja zapasów
+- Raport finansowy - czy zarabiamy
+
+**Co kwartał:**
+- Trendy długoterminowe
+- Sezonowość (jeśli dotyczy)
+- Cele vs rzeczywistość
+
+### Podejmowanie decyzji opartych na danych
+
+**Nie zgaduj, mierz:**
+- Czy opłaca się klient X? → Raport finansowy według klienta
+- Czy zespół jest wydajny? → Raport czasu pracy
+- Czy materiał Y się opłaca? → Raport magazynu (zużycie vs koszt)
+
+## Rozwiązywanie problemów
+
+### Raporty długo się generują
+
+- Ogranicz zakres daty (np. 30 dni zamiast rok)
+- Użyj filtrów aby zmniejszyć liczbę danych
+- Spróbuj w godzinach niższego ruchu
+
+### Brak danych w raporcie
+
+- Sprawdź filtry (może zbyt restrykcyjne)
+- Upewnij się że dane istnieją w systemie
+- Sprawdź uprawnienia (czy widzisz wszystko)
+
+### Eksport nie działa
+
+- Spróbuj innego formatu
+- Zmniejsz zakres danych
+- Sprawdź blokadę popup w przeglądarce
+
+## Następne kroki
+
+- [Zamówienia](/docs/user-guide/orders) - Zbieraj dane do raportów
+- [Śledzenie czasu](/docs/user-guide/time-tracking) - Mierz produktywność
+- [Magazyn](/docs/user-guide/inventory) - Kontroluj koszty materiałów

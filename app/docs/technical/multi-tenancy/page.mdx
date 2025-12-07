@@ -1,0 +1,421 @@
+# Multi-Tenancy Architecture
+
+CNC-Pilot jest systemem multi-tenant - wiele firm korzysta z tej samej aplikacji, ale dane są całkowicie oddzielone.
+
+## Jak to działa?
+
+### Email Domain-Based Assignment
+
+**Koncepcja:**
+User rejestruje się → System wyciąga domenę z email → Przypisuje do firmy automatycznie
+
+**Przykład:**
+```
+jan@metaltech.pl   → metaltech.pl  → Firma "MetalTech"
+anna@steelworks.pl → steelworks.pl → Firma "SteelWorks"
+```
+
+**Dlaczego tak?**
+- ✅ Bezpieczeństwo - tylko służbowe emaile
+- ✅ UX - nie trzeba wpisywać kodu firmy
+- ✅ Automatyzacja - zero konfiguracji dla usera
+- ✅ Weryfikacja - email = przynależność do firmy
+
+---
+
+## Struktura bazy danych
+
+### Tabela: companies
+
+```sql
+CREATE TABLE companies (
+  id UUID PRIMARY KEY,
+  name TEXT NOT NULL,
+  created_at TIMESTAMP
+);
+```
+
+**Każda firma ma:**
+- Unikalny UUID
+- Nazwę (np. "MetalTech Sp. z o.o.")
+
+### Tabela: company_email_domains
+
+```sql
+CREATE TABLE company_email_domains (
+  id UUID PRIMARY KEY,
+  company_id UUID REFERENCES companies(id),
+  domain TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP
+);
+```
+
+**Mapowanie domen:**
+```sql
+-- Firma MetalTech
+INSERT INTO company_email_domains (company_id, domain)
+VALUES ('uuid-metaltech', 'metaltech.pl');
+
+-- Firma SteelWorks
+INSERT INTO company_email_domains (company_id, domain)
+VALUES ('uuid-steelworks', 'steelworks.pl');
+```
+
+### Blokowane domeny publiczne
+
+```sql
+CREATE TABLE blocked_email_domains (
+  id UUID PRIMARY KEY,
+  domain TEXT NOT NULL UNIQUE,
+  reason TEXT
+);
+```
+
+**Lista blokowanych:**
+- gmail.com
+- yahoo.com
+- wp.pl
+- onet.pl
+- interia.pl
+- o2.pl
+- ... (wszystkie publiczne)
+
+**Dlaczego?**
+Bezpieczeństwo - nie chcemy aby ktoś z gmail.com dostał się do danych firmy.
+
+---
+
+## Flow rejestracji
+
+### Krok 1: User wypełnia formularz
+
+```
+Email: jan@metaltech.pl
+Hasło: SecurePass123
+Imię i nazwisko: Jan Kowalski
+```
+
+### Krok 2: Walidacja domeny
+
+```typescript
+// lib/email-utils.ts
+const domain = extractDomain('jan@metaltech.pl')  // "metaltech.pl"
+
+// Sprawdź czy nie publiczna
+if (isPublicDomain(domain)) {
+  throw new Error('Użyj służbowego email')
+}
+
+// Sprawdź czy domena jest zarejestrowana
+const company = await getCompanyByDomain(domain)
+if (!company) {
+  throw new Error('Firma nie jest zarejestrowana w systemie')
+}
+```
+
+### Krok 3: Utworzenie konta (Supabase Auth)
+
+```typescript
+const { data, error } = await supabase.auth.signUp({
+  email: 'jan@metaltech.pl',
+  password: 'SecurePass123',
+  options: {
+    data: { full_name: 'Jan Kowalski' }
+  }
+})
+```
+
+### Krok 4: Trigger - Auto-create profile
+
+```sql
+-- Trigger wyciąga domenę
+user_domain := 'metaltech.pl'
+
+-- Znajduje company_id
+SELECT company_id FROM company_email_domains
+WHERE domain = 'metaltech.pl'  -- uuid-metaltech
+
+-- Tworzy profil
+INSERT INTO users (auth_id, email, full_name, company_id, role)
+VALUES (auth_id, 'jan@metaltech.pl', 'Jan Kowalski', 'uuid-metaltech', 'pending')
+```
+
+### Krok 5: Aktywacja przez Admina
+
+- Jan ma status "pending" - nie może się zalogować
+- Admin z MetalTech aktywuje konto
+- Zmienia rolę na "operator"
+- Jan może się zalogować
+
+---
+
+## Row Level Security (RLS)
+
+### Co to jest RLS?
+
+**Row Level Security** = Postgres automatycznie filtruje dane na poziomie bazy.
+
+**Przykład:**
+```sql
+-- Polityka: Users widzą tylko swoją firmę
+CREATE POLICY "users_select_own_company"
+ON orders FOR SELECT
+USING (company_id = (
+  SELECT company_id FROM users
+  WHERE auth_id = auth.uid()
+));
+```
+
+**Efekt:**
+```typescript
+// User z MetalTech (company_id = uuid-metaltech)
+const { data } = await supabase.from('orders').select('*')
+
+// Postgres automatycznie dodaje:
+// WHERE company_id = 'uuid-metaltech'
+
+// User widzi tylko zamówienia MetalTech!
+```
+
+### Polityki dla wszystkich operacji
+
+**SELECT:**
+```sql
+CREATE POLICY "select_own_company" ON orders
+FOR SELECT USING (company_id = current_company_id());
+```
+
+**INSERT:**
+```sql
+CREATE POLICY "insert_own_company" ON orders
+FOR INSERT WITH CHECK (company_id = current_company_id());
+```
+
+**UPDATE:**
+```sql
+CREATE POLICY "update_own_company" ON orders
+FOR UPDATE USING (company_id = current_company_id());
+```
+
+**DELETE:**
+```sql
+CREATE POLICY "delete_own_company" ON orders
+FOR DELETE USING (company_id = current_company_id());
+```
+
+---
+
+## Separacja danych
+
+### Każda tabela ma company_id
+
+```sql
+-- orders
+company_id UUID REFERENCES companies(id) NOT NULL
+
+-- inventory
+company_id UUID REFERENCES companies(id) NOT NULL
+
+-- time_logs
+company_id UUID REFERENCES companies(id) NOT NULL
+
+-- users
+company_id UUID REFERENCES companies(id) NOT NULL
+```
+
+### KAŻDE query MUSI filtrować
+
+```typescript
+// ✅ POPRAWNIE - filtr company_id
+const { data } = await supabase
+  .from('orders')
+  .select('*')
+  .eq('company_id', user.company_id)
+
+// ❌ ŹLE - brak filtra = security risk!
+const { data } = await supabase
+  .from('orders')
+  .select('*')
+// RLS ochroni, ale lepiej być explicit
+```
+
+---
+
+## Dodawanie nowej firmy
+
+### Krok 1: Utwórz firmę
+
+```sql
+INSERT INTO companies (id, name)
+VALUES ('uuid-nowafirma', 'Nowa Firma Sp. z o.o.')
+RETURNING id;
+```
+
+### Krok 2: Dodaj domeny
+
+```sql
+INSERT INTO company_email_domains (company_id, domain)
+VALUES
+  ('uuid-nowafirma', 'nowafirma.pl'),
+  ('uuid-nowafirma', 'nowafirma.com');
+```
+
+### Krok 3: Gotowe!
+
+Teraz każdy z emailem `@nowafirma.pl` może się zarejestrować i będzie automatycznie przypisany do tej firmy.
+
+---
+
+## Shared vs Dedicated Database
+
+### Shared Database (obecnie)
+
+**Architektura:**
+```
+┌─────────────────────┐
+│   PostgreSQL DB     │
+│  ┌────────────────┐ │
+│  │ companies      │ │
+│  │ - MetalTech    │ │
+│  │ - SteelWorks   │ │
+│  └────────────────┘ │
+│  ┌────────────────┐ │
+│  │ orders         │ │
+│  │ company_id ... │ │ ← company_id w każdym wierszu
+│  └────────────────┘ │
+└─────────────────────┘
+```
+
+**Zalety:**
+- Prosty setup
+- Niski koszt
+- Łatwe utrzymanie
+
+**Wady:**
+- Jedna baza dla wszystkich
+- Wymaga RLS (security)
+- Skalowalność ograniczona
+
+### Dedicated Database (przyszłość)
+
+**Architektura:**
+```
+┌─────────────────┐  ┌─────────────────┐
+│   DB MetalTech  │  │ DB SteelWorks   │
+│  ┌────────────┐ │  │  ┌────────────┐ │
+│  │ orders     │ │  │  │ orders     │ │
+│  └────────────┘ │  │  └────────────┘ │
+└─────────────────┘  └─────────────────┘
+```
+
+**Zalety:**
+- Pełna izolacja
+- Lepsza performance
+- Dedykowane zasoby
+
+**Wady:**
+- Drogie (każda firma = osobna baza)
+- Skomplikowane maintenance
+
+**Kiedy migrować?**
+- Gdy firma > 1000 users
+- Gdy potrzebuje custom schema
+- Enterprise klienci
+
+---
+
+## Security Checklist
+
+### ✅ Przed deploy
+
+- [ ] RLS włączony na wszystkich tabelach
+- [ ] Polityki RLS dla SELECT/INSERT/UPDATE/DELETE
+- [ ] Wszystkie queries filtrują po company_id
+- [ ] Trigger auto-assign company_id działa
+- [ ] Blocked domains są w bazie
+- [ ] Test: User A nie widzi danych User B
+
+### ✅ Regularnie
+
+- [ ] Audyt RLS policies (czy nie ma luk)
+- [ ] Przegląd users - czy tylko aktywni pracownicy
+- [ ] Blocked domains - czy lista aktualna
+- [ ] Performance - czy RLS nie spowalnia
+
+---
+
+## Debugging Multi-Tenancy
+
+### Sprawdź company_id usera
+
+```typescript
+const profile = await getUserProfile()
+console.log('Company ID:', profile.company_id)
+```
+
+### Sprawdź czy query filtruje
+
+```typescript
+const { data, error } = await supabase
+  .from('orders')
+  .select('*')
+  .eq('company_id', user.company_id)
+
+console.log('Filtered by company:', user.company_id)
+```
+
+### Sprawdź RLS policies
+
+```sql
+-- W Supabase SQL Editor
+SELECT * FROM pg_policies WHERE tablename = 'orders';
+```
+
+### Test izolacji
+
+1. Zaloguj się jako User A (Firma 1)
+2. Spróbuj pobrać order_id z Firma 2
+3. Powinno być: `data = null` lub `error = "Row not found"`
+
+---
+
+## Best Practices
+
+### 1. Zawsze używaj company_id
+
+Nawet jeśli RLS chroni:
+```typescript
+.eq('company_id', user.company_id)  // Explicit is better
+```
+
+### 2. Waliduj na serwerze
+
+```typescript
+// Server Action
+export async function createOrder(data: OrderData) {
+  const user = await getUserProfile()
+
+  // Użyj company_id z serwera, nie z clienta!
+  const order = {
+    ...data,
+    company_id: user.company_id,  // Z auth
+    created_by: user.id,
+  }
+
+  return await supabase.from('orders').insert(order)
+}
+```
+
+### 3. Test każdej nowej feature
+
+Po dodaniu nowej funkcji:
+- User A może edytować tylko swoje dane?
+- User A nie widzi danych User B?
+
+---
+
+## Następne kroki
+
+- [Database Schema](/docs/technical/database-schema) - Struktura tabel
+- [Authentication](/docs/technical/authentication) - Jak działa auth
+- [API Reference](/docs/technical/api-reference) - Jak query'ować dane

@@ -1,0 +1,367 @@
+# System uwierzytelniania
+
+CNC-Pilot używa Supabase Auth do zarządzania użytkownikami.
+
+## Flow rejestracji
+
+### 1. Formularz rejestracji
+
+```typescript
+// app/register/page.tsx
+const { error } = await supabase.auth.signUp({
+  email: 'jan@firma.pl',
+  password: 'SecurePassword123',
+  options: {
+    data: {
+      full_name: 'Jan Kowalski',
+    },
+  },
+})
+```
+
+### 2. Walidacja domeny
+
+**Blokowane domeny publiczne:**
+- gmail.com, yahoo.com, wp.pl, onet.pl, interia.pl, o2.pl
+
+```typescript
+// lib/email-utils.ts
+export function isPublicEmailDomain(email: string): boolean {
+  const domain = extractDomain(email)
+  const publicDomains = ['gmail.com', 'yahoo.com', /* ... */]
+  return publicDomains.includes(domain)
+}
+```
+
+**Jeśli publiczna domena:**
+```
+❌ Error: "Musisz używać służbowego adresu email"
+```
+
+### 3. Utworzenie profilu (trigger)
+
+Automatyczny trigger `on_auth_user_created`:
+
+1. Wyciąga domenę z email (`firma.pl`)
+2. Szuka w `company_email_domains` gdzie `domain = 'firma.pl'`
+3. Znajduje `company_id`
+4. Tworzy rekord w `users`:
+   - `auth_id` → link do auth.users
+   - `email`
+   - `full_name`
+   - `role = 'pending'` ← czeka na aktywację
+   - `company_id`
+
+### 4. Aktywacja przez admina
+
+- User w stanie "pending" nie może się zalogować
+- Admin/Owner zmienia rolę na operator/manager/admin
+- User dostaje email o aktywacji
+- Może się zalogować
+
+---
+
+## Flow logowania
+
+### 1. Formularz logowania
+
+```typescript
+// app/login/page.tsx
+const { data, error } = await supabase.auth.signInWithPassword({
+  email: 'jan@firma.pl',
+  password: 'SecurePassword123',
+})
+
+if (error) {
+  toast.error('Nieprawidłowy email lub hasło')
+  return
+}
+
+// Przekierowanie
+router.push('/')
+```
+
+### 2. Session management
+
+**Middleware** (`middleware.ts`):
+- Sprawdza czy user zalogowany
+- Jeśli nie → redirect do `/login`
+- Jeśli tak → odświeża session (przedłuża ważność)
+
+```typescript
+// middleware.ts
+const { data: { user } } = await supabase.auth.getUser()
+
+if (!user && !isPublicRoute(request.nextUrl.pathname)) {
+  return NextResponse.redirect(new URL('/login', request.url))
+}
+```
+
+### 3. Pobranie profilu
+
+```typescript
+// lib/auth-server.ts
+export async function getUserProfile() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return null
+
+  const { data: userProfile } = await supabase
+    .from('users')
+    .select('*')
+    .eq('auth_id', user.id)
+    .single()
+
+  return userProfile  // { id, email, full_name, role, company_id, hourly_rate }
+}
+```
+
+---
+
+## Protected Routes
+
+### Middleware Config
+
+```typescript
+// middleware.ts
+export const config = {
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|login|register|forgot-password|verify-email).*)',
+  ],
+}
+```
+
+**Trasy publiczne (bez auth):**
+- `/login`
+- `/register`
+- `/forgot-password`
+- `/verify-email`
+
+**Trasy chronione (wymagają auth):**
+- `/` (dashboard)
+- `/orders`
+- `/inventory`
+- `/time-tracking`
+- `/users`
+- `/settings`
+
+---
+
+## Zarządzanie sesjami
+
+### Czas trwania
+
+- **Session:** 24h domyślnie
+- **Refresh token:** 30 dni
+- **Auto-refresh:** Tak (middleware odświeża)
+
+### Wylogowanie
+
+```typescript
+// Dowolny komponent
+const handleLogout = async () => {
+  await supabase.auth.signOut()
+  router.push('/login')
+}
+```
+
+### "Remember me"
+
+```typescript
+await supabase.auth.signInWithPassword({
+  email,
+  password,
+  options: {
+    shouldCreateSession: true,  // Persistent session
+  },
+})
+```
+
+---
+
+## Resetowanie hasła
+
+### 1. Żądanie resetu
+
+```typescript
+// app/forgot-password/page.tsx
+const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: `${window.location.origin}/reset-password`,
+})
+
+// Email wysłany z linkiem
+```
+
+### 2. Nowe hasło
+
+```typescript
+// app/reset-password/page.tsx
+const { error } = await supabase.auth.updateUser({
+  password: newPassword,
+})
+```
+
+---
+
+## Wymagania hasła
+
+### Walidacja
+
+```typescript
+// lib/password-validation.ts
+export function validatePasswordStrength(password: string) {
+  if (password.length < 8) return 'Za krótkie (min 8 znaków)'
+  if (!/[A-Z]/.test(password)) return 'Brak wielkiej litery'
+  if (!/[a-z]/.test(password)) return 'Brak małej litery'
+  if (!/[0-9]/.test(password)) return 'Brak cyfry'
+  return null  // OK
+}
+```
+
+**Wymagania:**
+- Minimum 8 znaków
+- Co najmniej 1 wielka litera
+- Co najmniej 1 mała litera
+- Co najmniej 1 cyfra
+- (Opcjonalnie) Znak specjalny
+
+---
+
+## Role i uprawnienia
+
+### Hierarchia
+
+```
+Owner > Admin > Manager > Operator > Viewer > Pending
+```
+
+### Sprawdzanie roli
+
+**Server Component:**
+```typescript
+const userProfile = await getUserProfile()
+
+if (!['owner', 'admin'].includes(userProfile.role)) {
+  redirect('/no-access')
+}
+```
+
+**Client Component:**
+```typescript
+{['owner', 'admin'].includes(currentUserRole) && (
+  <button>Usuń</button>
+)}
+```
+
+### Permissions matrix
+
+| Akcja | Owner | Admin | Manager | Operator | Viewer |
+|-------|-------|-------|---------|----------|--------|
+| Dodać zamówienie | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Edytować zamówienie | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Usunąć zamówienie | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Zarządzać użytkownikami | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Śledzić czas | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Widzieć raporty | ✅ | ✅ | ✅ | Tylko swoje | Tylko swoje |
+
+---
+
+## Multi-Factor Authentication (MFA)
+
+*Planowane - obecnie niedostępne*
+
+Przyszła funkcjonalność:
+- SMS verification
+- TOTP (Google Authenticator)
+- Email verification
+
+---
+
+## Security Best Practices
+
+### 1. Nigdy nie zaufaj clientowi
+
+```typescript
+// ❌ ŹLE - client może podmienić company_id
+const { data } = await supabase
+  .from('orders')
+  .insert({
+    ...formData,
+    company_id: formData.company_id,  // NIE!
+  })
+
+// ✅ DOBRZE - zawsze pobieraj z serwera
+const userProfile = await getUserProfile()
+const { data } = await supabase
+  .from('orders')
+  .insert({
+    ...formData,
+    company_id: userProfile.company_id,  // Z auth
+  })
+```
+
+### 2. Waliduj uprawnienia
+
+```typescript
+// Server Action
+export async function deleteOrder(orderId: string) {
+  const user = await getUserProfile()
+
+  // Sprawdź rolę
+  if (user.role !== 'owner') {
+    throw new Error('Unauthorized')
+  }
+
+  // Sprawdź company_id
+  const { error } = await supabase
+    .from('orders')
+    .delete()
+    .eq('id', orderId)
+    .eq('company_id', user.company_id)  // Security!
+
+  return { success: !error }
+}
+```
+
+### 3. HTTPS only
+
+- Vercel automatycznie wymusza HTTPS
+- Cookies są `Secure` i `HttpOnly`
+
+### 4. Rate limiting
+
+*Planowane - obecnie Supabase ma własne limity*
+
+---
+
+## Debugging Auth
+
+### Sprawdź aktualną sesję
+
+```typescript
+const { data: { session } } = await supabase.auth.getSession()
+console.log('Session:', session)
+```
+
+### Sprawdź użytkownika
+
+```typescript
+const { data: { user } } = await supabase.auth.getUser()
+console.log('User:', user)
+```
+
+### Sprawdź profil
+
+```typescript
+const profile = await getUserProfile()
+console.log('Profile:', profile)
+```
+
+---
+
+## Następne kroki
+
+- [Multi-Tenancy](/docs/technical/multi-tenancy) - Jak działa separacja firm
+- [Database Schema](/docs/technical/database-schema) - Struktura tabel auth
+- [User Guide](/docs/user-guide/getting-started) - Jak się zalogować

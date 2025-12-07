@@ -1,0 +1,156 @@
+# Pierwsze kroki z CNC-Pilot
+
+Witamy w systemie CNC-Pilot! Ten przewodnik pomoże Ci szybko rozpocząć pracę.
+
+## Rejestracja i pierwsze logowanie
+
+### Wymagania
+
+Aby korzystać z systemu CNC-Pilot potrzebujesz:
+
+- **Służbowego adresu email** (nie można używać publicznych domen jak gmail.com, wp.pl)
+- **Przeglądarki internetowej** (Chrome, Firefox, Edge - najnowsza wersja)
+- **Dostępu do internetu**
+
+### Proces rejestracji
+
+1. **Przejdź na stronę rejestracji**
+   - Odwiedź `https://cnc-pilot.app/register`
+
+2. **Wprowadź dane**
+   - **Imię i nazwisko** - Twoje pełne dane
+   - **Email służbowy** - Adres firmowy (np. jan.kowalski@twojafirma.pl)
+   - **Hasło** - Minimum 8 znaków, zawierające wielką literę, małą literę i cyfrę
+
+3. **Zatwierdź rejestrację**
+   - System automatycznie przypisze Cię do firmy na podstawie domeny email
+   - Otrzymasz potwierdzenie na email
+
+4. **Oczekiwanie na aktywację**
+   - Administrator firmy musi zatwierdzić Twoje konto
+   - Dostaniesz powiadomienie email gdy konto zostanie aktywowane
+
+### Pierwsze logowanie
+
+Po aktywacji konta:
+
+1. Przejdź na `https://cnc-pilot.app/login`
+2. Wprowadź swój email i hasło
+3. Kliknij "Zaloguj się"
+
+## Interface użytkownika
+
+Po zalogowaniu zobaczysz:
+
+### Dashboard (Pulpit główny)
+
+Główny ekran systemu zawiera:
+
+- **Karty metryk** - Szybki podgląd kluczowych wskaźników
+  - Łączna liczba zamówień
+  - Aktywne zamówienia
+  - Zamówienia ukończone w tym tygodniu
+  - Zamówienia opóźnione
+
+- **Pilne zadania** - Lista zamówień wymagających uwagi
+- **Plan produkcji** - Najbliższe terminy
+- **Ostatnia aktywność** - Co się działo w systemie
+
+### Menu boczne (Sidebar)
+
+Nawigacja po systemie:
+
+- **Dashboard** - Strona główna
+- **Zamówienia** - Zarządzanie zleceniami
+- **Magazyn** - Kontrola zapasów
+- **Śledzenie czasu** - Timery pracy
+- **Użytkownicy** - Zarządzanie zespołem (tylko admin)
+- **Raporty** - Analizy i statystyki
+- **Ustawienia** - Konfiguracja systemu
+
+### Profil użytkownika
+
+W prawym górnym rogu znajdziesz:
+
+- **Powiadomienia** - Alerty i aktualizacje
+- **Menu użytkownika** - Ustawienia profilu, wylogowanie
+
+## Role użytkowników
+
+System ma 6 poziomów uprawnień:
+
+| Rola | Uprawnienia |
+|------|-------------|
+| **Owner** (Właściciel) | Pełny dostęp, może usuwać dane |
+| **Admin** (Administrator) | Zarządzanie użytkownikami i ustawieniami |
+| **Manager** (Menedżer) | Zarządzanie zamówieniami i magazynem |
+| **Operator** | Wykonywanie pracy, śledzenie czasu |
+| **Viewer** (Obserwator) | Tylko odczyt |
+| **Pending** (Oczekujący) | Brak dostępu - czeka na aktywację |
+
+## Podstawowe operacje
+
+### Dodawanie zamówienia
+
+1. Kliknij "Zamówienia" w menu
+2. Kliknij przycisk "+ Nowe zamówienie"
+3. Wypełnij formularz:
+   - Numer zamówienia
+   - Nazwa klienta
+   - Nazwa części
+   - Ilość sztuk
+   - Materiał
+   - Termin realizacji
+4. Kliknij "Utwórz zamówienie"
+
+### Rozpoczęcie pracy
+
+1. Przejdź do "Śledzenie czasu"
+2. Wybierz zamówienie
+3. Kliknij "Start" przy odpowiednim zleceniu
+4. Timer automatycznie rozpocznie liczenie
+5. Po zakończeniu kliknij "Stop"
+
+### Sprawdzanie magazynu
+
+1. Kliknij "Magazyn" w menu
+2. Zobacz listę materiałów
+3. Pozycje z niskim stanem są podświetlone na czerwono
+4. Możesz dodawać nowe pozycje lub edytować istniejące
+
+## Skróty klawiszowe
+
+- `Ctrl + K` - Globalne wyszukiwanie (szybki dostęp do zamówień, plików)
+- `Ctrl + /` - Pomoc
+
+## Rozwiązywanie problemów
+
+### Nie mogę się zalogować
+
+- Sprawdź czy używasz poprawnego adresu email i hasła
+- Upewnij się że Caps Lock jest wyłączony
+- Jeśli zapomniałeś hasła, kliknij "Nie pamiętam hasła"
+
+### Konto czeka na aktywację
+
+- Skontaktuj się z administratorem swojej firmy
+- Administrator musi zmienić Twoją rolę z "Pending" na wyższą
+
+### Nie widzę niektórych opcji
+
+- Twoja rola może nie mieć uprawnień do tej funkcji
+- Skontaktuj się z administratorem o nadanie odpowiednich uprawnień
+
+## Następne kroki
+
+Teraz gdy znasz podstawy:
+
+- Przeczytaj [Zarządzanie zamówieniami](/docs/user-guide/orders)
+- Zobacz [Jak działa magazyn](/docs/user-guide/inventory)
+- Naucz się [Śledzić czas pracy](/docs/user-guide/time-tracking)
+
+## Potrzebujesz pomocy?
+
+- Sprawdź [FAQ](/docs/faq)
+- Obejrzyj [Video Tutoriale](/docs/video-tutorials)
+- Napisz do supportu: support@cnc-pilot.app

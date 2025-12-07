@@ -1,0 +1,276 @@
+# Diagramy procesów (Flowcharts)
+
+Wizualne przedstawienie przepływu pracy w systemie CNC-Pilot.
+
+## 👤 Proces rejestracji użytkownika
+
+```mermaid
+flowchart TD
+    A[Start: Użytkownik odwiedza /register] --> B{Email firmowy?}
+    B -->|NIE - gmail/wp/onet| C[❌ Błąd: Użyj email służbowy]
+    B -->|TAK - email@firma.pl| D[Wyciągnij domenę: firma.pl]
+    D --> E{Domena w bazie?}
+    E -->|NIE| F[❌ Błąd: Firma nie zarejestrowana]
+    E -->|TAK| G[Znajdź company_id dla domeny]
+    G --> H[Utwórz konto w auth.users]
+    H --> I[Trigger: Auto-create profile]
+    I --> J[Dodaj rekord do users z company_id]
+    J --> K[Status: Pending - czeka na aktywację]
+    K --> L[Email potwierdzający]
+    L --> M{Admin aktywuje?}
+    M -->|NIE| N[Konto pozostaje Pending]
+    M -->|TAK| O[Zmiana roli: Operator/Manager/Admin]
+    O --> P[Email: Konto aktywowane]
+    P --> Q[✅ User może się zalogować]
+```
+
+**Kluczowe punkty:**
+- Tylko służbowe emaile
+- Automatyczne przypisanie do firmy po domenie
+- Wymaga aktywacji przez admina
+
+---
+
+## 🔐 Proces logowania
+
+```mermaid
+flowchart TD
+    A[Start: User wchodzi na /login] --> B[Wprowadza email + hasło]
+    B --> C{Dane poprawne?}
+    C -->|NIE| D[❌ Błąd: Nieprawidłowe dane]
+    C -->|TAK| E[Supabase tworzy sesję]
+    E --> F[Pobierz profil z users]
+    F --> G{Rola = Pending?}
+    G -->|TAK| H[❌ Redirect: /pending-activation]
+    G -->|NIE| I{Rola aktywna?}
+    I -->|NIE| J[❌ Konto nieaktywne]
+    I -->|TAK| K[Middleware: Odśwież sesję]
+    K --> L[✅ Redirect: /dashboard]
+```
+
+**Kluczowe punkty:**
+- Pending nie może się zalogować
+- Session auto-refresh przez middleware
+- Redirect do dashboard po sukcesie
+
+---
+
+## 📦 Tworzenie zamówienia
+
+```mermaid
+flowchart TD
+    A[Start: User klika + Nowe zamówienie] --> B[Formularz: Dane zamówienia]
+    B --> C{Walidacja front-end}
+    C -->|Błędy| D[Pokaż komunikaty błędów]
+    C -->|OK| E[Pobierz company_id z auth]
+    E --> F[Dodaj company_id do danych]
+    F --> G[INSERT do orders]
+    G --> H{Sukces?}
+    H -->|NIE| I[❌ Toast: Błąd zapisu]
+    H -->|TAK| J[✅ Toast: Zamówienie utworzone]
+    J --> K[Redirect: /orders]
+    K --> L[Router.refresh - odśwież listę]
+    L --> M[Zamówienie widoczne na liście]
+```
+
+**Kluczowe punkty:**
+- company_id zawsze z serwera, nigdy z clienta
+- Toast feedback dla usera
+- Router.refresh aby zobaczyć zmiany
+
+---
+
+## ⏱️ Śledzenie czasu pracy
+
+```mermaid
+flowchart TD
+    A[Start: User wybiera zamówienie] --> B[Kliknij Start]
+    B --> C[Sprawdź: Czy ma aktywny timer?]
+    C -->|TAK| D[❌ Błąd: Zatrzymaj poprzedni timer]
+    C -->|NIE| E[INSERT time_log: status=running]
+    E --> F[Snapshot: hourly_rate z users]
+    F --> G[start_time = NOW]
+    G --> H[✅ Timer aktywny - licznik]
+    H --> I{User klika...}
+    I -->|Pauza| J[UPDATE: status=paused]
+    I -->|Wznów| K[UPDATE: status=running]
+    I -->|Stop| L[UPDATE: end_time=NOW, status=completed]
+    L --> M[Oblicz: duration = end_time - start_time]
+    M --> N[Oblicz: cost = duration × hourly_rate]
+    N --> O[✅ Sesja zakończona]
+    O --> P[Aktualizuj metryki zamówienia]
+```
+
+**Kluczowe punkty:**
+- Tylko 1 aktywny timer naraz
+- Snapshot stawki (jeśli stawka się zmieni, stare sesje poprawne)
+- Automatyczne obliczanie kosztu
+
+---
+
+## 📊 Wydanie materiału z magazynu
+
+```mermaid
+flowchart TD
+    A[Start: User wybiera pozycję] --> B[Kliknij Wydanie]
+    B --> C[Formularz: Ilość + Zamówienie]
+    C --> D{Ilość > Stan?}
+    D -->|TAK| E[❌ Błąd: Brak wystarczającej ilości]
+    D -->|NIE| F[UPDATE inventory: quantity -= ilość]
+    F --> G{Przypisać do zamówienia?}
+    G -->|NIE| H[INSERT inventory_movement: type=WZ]
+    G -->|TAK| I[Powiąż z order_id]
+    I --> J[INSERT inventory_movement + order_id]
+    J --> K[✅ Toast: Materiał wydany]
+    K --> L{Stan < Próg minimum?}
+    L -->|TAK| M[🔴 Alert: Niski stan!]
+    L -->|NIE| N[Status: OK]
+    M --> O[Powiadomienie: Zamów materiał]
+    N --> P[Koniec]
+    O --> P
+```
+
+**Kluczowe punkty:**
+- Walidacja przed wydaniem
+- Automatyczne alerty niskiego stanu
+- Historia ruchów magazynowych
+
+---
+
+## 👥 Aktywacja użytkownika przez admina
+
+```mermaid
+flowchart TD
+    A[Start: Nowy user zarejestrowany] --> B[Status: Pending w users]
+    B --> C[Powiadomienie do Admin]
+    C --> D[Admin: Lista użytkowników]
+    D --> E{Admin klika...}
+    E -->|Aktywuj| F[Formularz: Wybierz rolę]
+    E -->|Odrzuć| G[UPDATE: status=inactive]
+    F --> H{Rola wybrana}
+    H --> I[UPDATE: role = operator/manager/admin]
+    I --> J[✅ Toast: Użytkownik aktywowany]
+    J --> K[Email do user: Konto aktywne]
+    K --> L[User może się zalogować]
+    G --> M[Email: Rejestracja odrzucona]
+    M --> N[User NIE może się zalogować]
+```
+
+**Kluczowe punkty:**
+- Pending = brak dostępu
+- Admin wybiera rolę podczas aktywacji
+- Email feedback do usera
+
+---
+
+## 🔄 Multi-Tenancy - Izolacja danych
+
+```mermaid
+flowchart TD
+    A[User A - Firma MetalTech] --> B[Zalogowany: company_id = uuid-metal]
+    C[User B - Firma SteelWorks] --> D[Zalogowany: company_id = uuid-steel]
+
+    B --> E[Query: SELECT * FROM orders]
+    D --> F[Query: SELECT * FROM orders]
+
+    E --> G[Middleware dodaje: WHERE company_id = uuid-metal]
+    F --> H[Middleware dodaje: WHERE company_id = uuid-steel]
+
+    G --> I[RLS Policy sprawdza]
+    H --> J[RLS Policy sprawdza]
+
+    I --> K[✅ Zwraca tylko zamówienia MetalTech]
+    J --> L[✅ Zwraca tylko zamówienia SteelWorks]
+
+    K --> M[User A widzi tylko swoje]
+    L --> N[User B widzi tylko swoje]
+
+    M --> O[❌ NIE widzi danych SteelWorks]
+    N --> P[❌ NIE widzi danych MetalTech]
+```
+
+**Kluczowe punkty:**
+- Każdy query filtrowany po company_id
+- RLS zapewnia izolację na poziomie bazy
+- Niemożliwe przypadkowe wyciek danych
+
+---
+
+## 📈 Generowanie raportu
+
+```mermaid
+flowchart TD
+    A[Start: User wybiera Raporty] --> B[Wybierz typ: Zamówienia/Magazyn/Czas]
+    B --> C[Ustaw filtry: daty/status/klient]
+    C --> D[Kliknij Generuj]
+    D --> E[Pobierz company_id z auth]
+    E --> F[Query z filtrami + company_id]
+    F --> G[Agregacja danych]
+    G --> H[Oblicz metryki]
+    H --> I{Format eksportu?}
+    I -->|CSV| J[Generate CSV]
+    I -->|Excel| K[Generate XLSX]
+    I -->|PDF| L[Generate PDF]
+    I -->|Ekran| M[Renderuj w przeglądarce]
+    J --> N[Download plik]
+    K --> N
+    L --> N
+    M --> O[Wyświetl raport]
+    N --> P[✅ Raport gotowy]
+    O --> P
+```
+
+**Kluczowe punkty:**
+- Zawsze filtruj po company_id
+- Wiele formatów eksportu
+- Zapisywanie ulubionych raportów
+
+---
+
+## 🔧 Notacja
+
+**Kształty:**
+- 🟦 Prostokąt - Proces/akcja
+- 🔷 Romb - Decyzja (TAK/NIE)
+- 🔴 Okrąg - Start/Stop
+- 📄 Dokument - Output/raport
+
+**Kolory:**
+- ✅ Zielony - Sukces
+- ❌ Czerwony - Błąd
+- 🔵 Niebieski - Proces
+- 🟡 Żółty - Czekanie/pending
+
+---
+
+## 📚 Więcej diagramów
+
+Potrzebujesz flowchart dla innego procesu?
+
+**Zgłoś prośbę:**
+- Email: docs@cnc-pilot.app
+- Temat: "Flowchart request: [nazwa procesu]"
+
+**Planowane:**
+- Proces fakturowania
+- Integracja z systemami zewnętrznymi
+- Backup i restore danych
+- Migracja między planami cenowymi
+
+---
+
+## 🛠️ Narzędzia
+
+Diagramy stworzone w:
+- **Mermaid.js** - Markdown-based diagramming
+- **Draw.io** - Bardziej skomplikowane diagramy
+
+**Edytuj własne:**
+- [Mermaid Live Editor](https://mermaid.live)
+- [Draw.io](https://app.diagrams.net)
+
+---
+
+**Wizualizacja pomaga w zrozumieniu!** 🎯
+
+Jeśli coś jest niejasne - zobacz [FAQ](/docs/faq) lub [Video Tutoriale](/docs/video-tutorials).

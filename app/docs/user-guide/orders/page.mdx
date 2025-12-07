@@ -1,0 +1,289 @@
+# Zarządzanie zamówieniami
+
+System zamówień to serce CNC-Pilot. Tutaj zarządzasz wszystkimi zleceniami produkcyjnymi.
+
+## Widok listy zamówień
+
+### Statusy zamówień
+
+Każde zamówienie ma jeden z 5 statusów:
+
+| Status | Kolor | Znaczenie |
+|--------|-------|-----------|
+| **Oczekujące** | Żółty | Zamówienie przyjęte, czeka na rozpoczęcie |
+| **W realizacji** | Niebieski | Aktywnie produkowane |
+| **Ukończone** | Zielony | Zakończone pomyślnie |
+| **Opóźnione** | Czerwony | Przekroczony termin realizacji |
+| **Anulowane** | Szary | Zamówienie anulowane |
+
+### Filtrowanie zamówień
+
+Użyj filtrów aby znaleźć zamówienia:
+
+- **Status** - Pokaż tylko zamówienia o danym statusie
+- **Klient** - Szukaj po nazwie klienta
+- **Numer zamówienia** - Wpisz numer zlecenia
+- **Zakres dat** - Zamówienia z określonego okresu
+- **Termin realizacji** - Sortuj po deadline
+
+**Zapisywanie filtrów:**
+- Ustaw filtry według potrzeb
+- Kliknij "Zapisz filtr"
+- Nadaj nazwę (np. "Pilne - ten tydzień")
+- Szybko przywołuj zapisane filtry
+
+### Sortowanie
+
+Kliknij nagłówek kolumny aby posortować:
+
+- Numer zamówienia
+- Klient
+- Termin realizacji
+- Status
+- Data utworzenia
+
+## Tworzenie nowego zamówienia
+
+### Krok po kroku
+
+1. **Kliknij "+ Nowe zamówienie"**
+
+2. **Wypełnij podstawowe informacje:**
+   - **Numer zamówienia*** - Unikalny identyfikator (np. "ZAM-2025-001")
+   - **Nazwa klienta*** - Firma zamawiająca
+   - **Osoba kontaktowa** - Imię i nazwisko (opcjonalnie)
+   - **Email kontaktowy** - Adres email klienta (opcjonalnie)
+
+3. **Szczegóły części:**
+   - **Nazwa części*** - Co produkujemy (np. "Wałek 50x200")
+   - **Numer rysunku** - Oznaczenie techniczne (opcjonalnie)
+   - **Ilość*** - Liczba sztuk do wyprodukowania
+   - **Materiał*** - Rodzaj materiału (np. "Stal S235", "Aluminium 7075")
+
+4. **Terminy:**
+   - **Termin realizacji*** - Deadline zamówienia
+   - **Priorytet** - Wysoki/Średni/Niski
+
+5. **Notatki i załączniki:**
+   - **Notatki** - Dodatkowe uwagi
+   - **Załączniki** - Rysunki techniczne, specyfikacje (opcjonalnie)
+
+6. **Kliknij "Utwórz zamówienie"**
+
+\* Pola wymagane
+
+### Szybkie tworzenie
+
+Dla częstych klientów:
+
+- System zapamiętuje poprzednie zamówienia
+- Możesz skopiować zamówienie i zmienić tylko szczegóły
+- Kliknij "⋮" przy zamówieniu → "Duplikuj"
+
+## Edycja zamówienia
+
+### Aktualizacja danych
+
+1. Kliknij na zamówienie z listy
+2. Kliknij przycisk "Edytuj"
+3. Zmień potrzebne pola
+4. Kliknij "Zapisz zmiany"
+
+**Co możesz edytować:**
+- Wszystkie pola podstawowe
+- Status zamówienia
+- Notatki
+- Załączniki
+
+**Czego NIE możesz zmienić:**
+- Numer zamówienia (po utworzeniu)
+- Historia zmian (audit log)
+
+### Zmiana statusu
+
+Szybka zmiana statusu bez wchodzenia w edycję:
+
+1. Kliknij dropdown statusu na liście
+2. Wybierz nowy status
+3. Zmiany zapisują się automatycznie
+
+**Przepływ statusów (sugerowany):**
+```
+Oczekujące → W realizacji → Ukończone
+                    ↓
+                Opóźnione (jeśli deadline minął)
+```
+
+## Szczegóły zamówienia
+
+Kliknij na zamówienie aby zobaczyć pełne informacje:
+
+### Zakładka: Podstawowe
+
+- Wszystkie dane zamówienia
+- Status i priorytet
+- Daty utworzenia i aktualizacji
+- Kto utworzył zamówienie
+
+### Zakładka: Czas pracy
+
+- Lista sesji roboczych
+- Kto pracował i ile czasu
+- Łączny czas pracy
+- Koszt robocizny (jeśli skonfigurowane)
+
+### Zakładka: Materiały
+
+- Lista użytych materiałów z magazynu
+- Ilości zużyte
+- Koszty materiałów
+
+### Zakładka: Załączniki
+
+- Rysunki techniczne
+- Specyfikacje
+- Dokumenty klienta
+- Zdjęcia
+
+### Zakładka: Historia
+
+- Kto i kiedy zmienił zamówienie
+- Jakie zmiany zostały wprowadzone
+- Audit trail (ścieżka audytu)
+
+## Praca z załącznikami
+
+### Dodawanie plików
+
+1. Otwórz szczegóły zamówienia
+2. Przejdź do zakładki "Załączniki"
+3. Kliknij "Dodaj plik" lub przeciągnij plik na obszar
+4. Plik zostanie zapisany
+
+**Obsługiwane formaty:**
+- PDF, DWG, DXF - Rysunki techniczne
+- JPG, PNG - Zdjęcia
+- DOC, XLSX - Dokumenty
+- Maksymalny rozmiar: 10 MB na plik
+
+### Organizacja plików
+
+- **Tagi** - Oznaczaj pliki (np. "rysunek", "specyfikacja")
+- **Sortowanie** - Po dacie, nazwie, rozmiarze
+- **Podgląd** - Kliknij plik aby zobaczyć podgląd
+
+## Usuwanie zamówień
+
+### Kto może usuwać?
+
+Tylko użytkownicy z rolą **Owner** mogą permanentnie usuwać zamówienia.
+
+### Jak usunąć?
+
+1. Otwórz szczegóły zamówienia
+2. Kliknij przycisk "Usuń" (czerwony, na dole)
+3. Potwierdź usunięcie
+
+⚠️ **Uwaga:** Usunięcie jest nieodwracalne! Usuwa również:
+- Wszystkie sesje czasu pracy
+- Powiązania z materiałami
+- Załączniki
+
+**Alternatywa:** Zamiast usuwać, zmień status na "Anulowane"
+
+## Masowe operacje
+
+### Eksport do CSV/Excel
+
+1. Zastosuj filtry (opcjonalnie)
+2. Kliknij "Eksportuj"
+3. Wybierz format (CSV lub Excel)
+4. Plik zostanie pobrany
+
+**Zawartość eksportu:**
+- Wszystkie widoczne zamówienia (po filtrowaniu)
+- Wszystkie kolumny danych
+- Format gotowy do importu do Excel
+
+### Drukowanie
+
+1. Otwórz szczegóły zamówienia
+2. Kliknij "Drukuj"
+3. Wybierz printer lub zapisz jako PDF
+
+**Raport zawiera:**
+- Wszystkie dane zamówienia
+- Logo firmy (jeśli skonfigurowane)
+- Kod QR z linkiem do zamówienia
+
+## Powiadomienia
+
+System automatycznie powiadamia o:
+
+- **Zbliżające się terminy** - 3 dni przed deadline
+- **Opóźnione zamówienia** - Gdy deadline minął
+- **Nowe komentarze** - Gdy ktoś skomentował zamówienie
+- **Zmiany statusu** - Gdy status się zmienia
+
+Powiadomienia pojawiają się:
+- W systemie (ikona dzwonka)
+- Email (jeśli włączone w ustawieniach)
+
+## Wskazówki i best practices
+
+### Numeracja zamówień
+
+Ustal spójny system numeracji:
+
+```
+ZAM-2025-001
+│   │    └─ Numer sekwencyjny
+│   └────── Rok
+└────────── Prefix "ZAM"
+```
+
+### Priorytetyzacja
+
+Używaj priorytetów:
+- **Wysoki** - Pilne, krótkie terminy
+- **Średni** - Standardowe zamówienia
+- **Niski** - Może poczekać
+
+### Notatki
+
+Dodawaj szczegółowe notatki:
+- Specjalne wymagania klienta
+- Problemy napotkane podczas produkcji
+- Rozwiązania niestandardowe
+
+### Regularny przegląd
+
+Co tydzień:
+- Sprawdź zamówienia "Opóźnione"
+- Aktualizuj statusy
+- Archiwizuj ukończone (zmień status na "Ukończone")
+
+## Rozwiązywanie problemów
+
+### Nie mogę zmienić statusu
+
+- Sprawdź swoje uprawnienia (Operator może tylko zmieniać status, nie usuwać)
+- Odśwież stronę
+
+### Załącznik nie chce się załadować
+
+- Sprawdź rozmiar pliku (max 10 MB)
+- Upewnij się że format jest obsługiwany
+- Spróbuj innej przeglądarki
+
+### Zamówienie znikło z listy
+
+- Sprawdź filtry (może być ukryte)
+- Kliknij "Wyczyść filtry"
+- Sprawdź czy nie zostało usunięte (zakładka Historia)
+
+## Następne kroki
+
+- [Zarządzanie magazynem](/docs/user-guide/inventory) - Powiąż materiały z zamówieniami
+- [Śledzenie czasu](/docs/user-guide/time-tracking) - Mierz czas pracy nad zamówieniami
+- [Raporty](/docs/user-guide/reports) - Analizuj zamówienia

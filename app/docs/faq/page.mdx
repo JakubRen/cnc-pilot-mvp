@@ -1,0 +1,327 @@
+# FAQ - Najczęściej zadawane pytania
+
+## 🔐 Konto i logowanie
+
+### Nie mogę się zalogować - co robić?
+
+1. **Sprawdź email i hasło** - Caps Lock wyłączony?
+2. **Status konta** - Czy admin aktywował Twoje konto?
+3. **Reset hasła** - Kliknij "Nie pamiętam hasła" na stronie logowania
+
+### Konto czeka na aktywację - ile to trwa?
+
+- Status "Pending" oznacza że admin musi zatwierdzić
+- Skontaktuj się z administratorem firmy
+- Zazwyczaj < 24h
+
+### Dlaczego nie mogę użyć Gmail/WP/Onet?
+
+**Bezpieczeństwo** - Akceptujemy tylko służbowe emaile firmowe.
+
+Zablokowane domeny:
+- gmail.com, yahoo.com
+- wp.pl, onet.pl, interia.pl, o2.pl
+- Wszystkie publiczne dostawcy
+
+**Rozwiązanie:** Użyj email firmowy (np. jan@twojafirma.pl)
+
+### Jak zmienić hasło?
+
+1. Zalogowany: Profil → Ustawienia → Zmień hasło
+2. Wylogowany: "Nie pamiętam hasła" na stronie logowania
+
+**Wymagania hasła:**
+- Min 8 znaków
+- Wielka litera
+- Mała litera
+- Cyfra
+
+---
+
+## 📦 Zamówienia
+
+### Jak dodać nowe zamówienie?
+
+1. Zamówienia → "+ Nowe zamówienie"
+2. Wypełnij formularz (pola z * są wymagane)
+3. Kliknij "Utwórz zamówienie"
+
+[Szczegóły → User Guide: Zamówienia](/docs/user-guide/orders)
+
+### Nie widzę opcji "Dodaj zamówienie"
+
+Twoja rola: **Viewer** lub **Pending**
+
+**Rozwiązanie:** Poproś admina o nadanie roli Operator/Manager
+
+### Jak zmienić status zamówienia?
+
+**Sposób 1 (szybki):**
+- Na liście: Kliknij dropdown statusu → Wybierz nowy
+
+**Sposób 2 (szczegółowy):**
+- Otwórz zamówienie → Edytuj → Zmień status → Zapisz
+
+### Co oznaczają statusy?
+
+- **Oczekujące** (żółty) - Przyjęte, czeka na start
+- **W realizacji** (niebieski) - Produkcja trwa
+- **Ukończone** (zielony) - Zrobione!
+- **Opóźnione** (czerwony) - Deadline minął
+- **Anulowane** (szary) - Odwołane
+
+### Zamówienie zniknęło z listy
+
+**Sprawdź filtry:**
+- Kliknij "Wyczyść filtry"
+- Sprawdź zakres dat
+- Sprawdź filtr statusu
+
+**Czy zostało usunięte?**
+- Tylko Owner może usuwać
+- Sprawdź w Historii
+
+---
+
+## 📊 Magazyn
+
+### Jak dodać nowy materiał?
+
+Magazyn → "+ Nowa pozycja" → Wypełnij formularz
+
+**Wymagane:**
+- Nazwa materiału
+- Kategoria
+- Stan początkowy
+- Jednostka (kg/m/szt/l)
+
+### Czerwony wskaźnik przy materiale - co to znaczy?
+
+**Niski stan!**
+
+Stan magazynowy < Próg minimum
+
+**Akcja:** Zamów u dostawcy
+
+### Jak wydać materiał na zamówienie?
+
+1. Znajdź materiał
+2. Kliknij "Wydanie"
+3. Wprowadź ilość
+4. Opcjonalnie: przypisz do zamówienia
+5. Zapisz
+
+### Pomyłka w stanie magazynowym - jak poprawić?
+
+**Inwentaryzacja:**
+1. Magazyn → "Inwentaryzacja"
+2. Fizycznie przelicz
+3. Wprowadź rzeczywisty stan
+4. System wyrówna różnicę
+
+---
+
+## ⏱️ Śledzenie czasu
+
+### Zapomniałem wyłączyć timer
+
+**Edycja sesji:**
+1. Śledzenie czasu → Historia
+2. Znajdź sesję
+3. Kliknij "Edytuj"
+4. Popraw godzinę zakończenia
+5. Zapisz
+
+### Czy mogę mieć wiele timerów naraz?
+
+**NIE** - tylko 1 aktywny timer.
+
+**Dlaczego?** Dokładność - nie da się pracować nad 2 rzeczami jednocześnie.
+
+**Rozwiązanie:** Stop na jednym, Start na drugim.
+
+### Timer nie działa / nie liczy
+
+1. Odśwież stronę (F5)
+2. Sprawdź połączenie internetowe
+3. Wyloguj i zaloguj ponownie
+4. Spróbuj innej przeglądarki
+
+### Kto widzi moje timery?
+
+- **Ty:** Swoje timery + czas
+- **Manager/Admin:** Wszyscy timery + czas
+- **Owner:** Wszystko + koszty robocizny
+
+---
+
+## 👥 Użytkownicy
+
+### Jak dodać nowego pracownika?
+
+**Zaproszenie:**
+1. Użytkownicy → "Zaproś użytkownika"
+2. Wprowadź email służbowy
+3. System wysyła zaproszenie
+4. Osoba rejestruje się
+5. Aktywujesz konto (przypisujesz rolę)
+
+### Różnica między rolami?
+
+| Rola | Co może |
+|------|---------|
+| **Owner** | Wszystko (+ usuwanie) |
+| **Admin** | Zarządzanie zespołem + ustawienia |
+| **Manager** | Zamówienia + magazyn + raporty |
+| **Operator** | Praca + timery |
+| **Viewer** | Tylko podgląd |
+
+[Szczegóły → User Guide: Użytkownicy](/docs/user-guide/users)
+
+### Jak zmienić rolę użytkownika?
+
+1. Użytkownicy → Znajdź osobę
+2. Kliknij "Edytuj"
+3. Wybierz nową rolę
+4. Zapisz
+
+**Zmiany obowiązują natychmiast!**
+
+### Pracownik odszedł - co zrobić?
+
+**NIE usuwaj** (stracisz historię)
+
+**Dezaktywuj:**
+1. Edytuj użytkownika
+2. Status → "Nieaktywny"
+3. Zapisz
+
+**Efekt:** Nie może się zalogować, ale historia pozostaje.
+
+---
+
+## 📈 Raporty
+
+### Gdzie znajdę raporty?
+
+**Dashboard:** Szybki przegląd (kafelki + wykresy)
+
+**Raporty:** Menu → Raporty → Wybierz typ:
+- Zamówienia
+- Czas pracy
+- Magazyn
+- Finansowy (jeśli skonfigurowane)
+
+### Raport długo się generuje
+
+**Optymalizacja:**
+- Ogranicz zakres dat (30 dni zamiast rok)
+- Użyj filtrów
+- Spróbuj w godzinach nocnych
+
+### Jak wyeksportować dane?
+
+1. Otwórz raport (np. Zamówienia)
+2. Zastosuj filtry (opcjonalnie)
+3. Kliknij "Eksportuj"
+4. Wybierz format: CSV / Excel / PDF
+5. Plik się pobierze
+
+---
+
+## 🔧 Problemy techniczne
+
+### Strona nie ładuje się
+
+1. **Odśwież** (F5 lub Ctrl+R)
+2. **Wyczyść cache** (Ctrl+Shift+Del)
+3. **Inna przeglądarka** (Chrome/Firefox/Edge)
+4. **Sprawdź internet** (ping google.com)
+
+### Formularz nie zapisuje danych
+
+**Sprawdź:**
+- Czy wypełniłeś wszystkie pola wymagane (*)?
+- Czy format daty jest poprawny?
+- Czy liczby są liczbami (nie text)?
+
+**Nadal nie działa?**
+- F12 → Console → zrzut ekranu błędów
+- Wyślij do supportu
+
+### Przycisk nie reaguje
+
+1. **Odśwież stronę**
+2. **Spróbuj z klawiatury** (Enter/Space)
+3. **Wyczyść cache**
+
+### Dane się nie aktualizują
+
+**Po zapisaniu:**
+- Strona powinna się odświeżyć automatycznie
+- Jeśli nie → F5
+
+**Real-time:** Zmiany innych widoczne po ~2-3 sekundach
+
+---
+
+## 💰 Płatności i koszty
+
+### Ile kosztuje CNC-Pilot?
+
+**Ceny (2025):**
+- Startup: 99 PLN/miesiąc (do 5 users)
+- Business: 299 PLN/miesiąc (do 20 users)
+- Enterprise: Indywidualna wycena
+
+**Bezpłatny trial:** 14 dni (pełny dostęp)
+
+### Jak ustawić koszty robocizny?
+
+**Stawki godzinowe:**
+1. Admin → Użytkownicy → Edytuj użytkownika
+2. "Stawka godzinowa" → Wprowadź (PLN/h)
+3. Zapisz
+
+**Automatyczne obliczanie:**
+- Czas pracy × Stawka = Koszt sesji
+
+### Czy mogę zmienić plan w trakcie miesiąca?
+
+**TAK** - przeliczamy proporcjonalnie.
+
+**Downgrade:** Od następnego miesiąca
+**Upgrade:** Natychmiast (dopłata za różnicę)
+
+---
+
+## 🆘 Dalsze wsparcie
+
+### Nie znalazłeś odpowiedzi?
+
+1. **Dokumentacja** - [User Guide](/docs/user-guide/getting-started)
+2. **Video Tutoriale** - [Tutoriale](/docs/video-tutorials)
+3. **Email Support** - support@cnc-pilot.app
+4. **Telefon** - +48 123 456 789 (Pon-Pt 9-17)
+
+### Znalazłeś błąd (bug)?
+
+**Zgłoś:**
+- Email: bugs@cnc-pilot.app
+- Dołącz: zrzut ekranu + opis co robiłeś
+- Console errors (F12 → Console)
+
+**Dostaniesz:** Potwierdzenie w 24h + fix w ciągu tygodnia
+
+### Mam pomysł na nową funkcję
+
+**Sugestie mile widziane!**
+
+Email: features@cnc-pilot.app
+
+Opisz:
+- Jaki problem rozwiązuje?
+- Jak ma działać?
+- Kto by z tego korzystał?
+
+**Priorytetyzujemy** najpopularniejsze propozycje.

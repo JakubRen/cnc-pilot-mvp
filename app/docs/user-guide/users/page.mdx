@@ -1,0 +1,245 @@
+# Zarządzanie użytkownikami
+
+*Funkcja dostępna dla: Admin, Owner*
+
+## Przegląd użytkowników
+
+Lista wszystkich użytkowników w firmie:
+- Imię i nazwisko
+- Email
+- Rola
+- Status (aktywny/pending)
+- Data dołączenia
+
+## Aktywacja nowych użytkowników
+
+### Proces aktywacji
+
+Gdy ktoś się zarejestruje:
+
+1. Pojawia się na liście ze statusem "Pending"
+2. Administrator otrzymuje powiadomienie
+3. Kliknij "Aktywuj"
+4. Przypisz rolę:
+   - Owner
+   - Admin
+   - Manager
+   - Operator
+   - Viewer
+5. Kliknij "Zatwierdź"
+6. Użytkownik otrzymuje email o aktywacji
+
+### Odrzucenie użytkownika
+
+Jeśli ktoś niepowołany się zarejestrował:
+- Kliknij "Odrzuć"
+- Konto zostanie dezaktywowane
+- Osoba nie będzie mogła się zalogować
+
+## Role i uprawnienia
+
+### Owner (Właściciel)
+
+**Pełny dostęp:**
+- Wszystkie funkcje systemu
+- Usuwanie danych
+- Zarządzanie użytkownikami
+- Płatności i billing
+- Ustawienia firmy
+
+**Ograniczenia:**
+- Tylko 1 Owner na firmę
+- Nie można sam siebie zdegradować
+
+### Admin (Administrator)
+
+**Może:**
+- Zarządzać użytkownikami (dodawać, edytować role)
+- Wszystkie funkcje operacyjne
+- Konfiguracja systemu
+
+**Nie może:**
+- Usuwać zamówień/danych
+- Zmieniać rolę Owner
+- Zarządzać płatnościami
+
+### Manager (Menedżer)
+
+**Może:**
+- Tworzyć/edytować zamówienia
+- Zarządzać magazynem
+- Przeglądać raporty wszystkich
+- Przydzielać pracę
+
+**Nie może:**
+- Zarządzać użytkownikami
+- Usuwać danych
+- Zmieniać ustawienia systemu
+
+### Operator
+
+**Może:**
+- Śledzić swój czas pracy
+- Wyświetlać zamówienia
+- Wydawać materiały z magazynu
+- Aktualizować statusy zamówień
+
+**Nie może:**
+- Tworzyć nowych zamówień
+- Usuwać danych
+- Widzieć raporty innych
+
+### Viewer (Obserwator)
+
+**Może:**
+- Tylko przeglądać
+- Eksportować raporty (własny dostęp)
+
+**Nie może:**
+- Edytować czegokolwiek
+- Tworzyć nowych danych
+
+## Edycja użytkownika
+
+### Zmiana roli
+
+1. Znajdź użytkownika na liście
+2. Kliknij "Edytuj"
+3. Wybierz nową rolę z dropdown
+4. Zapisz
+
+**Uwaga:** Zmiany uprawnień obowiązują natychmiast.
+
+### Zmiana danych
+
+Można edytować:
+- Imię i nazwisko
+- Rola
+- Stawka godzinowa (jeśli używasz timerów)
+- Status (aktywny/nieaktywny)
+
+### Deaktywacja użytkownika
+
+Zamiast usuwać (traci się historia):
+
+1. Edytuj użytkownika
+2. Zmień status na "Nieaktywny"
+3. Zapisz
+
+**Efekt:**
+- Nie może się zalogować
+- Historia pozostaje
+- Można reaktywować później
+
+## Stawki godzinowe
+
+### Ustawianie stawek
+
+Dla dokładnych kosztów robocizny:
+
+1. Edytuj użytkownika
+2. "Stawka godzinowa" - wprowadź kwotę (PLN/h)
+3. Zapisz
+
+**Zastosowanie:**
+- Automatyczne obliczanie kosztów sesji
+- Raporty rentowności zamówień
+- Fakturowanie klientów
+
+**Prywatność:**
+- Pracownik widzi tylko swoją stawkę
+- Manager/Admin/Owner widzą wszystkie
+
+## Zapraszanie użytkowników
+
+### Email z instrukcją
+
+1. Kliknij "Zaproś użytkownika"
+2. Wprowadź email służbowy
+3. System wysyła zaproszenie z linkiem rejestracji
+4. Osoba rejestruje się
+5. Aktywujesz konto (jak wyżej)
+
+### Masowe zaproszenia
+
+Dla wielu osób naraz:
+
+1. "Zaproś wielu"
+2. Wprowadź emaile (jeden na linię)
+3. Wyślij zaproszenia
+4. Aktywuj każdą osobę gdy się zarejestruje
+
+## Bezpieczeństwo
+
+### Wymagania dla emaila
+
+System akceptuje tylko:
+- Służbowe domeny firmowe (np. @twojafirma.pl)
+- Zablokowane publiczne (gmail.com, wp.pl, onet.pl, itp.)
+
+**Dlaczego?**
+- Bezpieczeństwo danych
+- Weryfikacja że osoba należy do firmy
+- Łatwiejsze zarządzanie dostępem
+
+### Sesje i logowanie
+
+- Automatyczne wylogowanie po 24h nieaktywności
+- Sesja wygasa po zamknięciu przeglądarki (opcjonalnie)
+- Wymagane silne hasło (min. 8 znaków, wielka, mała, cyfra)
+
+### Audyt zmian
+
+Każda zmiana użytkownika jest logowana:
+- Kto zmienił
+- Co zmienił
+- Kiedy
+- Poprzednia i nowa wartość
+
+## Best practices
+
+### Minimalne uprawnienia
+
+Zasada: daj najmniejsze uprawnienia potrzebne do pracy
+- Operator dla pracowników produkcji
+- Manager dla kierowników
+- Admin dla zaufanych osób
+- Owner dla właściciela firmy
+
+### Regularne przeglądy
+
+Co miesiąc:
+- Sprawdź listę użytkowników
+- Dezaktywuj osoby które odeszły
+- Aktualizuj role jeśli zakres obowiązków się zmienił
+
+### Onboarding
+
+Gdy dodajesz nowego:
+1. Wyślij zaproszenie
+2. Po aktywacji - krótki briefing (telefon/video)
+3. Pokaż [Pierwsze kroki](/docs/user-guide/getting-started)
+4. Przydziel mentora (doświadczony pracownik)
+
+## Rozwiązywanie problemów
+
+### Użytkownik nie może się zalogować
+
+- Sprawdź status (aktywny?)
+- Sprawdź rolę (nie "Pending"?)
+- Użytkownik zresetował hasło?
+
+### Nie widzę opcji zarządzania użytkownikami
+
+- Tylko Admin/Owner ma dostęp
+- Sprawdź swoją rolę
+
+### Chcę zmienić Ownera
+
+- Skontaktuj się z supportem
+- Wymaga weryfikacji właściciela firmy
+
+## Następne kroki
+
+- [Pierwsze kroki](/docs/user-guide/getting-started) - Pokaż nowym użytkownikom
+- [Raporty](/docs/user-guide/reports) - Monitoruj produktywność zespołu

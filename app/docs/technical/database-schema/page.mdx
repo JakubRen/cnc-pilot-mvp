@@ -1,0 +1,406 @@
+# Schemat bazy danych
+
+CNC-Pilot używa PostgreSQL (host: Supabase) z pełną obsługą Row Level Security (RLS).
+
+## Architektura
+
+System multi-tenant - każda firma ma:
+- **company_id** (UUID) - Unikalny identyfikator firmy
+- **Separacja danych** - RLS zapewnia że firma A nie widzi danych firmy B
+- **Email domain-based** - Automatyczne przypisanie do firmy po domenie email
+
+## Tabele główne
+
+### companies
+
+Firmy korzystające z systemu.
+
+```sql
+CREATE TABLE companies (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+**Kolumny:**
+- `id` - UUID firmy
+- `name` - Nazwa firmy (np. "MetalTech Sp. z o.o.")
+- `created_at` - Data utworzenia
+
+---
+
+### users
+
+Użytkownicy systemu (pracownicy firm).
+
+```sql
+CREATE TABLE users (
+  id BIGSERIAL PRIMARY KEY,
+  auth_id UUID REFERENCES auth.users(id),
+  email TEXT NOT NULL UNIQUE,
+  full_name TEXT NOT NULL,  -- UWAGA: full_name, NIE name!
+  role TEXT NOT NULL CHECK (role IN ('owner', 'admin', 'manager', 'operator', 'viewer', 'pending')),
+  company_id UUID REFERENCES companies(id),
+  hourly_rate NUMERIC(10, 2),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+**Kolumny:**
+- `id` - ID użytkownika (auto-increment)
+- `auth_id` - Link do auth.users (Supabase Auth)
+- `email` - Adres email (unique)
+- `full_name` - Imię i nazwisko (NIE `name`!)
+- `role` - Rola: owner/admin/manager/operator/viewer/pending
+- `company_id` - FK do companies
+- `hourly_rate` - Stawka godzinowa (opcjonalna)
+
+**Indeksy:**
+```sql
+CREATE INDEX idx_users_auth_id ON users(auth_id);
+CREATE INDEX idx_users_company_id ON users(company_id);
+CREATE INDEX idx_users_email ON users(email);
+```
+
+---
+
+### orders
+
+Zamówienia produkcyjne.
+
+```sql
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  order_number TEXT NOT NULL,
+  customer_name TEXT NOT NULL,
+  part_name TEXT,
+  quantity INTEGER NOT NULL,
+  material TEXT,
+  deadline DATE,
+  status TEXT CHECK (status IN ('pending', 'in_progress', 'completed', 'delayed', 'cancelled')),
+  notes TEXT,
+  company_id UUID REFERENCES companies(id) NOT NULL,
+  created_by BIGINT REFERENCES users(id),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+**Kolumny:**
+- `id` - UUID zamówienia
+- `order_number` - Numer zlecenia (np. "ZAM-2025-001")
+- `customer_name` - Nazwa klienta
+- `part_name` - Nazwa części do wyprodukowania
+- `quantity` - Ilość sztuk
+- `material` - Rodzaj materiału
+- `deadline` - Termin realizacji (DATE)
+- `status` - pending/in_progress/completed/delayed/cancelled
+- `notes` - Uwagi
+- `company_id` - FK do companies (WYMAGANE!)
+- `created_by` - FK do users
+- `created_at` - Data utworzenia
+- `updated_at` - Data ostatniej modyfikacji
+
+**Indeksy:**
+```sql
+CREATE INDEX idx_orders_company_id ON orders(company_id);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_orders_deadline ON orders(deadline);
+CREATE INDEX idx_orders_created_by ON orders(created_by);
+```
+
+---
+
+### inventory
+
+Magazyn materiałów.
+
+```sql
+CREATE TABLE inventory (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  sku TEXT,
+  name TEXT NOT NULL,
+  category TEXT,
+  quantity NUMERIC(10, 2) NOT NULL DEFAULT 0,
+  unit TEXT CHECK (unit IN ('kg', 'm', 'szt', 'l')),
+  low_stock_threshold NUMERIC(10, 2),
+  location TEXT,
+  batch_number TEXT,
+  company_id UUID REFERENCES companies(id) NOT NULL,
+  created_by BIGINT REFERENCES users(id),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+**Kolumny:**
+- `id` - UUID pozycji
+- `sku` - Stock Keeping Unit (kod produktu)
+- `name` - Nazwa materiału
+- `category` - Kategoria (stal/aluminium/narzędzia/inne)
+- `quantity` - Stan magazynowy
+- `unit` - Jednostka: kg/m/szt/l
+- `low_stock_threshold` - Próg niskiego stanu
+- `location` - Lokalizacja w magazynie
+- `batch_number` - Numer partii
+- `company_id` - FK do companies (WYMAGANE!)
+- `created_by` - FK do users
+
+**Indeksy:**
+```sql
+CREATE INDEX idx_inventory_company_id ON inventory(company_id);
+CREATE INDEX idx_inventory_sku ON inventory(sku);
+CREATE INDEX idx_inventory_category ON inventory(category);
+```
+
+---
+
+### time_logs
+
+Sesje czasu pracy.
+
+```sql
+CREATE TABLE time_logs (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  order_id UUID REFERENCES orders(id),
+  user_id BIGINT REFERENCES users(id) NOT NULL,
+  company_id UUID REFERENCES companies(id) NOT NULL,
+  start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  end_time TIMESTAMP WITH TIME ZONE,
+  status TEXT CHECK (status IN ('running', 'paused', 'completed')),
+  hourly_rate NUMERIC(10, 2),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+**Kolumny:**
+- `id` - UUID sesji
+- `order_id` - FK do orders (opcjonalne)
+- `user_id` - FK do users (kto pracował)
+- `company_id` - FK do companies (WYMAGANE!)
+- `start_time` - Początek sesji
+- `end_time` - Koniec sesji (NULL jeśli trwa)
+- `status` - running/paused/completed
+- `hourly_rate` - Stawka (snapshot z users.hourly_rate)
+
+**Indeksy:**
+```sql
+CREATE INDEX idx_time_logs_company_id ON time_logs(company_id);
+CREATE INDEX idx_time_logs_order_id ON time_logs(order_id);
+CREATE INDEX idx_time_logs_user_id ON time_logs(user_id);
+CREATE INDEX idx_time_logs_start_time ON time_logs(start_time);
+```
+
+---
+
+## Tabele Multi-Tenancy
+
+### company_email_domains
+
+Domeny email przypisane do firm.
+
+```sql
+CREATE TABLE company_email_domains (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  company_id UUID REFERENCES companies(id) NOT NULL,
+  domain TEXT NOT NULL UNIQUE,  -- np. "metaltech.pl"
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+**Jak działa:**
+- Gdy użytkownik rejestruje się z emailem `jan@metaltech.pl`
+- System wyciąga domenę: `metaltech.pl`
+- Znajduje company_id dla tej domeny
+- Automatycznie przypisuje użytkownika do firmy
+
+**Indeks:**
+```sql
+CREATE INDEX idx_company_email_domains_domain ON company_email_domains(domain);
+```
+
+---
+
+### blocked_email_domains
+
+Publiczne domeny zablokowane (nie można się zarejestrować).
+
+```sql
+CREATE TABLE blocked_email_domains (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  domain TEXT NOT NULL UNIQUE,  -- np. "gmail.com"
+  reason TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+**Zablokowane domeny:**
+- gmail.com
+- yahoo.com
+- wp.pl
+- onet.pl
+- interia.pl
+- o2.pl
+- ...i inne publiczne
+
+**Powód:** Bezpieczeństwo - tylko służbowe emaile.
+
+---
+
+## Row Level Security (RLS)
+
+### Zasady RLS
+
+**Każda tabela ma RLS:**
+```sql
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+```
+
+**Polityki (policies):**
+
+```sql
+-- Users widzą tylko swoją firmę
+CREATE POLICY "Users can view own company data"
+ON orders FOR SELECT
+USING (company_id = (
+  SELECT company_id FROM users WHERE auth_id = auth.uid()
+));
+
+-- Users mogą dodawać dla swojej firmy
+CREATE POLICY "Users can insert own company data"
+ON orders FOR INSERT
+WITH CHECK (company_id = (
+  SELECT company_id FROM users WHERE auth_id = auth.uid()
+));
+
+-- ... podobnie UPDATE i DELETE
+```
+
+### ⚠️ CRITICAL: Zawsze filtruj po company_id
+
+**W każdym query MUSISZ:**
+```typescript
+// ✅ POPRAWNIE
+const { data } = await supabase
+  .from('orders')
+  .select('*')
+  .eq('company_id', user.company_id)  // REQUIRED!
+
+// ❌ ŹLE - Security risk!
+const { data } = await supabase
+  .from('orders')
+  .select('*')
+// Brak filtra = może pokazać dane innych firm
+```
+
+---
+
+## Triggery
+
+### auto_create_user_profile
+
+Automatycznie tworzy profil w `users` gdy użytkownik się rejestruje.
+
+```sql
+CREATE OR REPLACE FUNCTION create_user_profile()
+RETURNS TRIGGER AS $$
+DECLARE
+  user_domain TEXT;
+  user_company_id UUID;
+BEGIN
+  -- Wyciągnij domenę z email
+  user_domain := substring(NEW.email from '@(.*)$');
+
+  -- Znajdź company_id dla domeny
+  SELECT company_id INTO user_company_id
+  FROM company_email_domains
+  WHERE domain = user_domain;
+
+  -- Utwórz profil
+  INSERT INTO users (auth_id, email, full_name, role, company_id)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    'pending',  -- Czeka na aktywację
+    user_company_id
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION create_user_profile();
+```
+
+**Jak działa:**
+1. User rejestruje się w auth.users
+2. Trigger wyzwala się
+3. Wyciąga domenę z email
+4. Znajduje company_id
+5. Tworzy rekord w users z rolą "pending"
+
+---
+
+## Migra cje
+
+Wszystkie migracje w folderze:
+```
+migrations/
+├── DAY_10_COMPLETE_SETUP.sql    # Full schema
+├── create_auth_trigger.sql      # User profile trigger
+└── setup_default_company.sql    # Default company
+```
+
+**Uruchamianie:**
+```sql
+-- Poprzez Supabase SQL Editor
+-- Lub CLI: supabase db push
+```
+
+---
+
+## Best Practices
+
+### 1. Zawsze używaj company_id
+
+Każdy query:
+```typescript
+.eq('company_id', user.company_id)
+```
+
+### 2. Używaj indeksów
+
+Dla kolumn często wyszukiwanych:
+- company_id (wszystkie tabele)
+- status, deadline (orders)
+- category, sku (inventory)
+
+### 3. Snapshoty wartości
+
+Dla audytu, zapisuj wartości w momencie utworzenia:
+- `time_logs.hourly_rate` - snapshot z `users.hourly_rate`
+- Jeśli później stawka się zmieni, stare sesje mają poprawną wartość
+
+### 4. Soft delete
+
+Zamiast usuwać, dodaj kolumnę `deleted_at`:
+```sql
+ALTER TABLE orders ADD COLUMN deleted_at TIMESTAMP;
+```
+
+Ukrywaj w queries:
+```typescript
+.is('deleted_at', null)
+```
+
+---
+
+## Następne kroki
+
+- [API Reference](/docs/technical/api-reference) - Jak korzystać z API
+- [Authentication](/docs/technical/authentication) - System uwierzytelniania
+- [Multi-Tenancy](/docs/technical/multi-tenancy) - Jak działa separacja firm

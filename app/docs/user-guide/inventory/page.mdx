@@ -1,0 +1,108 @@
+# Zarządzanie magazynem
+
+System magazynowy pozwala śledzić stany materiałów i komponentów.
+
+## Przegląd magazynu
+
+### Lista pozycji
+
+Magazyn pokazuje:
+- **SKU** - Kod produktu
+- **Nazwa** - Opis materiału
+- **Kategoria** - Typ materiału (stal, aluminium, narzędzia, itp.)
+- **Stan** - Aktualna ilość
+- **Jednostka** - kg, m, szt, l
+- **Lokalizacja** - Miejsce w magazynie
+
+### Alerty niskiego stanu
+
+Pozycje z czerwonym wskaźnikiem:
+- Stan poniżej progu minimum
+- Wymaga uzupełnienia
+- Powiadomienie automatyczne
+
+## Dodawanie pozycji
+
+1. Kliknij "+ Nowa pozycja"
+2. Wypełnij formularz:
+   - SKU (unikalny kod)
+   - Nazwa materiału
+   - Kategoria
+   - Stan początkowy
+   - Jednostka miary
+   - Próg minimum
+   - Lokalizacja magazynowa
+3. Kliknij "Dodaj do magazynu"
+
+## Zarządzanie stanami
+
+### Przyjęcie towaru (PZ)
+
+1. Znajdź pozycję
+2. Kliknij "Przyjęcie"
+3. Wprowadź ilość
+4. Opcjonalnie: numer partii, dostawca
+5. Zapisz
+
+### Wydanie materiału (WZ)
+
+1. Znajdź pozycję
+2. Kliknij "Wydanie"
+3. Wprowadź ilość
+4. Opcjonalnie: przypisz do zamówienia
+5. Zapisz
+
+### Inwentaryzacja
+
+1. Kliknij "Inwentaryzacja"
+2. Fizycznie przelicz materiały
+3. Wprowadź rzeczywisty stan
+4. System automatycznie wyrówna różnice
+
+## Historia ruchów
+
+Każda pozycja ma pełną historię:
+- Data i godzina operacji
+- Typ ruchu (PZ/WZ/Korekta)
+- Ilość
+- Kto wykonał operację
+- Powiązane zamówienie (jeśli dotyczy)
+
+## Kategorie materiałów
+
+Predefiniowane kategorie:
+- **Stal** - Blacha, pręty, profile
+- **Aluminium** - 6061, 7075, inne
+- **Miedź** - Pręty, blachy
+- **Narzędzia** - Frezy, wiertła
+- **Inne** - Własne kategorie
+
+## Raporty magazynowe
+
+### Wartość magazynu
+
+- Suma wartości wszystkich materiałów
+- Według kategorii
+- Trendy zużycia
+
+### Materiały wymagające zamówienia
+
+Lista pozycji poniżej progu minimum - gotowa do zamówienia u dostawcy.
+
+### Historia zużycia
+
+- Który materiał najczęściej używany
+- Średnie zużycie miesięczne
+- Prognoza zapotrzebowania
+
+## Best practices
+
+- **Ustaw realne progi** - Próg minimum = czas dostawy × średnie zużycie
+- **Numeruj lokalizacje** - A1, A2, B1... dla łatwego znalezienia
+- **Regularnie inwentaryzuj** - Co miesiąc lub kwartał
+- **Przypisuj do zamówień** - Śledź co, na co zużyłeś
+
+## Następne kroki
+
+- [Śledzenie czasu](/docs/user-guide/time-tracking) - Powiąż pracę z materiałami
+- [Raporty](/docs/user-guide/reports) - Analizuj zużycie
