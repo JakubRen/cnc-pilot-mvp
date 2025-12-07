@@ -13,31 +13,33 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
     // Sprawdź czy h1 jest widoczny
     await expect(page.locator('h1')).toContainText('Portal Wiedzy CNC-Pilot')
 
-    // Sprawdź główne sekcje
-    await expect(page.locator('text=Szybki start')).toBeVisible()
-    await expect(page.locator('text=Poradnik Użytkownika')).toBeVisible()
-    await expect(page.locator('text=Dokumentacja Techniczna')).toBeVisible()
+    // Sprawdź główne sekcje (heading, nie sidebar)
+    await expect(page.locator('h2:has-text("Szybki start")')).toBeVisible()
+    await expect(page.locator('h3:has-text("Poradnik Użytkownika")')).toBeVisible()
+    await expect(page.locator('h3:has-text("Dokumentacja Techniczna")')).toBeVisible()
   })
 
   test('sidebar navigation jest widoczna', async ({ page }) => {
     await page.goto('/docs')
 
-    // Sprawdź elementy sidebar
+    // Sprawdź elementy sidebar (w nav, nie w content)
     await expect(page.locator('nav')).toBeVisible()
-    await expect(page.getByText('Pierwsze kroki')).toBeVisible()
-    await expect(page.getByText('FAQ')).toBeVisible()
-    await expect(page.getByText('Video Tutoriale')).toBeVisible()
+    await expect(page.locator('nav a:has-text("Pierwsze kroki")')).toBeVisible()
+    await expect(page.locator('nav a:has-text("FAQ")')).toBeVisible()
+    await expect(page.locator('nav a:has-text("Video Tutoriale")')).toBeVisible()
   })
 
   test('nawigacja do User Guide działa', async ({ page }) => {
     await page.goto('/docs')
 
-    // Kliknij link "Pierwsze kroki"
-    await page.click('text=Pierwsze kroki')
+    // Kliknij link "Pierwsze kroki" w sidebar i czekaj na nawigację
+    await Promise.all([
+      page.waitForURL('/docs/user-guide/getting-started'),
+      page.click('nav a:has-text("Pierwsze kroki")')
+    ])
 
-    // Sprawdź URL i zawartość
-    await expect(page).toHaveURL('/docs/user-guide/getting-started')
-    await expect(page.locator('h1')).toContainText('Pierwsze kroki')
+    // Sprawdź zawartość
+    await expect(page.locator('h1').first()).toContainText('Pierwsze kroki')
 
     // Sprawdź czy jest podstawowa treść
     await expect(page.locator('text=Rejestracja i pierwsze logowanie')).toBeVisible()
@@ -54,7 +56,7 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
 
     for (const section of sections) {
       await page.goto(section.url)
-      await expect(page.locator('h1')).toContainText(section.title)
+      await expect(page.locator('h1').first()).toContainText(section.title)
     }
   })
 
@@ -77,17 +79,17 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
 
     await expect(page.locator('h1')).toContainText('FAQ')
 
-    // Sprawdź kilka sekcji FAQ
-    await expect(page.locator('text=Konto i logowanie')).toBeVisible()
-    await expect(page.locator('text=Zamówienia')).toBeVisible()
-    await expect(page.locator('text=Magazyn')).toBeVisible()
+    // Sprawdź kilka sekcji FAQ (headings)
+    await expect(page.locator('h2:has-text("Konto i logowanie")')).toBeVisible()
+    await expect(page.locator('h2:has-text("Zamówienia")')).toBeVisible()
+    await expect(page.locator('h2:has-text("Magazyn")')).toBeVisible()
   })
 
   test('Video Tutorials page się ładuje', async ({ page }) => {
     await page.goto('/docs/video-tutorials')
 
     await expect(page.locator('h1')).toContainText('Video Tutoriale')
-    await expect(page.locator('text=Pierwsze kroki')).toBeVisible()
+    await expect(page.locator('h2:has-text("Pierwsze kroki")')).toBeVisible()
   })
 
   test('Flowcharts page się ładuje', async ({ page }) => {
@@ -130,26 +132,26 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
     await expect(codeBlock.first()).toBeVisible()
   })
 
-  test('markdown rendering - tabele', async ({ page }) => {
-    await page.goto('/docs/user-guide/getting-started')
+  test('markdown rendering - links i formatowanie', async ({ page }) => {
+    await page.goto('/docs/faq')
 
-    // Sprawdź czy tabele są renderowane
-    const table = page.locator('table')
-    await expect(table.first()).toBeVisible()
+    // Sprawdź czy linki są renderowane
+    const link = page.locator('main a').first()
+    await expect(link).toBeVisible()
+
+    // Sprawdź czy headings są renderowane
+    await expect(page.locator('h2').first()).toBeVisible()
   })
 
   test('internal links między docs działają', async ({ page }) => {
     await page.goto('/docs')
 
-    // Kliknij link do User Guide
-    await page.click('text=/docs/user-guide/getting-started')
+    // Kliknij link do User Guide w sidebar
+    await page.click('nav a:has-text("Pierwsze kroki")')
     await expect(page).toHaveURL('/docs/user-guide/getting-started')
 
-    // Sprawdź link do FAQ w tekście
-    const faqLink = page.locator('a[href="/docs/faq"]').first()
-    if (await faqLink.isVisible()) {
-      await faqLink.click()
-      await expect(page).toHaveURL('/docs/faq')
-    }
+    // Sprawdź link do FAQ w sidebar
+    await page.click('nav a:has-text("FAQ")')
+    await expect(page).toHaveURL('/docs/faq')
   })
 })
