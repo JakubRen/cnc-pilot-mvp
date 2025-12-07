@@ -95,7 +95,7 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
   test('Flowcharts page się ładuje', async ({ page }) => {
     await page.goto('/docs/flowcharts')
 
-    await expect(page.locator('h1')).toContainText('Diagramy procesów')
+    await expect(page.locator('h1').first()).toContainText('Diagramy procesów')
     await expect(page.locator('text=Proces rejestracji')).toBeVisible()
   })
 
