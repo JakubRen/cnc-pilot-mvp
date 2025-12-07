@@ -116,9 +116,6 @@ jobs:
           echo "Server failed to start"
           exit 1
 
-      - name: Wait for hydration
-        run: sleep 10
-
       - name: Run E2E tests (docs only - auth requires Supabase)
         run: npx playwright test tests/e2e/docs.spec.ts
         env:

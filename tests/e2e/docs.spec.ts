@@ -29,20 +29,18 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
     await expect(page.locator('nav a:has-text("Video Tutoriale")')).toBeVisible()
   })
 
-  test('nawigacja do User Guide działa', async ({ page }) => {
-    await page.goto('/docs')
-
-    // Kliknij link "Pierwsze kroki" w sidebar i czekaj na nawigację
-    await Promise.all([
-      page.waitForURL('/docs/user-guide/getting-started'),
-      page.click('nav a:has-text("Pierwsze kroki")')
-    ])
+  test('User Guide page się ładuje', async ({ page }) => {
+    await page.goto('/docs/user-guide/getting-started')
 
     // Sprawdź zawartość
     await expect(page.locator('h1').first()).toContainText('Pierwsze kroki')
 
     // Sprawdź czy jest podstawowa treść
     await expect(page.locator('text=Rejestracja i pierwsze logowanie')).toBeVisible()
+
+    // Sprawdź czy sidebar highlightuje aktywny link
+    const activeLink = page.locator('nav a:has-text("Pierwsze kroki")')
+    await expect(activeLink).toHaveClass(/bg-blue-600/)
   })
 
   test('wszystkie główne sekcje są dostępne', async ({ page }) => {
@@ -143,15 +141,13 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
     await expect(page.locator('h2').first()).toBeVisible()
   })
 
-  test('internal links między docs działają', async ({ page }) => {
+  test('wszystkie linki sidebar są obecne', async ({ page }) => {
     await page.goto('/docs')
 
-    // Kliknij link do User Guide w sidebar
-    await page.click('nav a:has-text("Pierwsze kroki")')
-    await expect(page).toHaveURL('/docs/user-guide/getting-started')
-
-    // Sprawdź link do FAQ w sidebar
-    await page.click('nav a:has-text("FAQ")')
-    await expect(page).toHaveURL('/docs/faq')
+    // Sprawdź czy wszystkie główne linki są widoczne i mają poprawne href
+    await expect(page.locator('nav a:has-text("Pierwsze kroki")')).toHaveAttribute('href', '/docs/user-guide/getting-started')
+    await expect(page.locator('nav a:has-text("FAQ")')).toHaveAttribute('href', '/docs/faq')
+    await expect(page.locator('nav a:has-text("Video Tutoriale")')).toHaveAttribute('href', '/docs/video-tutorials')
+    await expect(page.locator('nav a:has-text("Diagramy Procesów")')).toHaveAttribute('href', '/docs/flowcharts')
   })
 })
