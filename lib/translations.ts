@@ -85,6 +85,7 @@ export const translations = {
     tags: { pl: 'Tagi', en: 'Tags' },
     users: { pl: 'Użytkownicy', en: 'Users' },
     settings: { pl: 'Ustawienia', en: 'Settings' },
+    docs: { pl: 'Portal Wiedzy', en: 'Knowledge Portal' },
     profile: { pl: 'Mój Profil', en: 'My Profile' },
     logout: { pl: 'Wyloguj', en: 'Logout' },
     closeMenu: { pl: 'Zamknij menu', en: 'Close menu' },

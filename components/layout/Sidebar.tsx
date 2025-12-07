@@ -8,7 +8,7 @@ import type { AppModule } from '@/types/permissions';
 import type { InterfaceMode } from '@/lib/auth';
 import ViewModeToggle from './ViewModeToggle';
 
-type NavKey = 'dashboard' | 'orders' | 'calendar' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'qualityControl' | 'cooperation' | 'machines' | 'carbon' | 'costs' | 'reports' | 'tags' | 'users' | 'settings';
+type NavKey = 'dashboard' | 'orders' | 'calendar' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'qualityControl' | 'cooperation' | 'machines' | 'carbon' | 'costs' | 'reports' | 'tags' | 'users' | 'settings' | 'docs';
 
 interface SidebarLink {
   href: string;
@@ -40,6 +40,7 @@ const linkDefinitions: SidebarLink[] = [
   { href: '/tags', icon: '🏷️', labelKey: 'tags', module: 'tags' },
   { href: '/users', icon: '👥', labelKey: 'users', module: 'users' },
   { href: '/settings', icon: '⚙️', labelKey: 'settings', module: 'users' }, // tylko admin/owner mają users:access
+  { href: '/docs', icon: '📚', labelKey: 'docs', module: 'dashboard' }, // dostępne dla wszystkich
 ];
 
 export default function Sidebar({ onClose, interfaceMode }: SidebarProps) {

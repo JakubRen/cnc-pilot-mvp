@@ -1,4 +1,5 @@
 import type { MDXComponents } from 'mdx/types'
+import MermaidDiagram from '@/components/docs/MermaidDiagram'
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -23,12 +24,28 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     li: ({ children }) => (
       <li className="ml-4">{children}</li>
     ),
-    code: ({ children }) => (
-      <code className="bg-slate-800 text-blue-400 px-2 py-1 rounded text-sm">{children}</code>
-    ),
-    pre: ({ children }) => (
-      <pre className="bg-slate-800 p-4 rounded-lg overflow-x-auto mb-4">{children}</pre>
-    ),
+    code: ({ children, className }) => {
+      // Check if this is a mermaid code block
+      const isMermaid = className?.includes('language-mermaid')
+      if (isMermaid && typeof children === 'string') {
+        return <MermaidDiagram chart={children} />
+      }
+      // Regular inline code
+      return (
+        <code className="bg-slate-800 text-blue-400 px-2 py-1 rounded text-sm">{children}</code>
+      )
+    },
+    pre: ({ children }) => {
+      // Check if the code block is mermaid (handled by code component above)
+      const childProps = (children as any)?.props
+      if (childProps?.className?.includes('language-mermaid')) {
+        return <>{children}</>
+      }
+      // Regular code block
+      return (
+        <pre className="bg-slate-800 p-4 rounded-lg overflow-x-auto mb-4">{children}</pre>
+      )
+    },
     a: ({ href, children }) => (
       <a href={href} className="text-blue-400 hover:text-blue-300 underline">
         {children}

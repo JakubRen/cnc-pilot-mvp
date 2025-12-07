@@ -13,13 +13,9 @@ const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'], // Dodaj support dla MDX
 }
 
+// Najprostsza konfiguracja MDX - Turbopack nie wspiera pluginów z serializacją
 const withMDX = createMDX({
-  // Opcjonalnie: Dodaj remark/rehype plugins tutaj
   extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [],
-    rehypePlugins: [],
-  },
 });
 
 export default withMDX(withBundleAnalyzer(nextConfig));
