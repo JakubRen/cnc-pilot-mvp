@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Use production URL by default, localhost for local dev
-const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'https://cnc-pilot-mvp.vercel.app'
+// Use localhost for CI and local dev
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000'
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -25,12 +25,11 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // webServer config commented out - using production URL
-  // Uncomment for local development:
-  // webServer: {
-  //   command: 'npm run dev',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: true,
-  //   timeout: 180 * 1000,
-  // },
+  // Start local server for testing (CI uses production build)
+  webServer: {
+    command: process.env.CI ? 'npm start' : 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 180 * 1000,
+  },
 })
