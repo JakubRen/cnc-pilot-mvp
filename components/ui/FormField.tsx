@@ -41,9 +41,10 @@ export function FormField({
         {/* Clone children and add validation classes */}
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            return React.cloneElement(child as React.ReactElement<any>, {
+            const element = child as React.ReactElement<{ className?: string }>
+            return React.cloneElement(element, {
               className: cn(
-                child.props.className,
+                element.props.className,
                 hasError && 'border-red-500 dark:border-red-400 focus:ring-red-500',
                 showSuccess && 'border-green-500 dark:border-green-400 focus:ring-green-500'
               ),

@@ -24,17 +24,28 @@ const SHORTCUTS: Shortcut[] = [
   { keys: ['Enter'], description: 'Przejdź do wyniku', category: 'Wyszukiwarka' },
 ]
 
-export default function KeyboardShortcutsHelp() {
-  const [isOpen, setIsOpen] = useState(false)
+interface KeyboardShortcutsHelpProps {
+  isOpen?: boolean
+  onClose?: () => void
+}
+
+export default function KeyboardShortcutsHelp({
+  isOpen: externalIsOpen,
+  onClose: externalOnClose
+}: KeyboardShortcutsHelpProps = {}) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false)
+
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen
+  const handleClose = externalOnClose || (() => setInternalIsOpen(false))
 
   // Open with Shift + ? (which is Shift + /)
   useKeyboardShortcut(
     { key: '?', shiftKey: true },
-    () => setIsOpen(true)
+    () => externalIsOpen === undefined ? setInternalIsOpen(true) : undefined
   )
 
   // Close with Escape
-  useEscapeKey(() => setIsOpen(false), isOpen)
+  useEscapeKey(handleClose, isOpen)
 
   if (!isOpen) return null
 
@@ -46,7 +57,7 @@ export default function KeyboardShortcutsHelp() {
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-        onClick={() => setIsOpen(false)}
+        onClick={handleClose}
       />
 
       {/* Modal */}
@@ -67,7 +78,7 @@ export default function KeyboardShortcutsHelp() {
             </p>
           </div>
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={handleClose}
             aria-label="Close shortcuts help"
             className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >

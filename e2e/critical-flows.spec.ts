@@ -109,7 +109,7 @@ test.describe('Critical User Flows', () => {
       await page.waitForSelector('[data-search-results]')
 
       // Should show results
-      await expect(page.locator('[data-search-results] > *')).toHaveCount({ minimum: 1 })
+      await expect(page.locator('[data-search-results] > *').first()).toBeVisible()
     })
 
     test('should close search with Escape', async ({ page }) => {
@@ -158,9 +158,9 @@ test.describe('Critical User Flows', () => {
       await page.goto('http://localhost:3000/orders')
 
       // Select first 3 items
-      await page.check('input[type="checkbox"]', { nth: 1 })
-      await page.check('input[type="checkbox"]', { nth: 2 })
-      await page.check('input[type="checkbox"]', { nth: 3 })
+      await page.locator('input[type="checkbox"]').nth(1).check()
+      await page.locator('input[type="checkbox"]').nth(2).check()
+      await page.locator('input[type="checkbox"]').nth(3).check()
 
       // Bulk action bar should appear
       await expect(page.locator('[data-bulk-action-bar]')).toBeVisible()
@@ -308,7 +308,7 @@ test.describe('Critical User Flows', () => {
 
       // Check for ARIA labels
       const buttons = page.locator('button[aria-label]')
-      await expect(buttons).toHaveCount({ minimum: 1 })
+      await expect(buttons.first()).toBeVisible()
     })
 
     test('should have focus indicators', async ({ page }) => {

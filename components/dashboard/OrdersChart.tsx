@@ -39,7 +39,7 @@ export default function OrdersChart() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-foreground tracking-wide">
-            {t('dashboard', 'recentActivity')}
+            Aktywność zamówień
           </h3>
           <p className="text-xs text-muted-foreground font-mono mt-1 uppercase tracking-wider">
             LAST 7 DAYS PERFORMANCE

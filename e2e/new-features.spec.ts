@@ -140,7 +140,7 @@ test.describe('New Features - 15 Advanced Implementations', () => {
 
       // Should show timeline items
       const activities = page.locator('[data-activity-item]')
-      await expect(activities).toHaveCount({ minimum: 1 })
+      await expect(activities.first()).toBeVisible()
     })
 
     test('should show relative timestamps', async ({ page }) => {
@@ -155,7 +155,7 @@ test.describe('New Features - 15 Advanced Implementations', () => {
 
       // Should have avatars
       const avatars = page.locator('[data-activity-log] img[alt*="avatar"]')
-      await expect(avatars).toHaveCount({ minimum: 1 })
+      await expect(avatars.first()).toBeVisible()
     })
   })
 
