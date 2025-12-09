@@ -111,7 +111,7 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
           <h3 className="font-semibold text-yellow-400 mb-2">
             Long-Running Timers Detected
           </h3>
-          <p className="text-sm text-slate-300 mb-3">
+          <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
             The following timers have been running for over 12 hours:
           </p>
           <div className="space-y-2">
@@ -123,19 +123,19 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
               return (
                 <div
                   key={timer.id}
-                  className="bg-slate-800 rounded p-3 flex items-center justify-between"
+                  className="bg-white dark:bg-slate-800 rounded p-3 flex items-center justify-between"
                 >
                   <div>
-                    <div className="font-medium">
+                    <div className="font-medium text-slate-900 dark:text-white">
                       Order #{timer.order_number} - {timer.user_name}
                     </div>
-                    <div className="text-sm text-slate-400">
+                    <div className="text-sm text-slate-500 dark:text-slate-400">
                       Running for {hoursRunning} hours
                     </div>
                   </div>
                   <button
                     onClick={() => handleStopTimer(timer.id)}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-sm font-medium transition"
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-sm font-medium text-white transition"
                   >
                     Stop Timer
                   </button>

@@ -16,17 +16,21 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
   const showRevenue = canViewPrices('dashboard');
   const maxRevenue = customers[0]?.revenue || 1;
 
+  // DUAL THEME STYLES
+  const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border";
+  const headerTextClass = "text-xl font-semibold text-slate-900 dark:text-foreground";
+
   if (customers.length === 0) {
     return (
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-        <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+      <div className={containerClass}>
+        <h2 className={`${headerTextClass} mb-4 flex items-center gap-2`}>
           <span>👥</span> Top 5 Klientów
         </h2>
         <div className="text-center py-8">
-          <p className="text-slate-400">
+          <p className="text-slate-500 dark:text-slate-400">
             Brak completed orders z kosztami
           </p>
-          <p className="text-sm text-slate-500 mt-2">
+          <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
             Zamówienia z kosztami pojawią się tutaj po ukończeniu
           </p>
         </div>
@@ -35,8 +39,8 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
   }
 
   return (
-    <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-      <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+    <div className={containerClass}>
+      <h2 className={`${headerTextClass} mb-4 flex items-center gap-2`}>
         <span>👥</span> Top 5 Klientów
       </h2>
 
@@ -46,14 +50,14 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <span className={`font-bold text-sm w-7 h-7 rounded-full flex items-center justify-center ${
-                  index === 0 ? 'bg-yellow-600 text-white' :
-                  index === 1 ? 'bg-slate-600 text-white' :
-                  index === 2 ? 'bg-orange-700 text-white' :
-                  'bg-slate-700 text-slate-300'
+                  index === 0 ? 'bg-yellow-500 dark:bg-yellow-600 text-white' :
+                  index === 1 ? 'bg-slate-400 dark:bg-slate-600 text-white' :
+                  index === 2 ? 'bg-orange-500 dark:bg-orange-700 text-white' :
+                  'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
                 }`}>
                   #{index + 1}
                 </span>
-                <span className="font-semibold text-white truncate max-w-[180px]">
+                <span className="font-semibold text-slate-900 dark:text-foreground truncate max-w-[180px]">
                   {customer.name}
                 </span>
               </div>
@@ -62,24 +66,24 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
                   <PriceDisplay
                     value={customer.revenue}
                     module="dashboard"
-                    className="font-bold text-green-400"
+                    className="font-bold text-green-600 dark:text-green-400"
                   />
                 ) : (
                   <div className="font-bold text-slate-400">---</div>
                 )}
-                <div className="text-xs text-slate-400">
+                <div className="text-xs text-slate-500 dark:text-slate-400">
                   {customer.count} {customer.count === 1 ? 'zlecenie' : customer.count < 5 ? 'zlecenia' : 'zleceń'}
                 </div>
               </div>
             </div>
             {/* Progress bar - tylko gdy widoczne revenue */}
             {showRevenue && (
-              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-500 ${
-                    index === 0 ? 'bg-gradient-to-r from-green-600 to-green-400' :
-                    index === 1 ? 'bg-gradient-to-r from-blue-600 to-blue-400' :
-                    'bg-gradient-to-r from-slate-600 to-slate-500'
+                    index === 0 ? 'bg-gradient-to-r from-green-500 to-green-400 dark:from-green-600 dark:to-green-400' :
+                    index === 1 ? 'bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-400' :
+                    'bg-gradient-to-r from-slate-400 to-slate-300 dark:from-slate-600 dark:to-slate-500'
                   }`}
                   style={{ width: `${(customer.revenue / maxRevenue) * 100}%` }}
                 />

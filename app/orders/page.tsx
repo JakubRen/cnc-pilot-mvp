@@ -81,10 +81,10 @@ export default async function OrdersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-xl font-bold text-red-800 mb-2">Error</h2>
-          <p className="text-red-600">{error.message}</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-background">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+          <h2 className="text-xl font-bold text-red-800 dark:text-red-400 mb-2">Error</h2>
+          <p className="text-red-600 dark:text-red-300">{error.message}</p>
         </div>
       </div>
     )
@@ -95,7 +95,7 @@ export default async function OrdersPage() {
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-4xl font-bold text-white">Zamówienia</h1>
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Zamówienia</h1>
             <Button href="/orders/add" variant="primary">
               + Dodaj Zamówienie
             </Button>

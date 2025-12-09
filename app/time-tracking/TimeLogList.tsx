@@ -89,7 +89,7 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
 
   if (timeLogs.length === 0) {
     return (
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-8">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-8">
         <EmptyState
           icon="⏱️"
           title="Brak wpisów czasu pracy"
@@ -102,42 +102,42 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
   }
 
   return (
-    <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-slate-700">
+          <thead className="bg-slate-100 dark:bg-slate-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                 Zlecenie
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                 Operator
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                 Start
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                 Koniec
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                 Czas trwania
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                 Status
               </th>
               {showPrices && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Koszt
                 </th>
               )}
-              <th className="px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                 Akcje
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-700">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
             {timeLogs.map((log) => (
-              <tr key={log.id} className="hover:bg-slate-700/50 transition">
+              <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <Button
                     href={`/orders/${log.order_id}`}
@@ -148,18 +148,18 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
                     {log.orders.order_number}
                   </Button>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-slate-300 text-sm">
+                <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-slate-300 text-sm">
                   {log.users.full_name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                   {formatDateTime(log.start_time)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                   {log.end_time ? formatDateTime(log.end_time) : (
                     <span className="text-green-400 font-medium animate-pulse">W toku...</span>
                   )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-300">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-900 dark:text-slate-300">
                   {formatDurationHuman(log.duration_seconds)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -171,10 +171,10 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
                       <PriceDisplay
                         value={log.total_cost}
                         module="time-tracking"
-                        className="font-medium text-slate-300"
+                        className="font-medium text-slate-900 dark:text-slate-300"
                       />
                     ) : (
-                      <span className="text-slate-500">-</span>
+                      <span className="text-slate-500 dark:text-slate-400">-</span>
                     )}
                   </td>
                 )}

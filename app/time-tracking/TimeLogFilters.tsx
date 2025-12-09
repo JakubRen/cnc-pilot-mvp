@@ -45,7 +45,7 @@ export default function TimeLogFilters({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+    <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
       <h3 className="font-semibold mb-4">{t('timeTracking', 'filters')}</h3>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Order Filter */}
@@ -54,7 +54,7 @@ export default function TimeLogFilters({
           <select
             value={selectedOrderId}
             onChange={(e) => onOrderChange(e.target.value)}
-            className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">{t('timeTracking', 'allOrders')}</option>
             {orders.map(order => (
@@ -71,7 +71,7 @@ export default function TimeLogFilters({
           <select
             value={selectedUserId}
             onChange={(e) => onUserChange(e.target.value)}
-            className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">{t('timeTracking', 'allOperators')}</option>
             {users.map(user => (
@@ -88,7 +88,7 @@ export default function TimeLogFilters({
           <select
             value={selectedStatus}
             onChange={(e) => onStatusChange(e.target.value)}
-            className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">{t('timeTracking', 'allStatus')}</option>
             <option value="running">{t('timeTracking', 'running')}</option>
@@ -103,7 +103,7 @@ export default function TimeLogFilters({
           <select
             value={dateRange}
             onChange={(e) => onDateRangeChange(e.target.value)}
-            className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">{t('timeTracking', 'allTime')}</option>
             <option value="today">{t('orderFilters', 'today')}</option>

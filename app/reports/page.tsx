@@ -51,36 +51,36 @@ export default async function ReportsDashboard() {
     <div>
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-slate-400 text-sm">Zamówienia (miesiąc)</span>
+            <span className="text-slate-500 dark:text-slate-400 text-sm">Zamówienia (miesiąc)</span>
             <span className="text-2xl">📋</span>
           </div>
-          <p className="text-3xl font-bold text-white">--</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-white">--</p>
         </div>
 
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-slate-400 text-sm">Wartość magazynu</span>
+            <span className="text-slate-500 dark:text-slate-400 text-sm">Wartość magazynu</span>
             <span className="text-2xl">📦</span>
           </div>
-          <p className="text-3xl font-bold text-white">-- PLN</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-white">-- PLN</p>
         </div>
 
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-slate-400 text-sm">Godziny (miesiąc)</span>
+            <span className="text-slate-500 dark:text-slate-400 text-sm">Godziny (miesiąc)</span>
             <span className="text-2xl">⏱️</span>
           </div>
-          <p className="text-3xl font-bold text-white">-- h</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-white">-- h</p>
         </div>
 
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-slate-400 text-sm">Przychody (miesiąc)</span>
+            <span className="text-slate-500 dark:text-slate-400 text-sm">Przychody (miesiąc)</span>
             <span className="text-2xl">💰</span>
           </div>
-          <p className="text-3xl font-bold text-white">-- PLN</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-white">-- PLN</p>
         </div>
       </div>
 
@@ -90,18 +90,18 @@ export default async function ReportsDashboard() {
           <Link
             key={report.href}
             href={report.href}
-            className="bg-slate-800 rounded-lg border border-slate-700 p-6 hover:border-slate-600 transition group"
+            className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 hover:border-slate-300 dark:hover:border-slate-600 transition group"
           >
             <div className="flex items-start gap-4">
               <div className={`text-5xl group-hover:scale-110 transition`}>
                 {report.icon}
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
                   {report.title}
                 </h3>
-                <p className="text-slate-400 text-sm mb-4">{report.description}</p>
-                <div className="flex items-center text-blue-400 text-sm font-semibold">
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">{report.description}</p>
+                <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-semibold">
                   Otwórz raport →
                 </div>
               </div>
@@ -111,9 +111,9 @@ export default async function ReportsDashboard() {
       </div>
 
       {/* Info */}
-      <div className="mt-8 bg-blue-900/20 border border-blue-700/50 rounded-lg p-6">
-        <h3 className="text-white font-semibold mb-2">ℹ️ Informacje o raportach</h3>
-        <ul className="text-blue-200 text-sm space-y-1">
+      <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 rounded-lg p-6">
+        <h3 className="text-slate-900 dark:text-white font-semibold mb-2">ℹ️ Informacje o raportach</h3>
+        <ul className="text-blue-800 dark:text-blue-200 text-sm space-y-1">
           <li>• Wszystkie raporty można wyeksportować do CSV i PDF</li>
           <li>• Dane są filtrowane według Twojej firmy (multi-tenancy)</li>
           <li>• Możesz ustawić zakres dat i inne filtry</li>

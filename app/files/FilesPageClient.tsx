@@ -24,16 +24,16 @@ export default function FilesPageClient({ initialFiles }: FilesPageClientProps) 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Pliki</h1>
-          <p className="text-slate-400">
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Pliki</h1>
+          <p className="text-slate-500 dark:text-slate-400">
             Prześlij i zarządzaj plikami oraz dokumentami
           </p>
         </div>
 
         {/* File Uploader */}
         <div className="mb-8">
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">Prześlij pliki</h2>
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Prześlij pliki</h2>
             <FileUploader
               onUploadComplete={handleUploadComplete}
               maxFiles={10}
@@ -43,8 +43,8 @@ export default function FilesPageClient({ initialFiles }: FilesPageClientProps) 
         </div>
 
         {/* Files Browser */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-white mb-6">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
             Przesłane pliki ({initialFiles.length})
           </h2>
           <FileBrowser files={initialFiles} onFileDeleted={handleFileDeleted} />

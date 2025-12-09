@@ -68,7 +68,7 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
         >
           {showDetails ? '👁️ Ukryj szczegóły' : '👁️‍🗨️ Pokaż szczegóły'}
         </Button>
-        <p className="mt-2 text-slate-400 text-sm">
+        <p className="mt-2 text-slate-500 dark:text-slate-400 text-sm">
           Kliknij przycisk aby przełączyć widoczność szczegółów
         </p>
       </div>
@@ -79,21 +79,21 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
           users.map((user) => (
             <div
               key={user.id}
-              className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition-all hover:shadow-lg"
+              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:shadow-lg"
             >
               <div className="flex justify-between items-start">
                 <div className="space-y-2 flex-1">
-                  <p className="text-xl font-semibold text-white">
+                  <p className="text-xl font-semibold text-slate-900 dark:text-white">
                     {user.full_name}
                   </p>
-                  <p className="text-slate-400">
-                    <span className="text-slate-500">Email:</span> {user.email}
+                  <p className="text-slate-700 dark:text-slate-400">
+                    <span className="text-slate-500 dark:text-slate-500">Email:</span> {user.email}
                   </p>
-                  <div className="text-slate-400 flex items-center gap-2">
-                    <span className="text-slate-500">Rola:</span>
+                  <div className="text-slate-700 dark:text-slate-400 flex items-center gap-2">
+                    <span className="text-slate-500 dark:text-slate-500">Rola:</span>
                     {getRoleBadge(user.role)}
                   </div>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-500">
                     Utworzono: {new Date(user.created_at).toLocaleDateString('pl-PL')}
                   </p>
                 </div>
@@ -119,7 +119,7 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
                     </Button>
                   )}
 
-                  <div className="text-xs text-slate-500 text-center mt-1">
+                  <div className="text-xs text-slate-500 dark:text-slate-500 text-center mt-1">
                     ID: {String(user.id).slice(0, 8)}...
                   </div>
                 </div>
@@ -127,8 +127,8 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
             </div>
           ))
         ) : (
-          <div className="text-center py-12 bg-slate-800/50 rounded-lg border border-slate-700">
-            <p className="text-slate-400 text-lg">
+          <div className="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
+            <p className="text-slate-500 dark:text-slate-400 text-lg">
               Szczegoly ukryte - Kliknij &quot;Pokaz szczegoly&quot;
             </p>
           </div>
@@ -136,8 +136,8 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
       </div>
 
       {/* User Count */}
-      <div className="mt-6 text-center text-slate-400">
-        Liczba użytkowników: <span className="font-bold text-white">{users.length}</span>
+      <div className="mt-6 text-center text-slate-500 dark:text-slate-400">
+        Liczba użytkowników: <span className="font-bold text-slate-900 dark:text-white">{users.length}</span>
       </div>
     </div>
   )

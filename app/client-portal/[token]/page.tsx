@@ -30,11 +30,11 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ t
   // Check if token is expired
   if (tokenData.expires_at && new Date(tokenData.expires_at) < new Date()) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 max-w-md text-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-8 max-w-md text-center">
           <div className="text-6xl mb-4">⏰</div>
-          <h1 className="text-2xl font-bold text-white mb-2">Link wygasł</h1>
-          <p className="text-slate-400">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Link wygasł</h1>
+          <p className="text-slate-500 dark:text-slate-400">
             Ten link do portalu klienta wygasł. Skontaktuj się z dostawcą, aby otrzymać nowy link.
           </p>
         </div>
@@ -85,17 +85,17 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ t
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Header */}
-      <header className="bg-slate-800/50 border-b border-slate-700 backdrop-blur-sm sticky top-0 z-10">
+      <header className="bg-white/50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-white">Portal Klienta</h1>
-            <p className="text-slate-400 text-sm">{tokenData.customer_name}</p>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">Portal Klienta</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">{tokenData.customer_name}</p>
           </div>
           <div className="text-right">
-            <p className="text-slate-400 text-xs">Ostatnia aktualizacja</p>
-            <p className="text-white text-sm">{formatDate(new Date().toISOString())}</p>
+            <p className="text-slate-500 dark:text-slate-400 text-xs">Ostatnia aktualizacja</p>
+            <p className="text-slate-900 dark:text-white text-sm">{formatDate(new Date().toISOString())}</p>
           </div>
         </div>
       </header>
@@ -104,37 +104,37 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ t
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 text-center">
-            <p className="text-3xl font-bold text-white">{orders?.length || 0}</p>
-            <p className="text-slate-400 text-sm">Wszystkie</p>
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
+            <p className="text-3xl font-bold text-slate-900 dark:text-white">{orders?.length || 0}</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">Wszystkie</p>
           </div>
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 text-center">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
             <p className="text-3xl font-bold text-blue-400">
               {orders?.filter(o => o.status === 'in_progress').length || 0}
             </p>
-            <p className="text-slate-400 text-sm">W realizacji</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">W realizacji</p>
           </div>
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 text-center">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
             <p className="text-3xl font-bold text-green-400">
               {orders?.filter(o => o.status === 'completed').length || 0}
             </p>
-            <p className="text-slate-400 text-sm">Ukończone</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">Ukończone</p>
           </div>
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 text-center">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
             <p className="text-3xl font-bold text-yellow-400">
               {orders?.filter(o => o.status === 'pending').length || 0}
             </p>
-            <p className="text-slate-400 text-sm">Oczekuje</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">Oczekuje</p>
           </div>
         </div>
 
         {/* Orders List */}
-        <h2 className="text-lg font-semibold text-white mb-4">Twoje zamówienia</h2>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Twoje zamówienia</h2>
 
         {!orders || orders.length === 0 ? (
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 text-center">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-8 text-center">
             <div className="text-5xl mb-4">📦</div>
-            <p className="text-slate-400">Brak aktywnych zamówień</p>
+            <p className="text-slate-500 dark:text-slate-400">Brak aktywnych zamówień</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -145,15 +145,15 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ t
               return (
                 <div
                   key={order.id}
-                  className={`bg-slate-800 border rounded-lg p-4 ${
-                    overdue ? 'border-red-500/50' : 'border-slate-700'
+                  className={`bg-white dark:bg-slate-800 border rounded-lg p-4 ${
+                    overdue ? 'border-red-500/50' : 'border-slate-200 dark:border-slate-700'
                   }`}
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     {/* Order Info */}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-white font-semibold">{order.order_number}</span>
+                        <span className="text-slate-900 dark:text-white font-semibold">{order.order_number}</span>
                         {overdue && (
                           <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded-full">
                             Po terminie
@@ -161,9 +161,9 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ t
                         )}
                       </div>
                       {order.part_name && (
-                        <p className="text-slate-400 text-sm">{order.part_name}</p>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">{order.part_name}</p>
                       )}
-                      <p className="text-slate-500 text-xs mt-1">
+                      <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">
                         Ilość: {order.quantity} szt. | Termin: {formatDate(order.deadline)}
                       </p>
                     </div>
@@ -178,13 +178,13 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ t
 
                   {/* Progress Bar */}
                   <div className="mt-4">
-                    <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                       <div
                         className={`h-full ${statusInfo.color} transition-all duration-500`}
                         style={{ width: `${statusInfo.progress}%` }}
                       />
                     </div>
-                    <div className="flex justify-between text-xs text-slate-500 mt-1">
+                    <div className="flex justify-between text-xs text-slate-400 dark:text-slate-500 mt-1">
                       <span>Przyjęte</span>
                       <span>W produkcji</span>
                       <span>Gotowe</span>
@@ -197,7 +197,7 @@ export default async function ClientPortalPage({ params }: { params: Promise<{ t
         )}
 
         {/* Footer */}
-        <footer className="mt-12 text-center text-slate-500 text-sm">
+        <footer className="mt-12 text-center text-slate-400 dark:text-slate-500 text-sm">
           <p>Portal klienta CNC-Pilot</p>
           <p className="text-xs mt-1">
             Masz pytania? Skontaktuj się bezpośrednio z dostawcą.

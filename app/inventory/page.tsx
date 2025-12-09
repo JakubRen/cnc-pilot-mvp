@@ -36,13 +36,13 @@ export default async function InventoryPage() {
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-4xl font-bold text-white">Magazyn</h1>
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Magazyn</h1>
             {/* Buttons moved to InventoryTable for proper state management */}
           </div>
 
           {/* Inventory Table or Empty State */}
           {(!items || items.length === 0) ? (
-            <div className="bg-slate-800 rounded-lg border border-slate-700 p-8">
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-8">
               <EmptyState
                 icon="📦"
                 title="Brak pozycji w magazynie"

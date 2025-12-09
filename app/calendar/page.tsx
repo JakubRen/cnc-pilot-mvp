@@ -60,8 +60,8 @@ export default async function CalendarPage() {
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">Kalendarz Produkcji</h1>
-              <p className="text-slate-400">
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Kalendarz Produkcji</h1>
+              <p className="text-slate-500 dark:text-slate-400">
                 Wizualizacja terminów realizacji zamówień
               </p>
             </div>
@@ -75,21 +75,21 @@ export default async function CalendarPage() {
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Wszystkie zamówienia</p>
-              <p className="text-2xl font-bold text-white">{totalOrders}</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Wszystkie zamówienia</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">{totalOrders}</p>
             </div>
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Oczekujące</p>
-              <p className="text-2xl font-bold text-yellow-400">{pendingCount}</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Oczekujące</p>
+              <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{pendingCount}</p>
             </div>
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">W realizacji</p>
-              <p className="text-2xl font-bold text-blue-400">{inProgressCount}</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">W realizacji</p>
+              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{inProgressCount}</p>
             </div>
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Opóźnione</p>
-              <p className="text-2xl font-bold text-red-400">{delayedCount}</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Opóźnione</p>
+              <p className="text-2xl font-bold text-red-600 dark:text-red-400">{delayedCount}</p>
             </div>
           </div>
 

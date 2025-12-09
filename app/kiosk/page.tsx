@@ -66,13 +66,13 @@ export default async function KioskPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white p-4">
       <div className="text-center mb-8">
-        <h1 className="text-5xl font-extrabold mb-2">Tryb Kioskowy</h1>
-        <p className="text-xl text-slate-400">Panel operatora {userProfile.full_name}</p>
+        <h1 className="text-5xl font-extrabold mb-2 text-slate-900 dark:text-white">Tryb Kioskowy</h1>
+        <p className="text-xl text-slate-500 dark:text-slate-400">Panel operatora {userProfile.full_name}</p>
       </div>
 
-      <div className="bg-slate-800 rounded-2xl shadow-2xl p-10 w-full max-w-2xl text-center border-4 border-blue-500">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-10 w-full max-w-2xl text-center border-4 border-blue-500 dark:border-blue-500">
         <KioskClient
           currentOrder={currentOrder}
           activeTimeLogId={activeTimeLog?.id || null}
@@ -80,7 +80,7 @@ export default async function KioskPage() {
         />
       </div>
 
-      <p className="mt-8 text-slate-500 text-sm">Zalogowany jako: {userProfile.email} | <Link href="/logout" className="text-blue-400 hover:underline">Wyloguj</Link></p>
+      <p className="mt-8 text-slate-500 dark:text-slate-500 text-sm">Zalogowany jako: {userProfile.email} | <Link href="/logout" className="text-blue-400 hover:underline">Wyloguj</Link></p>
     </div>
   )
 }

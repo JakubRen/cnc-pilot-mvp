@@ -146,19 +146,19 @@ export default function AddQCPlanPage() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
-            <Link href="/quality-control" className="text-slate-400 hover:text-white">
+            <Link href="/quality-control" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               ← Wróć
             </Link>
-            <h1 className="text-3xl font-bold text-white">Nowy Plan Kontroli</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Nowy Plan Kontroli</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
             {/* Basic Info */}
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Informacje podstawowe</h2>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Informacje podstawowe</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 mb-2">Nazwa planu *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa planu *</label>
                   <Input
                     value={planName}
                     onChange={(e) => setPlanName(e.target.value)}
@@ -167,7 +167,7 @@ export default function AddQCPlanPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-2">Nazwa części</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa części</label>
                   <Input
                     value={partName}
                     onChange={(e) => setPartName(e.target.value)}
@@ -175,12 +175,12 @@ export default function AddQCPlanPage() {
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-slate-300 mb-2">Opis</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Opis</label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Dodatkowe informacje o planie kontroli..."
-                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     rows={2}
                   />
                 </div>
@@ -188,9 +188,9 @@ export default function AddQCPlanPage() {
             </div>
 
             {/* QC Items */}
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-white">Wymiary do kontroli</h2>
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Wymiary do kontroli</h2>
                 <Button type="button" onClick={addItem} variant="ghost" size="sm">
                   + Dodaj wymiar
                 </Button>
@@ -200,10 +200,10 @@ export default function AddQCPlanPage() {
                 {items.map((item, index) => (
                   <div
                     key={item.id}
-                    className="bg-slate-900 border border-slate-600 rounded-lg p-4"
+                    className="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg p-4"
                   >
                     <div className="flex justify-between items-start mb-3">
-                      <span className="text-slate-400 text-sm">Wymiar #{index + 1}</span>
+                      <span className="text-slate-500 dark:text-slate-400 text-sm">Wymiar #{index + 1}</span>
                       {items.length > 1 && (
                         <button
                           type="button"
@@ -217,7 +217,7 @@ export default function AddQCPlanPage() {
 
                     <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
                       <div className="col-span-2">
-                        <label className="block text-slate-400 text-xs mb-1">Nazwa wymiaru *</label>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Nazwa wymiaru *</label>
                         <Input
                           value={item.name}
                           onChange={(e) => updateItem(item.id, 'name', e.target.value)}
@@ -226,7 +226,7 @@ export default function AddQCPlanPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-slate-400 text-xs mb-1">Wartość nom. *</label>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Wartość nom. *</label>
                         <Input
                           type="number"
                           step="0.001"
@@ -237,7 +237,7 @@ export default function AddQCPlanPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-slate-400 text-xs mb-1">Tol. + </label>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tol. + </label>
                         <Input
                           type="number"
                           step="0.001"
@@ -248,7 +248,7 @@ export default function AddQCPlanPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-slate-400 text-xs mb-1">Tol. -</label>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tol. -</label>
                         <Input
                           type="number"
                           step="0.001"
@@ -259,11 +259,11 @@ export default function AddQCPlanPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-slate-400 text-xs mb-1">Jednostka</label>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Jednostka</label>
                         <select
                           value={item.unit}
                           onChange={(e) => updateItem(item.id, 'unit', e.target.value)}
-                          className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+                          className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
                         >
                           <option value="mm">mm</option>
                           <option value="um">µm</option>
@@ -279,9 +279,9 @@ export default function AddQCPlanPage() {
                         id={`critical-${item.id}`}
                         checked={item.is_critical}
                         onChange={(e) => updateItem(item.id, 'is_critical', e.target.checked)}
-                        className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-red-600 focus:ring-red-500"
+                        className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-red-600 focus:ring-red-500"
                       />
-                      <label htmlFor={`critical-${item.id}`} className="text-slate-400 text-sm">
+                      <label htmlFor={`critical-${item.id}`} className="text-slate-500 dark:text-slate-400 text-sm">
                         Wymiar krytyczny (100% kontroli)
                       </label>
                     </div>

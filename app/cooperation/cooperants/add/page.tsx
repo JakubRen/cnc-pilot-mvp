@@ -98,18 +98,18 @@ export default function AddCooperantPage() {
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
-            <Link href="/cooperation/cooperants" className="text-slate-400 hover:text-white">
+            <Link href="/cooperation/cooperants" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               ← Wróć
             </Link>
-            <h1 className="text-3xl font-bold text-white">Nowy kooperant</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Nowy kooperant</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Dane podstawowe</h2>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Dane podstawowe</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-slate-300 mb-2">Nazwa firmy *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa firmy *</label>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -118,11 +118,11 @@ export default function AddCooperantPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-2">Typ usługi *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Typ usługi *</label>
                   <select
                     value={serviceType}
                     onChange={(e) => setServiceType(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     required
                   >
                     <option value="">-- Wybierz --</option>
@@ -132,7 +132,7 @@ export default function AddCooperantPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-2">Średni czas realizacji (dni)</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Średni czas realizacji (dni)</label>
                   <Input
                     type="number"
                     min="1"
@@ -144,11 +144,11 @@ export default function AddCooperantPage() {
               </div>
             </div>
 
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Dane kontaktowe</h2>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Dane kontaktowe</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 mb-2">Osoba kontaktowa</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Osoba kontaktowa</label>
                   <Input
                     value={contactPerson}
                     onChange={(e) => setContactPerson(e.target.value)}
@@ -156,7 +156,7 @@ export default function AddCooperantPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-2">Telefon</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Telefon</label>
                   <Input
                     type="tel"
                     value={phone}
@@ -165,7 +165,7 @@ export default function AddCooperantPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-2">Email</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Email</label>
                   <Input
                     type="email"
                     value={email}
@@ -174,7 +174,7 @@ export default function AddCooperantPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-2">Adres</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Adres</label>
                   <Input
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
@@ -182,12 +182,12 @@ export default function AddCooperantPage() {
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-slate-300 mb-2">Notatki</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Notatki</label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Dodatkowe informacje..."
-                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     rows={3}
                   />
                 </div>

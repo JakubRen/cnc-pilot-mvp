@@ -23,15 +23,15 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
   }
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 mb-6">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-6">
       <div className="flex flex-wrap gap-4 items-center">
         {/* Status Filter */}
         <div>
-          <label className="text-slate-400 text-sm mr-2">Status:</label>
+          <label className="text-slate-700 dark:text-slate-400 text-sm mr-2">Status:</label>
           <select
             value={currentStatus}
             onChange={(e) => updateFilter('status', e.target.value)}
-            className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-white focus:border-blue-500 focus:outline-none"
+            className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           >
             <option value="all">Wszystkie</option>
             <option value="pending">Oczekujące</option>
@@ -44,11 +44,11 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
 
         {/* Profitability Filter */}
         <div>
-          <label className="text-slate-400 text-sm mr-2">Rentowność:</label>
+          <label className="text-slate-700 dark:text-slate-400 text-sm mr-2">Rentowność:</label>
           <select
             value={currentProfitable}
             onChange={(e) => updateFilter('profitable', e.target.value)}
-            className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-white focus:border-blue-500 focus:outline-none"
+            className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           >
             <option value="all">Wszystkie</option>
             <option value="profitable">Rentowne</option>
@@ -58,11 +58,11 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
 
         {/* Days Filter */}
         <div>
-          <label className="text-slate-400 text-sm mr-2">Okres:</label>
+          <label className="text-slate-700 dark:text-slate-400 text-sm mr-2">Okres:</label>
           <select
             value={currentDays}
             onChange={(e) => updateFilter('days', e.target.value)}
-            className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-white focus:border-blue-500 focus:outline-none"
+            className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           >
             <option value="7">7 dni</option>
             <option value="14">14 dni</option>
@@ -77,7 +77,7 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
         {(currentStatus !== 'all' || currentProfitable !== 'all' || currentDays !== 30) && (
           <button
             onClick={() => router.push('/costs')}
-            className="px-3 py-2 text-sm text-slate-400 hover:text-white transition"
+            className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
           >
             ✕ Wyczyść filtry
           </button>

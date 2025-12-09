@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
@@ -8,7 +8,6 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import CommandPalette from '@/components/ui/CommandPalette';
 import MobileBottomNav from './MobileBottomNav';
 import { supabase } from '@/lib/supabase';
-import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import InterfaceModeGuard from './InterfaceModeGuard';
 import type { InterfaceMode } from '@/lib/auth';
 
@@ -38,7 +37,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           .single()
 
         setUserRole(userProfile?.role)
-        setInterfaceMode(userProfile?.interface_mode as InterfaceMode | undefined)
+        setInterfaceMode(userProfile?.interface_mode as InterfaceMode | undefined)        
       }
     }
     fetchUserData()
@@ -50,16 +49,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
   });
 
   return (
-    <ThemeProvider>
       <InterfaceModeGuard>
-      <div className="flex min-h-screen bg-slate-900">
+      {/* FIXED: Używamy bg-background dla spójności motywów */}
+      <div className="flex min-h-screen bg-background">
       {/* Sidebar - Hidden on mobile by default, shown when toggled */}
       <div
         className={`
           fixed inset-y-0 left-0 z-50 w-64
           transform transition-transform duration-300 ease-in-out
           lg:transform-none lg:static
-          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}       
         `}
       >
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} interfaceMode={interfaceMode} />
@@ -99,18 +98,17 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* Floating Help Button */}
       <button
         onClick={() => setShowShortcutsHelp(true)}
-        className="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition z-30 group focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg dark:shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center justify-center transition z-30 group focus:outline-none focus:ring-2 focus:ring-blue-500 hidden lg:flex"
         title="Keyboard Shortcuts (Ctrl+/)"
         aria-label="Show keyboard shortcuts"
       >
         <span className="text-xl">⌨️</span>
         {/* Tooltip */}
-        <span className="absolute bottom-full mb-2 right-0 px-3 py-1 bg-slate-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none">
+        <span className="absolute bottom-full mb-2 right-0 px-3 py-1 bg-slate-800 dark:bg-slate-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none border border-slate-700">
           Skróty klawiszowe (Ctrl+/)
         </span>
       </button>
       </div>
       </InterfaceModeGuard>
-    </ThemeProvider>
   );
 }

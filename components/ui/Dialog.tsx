@@ -41,20 +41,20 @@ export function Dialog({ isOpen, onClose, title, children, className, panelClass
             >
               <HeadlessDialog.Panel
                 className={cn(
-                  'w-full max-w-md transform overflow-hidden rounded-2xl bg-slate-800 p-6 text-left align-middle shadow-xl transition-all',
+                  'w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-6 text-left align-middle shadow-xl transition-all',
                   panelClassName
                 )}
               >
                 <HeadlessDialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-white"
+                  className="text-lg font-medium leading-6 text-slate-900 dark:text-white"
                 >
                   {title}
                 </HeadlessDialog.Title>
                 <div className="absolute right-4 top-4">
                   <button
                     type="button"
-                    className="rounded-md bg-transparent text-slate-400 hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="rounded-md bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     onClick={onClose}
                   >
                     <span className="sr-only">Zamknij</span>

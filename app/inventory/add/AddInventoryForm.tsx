@@ -132,28 +132,28 @@ export default function AddInventoryForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-slate-800 p-8 rounded-lg border border-slate-700">
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700">
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* SKU */}
         <div>
-          <label htmlFor="sku" className="block text-slate-300 mb-2">{t('inventory', 'sku')} *</label>
+          <label htmlFor="sku" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'sku')} *</label>
           <input
             id="sku"
             autoFocus
             {...register('sku')}
             placeholder="ALU-6061-100"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-mono"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none font-mono"
           />
           {errors.sku && <p className="text-red-400 text-sm mt-1">{errors.sku.message}</p>}
         </div>
 
         {/* Category */}
         <div>
-          <label htmlFor="category" className="block text-slate-300 mb-2">{t('inventory', 'category')} *</label>
+          <label htmlFor="category" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'category')} *</label>
           <select
             id="category"
             {...register('category')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           >
             <option value="raw_material">{t('inventory', 'rawMaterial')}</option>
             <option value="part">{t('inventory', 'part')}</option>
@@ -165,136 +165,136 @@ export default function AddInventoryForm() {
 
         {/* Name - Full Width */}
         <div className="col-span-2">
-          <label htmlFor="name" className="block text-slate-300 mb-2">{t('common', 'name')} *</label>
+          <label htmlFor="name" className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'name')} *</label>
           <input
             id="name"
             {...register('name')}
             placeholder="Aluminum 6061 Bar 100mm"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
           {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
         {/* Quantity */}
         <div>
-          <label htmlFor="quantity" className="block text-slate-300 mb-2">{t('common', 'quantity')} *</label>
+          <label htmlFor="quantity" className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'quantity')} *</label>
           <input
             id="quantity"
             {...register('quantity', { valueAsNumber: true })}
             type="number"
             step="0.01"
             placeholder="0"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
           {errors.quantity && <p className="text-red-400 text-sm mt-1">{errors.quantity.message}</p>}
         </div>
 
         {/* Unit */}
         <div>
-          <label htmlFor="unit" className="block text-slate-300 mb-2">{t('inventory', 'unit')} *</label>
+          <label htmlFor="unit" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'unit')} *</label>
           <input
             id="unit"
             {...register('unit')}
             placeholder="pcs, kg, m, L"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
           {errors.unit && <p className="text-red-400 text-sm mt-1">{errors.unit.message}</p>}
         </div>
 
         {/* Low Stock Threshold */}
         <div>
-          <label htmlFor="low_stock_threshold" className="block text-slate-300 mb-2">{t('inventory', 'lowStockThreshold')} *</label>
+          <label htmlFor="low_stock_threshold" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'lowStockThreshold')} *</label>
           <input
             id="low_stock_threshold"
             {...register('low_stock_threshold', { valueAsNumber: true })}
             type="number"
             step="0.01"
             placeholder="10"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
           {errors.low_stock_threshold && <p className="text-red-400 text-sm mt-1">{errors.low_stock_threshold.message}</p>}
         </div>
 
         {/* Location */}
         <div>
-          <label htmlFor="location" className="block text-slate-300 mb-2">{t('inventory', 'location')}</label>
+          <label htmlFor="location" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'location')}</label>
           <input
             id="location"
             {...register('location')}
             placeholder="A1, Shelf-3"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         {/* Supplier */}
         <div>
-          <label htmlFor="supplier" className="block text-slate-300 mb-2">{t('inventory', 'supplier')}</label>
+          <label htmlFor="supplier" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'supplier')}</label>
           <input
             id="supplier"
             {...register('supplier')}
             placeholder={t('inventory', 'supplier')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         {/* Unit Cost - TYLKO DLA UPRAWNIONYCH */}
         {showPrices && (
           <div>
-            <label htmlFor="unit_cost" className="block text-slate-300 mb-2">{t('inventory', 'unitCost')}</label>
+            <label htmlFor="unit_cost" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'unitCost')}</label>
             <input
               id="unit_cost"
               {...register('unit_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
               placeholder="0.00"
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             />
           </div>
         )}
 
         {/* Batch Number */}
         <div>
-          <label htmlFor="batch_number" className="block text-slate-300 mb-2">{t('inventory', 'batchNumber')}</label>
+          <label htmlFor="batch_number" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'batchNumber')}</label>
           <input
             id="batch_number"
             {...register('batch_number')}
             placeholder={t('inventory', 'forTraceability')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none font-mono"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none font-mono"
           />
         </div>
 
         {/* Expiry Date */}
         <div>
-          <label htmlFor="expiry_date" className="block text-slate-300 mb-2">{t('inventory', 'expiryDate')}</label>
+          <label htmlFor="expiry_date" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'expiryDate')}</label>
           <input
             id="expiry_date"
             {...register('expiry_date')}
             type="date"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         {/* Description */}
         <div className="col-span-2">
-          <label htmlFor="description" className="block text-slate-300 mb-2">{t('common', 'description')}</label>
+          <label htmlFor="description" className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'description')}</label>
           <textarea
             id="description"
             {...register('description')}
             rows={2}
             placeholder={t('inventory', 'additionalDetails')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
 
         {/* Notes */}
         <div className="col-span-2">
-          <label htmlFor="notes" className="block text-slate-300 mb-2">{t('common', 'notes')}</label>
+          <label htmlFor="notes" className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'notes')}</label>
           <textarea
             id="notes"
             {...register('notes')}
             rows={2}
             placeholder={t('inventory', 'internalNotes')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
         </div>
       </div>
@@ -311,7 +311,7 @@ export default function AddInventoryForm() {
         <button
           type="button"
           onClick={() => router.push('/inventory')}
-          className="px-8 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
+          className="px-8 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition"
         >
           {t('common', 'cancel')}
         </button>

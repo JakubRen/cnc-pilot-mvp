@@ -74,7 +74,7 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
   ]
 
   return (
-    <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 mb-4">
+    <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700 mb-4">
       {/* Single Row - All filters in one line */}
       <div className="flex gap-3 items-center flex-wrap">
         {/* Search - Smaller */}

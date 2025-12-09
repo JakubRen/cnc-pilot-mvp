@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { DashboardPreferences, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard'
@@ -30,21 +30,21 @@ interface DashboardData {
     lowStockItems: Array<{ id: string; name: string; quantity: number; unit: string; low_stock_threshold: number }>
     staleTimers: Array<{ id: string; start_time: string; order?: { order_number: string }; user?: { name: string } }>
   }
-  productionPlan: Array<{ 
-    id: string; 
-    order_number: string; 
-    customer_name: string; 
-    deadline: string; 
+  productionPlan: Array<{
+    id: string;
+    order_number: string;
+    customer_name: string;
+    deadline: string;
     status: string;
     quantity: number;
     assigned_operator?: { name: string };
-    total_cost?: string | number; 
+    total_cost?: string | number;
   }>
   recentActivity: Array<{ type: string; title: string; subtitle: string; actor: string; timestamp: string }>
   topCustomers: Array<{ name: string; revenue: number; count: number }>
   ordersChartData: Array<{ date: string; orders: number }>
   revenueChartData: Array<{ date: string; revenue: number }>
-  topCustomersAnalyticsData: Array<{ customer: string; revenue: number; orders: number }>
+  topCustomersAnalyticsData: Array<{ customer: string; revenue: number; orders: number }> 
   productivityData: Array<{ employee: string; hours: number; earnings: number; ordersCompleted: number }>
   profitabilitySummary: {
     totalRevenue: number
@@ -91,16 +91,17 @@ export default function DashboardClient({
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-              <p className="text-slate-400">
+              {/* FIXED: text-white -> text-foreground */}
+              <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight">Dashboard</h1>
+              <p className="text-muted-foreground">
                 Witaj, {userName}! Oto podsumowanie Twojej produkcji.
               </p>
             </div>
             <div className="text-right flex gap-4 items-start">
-              {/* Personalization Button */}
+              {/* Personalization Button - Theme aware */}
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition font-semibold flex items-center gap-2 shadow-lg"
+                className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200"
               >
                 <svg
                   className="w-5 h-5"
@@ -126,8 +127,8 @@ export default function DashboardClient({
 
               {/* Company & Date Info */}
               <div>
-                <p className="text-sm text-slate-400">{companyName}</p>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-sm text-foreground font-medium">{companyName}</p>
+                <p className="text-xs text-muted-foreground mt-1 font-mono">
                   {new Date().toLocaleDateString('pl-PL', {
                     weekday: 'long',
                     year: 'numeric',
@@ -141,7 +142,7 @@ export default function DashboardClient({
         </div>
 
         {/* Metric Cards */}
-        {preferences.metricCards && <MetricCards metrics={dashboardData.metrics} />}
+        {preferences.metricCards && <MetricCards metrics={dashboardData.metrics} />}      
 
         {/* Main Content Grid */}
         {(preferences.urgentTasks || preferences.productionPlan || preferences.topCustomers) && (
@@ -161,7 +162,7 @@ export default function DashboardClient({
                 } flex flex-col gap-6`}
               >
                 {preferences.productionPlan && (
-                  <ProductionPlan productionPlan={dashboardData.productionPlan} />
+                  <ProductionPlan productionPlan={dashboardData.productionPlan} />        
                 )}
                 {preferences.topCustomers && (
                   <div className="flex-1">
@@ -205,7 +206,7 @@ export default function DashboardClient({
             )}
 
             {/* Profitability Widget */}
-            {preferences.profitabilityWidget && dashboardData.profitabilitySummary && (
+            {preferences.profitabilityWidget && dashboardData.profitabilitySummary && (   
               <div className="lg:col-span-1">
                 <ProfitabilityWidget data={dashboardData.profitabilitySummary} />
               </div>
@@ -218,17 +219,18 @@ export default function DashboardClient({
           <ActivityFeed recentActivity={dashboardData.recentActivity} />
         )}
 
-        {/* Empty State - gdy wszystkie widgety wyłączone */}
+        {/* Empty State */}
         {!Object.values(preferences).some(Boolean) && (
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-12 text-center">
-            <div className="text-6xl mb-4">📊</div>
-            <h2 className="text-2xl font-bold text-white mb-2">Dashboard jest pusty</h2>
-            <p className="text-slate-400 mb-6">
+          // FIXED: bg-slate-800 -> glass-panel / bg-card
+          <div className="glass-panel rounded-lg border border-border p-12 text-center shadow-sm">
+            <div className="text-6xl mb-4 opacity-50">📊</div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Dashboard jest pusty</h2>  
+            <p className="text-muted-foreground mb-6">
               Włącz widgety w ustawieniach, aby zobaczyć dane
             </p>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-semibold"
             >
               ⚙️ Personalizuj Dashboard
             </button>

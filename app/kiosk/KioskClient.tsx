@@ -64,7 +64,7 @@ export default function KioskClient({ currentOrder, activeTimeLogId, currentOrde
   }
 
   return (
-    <div className="bg-slate-800 rounded-2xl shadow-2xl p-10 w-full max-w-2xl text-center border-4 border-blue-500">
+    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-10 w-full max-w-2xl text-center border-4 border-blue-500 dark:border-blue-500">
       {currentOrder ? (
         <>
           <Badge
@@ -77,9 +77,9 @@ export default function KioskClient({ currentOrder, activeTimeLogId, currentOrde
           >
             {currentOrderStatus === 'running' ? 'W TOKU' : currentOrderStatus === 'paused' ? 'ZATRZYMANO' : 'OCZEKUJĄCE'}
           </Badge>
-          <h2 className="text-4xl font-bold mb-4">{currentOrder.order_number}</h2>
-          <p className="text-2xl text-slate-300 mb-6">{currentOrder.part_name} - {currentOrder.material}</p>
-          <p className="text-lg text-slate-400 mb-8">Klient: {currentOrder.customer_name} | Ilość: {currentOrder.quantity}</p>
+          <h2 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">{currentOrder.order_number}</h2>
+          <p className="text-2xl text-slate-700 dark:text-slate-300 mb-6">{currentOrder.part_name} - {currentOrder.material}</p>
+          <p className="text-lg text-slate-500 dark:text-slate-400 mb-8">Klient: {currentOrder.customer_name} | Ilość: {currentOrder.quantity}</p>
 
           <div className="flex flex-col gap-4">
             {currentOrderStatus === 'running' ? (
@@ -113,8 +113,8 @@ export default function KioskClient({ currentOrder, activeTimeLogId, currentOrde
         </>
       ) : (
         <div className="py-10">
-          <p className="text-3xl font-bold text-slate-400 mb-4">Brak aktywnych lub przypisanych zadań</p>
-          <p className="text-lg text-slate-500">Sprawdź swój harmonogram lub skontaktuj się z przełożonym.</p>
+          <p className="text-3xl font-bold text-slate-500 dark:text-slate-400 mb-4">Brak aktywnych lub przypisanych zadań</p>
+          <p className="text-lg text-slate-500 dark:text-slate-500">Sprawdź swój harmonogram lub skontaktuj się z przełożonym.</p>
         </div>
       )}
     </div>

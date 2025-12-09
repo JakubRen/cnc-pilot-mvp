@@ -31,7 +31,7 @@ export function LanguageSelector({
             className={`text-2xl p-2 rounded-lg transition-all ${
               lang === language.code
                 ? 'bg-blue-600 ring-2 ring-blue-400'
-                : 'bg-slate-700 hover:bg-slate-600'
+                : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
             title={language.name}
           >
@@ -47,7 +47,7 @@ export function LanguageSelector({
       <select
         value={lang}
         onChange={(e) => setLanguage(e.target.value as Language)}
-        className={`bg-slate-700 text-white text-sm rounded-lg px-2 py-1 border border-slate-600 focus:border-blue-500 focus:outline-none cursor-pointer ${className}`}
+        className={`bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg px-2 py-1 border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:outline-none cursor-pointer ${className}`}
       >
         {languages.map((language) => (
           <option key={language.code} value={language.code}>
@@ -62,7 +62,7 @@ export function LanguageSelector({
   return (
     <div className={`${className}`}>
       {showLabel && (
-        <label className="block text-slate-400 text-sm mb-2">
+        <label className="block text-slate-500 dark:text-slate-400 text-sm mb-2">
           {t('common', 'selectLanguage')}
         </label>
       )}
@@ -74,7 +74,7 @@ export function LanguageSelector({
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
               lang === language.code
                 ? 'bg-blue-600 text-white ring-2 ring-blue-400'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
             <span className="text-lg">{language.flag}</span>
@@ -113,7 +113,7 @@ export function StandaloneLanguageSelector({
           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
             value === language.code
               ? 'bg-blue-600 text-white ring-2 ring-blue-400'
-              : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+              : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
           }`}
         >
           <span className="text-lg">{language.flag}</span>

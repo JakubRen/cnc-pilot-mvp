@@ -13,14 +13,18 @@ interface ActivityFeedProps {
 }
 
 export default function ActivityFeed({ recentActivity }: ActivityFeedProps) {
+  // DUAL THEME STYLES
+  const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border";
+  const headerTextClass = "text-xl font-bold text-slate-900 dark:text-foreground";
+
   if (recentActivity.length === 0) {
     return (
-      <div className="bg-slate-800 rounded-lg p-6 shadow-md border border-slate-700">
-        <h2 className="text-xl font-bold text-white mb-4">📰 Ostatnie Aktywności</h2>
+      <div className={containerClass}>
+        <h2 className={headerTextClass}>📰 Ostatnie Aktywności</h2>
         <div className="text-center py-8">
           <p className="text-4xl mb-4">🕐</p>
-          <p className="text-lg font-medium text-slate-400">Brak aktywności</p>
-          <p className="text-sm text-slate-500 mt-2">
+          <p className="text-lg font-medium text-slate-500 dark:text-slate-400">Brak aktywności</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
             Ostatnie akcje pojawią się tutaj
           </p>
         </div>
@@ -29,10 +33,10 @@ export default function ActivityFeed({ recentActivity }: ActivityFeedProps) {
   }
 
   return (
-    <div className="bg-slate-800 rounded-lg p-6 shadow-md border border-slate-700">
+    <div className={containerClass}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-white">
+        <h2 className={headerTextClass}>
           📰 Ostatnie Aktywności
         </h2>
       </div>
@@ -46,7 +50,7 @@ export default function ActivityFeed({ recentActivity }: ActivityFeedProps) {
           return (
             <div
               key={index}
-              className="flex items-start gap-3 p-3 bg-slate-700/50 rounded-md hover:bg-slate-700 transition"
+              className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition"
             >
               {/* Icon */}
               <div className="flex-shrink-0 mt-0.5">
@@ -58,15 +62,15 @@ export default function ActivityFeed({ recentActivity }: ActivityFeedProps) {
                 <p className={`text-sm font-medium ${colorClass}`}>
                   {activity.title}
                 </p>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   {activity.subtitle}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-slate-400 dark:text-slate-500">
                     {activity.actor}
                   </span>
-                  <span className="text-xs text-slate-600">•</span>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-slate-300 dark:text-slate-600">•</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">
                     {formatRelativeTime(activity.timestamp)}
                   </span>
                 </div>

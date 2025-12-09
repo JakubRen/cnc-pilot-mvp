@@ -99,7 +99,7 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="md:col-span-2">
-          <label className="block text-slate-300 mb-2 text-sm">Tytuł *</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Tytuł *</label>
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -108,11 +108,11 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
           />
         </div>
         <div>
-          <label className="block text-slate-300 mb-2 text-sm">Typ</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Typ</label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           >
             <option value="scheduled">Planowy przegląd</option>
             <option value="unscheduled">Nieplanowa konserwacja</option>
@@ -121,7 +121,7 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
           </select>
         </div>
         <div>
-          <label className="block text-slate-300 mb-2 text-sm">Serwisant zewnętrzny</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Serwisant zewnętrzny</label>
           <Input
             value={externalTechnician}
             onChange={(e) => setExternalTechnician(e.target.value)}
@@ -129,17 +129,17 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
           />
         </div>
         <div className="md:col-span-2">
-          <label className="block text-slate-300 mb-2 text-sm">Opis</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Opis</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Szczegóły wykonanych prac..."
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             rows={2}
           />
         </div>
         <div>
-          <label className="block text-slate-300 mb-2 text-sm">Godziny pracy</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Godziny pracy</label>
           <Input
             type="number"
             step="0.5"
@@ -150,7 +150,7 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
           />
         </div>
         <div>
-          <label className="block text-slate-300 mb-2 text-sm">Koszt części (PLN)</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Koszt części (PLN)</label>
           <Input
             type="number"
             step="0.01"
@@ -161,7 +161,7 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
           />
         </div>
         <div>
-          <label className="block text-slate-300 mb-2 text-sm">Koszt robocizny (PLN)</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Koszt robocizny (PLN)</label>
           <Input
             type="number"
             step="0.01"
@@ -177,9 +177,9 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
               type="checkbox"
               checked={markCompleted}
               onChange={(e) => setMarkCompleted(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-600 focus:ring-blue-500"
+              className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 text-blue-600 focus:ring-blue-500"
             />
-            <span className="text-slate-300 text-sm">Oznacz jako ukończone</span>
+            <span className="text-slate-700 dark:text-slate-300 text-sm">Oznacz jako ukończone</span>
           </label>
         </div>
       </div>

@@ -153,18 +153,18 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-slate-800 p-8 rounded-lg border border-slate-700">
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700">
       {/* 2-Column Grid - Same layout as add form */}
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* LEFT COLUMN */}
 
         {/* Order Number */}
         <div>
-          <label htmlFor="edit_order_number" className="block text-slate-300 mb-2">Numer zamówienia *</label>
+          <label htmlFor="edit_order_number" className="block text-slate-700 dark:text-slate-300 mb-2">Numer zamówienia *</label>
           <input
             id="edit_order_number"
             {...register('order_number')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             placeholder="ORD-001"
           />
           {errors.order_number && (
@@ -205,11 +205,11 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Customer Name */}
         <div>
-          <label htmlFor="edit_customer_name" className="block text-slate-300 mb-2">Nazwa klienta *</label>
+          <label htmlFor="edit_customer_name" className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa klienta *</label>
           <input
             id="edit_customer_name"
             {...register('customer_name')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             placeholder="Metal-Precyzja Sp. z o.o."
           />
           {errors.customer_name && (
@@ -219,12 +219,12 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Deadline */}
         <div>
-          <label htmlFor="edit_deadline" className="block text-slate-300 mb-2">Termin *</label>
+          <label htmlFor="edit_deadline" className="block text-slate-700 dark:text-slate-300 mb-2">Termin *</label>
           <input
             id="edit_deadline"
             {...register('deadline')}
             type="date"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
           {errors.deadline && (
             <p className="text-red-400 text-sm mt-1">{errors.deadline.message}</p>
@@ -233,12 +233,12 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Quantity */}
         <div>
-          <label htmlFor="edit_quantity" className="block text-slate-300 mb-2">Ilość *</label>
+          <label htmlFor="edit_quantity" className="block text-slate-700 dark:text-slate-300 mb-2">Ilość *</label>
           <input
             id="edit_quantity"
             {...register('quantity', { valueAsNumber: true })}
             type="number"
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             placeholder="100"
           />
           {errors.quantity && (
@@ -248,11 +248,11 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Status */}
         <div>
-          <label htmlFor="edit_status" className="block text-slate-300 mb-2">Status *</label>
+          <label htmlFor="edit_status" className="block text-slate-700 dark:text-slate-300 mb-2">Status *</label>
           <select
             id="edit_status"
             {...register('status')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           >
             <option value="pending">Oczekujące</option>
             <option value="in_progress">W realizacji</option>
@@ -264,7 +264,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Assigned Operator */}
         <div>
-          <label htmlFor="assigned_operator_id" className="block text-slate-300 mb-2">Przypisany operator</label>
+          <label htmlFor="assigned_operator_id" className="block text-slate-700 dark:text-slate-300 mb-2">Przypisany operator</label>
           <Select
             options={[
               { value: '', label: operatorsLoading ? 'Ładowanie...' : 'Brak przypisania' },
@@ -277,43 +277,43 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Part Name */}
         <div>
-          <label htmlFor="edit_part_name" className="block text-slate-300 mb-2">Nazwa części</label>
+          <label htmlFor="edit_part_name" className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa części</label>
           <input
             id="edit_part_name"
             {...register('part_name')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             placeholder="Flange 50mm"
           />
         </div>
 
         {/* Notes - Full Width */}
         <div className="col-span-2">
-          <label htmlFor="edit_notes" className="block text-slate-300 mb-2">Notatki</label>
+          <label htmlFor="edit_notes" className="block text-slate-700 dark:text-slate-300 mb-2">Notatki</label>
           <textarea
             id="edit_notes"
             {...register('notes')}
             rows={3}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             placeholder="Dodatkowe uwagi dotyczące zamówienia..."
           />
         </div>
       </div>
 
       {/* DAY 12: COST BREAKDOWN SECTION */}
-      <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
-        <h3 className="text-lg font-semibold text-white mb-4">💰 Kalkulacja Kosztów</h3>
+      <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-200 dark:border-slate-600">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">💰 Kalkulacja Kosztów</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {/* Material Cost */}
           <div>
-            <label htmlFor="edit_material_cost" className="block text-slate-300 mb-2">Koszt Materiału (PLN)</label>
+            <label htmlFor="edit_material_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszt Materiału (PLN)</label>
             <input
               id="edit_material_cost"
               {...register('material_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
               min="0"
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
               placeholder="0.00"
             />
             {errors.material_cost && (
@@ -323,14 +323,14 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
           {/* Labor Cost */}
           <div>
-            <label htmlFor="edit_labor_cost" className="block text-slate-300 mb-2">Koszt Pracy (PLN)</label>
+            <label htmlFor="edit_labor_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszt Pracy (PLN)</label>
             <input
               id="edit_labor_cost"
               {...register('labor_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
               min="0"
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
               placeholder="0.00"
             />
             {errors.labor_cost && (
@@ -340,14 +340,14 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
           {/* Overhead Cost */}
           <div>
-            <label htmlFor="edit_overhead_cost" className="block text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
+            <label htmlFor="edit_overhead_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
             <input
               id="edit_overhead_cost"
               {...register('overhead_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
               min="0"
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
               placeholder="0.00"
             />
             {errors.overhead_cost && (
@@ -357,9 +357,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
         </div>
 
         {/* Total Cost Display */}
-        <div className="pt-4 border-t border-slate-600">
+        <div className="pt-4 border-t border-slate-200 dark:border-slate-600">
           <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold text-slate-200">Łączny Koszt:</span>
+            <span className="text-lg font-semibold text-slate-700 dark:text-slate-200">Łączny Koszt:</span>
             <span className="text-3xl font-bold text-green-400">
               {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
             </span>
@@ -379,7 +379,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
         <button
           type="button"
           onClick={() => router.push('/orders')}
-          className="px-8 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
+          className="px-8 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
         >
           Anuluj
         </button>

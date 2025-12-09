@@ -282,19 +282,19 @@ export default function AddOrderPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">{t('orders', 'addNewOrder')}</h1>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8">{t('orders', 'addNewOrder')}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
           {/* LEFT COLUMN - FORM */}
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Card className="mb-6 bg-slate-800 border-slate-700">
+            <Card className="mb-6 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
               <CardContent className="p-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   {/* Order Number */}
                   <div>
-                    <label htmlFor="order_number" className="block text-slate-300 mb-2">{t('orders', 'orderNumber')} *</label>
+                    <label htmlFor="order_number" className="block text-slate-700 dark:text-slate-300 mb-2">{t('orders', 'orderNumber')} *</label>
                     <Input
                       id="order_number"
                       autoFocus
@@ -337,7 +337,7 @@ export default function AddOrderPage() {
 
                   {/* Customer Name */}
                   <div>
-                    <label htmlFor="customer_name" className="block text-slate-300 mb-2">{t('orders', 'customer')} *</label>
+                    <label htmlFor="customer_name" className="block text-slate-700 dark:text-slate-300 mb-2">{t('orders', 'customer')} *</label>
                     <Input
                       id="customer_name"
                       placeholder="Firma XYZ"
@@ -347,7 +347,7 @@ export default function AddOrderPage() {
 
                   {/* Deadline */}
                   <div>
-                    <label htmlFor="deadline" className="block text-slate-300 mb-2">{t('orders', 'deadline')} *</label>
+                    <label htmlFor="deadline" className="block text-slate-700 dark:text-slate-300 mb-2">{t('orders', 'deadline')} *</label>
                     <Input
                       id="deadline"
                       type="date"
@@ -357,7 +357,7 @@ export default function AddOrderPage() {
 
                   {/* Quantity */}
                   <div>
-                    <label htmlFor="quantity" className="block text-slate-300 mb-2">{t('common', 'quantity')} *</label>
+                    <label htmlFor="quantity" className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'quantity')} *</label>
                     <Input
                       id="quantity"
                       type="number"
@@ -367,7 +367,7 @@ export default function AddOrderPage() {
 
                   {/* Status */}
                   <div>
-                    <label htmlFor="status" className="block text-slate-300 mb-2">{t('common', 'status')} *</label>
+                    <label htmlFor="status" className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'status')} *</label>
                     <Select
                       options={statusOptions}
                       value={watch('status')}
@@ -377,7 +377,7 @@ export default function AddOrderPage() {
 
                   {/* Assigned Operator */}
                   <div>
-                    <label htmlFor="assigned_operator_id" className="block text-slate-300 mb-2">Przypisany operator</label>
+                    <label htmlFor="assigned_operator_id" className="block text-slate-700 dark:text-slate-300 mb-2">Przypisany operator</label>
                     <Select
                       options={[
                         { value: '', label: operatorsLoading ? 'Ładowanie...' : 'Brak przypisania' },
@@ -407,13 +407,13 @@ export default function AddOrderPage() {
                 </div>
 
                 {/* DAY 14-15: AI Pricing Calculator Section */}
-                <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-purple-500/30">
-                  <h3 className="text-lg font-semibold text-white mb-4">🤖 {t('orders', 'aiPricingCalculatorTitle')}</h3>
+                <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-purple-200 dark:border-purple-500/30">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">🤖 {t('orders', 'aiPricingCalculatorTitle')}</h3>
 
                   {/* Dimensions */}
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'length')} ({t('common', 'milimeters')})</label>
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'length')} ({t('common', 'milimeters')})</label>
                       <Input
                         type="number"
                         placeholder="np. 100"
@@ -421,7 +421,7 @@ export default function AddOrderPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'width')} ({t('common', 'milimeters')})</label>
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'width')} ({t('common', 'milimeters')})</label>
                       <Input
                         type="number"
                         placeholder="np. 50"
@@ -429,7 +429,7 @@ export default function AddOrderPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('common', 'height')} ({t('common', 'milimeters')})</label>
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'height')} ({t('common', 'milimeters')})</label>
                       <Input
                         type="number"
                         placeholder="np. 20"
@@ -440,7 +440,7 @@ export default function AddOrderPage() {
 
                   {/* Complexity */}
                   <div className="mb-4">
-                    <label className="block text-slate-300 mb-2 text-sm">{t('common', 'complexity')}</label>
+                    <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'complexity')}</label>
                     <Select
                       options={complexityOptions}
                       value={watch('complexity') || 'medium'}
@@ -470,38 +470,38 @@ export default function AddOrderPage() {
 
                   {/* AI Estimate Result */}
                   {pricingEstimate && (
-                    <div className="mt-4 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500 rounded-lg">
+                    <div className="mt-4 p-4 bg-gradient-to-r from-purple-100/50 to-blue-100/50 dark:from-purple-900/30 dark:to-blue-900/30 border border-purple-300 dark:border-purple-500 rounded-lg">
                       <div className="flex justify-between items-center mb-3">
-                        <span className="text-slate-300">{t('orders', 'suggestedPrice')}:</span>
-                        <span className="text-2xl font-bold text-green-400">
+                        <span className="text-slate-700 dark:text-slate-300">{t('orders', 'suggestedPrice')}:</span>
+                        <span className="text-2xl font-bold text-green-600 dark:text-green-400">
                           {pricingEstimate.suggestedPrice.toFixed(2)} PLN
                         </span>
                       </div>
 
                       <div className="flex justify-between items-center mb-3">
-                        <span className="text-slate-300">{t('orders', 'pricePerUnit')}:</span>
-                        <span className="text-lg text-white">
+                        <span className="text-slate-700 dark:text-slate-300">{t('orders', 'pricePerUnit')}:</span>
+                        <span className="text-lg text-slate-900 dark:text-white">
                           {pricingEstimate.pricePerUnit.toFixed(2)} PLN
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="text-slate-300">{t('common', 'confidence')}:</span>
-                        <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                        <span className="text-slate-700 dark:text-slate-300">{t('common', 'confidence')}:</span>
+                        <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-green-500"
                             style={{ width: `${pricingEstimate.confidence}%` }}
                           />
                         </div>
-                        <span className="text-white font-semibold">{pricingEstimate.confidence}%</span>
+                        <span className="text-slate-900 dark:text-white font-semibold">{pricingEstimate.confidence}%</span>
                       </div>
 
-                      <div className="mb-4 p-3 bg-slate-800/50 rounded text-sm text-slate-300">
-                        <p className="font-medium text-white mb-1">{t('common', 'reasoning')}:</p>
+                      <div className="mb-4 p-3 bg-slate-100 dark:bg-slate-800/50 rounded text-sm text-slate-700 dark:text-slate-300">
+                        <p className="font-medium text-slate-900 dark:text-white mb-1">{t('common', 'reasoning')}:</p>
                         {pricingEstimate.reasoning}
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2 text-xs text-slate-400 mb-4">
+                      <div className="grid grid-cols-2 gap-2 text-xs text-slate-500 dark:text-slate-400 mb-4">
                         <div>{t('common', 'material')}: {pricingEstimate.breakdown.materialCost.toFixed(2)} PLN</div>
                         <div>{t('common', 'labor')}: {pricingEstimate.breakdown.machiningCost.toFixed(2)} PLN</div>
                         <div>{t('common', 'overhead')}: {pricingEstimate.breakdown.setupCost.toFixed(2)} PLN</div>
@@ -530,11 +530,11 @@ export default function AddOrderPage() {
                 </div>
 
                 {/* Cost Section */}
-                <div className="bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-600">
-                  <h3 className="text-lg font-semibold text-white mb-4">💰 {t('orders', 'costCalculationTitle')}</h3>
+                <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-200 dark:border-slate-600">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">💰 {t('orders', 'costCalculationTitle')}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
                       {(() => {
                         const { onBlur, ...rest } = register('material_cost', { valueAsNumber: true })
                         return (
@@ -551,7 +551,7 @@ export default function AddOrderPage() {
                       })()}
                     </div>
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
                       {(() => {
                         const { onBlur, ...rest } = register('labor_cost', { valueAsNumber: true })
                         return (
@@ -568,7 +568,7 @@ export default function AddOrderPage() {
                       })()}
                     </div>
                     <div>
-                      <label className="block text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
                       {(() => {
                         const { onBlur, ...rest } = register('overhead_cost', { valueAsNumber: true })
                         return (
@@ -585,9 +585,9 @@ export default function AddOrderPage() {
                       })()}
                     </div>
                   </div>
-                  <div className="mt-4 flex justify-between items-center border-t border-slate-600 pt-4">
-                    <span className="text-slate-300 font-medium">{t('orders', 'totalCostCalculated')}</span>
-                    <span className="text-2xl font-bold text-green-400">
+                  <div className="mt-4 flex justify-between items-center border-t border-slate-200 dark:border-slate-600 pt-4">
+                    <span className="text-slate-700 dark:text-slate-300 font-medium">{t('orders', 'totalCostCalculated')}</span>
+                    <span className="text-2xl font-bold text-green-600 dark:text-green-400">
                       {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
                     </span>
                   </div>
@@ -632,7 +632,7 @@ export default function AddOrderPage() {
 
               {/* Help Tip */}
               {!localEstimate && !localLoading && (
-                <div className="mt-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg text-sm text-blue-300">
+                <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-blue-700 dark:text-blue-300">
                   <p className="font-semibold mb-1">{t('orders', 'howItWorksTitle')}</p>
                   <p>
                     {t('orders', 'howItWorksDesc')}

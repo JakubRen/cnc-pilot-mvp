@@ -109,7 +109,7 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
         {error && (
           <div className="bg-red-900/20 border border-red-600 text-red-400 px-4 py-3 rounded mb-6">
             {error}
@@ -125,7 +125,7 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
               value={formData.order_id}
               onChange={(e) => setFormData({ ...formData, order_id: e.target.value })}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {orders.map(order => (
                 <option key={order.id} value={order.id}>
@@ -144,21 +144,21 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
               value={formData.start_time}
               onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* End Time */}
           <div>
             <label htmlFor="edit_end_time" className="block text-sm font-medium mb-2">
-              End Time <span className="text-slate-400">(optional - leave empty if still running)</span>
+              End Time <span className="text-slate-500 dark:text-slate-400">(optional - leave empty if still running)</span>
             </label>
             <input
               id="edit_end_time"
               type="datetime-local"
               value={formData.end_time}
               onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -171,14 +171,14 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               rows={4}
               placeholder="Add any notes about this time entry..."
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Duration Preview */}
           {formData.start_time && formData.end_time && (
-            <div className="bg-slate-700 rounded-lg p-4">
-              <div className="text-sm text-slate-400 mb-1">Duration (calculated)</div>
+            <div className="bg-slate-100 dark:bg-slate-700 rounded-lg p-4">
+              <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">Duration (calculated)</div>
               <div className="text-xl font-bold">
                 {(() => {
                   const start = new Date(formData.start_time);
@@ -194,17 +194,17 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-4 mt-8 pt-6 border-t border-slate-700">
+        <div className="flex gap-4 mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
           >
             {loading ? 'Saving...' : 'Save Changes'}
           </button>
           <Link
             href={`/time-tracking/${timeLog.id}`}
-            className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg font-medium transition"
+            className="px-6 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg font-medium transition"
           >
             Cancel
           </Link>

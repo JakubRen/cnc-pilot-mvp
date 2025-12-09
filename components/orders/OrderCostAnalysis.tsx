@@ -121,20 +121,20 @@ export default function OrderCostAnalysis({
   }
 
   const VarianceIndicator = ({ value, inverse = false }: { value: number; inverse?: boolean }) => {
-    if (Math.abs(value) < 0.01) return <span className="text-slate-400">—</span>
+    if (Math.abs(value) < 0.01) return <span className="text-slate-500 dark:text-slate-400">—</span>
     const isPositive = inverse ? value < 0 : value > 0
     const isNegative = inverse ? value > 0 : value < 0
     return (
-      <span className={`font-semibold ${isNegative ? 'text-red-400' : isPositive ? 'text-green-400' : 'text-slate-400'}`}>
+      <span className={`font-semibold ${isNegative ? 'text-red-600 dark:text-red-400' : isPositive ? 'text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400'}`}>
         {value > 0 ? '+' : ''}{value.toFixed(2)} PLN
       </span>
     )
   }
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
           <span>📊</span> Analiza Kosztów i Rentowności
         </h2>
         {timeLogs.length > 0 && (
@@ -156,20 +156,20 @@ export default function OrderCostAnalysis({
           </p>
         </div>
 
-        <div className="bg-slate-700/50 p-4 rounded-lg">
-          <p className="text-slate-400 text-sm mb-1">Koszt całkowity</p>
-          <p className="text-2xl font-bold text-white">{actualTotalCost.toFixed(2)} PLN</p>
+        <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Koszt całkowity</p>
+          <p className="text-2xl font-bold text-slate-900 dark:text-white">{actualTotalCost.toFixed(2)} PLN</p>
           <p className="text-slate-500 text-sm">{costPerUnit.toFixed(2)} PLN/szt</p>
         </div>
 
-        <div className="bg-slate-700/50 p-4 rounded-lg">
-          <p className="text-slate-400 text-sm mb-1">Czas pracy</p>
-          <p className="text-2xl font-bold text-white">{actualLabor.hours.toFixed(1)}h</p>
+        <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Czas pracy</p>
+          <p className="text-2xl font-bold text-slate-900 dark:text-white">{actualLabor.hours.toFixed(1)}h</p>
           <p className="text-slate-500 text-sm">{actualLabor.cost.toFixed(2)} PLN</p>
         </div>
 
-        <div className="bg-slate-700/50 p-4 rounded-lg">
-          <p className="text-slate-400 text-sm mb-1">Cena sprzedaży</p>
+        <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Cena sprzedaży</p>
           {isEditing ? (
             <div className="flex gap-2">
               <Input
@@ -203,7 +203,7 @@ export default function OrderCostAnalysis({
               </p>
               <button
                 onClick={() => setIsEditing(true)}
-                className="text-slate-400 hover:text-white transition"
+                className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
                 title="Edytuj cenę"
               >
                 ✏️
@@ -214,25 +214,25 @@ export default function OrderCostAnalysis({
       </div>
 
       {/* Tabela porównawcza: Szacowane vs Rzeczywiste */}
-      <div className="bg-slate-900 rounded-lg overflow-hidden mb-6">
+      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg overflow-hidden mb-6">
         <table className="w-full">
-          <thead className="bg-slate-700">
+          <thead className="bg-slate-100 dark:bg-slate-700">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase">Kategoria</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-300 uppercase">Szacowane</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-300 uppercase">Rzeczywiste</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-300 uppercase">Odchylenie</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Kategoria</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Szacowane</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Rzeczywiste</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Odchylenie</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-700">
-            <tr className="hover:bg-slate-800/50">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+            <tr className="hover:bg-slate-100 dark:hover:bg-slate-800/50">
               <td className="px-4 py-3">
-                <span className="text-white">🔩 Materiał</span>
+                <span className="text-slate-900 dark:text-white">🔩 Materiał</span>
               </td>
-              <td className="px-4 py-3 text-right text-slate-400">
+              <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400">
                 {(estimatedMaterialCost || materialCost).toFixed(2)} PLN
               </td>
-              <td className="px-4 py-3 text-right text-white font-medium">
+              <td className="px-4 py-3 text-right text-slate-900 dark:text-white font-medium">
                 {materialCost.toFixed(2)} PLN
               </td>
               <td className="px-4 py-3 text-right">
@@ -240,20 +240,20 @@ export default function OrderCostAnalysis({
               </td>
             </tr>
 
-            <tr className="hover:bg-slate-800/50">
+            <tr className="hover:bg-slate-100 dark:hover:bg-slate-800/50">
               <td className="px-4 py-3">
-                <span className="text-white">⏱️ Praca</span>
+                <span className="text-slate-900 dark:text-white">⏱️ Praca</span>
                 {estimatedHours && (
                   <span className="text-slate-500 text-xs ml-2">
                     ({estimatedHours.toFixed(1)}h szac.)
                   </span>
                 )}
               </td>
-              <td className="px-4 py-3 text-right text-slate-400">
+              <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400">
                 {(estimatedLaborCost || laborCost).toFixed(2)} PLN
               </td>
               <td className="px-4 py-3 text-right">
-                <span className="text-white font-medium">{actualLabor.cost.toFixed(2)} PLN</span>
+                <span className="text-slate-900 dark:text-white font-medium">{actualLabor.cost.toFixed(2)} PLN</span>
                 <span className="text-slate-500 text-xs block">{actualLabor.hours.toFixed(1)}h</span>
               </td>
               <td className="px-4 py-3 text-right">
@@ -266,27 +266,27 @@ export default function OrderCostAnalysis({
               </td>
             </tr>
 
-            <tr className="hover:bg-slate-800/50">
+            <tr className="hover:bg-slate-100 dark:hover:bg-slate-800/50">
               <td className="px-4 py-3">
-                <span className="text-white">🏭 Koszty ogólne</span>
+                <span className="text-slate-900 dark:text-white">🏭 Koszty ogólne</span>
               </td>
-              <td className="px-4 py-3 text-right text-slate-400">
+              <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400">
                 {(estimatedOverheadCost || overheadCost).toFixed(2)} PLN
               </td>
-              <td className="px-4 py-3 text-right text-white font-medium">
+              <td className="px-4 py-3 text-right text-slate-900 dark:text-white font-medium">
                 {overheadCost.toFixed(2)} PLN
               </td>
-              <td className="px-4 py-3 text-right text-slate-400">—</td>
+              <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400">—</td>
             </tr>
 
-            <tr className="bg-slate-700/50 font-semibold">
+            <tr className="bg-slate-100 dark:bg-slate-700/50 font-semibold">
               <td className="px-4 py-3">
-                <span className="text-white">SUMA</span>
+                <span className="text-slate-900 dark:text-white">SUMA</span>
               </td>
-              <td className="px-4 py-3 text-right text-slate-300">
+              <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">
                 {((estimatedMaterialCost || materialCost) + (estimatedLaborCost || laborCost) + (estimatedOverheadCost || overheadCost)).toFixed(2)} PLN
               </td>
-              <td className="px-4 py-3 text-right text-white">
+              <td className="px-4 py-3 text-right text-slate-900 dark:text-white">
                 {actualTotalCost.toFixed(2)} PLN
               </td>
               <td className="px-4 py-3 text-right">
@@ -305,21 +305,21 @@ export default function OrderCostAnalysis({
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-slate-400">Przychód:</span>
-              <span className="text-white ml-2 font-medium">{sellingPrice.toFixed(2)} PLN</span>
+              <span className="text-slate-500 dark:text-slate-400">Przychód:</span>
+              <span className="text-slate-900 dark:text-white ml-2 font-medium">{sellingPrice.toFixed(2)} PLN</span>
             </div>
             <div>
-              <span className="text-slate-400">Koszt:</span>
-              <span className="text-white ml-2 font-medium">{actualTotalCost.toFixed(2)} PLN</span>
+              <span className="text-slate-500 dark:text-slate-400">Koszt:</span>
+              <span className="text-slate-900 dark:text-white ml-2 font-medium">{actualTotalCost.toFixed(2)} PLN</span>
             </div>
             <div>
-              <span className="text-slate-400">Zysk:</span>
+              <span className="text-slate-500 dark:text-slate-400">Zysk:</span>
               <span className={`ml-2 font-semibold ${isProfitable ? 'text-green-400' : 'text-red-400'}`}>
                 {marginAmount.toFixed(2)} PLN
               </span>
             </div>
             <div>
-              <span className="text-slate-400">Zysk na szt:</span>
+              <span className="text-slate-500 dark:text-slate-400">Zysk na szt:</span>
               <span className={`ml-2 font-semibold ${isProfitable ? 'text-green-400' : 'text-red-400'}`}>
                 {quantity > 0 ? (marginAmount / quantity).toFixed(2) : '0.00'} PLN
               </span>

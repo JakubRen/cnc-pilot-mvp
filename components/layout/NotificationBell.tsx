@@ -129,7 +129,7 @@ export default function NotificationBell() {
       {/* Bell Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-slate-400 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+        className="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
         aria-label="Powiadomienia"
       >
         <svg
@@ -156,15 +156,15 @@ export default function NotificationBell() {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 max-h-96 overflow-hidden flex flex-col">
+        <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl z-50 max-h-96 overflow-hidden flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-slate-700">
-            <h3 className="text-white font-semibold">Powiadomienia</h3>
+          <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
+            <h3 className="text-slate-900 dark:text-white font-semibold">Powiadomienia</h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
                 disabled={isLoading}
-                className="text-xs text-blue-400 hover:text-blue-300 transition disabled:opacity-50"
+                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition disabled:opacity-50"
               >
                 {isLoading ? 'Oznaczanie...' : 'Oznacz wszystkie'}
               </button>
@@ -175,15 +175,15 @@ export default function NotificationBell() {
           <div className="overflow-y-auto flex-1">
             {notifications.length === 0 ? (
               <div className="p-8 text-center">
-                <p className="text-slate-400">Brak nowych powiadomień</p>
+                <p className="text-slate-500 dark:text-slate-400">Brak nowych powiadomień</p>
               </div>
             ) : (
-              <div className="divide-y divide-slate-700">
+              <div className="divide-y divide-slate-200 dark:divide-slate-700">
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-4 hover:bg-slate-700/50 transition cursor-pointer ${
-                      !notification.read ? 'bg-slate-700/30' : ''
+                    className={`p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer ${
+                      !notification.read ? 'bg-blue-50 dark:bg-slate-700/30' : ''
                     }`}
                     onClick={() => {
                       if (!notification.read) {
@@ -199,15 +199,15 @@ export default function NotificationBell() {
                         <div className="flex items-start gap-3">
                           <span className="text-xl">{getNotificationIcon(notification.type)}</span>
                           <div className="flex-1 min-w-0">
-                            <p className="text-white font-medium text-sm">
+                            <p className="text-slate-900 dark:text-white font-medium text-sm">
                               {notification.title}
                             </p>
                             {notification.message && (
-                              <p className="text-slate-400 text-xs mt-1">
+                              <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">
                                 {notification.message}
                               </p>
                             )}
-                            <p className="text-slate-500 text-xs mt-1">
+                            <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">
                               {new Date(notification.created_at).toLocaleString('pl-PL', {
                                 dateStyle: 'short',
                                 timeStyle: 'short',
@@ -220,15 +220,15 @@ export default function NotificationBell() {
                       <div className="flex items-start gap-3">
                         <span className="text-xl">{getNotificationIcon(notification.type)}</span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-white font-medium text-sm">
+                          <p className="text-slate-900 dark:text-white font-medium text-sm">
                             {notification.title}
                           </p>
                           {notification.message && (
-                            <p className="text-slate-400 text-xs mt-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">
                               {notification.message}
                             </p>
                           )}
-                          <p className="text-slate-500 text-xs mt-1">
+                          <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">
                             {new Date(notification.created_at).toLocaleString('pl-PL', {
                               dateStyle: 'short',
                               timeStyle: 'short',
@@ -245,10 +245,10 @@ export default function NotificationBell() {
 
           {/* Footer */}
           {notifications.length > 0 && (
-            <div className="p-3 border-t border-slate-700 text-center">
+            <div className="p-3 border-t border-slate-200 dark:border-slate-700 text-center">
               <Link
                 href="/notifications"
-                className="text-sm text-blue-400 hover:text-blue-300 transition"
+                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition"
                 onClick={() => setIsOpen(false)}
               >
                 Zobacz wszystkie powiadomienia

@@ -68,12 +68,12 @@ export default async function TimeTrackingPage() {
 
   return (
     <AppLayout>
-      <div className="text-white">
+      <div>
         <div className="max-w-7xl mx-auto p-6">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">⏱️ Czas Pracy</h1>
-            <p className="text-slate-400">
+            <h1 className="text-3xl font-bold mb-2 text-slate-900 dark:text-white">⏱️ Czas Pracy</h1>
+            <p className="text-slate-500 dark:text-slate-400">
               Śledź czas spędzony na zleceniach i monitoruj produktywność
             </p>
           </div>

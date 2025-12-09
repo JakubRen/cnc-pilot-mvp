@@ -28,8 +28,8 @@ export default async function ReportsLayout({
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Raporty & Analityka</h1>
-            <p className="text-slate-400">
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Raporty & Analityka</h1>
+            <p className="text-slate-500 dark:text-slate-400">
               Przegląd danych, eksport raportów, i wizualizacje
             </p>
           </div>
@@ -40,7 +40,7 @@ export default async function ReportsLayout({
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition hover:bg-slate-700 bg-slate-800 text-slate-300 hover:text-white border border-slate-700"
+                className="px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition hover:bg-slate-100 dark:hover:bg-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700"
               >
                 {tab.icon} {tab.label}
               </Link>

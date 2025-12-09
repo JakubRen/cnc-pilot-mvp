@@ -79,24 +79,24 @@ export default function GenerateClientLink({ customerName }: GenerateClientLinkP
       {/* Modal */}
       {showModal && portalUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 max-w-lg w-full mx-4 shadow-2xl">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 max-w-lg w-full mx-4 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Link do portalu klienta</h3>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Link do portalu klienta</h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-slate-400 hover:text-white transition"
+                className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
               >
                 ✕
               </button>
             </div>
 
-            <p className="text-slate-400 text-sm mb-4">
-              Wyślij ten link do <span className="text-white font-medium">{customerName}</span>,
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
+              Wyślij ten link do <span className="text-slate-900 dark:text-white font-medium">{customerName}</span>,
               aby mogli śledzić status swoich zamówień.
             </p>
 
             {/* Link Display */}
-            <div className="bg-slate-900 border border-slate-600 rounded-lg p-3 mb-4">
+            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg p-3 mb-4">
               <code className="text-blue-400 text-sm break-all">{portalUrl}</code>
             </div>
 

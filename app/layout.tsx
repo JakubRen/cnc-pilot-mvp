@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from 'react-hot-toast'
 import { Providers } from '@/components/Providers'
+import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,13 +33,30 @@ export const metadata: Metadata = {
   },
 };
 
+// Script to prevent flash of wrong theme
+const themeScript = `
+  (function() {
+    try {
+      var theme = localStorage.getItem('theme') || 'dark';
+      if (theme === 'auto') {
+        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
+    } catch (e) {}
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl">
+    <html lang="pl" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -46,6 +64,7 @@ export default function RootLayout({
           {children}
         </Providers>
         <Toaster position="bottom-right" />
+        <KeyboardShortcutsHelp />
       </body>
     </html>
   );

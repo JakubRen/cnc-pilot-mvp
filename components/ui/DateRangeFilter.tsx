@@ -41,13 +41,13 @@ export default function DateRangeFilter({ onFilterChange, label = 'Zakres dat' }
   }
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
-        <label className="text-sm font-semibold text-slate-300">{label}</label>
+        <label className="text-sm font-semibold text-slate-600 dark:text-slate-300">{label}</label>
         {(startDate || endDate) && (
           <button
             onClick={handleClear}
-            className="text-xs text-slate-400 hover:text-white transition"
+            className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
           >
             Wyczyść
           </button>
@@ -56,43 +56,43 @@ export default function DateRangeFilter({ onFilterChange, label = 'Zakres dat' }
 
       <div className="grid grid-cols-2 gap-3 mb-3">
         <div>
-          <label className="text-xs text-slate-400 mb-1 block">Od</label>
+          <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Od</label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => handleStartDateChange(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
         <div>
-          <label className="text-xs text-slate-400 mb-1 block">Do</label>
+          <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Do</label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => handleEndDateChange(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-600 text-white text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
       </div>
 
-      <div className="border-t border-slate-700 pt-3">
-        <p className="text-xs text-slate-400 mb-2">Szybki wybór:</p>
+      <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Szybki wybór:</p>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => handleQuickFilter(7)}
-            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs rounded-lg transition"
+            className="px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs rounded-lg transition"
           >
             Ostatnie 7 dni
           </button>
           <button
             onClick={() => handleQuickFilter(30)}
-            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs rounded-lg transition"
+            className="px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs rounded-lg transition"
           >
             Ostatnie 30 dni
           </button>
           <button
             onClick={() => handleQuickFilter(90)}
-            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs rounded-lg transition"
+            className="px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs rounded-lg transition"
           >
             Ostatnie 90 dni
           </button>

@@ -109,7 +109,7 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
 
       {/* Results Count & Export Button */}
       <div className="flex justify-between items-center">
-        <div className="text-slate-400 text-sm">
+        <div className="text-slate-500 dark:text-slate-400 text-sm">
           {filteredOrders.length !== orders.length && (
             <span>Wyświetlanie {filteredOrders.length} z {orders.length} zamówień</span>
           )}
@@ -128,11 +128,11 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
 
       {/* Bulk Actions Bar */}
       {selectedOrders.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-slate-800 border-2 border-blue-500 rounded-lg shadow-2xl p-4 flex items-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-200">
-          <span className="text-white font-semibold">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-white dark:bg-slate-800 border-2 border-blue-500 rounded-lg shadow-2xl p-4 flex items-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-200">
+          <span className="text-slate-900 dark:text-white font-semibold">
             {selectedOrders.size} zaznaczono
           </span>
-          <div className="h-6 w-px bg-slate-600" />
+          <div className="h-6 w-px bg-slate-300 dark:bg-slate-600" />
           <div className="flex gap-2">
             <Button
               onClick={() => handleBulkStatusChange('in_progress')}
@@ -157,7 +157,7 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
               Oznacz jako opóźnione
             </Button>
           </div>
-          <div className="h-6 w-px bg-slate-600" />
+          <div className="h-6 w-px bg-slate-300 dark:bg-slate-600" />
           <Button
             onClick={handleDeselectAll}
             variant="ghost"
@@ -170,7 +170,7 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
 
       {/* Orders List or Empty State */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-8">
           <EmptyState
             icon="📦"
             title="Brak zamówień"

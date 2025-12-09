@@ -162,7 +162,7 @@ export default function ProfileClient({ user }: Props) {
   return (
     <div className="space-y-6">
       {/* Profile Information Card */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
         <div className="flex items-start gap-6 mb-6">
           {/* Avatar */}
           <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-3xl flex-shrink-0">
@@ -171,8 +171,8 @@ export default function ProfileClient({ user }: Props) {
 
           {/* User Info */}
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-white">{user.full_name}</h2>
-            <p className="text-slate-400 mt-1">{user.auth_email}</p>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{user.full_name}</h2>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">{user.auth_email}</p>
             <div className="mt-2">
               <span
                 className={`px-3 py-1 rounded-full text-sm font-semibold ${getRoleBadgeColor(
@@ -187,17 +187,17 @@ export default function ProfileClient({ user }: Props) {
 
         {/* Profile Form */}
         <form onSubmit={handleSubmitProfile(onSubmitProfile)} className="space-y-4">
-          <h3 className="text-xl font-bold text-white mb-4">Edytuj profil</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Edytuj profil</h3>
 
           {/* Full Name */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Imię i nazwisko *
             </label>
             <input
               {...registerProfile('full_name')}
               type="text"
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               placeholder="Jan Kowalski"
             />
             {profileErrors.full_name && (
@@ -209,14 +209,14 @@ export default function ProfileClient({ user }: Props) {
 
           {/* Email (Read-only) */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Email
             </label>
             <input
               type="email"
               value={user.auth_email}
               disabled
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-500 cursor-not-allowed"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 cursor-not-allowed"
             />
             <p className="text-slate-500 text-xs mt-1">
               Email nie może być zmieniony
@@ -225,14 +225,14 @@ export default function ProfileClient({ user }: Props) {
 
           {/* Hourly Rate */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Stawka godzinowa (PLN/h)
             </label>
             <input
               {...registerProfile('hourly_rate', { valueAsNumber: true })}
               type="number"
               step="0.01"
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               placeholder="0.00"
             />
             {profileErrors.hourly_rate && (
@@ -247,14 +247,14 @@ export default function ProfileClient({ user }: Props) {
 
           {/* Role (Read-only) */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Rola
             </label>
             <input
               type="text"
               value={getRoleLabel(user.role)}
               disabled
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-500 cursor-not-allowed"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 cursor-not-allowed"
             />
             <p className="text-slate-500 text-xs mt-1">
               Rola może być zmieniona tylko przez administratora
@@ -275,8 +275,8 @@ export default function ProfileClient({ user }: Props) {
       </div>
 
       {/* Change Password Card */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-        <h3 className="text-xl font-bold text-white mb-4">Zmień hasło</h3>
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Zmień hasło</h3>
 
         <form
           onSubmit={handleSubmitPassword(onSubmitPassword)}
@@ -284,13 +284,13 @@ export default function ProfileClient({ user }: Props) {
         >
           {/* New Password */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Nowe hasło *
             </label>
             <input
               {...registerPassword('new_password')}
               type="password"
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               placeholder="Wprowadź nowe hasło"
             />
             {passwordErrors.new_password && (
@@ -302,13 +302,13 @@ export default function ProfileClient({ user }: Props) {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Potwierdź hasło *
             </label>
             <input
               {...registerPassword('confirm_password')}
               type="password"
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               placeholder="Potwierdź nowe hasło"
             />
             {passwordErrors.confirm_password && (

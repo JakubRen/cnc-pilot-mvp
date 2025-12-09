@@ -121,7 +121,7 @@ export default function ManualTimeEntryForm({
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
         {error && (
           <div className="bg-red-900/20 border border-red-600 text-red-400 px-4 py-3 rounded mb-6">
             {error}
@@ -138,7 +138,7 @@ export default function ManualTimeEntryForm({
               value={formData.order_id}
               onChange={(e) => setFormData({ ...formData, order_id: e.target.value })}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select an order</option>
               {orders.map(order => (
@@ -158,7 +158,7 @@ export default function ManualTimeEntryForm({
               value={formData.start_time}
               onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -171,7 +171,7 @@ export default function ManualTimeEntryForm({
               value={formData.end_time}
               onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
               required
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -184,7 +184,7 @@ export default function ManualTimeEntryForm({
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               rows={4}
               placeholder="Add any notes about this time entry (e.g., 'Retroactive entry for yesterday')"
-              className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -194,13 +194,13 @@ export default function ManualTimeEntryForm({
               <div className="text-sm text-blue-400 mb-2 font-semibold">Preview</div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-slate-400 text-sm">Duration</div>
+                  <div className="text-slate-500 dark:text-slate-400 text-sm">Duration</div>
                   <div className="text-xl font-bold">
                     {durationPreview.hours}h {durationPreview.minutes}m
                   </div>
                 </div>
                 <div>
-                  <div className="text-slate-400 text-sm">Cost</div>
+                  <div className="text-slate-500 dark:text-slate-400 text-sm">Cost</div>
                   <div className="text-xl font-bold text-green-400">
                     {durationPreview.cost.toFixed(2)} PLN
                   </div>
@@ -214,17 +214,17 @@ export default function ManualTimeEntryForm({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-4 mt-8 pt-6 border-t border-slate-700">
+        <div className="flex gap-4 mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
+            className="px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
           >
             {loading ? 'Creating...' : 'Create Time Entry'}
           </button>
           <Link
             href="/time-tracking"
-            className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg font-medium transition"
+            className="px-6 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg font-medium transition"
           >
             Cancel
           </Link>

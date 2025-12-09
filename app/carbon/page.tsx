@@ -53,8 +53,8 @@ export default async function CarbonPage() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-white">Paszport Węglowy</h1>
-              <p className="text-slate-400 mt-1">Kalkulator emisji CO2 zgodny z CBAM</p>
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Paszport Węglowy</h1>
+              <p className="text-slate-500 dark:text-slate-400 mt-1">Kalkulator emisji CO2 zgodny z CBAM</p>
             </div>
             <div className="flex items-center gap-2">
               <span className="px-3 py-1 bg-green-600/20 text-green-400 text-sm rounded-full border border-green-700/50">
@@ -68,10 +68,10 @@ export default async function CarbonPage() {
             <div className="flex items-start gap-4">
               <div className="text-4xl">🌍</div>
               <div>
-                <h3 className="text-white font-semibold text-lg mb-1">
+                <h3 className="text-slate-900 dark:text-white font-semibold text-lg mb-1">
                   Carbon Border Adjustment Mechanism (CBAM)
                 </h3>
-                <p className="text-slate-300 text-sm">
+                <p className="text-slate-700 dark:text-slate-300 text-sm">
                   Od 1 stycznia 2026 wchodzi w życie pełna faza CBAM. Eksporterzy do UE muszą deklarować
                   ślad węglowy produktów. Ten kalkulator pomoże Ci obliczyć emisje CO2 dla Twoich wyrobów.
                 </p>
@@ -81,29 +81,29 @@ export default async function CarbonPage() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Raporty</p>
-              <p className="text-3xl font-bold text-white">{totalReports}</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Raporty</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white">{totalReports}</p>
             </div>
-            <div className="bg-slate-800 border border-green-700/50 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Suma emisji</p>
+            <div className="bg-white dark:bg-slate-800 border border-green-700/50 rounded-lg p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Suma emisji</p>
               <p className="text-3xl font-bold text-green-400">{totalCO2.toFixed(1)} kg</p>
               <p className="text-slate-500 text-xs">CO₂</p>
             </div>
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Materiały w bazie</p>
-              <p className="text-3xl font-bold text-white">{materials?.length || 0}</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Materiały w bazie</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white">{materials?.length || 0}</p>
             </div>
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Źródła energii</p>
-              <p className="text-3xl font-bold text-white">{energies?.length || 0}</p>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Źródła energii</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white">{energies?.length || 0}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Calculator */}
             <div className="lg:col-span-2">
-              <h2 className="text-xl font-semibold text-white mb-4">Kalkulator emisji CO2</h2>
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Kalkulator emisji CO2</h2>
               <CarbonCalculator
                 materials={materials || []}
                 energies={energies || []}
@@ -114,8 +114,8 @@ export default async function CarbonPage() {
 
             {/* Recent Reports */}
             <div className="space-y-6">
-              <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-white mb-3">Ostatnie raporty</h3>
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">Ostatnie raporty</h3>
                 {!recentReports || recentReports.length === 0 ? (
                   <p className="text-slate-500 text-sm text-center py-4">
                     Brak raportów. Oblicz pierwszą emisję!
@@ -126,11 +126,11 @@ export default async function CarbonPage() {
                       <Link
                         key={report.id}
                         href={`/carbon/${report.id}`}
-                        className="block p-3 bg-slate-900 rounded-lg hover:bg-slate-700 transition"
+                        className="block p-3 bg-slate-50 dark:bg-slate-900 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition"
                       >
                         <div className="flex justify-between items-start">
                           <div>
-                            <p className="text-white text-sm font-medium">{report.product_name}</p>
+                            <p className="text-slate-900 dark:text-white text-sm font-medium">{report.product_name}</p>
                             <p className="text-slate-500 text-xs">
                               {report.report_number}
                               {report.orders && <span> • {report.orders.order_number}</span>}
@@ -150,20 +150,20 @@ export default async function CarbonPage() {
               </div>
 
               {/* Formula Explanation */}
-              <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-white mb-3">Formuła obliczeniowa</h3>
-                <div className="bg-slate-900 p-3 rounded-lg font-mono text-sm text-green-400 mb-3">
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">Formuła obliczeniowa</h3>
+                <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg font-mono text-sm text-green-400 mb-3">
                   CO₂ = (Waga × EF<sub>mat</sub>) + (kWh × EF<sub>en</sub>)
                 </div>
-                <div className="text-slate-400 text-xs space-y-1">
-                  <p><span className="text-slate-300">EF<sub>mat</sub></span> = współczynnik emisji materiału (kg CO₂/kg)</p>
-                  <p><span className="text-slate-300">EF<sub>en</sub></span> = współczynnik emisji energii (kg CO₂/kWh)</p>
+                <div className="text-slate-500 dark:text-slate-400 text-xs space-y-1">
+                  <p><span className="text-slate-700 dark:text-slate-300">EF<sub>mat</sub></span> = współczynnik emisji materiału (kg CO₂/kg)</p>
+                  <p><span className="text-slate-700 dark:text-slate-300">EF<sub>en</sub></span> = współczynnik emisji energii (kg CO₂/kWh)</p>
                 </div>
               </div>
 
               {/* Material Categories */}
-              <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-white mb-3">Współczynniki materiałów</h3>
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">Współczynniki materiałów</h3>
                 <div className="space-y-2 text-sm">
                   {[
                     { cat: 'steel', label: 'Stal', range: '1.5-6.2 kg CO₂/kg' },
@@ -173,7 +173,7 @@ export default async function CarbonPage() {
                     { cat: 'plastic', label: 'Tworzywa', range: '3-26 kg CO₂/kg' },
                   ].map(({ cat, label, range }) => (
                     <div key={cat} className="flex justify-between items-center">
-                      <span className="text-slate-300">{label}</span>
+                      <span className="text-slate-700 dark:text-slate-300">{label}</span>
                       <span className="text-slate-500 font-mono text-xs">{range}</span>
                     </div>
                   ))}

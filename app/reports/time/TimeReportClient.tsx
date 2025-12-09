@@ -73,39 +73,39 @@ export default function TimeReportClient({ logs, summary, users }: Props) {
       {/* Summary Cards */}
       {summary && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Wszystkie wpisy</p>
-            <p className="text-2xl font-bold text-white">{summary.total_entries}</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Wszystkie wpisy</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">{summary.total_entries}</p>
           </div>
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Aktywne timery</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Aktywne timery</p>
             <p className="text-2xl font-bold text-blue-400">{summary.active_timers}</p>
           </div>
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Zakończone</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Zakończone</p>
             <p className="text-2xl font-bold text-green-400">{summary.completed_timers}</p>
           </div>
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Łączny czas</p>
-            <p className="text-2xl font-bold text-white">{summary.total_hours} h</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Łączny czas</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">{summary.total_hours} h</p>
           </div>
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Łączny koszt</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Łączny koszt</p>
             <p className="text-2xl font-bold text-purple-400">{summary.total_cost.toFixed(2)} PLN</p>
           </div>
         </div>
       )}
 
       {/* Filters & Export */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-4 mb-6">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 mb-6">
         <div className="flex items-center gap-4 flex-wrap">
           {/* User Filter */}
           <div>
-            <label className="text-slate-400 text-sm mr-2">Operator:</label>
+            <label className="text-slate-500 dark:text-slate-400 text-sm mr-2">Operator:</label>
             <select
               value={userFilter}
               onChange={(e) => setUserFilter(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+              className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             >
               <option value="all">Wszyscy</option>
               {users.map((user) => (
@@ -118,11 +118,11 @@ export default function TimeReportClient({ logs, summary, users }: Props) {
 
           {/* Status Filter */}
           <div>
-            <label className="text-slate-400 text-sm mr-2">Status:</label>
+            <label className="text-slate-500 dark:text-slate-400 text-sm mr-2">Status:</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+              className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             >
               <option value="all">Wszystkie</option>
               <option value="running">W trakcie</option>
@@ -155,48 +155,48 @@ export default function TimeReportClient({ logs, summary, users }: Props) {
       </div>
 
       {/* Time Logs Table */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-900 border-b border-slate-700">
+            <thead className="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Zamówienie
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Operator
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Rozpoczęcie
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Zakończenie
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Status
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Czas
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Koszt
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-700">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
               {filteredLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-700/50 transition">
-                  <td className="px-4 py-3 text-white font-mono text-sm">
+                <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                  <td className="px-4 py-3 text-slate-900 dark:text-white font-mono text-sm">
                     {log.order_number || '-'}
                   </td>
-                  <td className="px-4 py-3 text-white">{log.user_name || 'Unknown'}</td>
-                  <td className="px-4 py-3 text-slate-300">
+                  <td className="px-4 py-3 text-slate-900 dark:text-white">{log.user_name || 'Unknown'}</td>
+                  <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
                     {new Date(log.start_time).toLocaleString('pl-PL', {
                       dateStyle: 'short',
                       timeStyle: 'short',
                     })}
                   </td>
-                  <td className="px-4 py-3 text-slate-300">
+                  <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
                     {log.end_time
                       ? new Date(log.end_time).toLocaleString('pl-PL', {
                           dateStyle: 'short',
@@ -213,10 +213,10 @@ export default function TimeReportClient({ logs, summary, users }: Props) {
                       {getStatusLabel(log.status)}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-white font-semibold">
+                  <td className="px-4 py-3 text-slate-900 dark:text-white font-semibold">
                     {log.duration_hours} h
                   </td>
-                  <td className="px-4 py-3 text-white font-semibold">
+                  <td className="px-4 py-3 text-slate-900 dark:text-white font-semibold">
                     {log.total_cost.toFixed(2)} PLN
                   </td>
                 </tr>
@@ -228,14 +228,14 @@ export default function TimeReportClient({ logs, summary, users }: Props) {
         {/* Empty State */}
         {filteredLogs.length === 0 && (
           <div className="p-12 text-center">
-            <p className="text-slate-400">Brak wpisów spełniających kryteria filtrowania</p>
+            <p className="text-slate-500 dark:text-slate-400">Brak wpisów spełniających kryteria filtrowania</p>
           </div>
         )}
 
         {/* Count */}
-        <div className="px-4 py-3 bg-slate-900 border-t border-slate-700">
-          <p className="text-slate-400 text-sm">
-            Wyświetlono <span className="text-white font-semibold">{filteredLogs.length}</span> wpisów
+        <div className="px-4 py-3 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
+          <p className="text-slate-500 dark:text-slate-400 text-sm">
+            Wyświetlono <span className="text-slate-900 dark:text-white font-semibold">{filteredLogs.length}</span> wpisów
           </p>
         </div>
       </div>

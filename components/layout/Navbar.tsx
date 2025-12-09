@@ -48,11 +48,11 @@ export default function Navbar({ user }: NavbarProps) {
   return (
     <div className="mb-6">
       {/* Top bar with user info */}
-      <div className="flex justify-between items-center pb-4 border-b border-slate-700">
+      <div className="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center gap-4">
-          <span className="text-slate-400">
+          <span className="text-slate-500 dark:text-slate-400">
             Logged in as:{' '}
-            <span className="text-white font-semibold">{user.email}</span>
+            <span className="text-slate-900 dark:text-white font-semibold">{user.email}</span>
           </span>
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold text-white uppercase ${getRoleBadgeColor()}`}
@@ -75,7 +75,7 @@ export default function Navbar({ user }: NavbarProps) {
           className={`px-4 py-2 rounded-lg font-semibold transition ${
             isActive('/users')
               ? 'bg-blue-600 text-white'
-              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
           Users
@@ -85,7 +85,7 @@ export default function Navbar({ user }: NavbarProps) {
           className={`px-4 py-2 rounded-lg font-semibold transition ${
             isActive('/orders')
               ? 'bg-blue-600 text-white'
-              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
           Orders
@@ -95,7 +95,7 @@ export default function Navbar({ user }: NavbarProps) {
           className={`px-4 py-2 rounded-lg font-semibold transition ${
             isActive('/inventory')
               ? 'bg-blue-600 text-white'
-              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
           Inventory

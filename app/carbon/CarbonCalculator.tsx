@@ -168,11 +168,11 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
       {/* Product Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="md:col-span-2">
-          <label className="block text-slate-300 mb-2 text-sm">Nazwa produktu *</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Nazwa produktu *</label>
           <Input
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
@@ -181,7 +181,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
           />
         </div>
         <div>
-          <label className="block text-slate-300 mb-2 text-sm">Ilość (szt)</label>
+          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Ilość (szt)</label>
           <Input
             type="number"
             min="1"
@@ -193,11 +193,11 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
 
       {/* Order Link */}
       <div className="mb-6">
-        <label className="block text-slate-300 mb-2 text-sm">Powiąż z zamówieniem (opcjonalne)</label>
+        <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Powiąż z zamówieniem (opcjonalne)</label>
         <select
           value={orderId}
           onChange={(e) => setOrderId(e.target.value)}
-          className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
         >
           <option value="">-- Bez powiązania --</option>
           {orders.map(order => (
@@ -209,17 +209,17 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
       </div>
 
       {/* Material Section */}
-      <div className="bg-slate-900 rounded-lg p-4 mb-4">
-        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 mb-4">
+        <h3 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
           <span>🔩</span> Emisja z materiału
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-slate-400 mb-2 text-sm">Materiał</label>
+            <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">Materiał</label>
             <select
               value={selectedMaterial}
               onChange={(e) => setSelectedMaterial(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-600 text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             >
               <option value="">-- Wybierz materiał --</option>
               {Object.entries(materialsByCategory).map(([cat, mats]) => (
@@ -234,7 +234,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
             </select>
           </div>
           <div>
-            <label className="block text-slate-400 mb-2 text-sm">Waga materiału (kg)</label>
+            <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">Waga materiału (kg)</label>
             <Input
               type="number"
               step="0.001"
@@ -247,24 +247,24 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
         </div>
         {materialCO2 > 0 && (
           <div className="mt-3 text-right">
-            <span className="text-slate-400 text-sm">Emisja materiału: </span>
+            <span className="text-slate-500 dark:text-slate-400 text-sm">Emisja materiału: </span>
             <span className="text-green-400 font-semibold">{materialCO2.toFixed(3)} kg CO₂</span>
           </div>
         )}
       </div>
 
       {/* Energy Section */}
-      <div className="bg-slate-900 rounded-lg p-4 mb-6">
-        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 mb-6">
+        <h3 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
           <span>⚡</span> Emisja z energii
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-slate-400 mb-2 text-sm">Źródło energii</label>
+            <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">Źródło energii</label>
             <select
               value={selectedEnergy}
               onChange={(e) => setSelectedEnergy(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-600 text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             >
               <option value="">-- Wybierz źródło --</option>
               {energies.map(en => (
@@ -275,7 +275,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
             </select>
           </div>
           <div>
-            <label className="block text-slate-400 mb-2 text-sm">
+            <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
               Zużycie ({energies.find(e => e.id === selectedEnergy)?.unit || 'kWh'})
             </label>
             <Input
@@ -290,7 +290,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
         </div>
         {energyCO2 > 0 && (
           <div className="mt-3 text-right">
-            <span className="text-slate-400 text-sm">Emisja energii: </span>
+            <span className="text-slate-500 dark:text-slate-400 text-sm">Emisja energii: </span>
             <span className="text-green-400 font-semibold">{energyCO2.toFixed(3)} kg CO₂</span>
           </div>
         )}
@@ -302,24 +302,24 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
           <h3 className="text-green-400 font-semibold mb-4 text-lg">📊 Wynik obliczeń</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-slate-400 text-sm">Całkowita emisja</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Całkowita emisja</p>
               <p className="text-3xl font-bold text-green-400">{totalCO2.toFixed(3)} kg</p>
               <p className="text-slate-500 text-xs">CO₂</p>
             </div>
             <div>
-              <p className="text-slate-400 text-sm">Emisja na sztukę</p>
-              <p className="text-3xl font-bold text-white">{co2PerUnit.toFixed(3)} kg</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Emisja na sztukę</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white">{co2PerUnit.toFixed(3)} kg</p>
               <p className="text-slate-500 text-xs">CO₂ / szt</p>
             </div>
           </div>
           <div className="mt-4 pt-4 border-t border-green-700/30">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Materiał:</span>
-              <span className="text-white">{materialCO2.toFixed(3)} kg CO₂</span>
+              <span className="text-slate-500 dark:text-slate-400">Materiał:</span>
+              <span className="text-slate-900 dark:text-white">{materialCO2.toFixed(3)} kg CO₂</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Energia:</span>
-              <span className="text-white">{energyCO2.toFixed(3)} kg CO₂</span>
+              <span className="text-slate-500 dark:text-slate-400">Energia:</span>
+              <span className="text-slate-900 dark:text-white">{energyCO2.toFixed(3)} kg CO₂</span>
             </div>
           </div>
         </div>

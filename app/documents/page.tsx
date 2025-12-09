@@ -70,8 +70,8 @@ export default async function DocumentsPage() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">Wydania</h1>
-              <p className="text-slate-400">
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Wydania</h1>
+              <p className="text-slate-500 dark:text-slate-400">
                 Dokumenty magazynowe: PW (Przyjęcie), RW (Rozchód), WZ (Wydanie)
               </p>
             </div>
@@ -82,7 +82,7 @@ export default async function DocumentsPage() {
 
           {/* Documents Table or Empty State */}
           {(!documents || documents.length === 0) ? (
-            <div className="bg-slate-800 rounded-lg border border-slate-700 p-8">
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-8">
               <EmptyState
                 icon="📄"
                 title="Brak dokumentów magazynowych"
@@ -92,57 +92,57 @@ export default async function DocumentsPage() {
               />
             </div>
           ) : (
-            <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-x-auto">
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
               <table className="w-full min-w-max">
-                <thead className="bg-slate-700">
+                <thead className="bg-slate-100 dark:bg-slate-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                       Typ
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                       Numer
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                       Kontrahent
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                       Data
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                       Utworzył
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                       Akcje
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-700">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                   {documents.map((doc) => {
                     const creatorName = Array.isArray(doc.creator)
                       ? doc.creator[0]?.full_name
                       : doc.creator?.full_name
 
                     return (
-                      <tr key={doc.id} className="hover:bg-slate-700/50 transition">
+                      <tr key={doc.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                         <td className="px-6 py-4 whitespace-nowrap">
                           {getDocTypeBadge(doc.document_type)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-white font-semibold">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-900 dark:text-white font-semibold">
                           {doc.document_number}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
                           {doc.contractor}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {getStatusBadge(doc.status)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                           {new Date(doc.created_at).toLocaleDateString('pl-PL')}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                           {creatorName || '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">

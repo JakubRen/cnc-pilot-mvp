@@ -112,21 +112,21 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
     <div className="space-y-6">
       {/* Quick Links */}
       {(canManagePermissions || userRole === 'owner') && (
-        <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-          <h2 className="text-2xl font-bold text-white mb-4">Szybkie linki</h2>
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Szybkie linki</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {canManagePermissions && (
               <a
                 href="/settings/permissions"
-                className="p-4 bg-slate-700 rounded-lg hover:bg-slate-600 transition group"
+                className="p-4 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition group"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">🔐</span>
                   <div>
-                    <h3 className="font-semibold text-white group-hover:text-blue-400">
+                    <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
                       Zarządzanie uprawnieniami
                     </h3>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-slate-700 dark:text-slate-400">
                       Konfiguruj dostęp i uprawnienia użytkowników
                     </p>
                   </div>
@@ -135,15 +135,15 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
             )}
             <a
               href="/users"
-              className="p-4 bg-slate-700 rounded-lg hover:bg-slate-600 transition group"
+              className="p-4 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition group"
             >
               <div className="flex items-center gap-3">
                 <span className="text-3xl">👥</span>
                 <div>
-                  <h3 className="font-semibold text-white group-hover:text-blue-400">
+                  <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
                     Zarządzanie użytkownikami
                   </h3>
-                  <p className="text-sm text-slate-400">
+                  <p className="text-sm text-slate-700 dark:text-slate-400">
                     Dodawaj i edytuj użytkowników firmy
                   </p>
                 </div>
@@ -154,66 +154,66 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
       )}
 
       {/* Company Information Form */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-        <h2 className="text-2xl font-bold text-white mb-6">Informacje o firmie</h2>
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Informacje o firmie</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Company Name */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Nazwa firmy *
             </label>
             <input
               {...register('name')}
               type="text"
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               placeholder="Np. MetalTech Sp. z o.o."
             />
             {errors.name && (
-              <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.name.message}</p>
             )}
           </div>
 
           {/* Address */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Adres
             </label>
             <textarea
               {...register('address')}
               rows={3}
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               placeholder="Np. ul. Przemysłowa 15, 00-100 Warszawa"
             />
             {errors.address && (
-              <p className="text-red-400 text-sm mt-1">{errors.address.message}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.address.message}</p>
             )}
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Telefon
             </label>
             <input
               {...register('phone')}
               type="tel"
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               placeholder="Np. +48 123 456 789"
             />
             {errors.phone && (
-              <p className="text-red-400 text-sm mt-1">{errors.phone.message}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.phone.message}</p>
             )}
           </div>
 
           {/* Timezone */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               Strefa czasowa
             </label>
             <select
               {...register('timezone')}
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             >
               <option value="Europe/Warsaw">Europa/Warszawa (CET/CEST)</option>
               <option value="Europe/London">Europa/Londyn (GMT/BST)</option>
@@ -221,25 +221,25 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
               <option value="Asia/Tokyo">Azja/Tokio (JST)</option>
             </select>
             {errors.timezone && (
-              <p className="text-red-400 text-sm mt-1">{errors.timezone.message}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.timezone.message}</p>
             )}
           </div>
 
           {/* Logo URL */}
           <div>
-            <label className="block text-slate-300 text-sm font-semibold mb-2">
+            <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">
               URL Logo
             </label>
             <input
               {...register('logo_url')}
               type="url"
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               placeholder="https://example.com/logo.png"
             />
             {errors.logo_url && (
-              <p className="text-red-400 text-sm mt-1">{errors.logo_url.message}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.logo_url.message}</p>
             )}
-            <p className="text-slate-500 text-xs mt-1">
+            <p className="text-slate-500 dark:text-slate-500 text-xs mt-1">
               Możesz wkleić URL swojego logo lub przesłać plik do serwisu typu Imgur
             </p>
           </div>
@@ -258,25 +258,25 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
       </div>
 
       {/* Email Domains Section */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-        <h2 className="text-2xl font-bold text-white mb-4">Domeny email</h2>
-        <p className="text-slate-400 mb-4">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Domeny email</h2>
+        <p className="text-slate-700 dark:text-slate-400 mb-4">
           Użytkownicy z tymi domenami email mogą automatycznie dołączyć do Twojej firmy.
         </p>
 
         {emailDomains.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-slate-400">Brak skonfigurowanych domen email</p>
+            <p className="text-slate-700 dark:text-slate-400">Brak skonfigurowanych domen email</p>
           </div>
         ) : (
           <div className="space-y-2">
             {emailDomains.map((domain) => (
               <div
                 key={domain.id}
-                className="flex items-center justify-between p-3 bg-slate-900 rounded-lg border border-slate-700"
+                className="flex items-center justify-between p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700"
               >
-                <span className="text-white font-mono">{domain.domain}</span>
-                <span className="text-xs text-slate-500">
+                <span className="text-slate-900 dark:text-white font-mono">{domain.domain}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-500">
                   Dodano:{' '}
                   {new Date(domain.created_at).toLocaleDateString('pl-PL')}
                 </span>
@@ -285,8 +285,8 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
           </div>
         )}
 
-        <div className="mt-4 p-4 bg-blue-900/20 border border-blue-700/30 rounded-lg">
-          <p className="text-blue-300 text-sm">
+        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/30 rounded-lg">
+          <p className="text-blue-700 dark:text-blue-300 text-sm">
             ℹ️ Aby dodać nową domenę, skontaktuj się z administratorem systemu.
           </p>
         </div>
@@ -310,9 +310,9 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
 
       {/* Danger Zone (Owner only) */}
       {userRole === 'owner' && (
-        <div className="bg-slate-800 rounded-lg border border-red-700 p-6">
-          <h2 className="text-2xl font-bold text-red-400 mb-4">Strefa niebezpieczna</h2>
-          <p className="text-slate-400 mb-4">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-red-200 dark:border-red-700 p-6">
+          <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Strefa niebezpieczna</h2>
+          <p className="text-slate-700 dark:text-slate-400 mb-4">
             Działania w tej sekcji są nieodwracalne. Zachowaj ostrożność.
           </p>
 

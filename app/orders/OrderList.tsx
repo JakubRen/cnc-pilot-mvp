@@ -118,10 +118,10 @@ export default function OrderList({
 
     if (!orders || orders.length === 0) {
       return (
-        <div className="text-center py-16 text-slate-400 bg-slate-800 border border-slate-700 rounded-lg">
+        <div className="text-center py-16 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
           <div className="text-6xl mb-4">📦</div>
-          <h3 className="text-xl font-semibold text-white mb-2">{t('orders', 'noOrders')}</h3>
-          <p className="text-slate-400 mb-6">{t('orders', 'startCreating')}</p>
+          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t('orders', 'noOrders')}</h3>
+          <p className="text-slate-500 dark:text-slate-400 mb-6">{t('orders', 'startCreating')}</p>
           <Link href="/orders/add">
             <Button variant="primary">
               {t('orders', 'createFirst')}
@@ -142,59 +142,59 @@ export default function OrderList({
     }
   
     return (
-      <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
         <table className="w-full">
-          <thead className="bg-slate-700">
+          <thead className="bg-slate-100 dark:bg-slate-700">
             <tr>
               <th className="px-4 py-3 text-left">
                 <input
                   type="checkbox"
                   checked={allSelected}
                   onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
-                  className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-800 cursor-pointer"
+                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
                   title={allSelected ? t('orders', 'deselectAll') : t('orders', 'selectAll')}
                 />
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 {t('orders', 'orderNumber')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 {t('orders', 'customer')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 {t('common', 'quantity')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 {t('orders', 'deadline')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 {t('common', 'status')}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 Operator
               </th>
               {showPrices && (
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                   {t('common', 'cost')}
                 </th>
               )}
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 {t('common', 'actions')}
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-700">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
             {orders.map((order) => (
               <tr
                 key={order.id}
-                className={`hover:bg-slate-700/50 transition ${selectedOrders.has(order.id) ? 'bg-blue-900/20' : ''}`}
+                className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition ${selectedOrders.has(order.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
               >
                 <td className="px-4 py-4">
                   <input
                     type="checkbox"
                     checked={selectedOrders.has(order.id)}
                     onChange={() => onToggleSelect(order.id)}
-                    className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-800 cursor-pointer"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   />
                 </td>
@@ -206,15 +206,15 @@ export default function OrderList({
                     {order.order_number}
                   </Link>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
                   {order.customer_name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
                   {order.quantity}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <div className="flex flex-col gap-1">
-                    <span className={isOrderOverdue(order.deadline, order.status) ? 'text-red-400 font-semibold' : 'text-slate-300'}>
+                    <span className={isOrderOverdue(order.deadline, order.status) ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-slate-700 dark:text-slate-300'}>
                       {new Date(order.deadline).toLocaleDateString()}
                     </span>
                     {isOrderOverdue(order.deadline, order.status) && (
@@ -227,9 +227,9 @@ export default function OrderList({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   {order.assigned_operator_name ? (
-                    <span className="text-slate-300">{order.assigned_operator_name}</span>
+                    <span className="text-slate-700 dark:text-slate-300">{order.assigned_operator_name}</span>
                   ) : (
-                    <span className="text-slate-500 text-xs">-</span>
+                    <span className="text-slate-400 dark:text-slate-500 text-xs">-</span>
                   )}
                 </td>
                 {showPrices && (
@@ -245,7 +245,7 @@ export default function OrderList({
                         }`}
                       />
                     ) : (
-                      <span className="text-slate-500 text-xs">-</span>
+                      <span className="text-slate-400 dark:text-slate-500 text-xs">-</span>
                     )}
                   </td>
                 )}
@@ -253,36 +253,36 @@ export default function OrderList({
                   <div className="relative inline-block" ref={openMenuId === order.id ? menuRef : null}>
                     <button
                       onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
-                      className="p-2 hover:bg-slate-700 rounded-lg transition"
+                      className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
                     >
-                      <span className="text-slate-400">⋮</span>
+                      <span className="text-slate-500 dark:text-slate-400">⋮</span>
                     </button>
                     {openMenuId === order.id && (
-                      <div className="absolute right-0 top-full mt-1 w-36 bg-slate-700 border border-slate-600 rounded-lg shadow-xl z-10 py-1">
+                      <div className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1">
                         <Link
                           href={`/orders/${order.id}`}
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-slate-200 hover:bg-slate-600"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"
                           onClick={() => setOpenMenuId(null)}
                         >
                           <span>👁</span> {t('common', 'view')}
                         </Link>
                         <Link
                           href={`/orders/${order.id}/edit`}
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-blue-400 hover:bg-slate-600"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-600"
                           onClick={() => setOpenMenuId(null)}
                         >
                           <span>✏️</span> {t('common', 'edit')}
                         </Link>
                         <button
                           onClick={() => { handleDuplicate(order.id, order.order_number); setOpenMenuId(null); }}
-                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-orange-400 hover:bg-slate-600"
+                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-orange-600 dark:text-orange-400 hover:bg-slate-50 dark:hover:bg-slate-600"
                         >
                           <span>📋</span> {t('common', 'duplicate')}
                         </button>
                         {currentUserRole === 'owner' && (
                           <button
                             onClick={() => { handleDelete(order.id, order.order_number); setOpenMenuId(null); }}
-                            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-slate-600"
+                            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-50 dark:hover:bg-slate-600"
                           >
                             <span>🗑</span> {t('common', 'delete')}
                           </button>

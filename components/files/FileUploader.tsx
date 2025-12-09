@@ -55,7 +55,7 @@ export default function FileUploader({
         className={`border-2 border-dashed rounded-lg p-8 text-center transition cursor-pointer ${
           isDragActive
             ? 'border-blue-500 bg-blue-500/10'
-            : 'border-slate-600 hover:border-slate-500 bg-slate-800'
+            : 'border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-slate-50 dark:bg-slate-800'
         } ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <input {...getInputProps()} />
@@ -63,7 +63,7 @@ export default function FileUploader({
         <div className="flex flex-col items-center gap-2">
           {/* Upload Icon */}
           <svg
-            className="w-12 h-12 text-slate-400"
+            className="w-12 h-12 text-slate-500 dark:text-slate-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -78,19 +78,19 @@ export default function FileUploader({
 
           {uploading ? (
             <div>
-              <p className="text-white font-medium">Przesyłanie plików...</p>
-              <div className="mt-2 w-48 h-2 bg-slate-700 rounded-full overflow-hidden">
+              <p className="text-slate-900 dark:text-white font-medium">Przesyłanie plików...</p>
+              <div className="mt-2 w-48 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                 <div className="h-full bg-blue-500 animate-pulse" style={{ width: '50%' }} />
               </div>
             </div>
           ) : isDragActive ? (
-            <p className="text-white font-medium">Upuść pliki tutaj...</p>
+            <p className="text-slate-900 dark:text-white font-medium">Upuść pliki tutaj...</p>
           ) : (
             <div>
-              <p className="text-white font-medium">
+              <p className="text-slate-900 dark:text-white font-medium">
                 Przeciągnij pliki tutaj lub kliknij aby wybrać
               </p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 Maksymalnie {maxFiles} plików, {(maxSize / 1024 / 1024).toFixed(0)}MB każdy
               </p>
               <p className="text-xs text-slate-500 mt-1">
@@ -118,9 +118,9 @@ export default function FileUploader({
 
       {/* Accepted Files Preview */}
       {acceptedFiles.length > 0 && !uploading && (
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-          <h4 className="text-white font-semibold mb-2">Wybrane pliki:</h4>
-          <ul className="text-sm text-slate-300 space-y-1">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+          <h4 className="text-slate-900 dark:text-white font-semibold mb-2">Wybrane pliki:</h4>
+          <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
             {acceptedFiles.map((file) => (
               <li key={file.name} className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">

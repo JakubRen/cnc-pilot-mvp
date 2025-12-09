@@ -70,7 +70,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
@@ -81,7 +81,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
               >
                 ← Powrót do listy
               </Link>
-              <h1 className="text-3xl font-bold text-white mb-2">
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
                 Dokument {document.document_number}
               </h1>
               <div className="flex gap-3 items-center">
@@ -114,47 +114,47 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
           </div>
 
           {/* Document Info */}
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Informacje o dokumencie</h2>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-6">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Informacje o dokumencie</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <p className="text-slate-400 text-sm mb-1">Kontrahent</p>
-                <p className="text-white font-medium">{document.contractor}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Kontrahent</p>
+                <p className="text-slate-900 dark:text-white font-medium">{document.contractor}</p>
               </div>
 
               <div>
-                <p className="text-slate-400 text-sm mb-1">Data utworzenia</p>
-                <p className="text-white font-medium">
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Data utworzenia</p>
+                <p className="text-slate-900 dark:text-white font-medium">
                   {new Date(document.created_at).toLocaleString('pl-PL')}
                 </p>
               </div>
 
               <div>
-                <p className="text-slate-400 text-sm mb-1">Utworzył</p>
-                <p className="text-white font-medium">{creatorName || '-'}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Utworzył</p>
+                <p className="text-slate-900 dark:text-white font-medium">{creatorName || '-'}</p>
               </div>
 
               <div>
-                <p className="text-slate-400 text-sm mb-1">Status</p>
-                <p className="text-white font-medium">
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Status</p>
+                <p className="text-slate-900 dark:text-white font-medium">
                   {document.status === 'confirmed' ? 'Zatwierdzony (wpłynął na stany)' : 'Szkic (nie wpłynął na stany)'}
                 </p>
               </div>
             </div>
 
             {document.description && (
-              <div className="mt-4 pt-4 border-t border-slate-700">
-                <p className="text-slate-400 text-sm mb-1">Opis</p>
-                <p className="text-white">{document.description}</p>
+              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Opis</p>
+                <p className="text-slate-900 dark:text-white">{document.description}</p>
               </div>
             )}
           </div>
 
           {/* Document Items */}
-          <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
-            <div className="p-6 border-b border-slate-700">
-              <h2 className="text-xl font-semibold text-white">
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
                 Pozycje dokumentu ({items?.length || 0})
               </h2>
             </div>
@@ -162,40 +162,40 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
             {items && items.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-slate-700">
+                  <thead className="bg-slate-100 dark:bg-slate-700">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                         Lp.
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                         SKU
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                         Nazwa
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                         Ilość
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                         Notatka
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-700">
+                  <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                     {items.map((item, index) => {
                       const inventory = Array.isArray(item.inventory)
                         ? item.inventory[0]
                         : item.inventory
 
                       return (
-                        <tr key={item.id} className="hover:bg-slate-700/50 transition">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                        <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                             {index + 1}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-white font-semibold">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-900 dark:text-white font-semibold">
                             {inventory?.sku || '-'}
                           </td>
-                          <td className="px-6 py-4 text-sm text-slate-300">
+                          <td className="px-6 py-4 text-sm text-slate-700 dark:text-slate-300">
                             <Link
                               href={`/inventory/${inventory?.id}`}
                               className="text-blue-400 hover:text-blue-300"
@@ -203,10 +203,10 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
                               {inventory?.name || '-'}
                             </Link>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-medium">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white font-medium">
                             {item.quantity} {inventory?.unit || ''}
                           </td>
-                          <td className="px-6 py-4 text-sm text-slate-400">
+                          <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
                             {item.notes || '-'}
                           </td>
                         </tr>
@@ -216,7 +216,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
                 </table>
               </div>
             ) : (
-              <div className="p-8 text-center text-slate-400">
+              <div className="p-8 text-center text-slate-500 dark:text-slate-400">
                 Brak pozycji w dokumencie
               </div>
             )}

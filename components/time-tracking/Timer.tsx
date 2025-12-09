@@ -270,16 +270,16 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
   const currentCost = (elapsedSeconds / 3600) * hourlyRate;
 
   return (
-    <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
-      <h3 className="text-lg font-semibold mb-4">
+    <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
+      <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
         Time Tracking: Order #{orderNumber}
       </h3>
 
       <div className="text-center mb-6">
-        <div className="text-5xl font-mono font-bold text-white mb-2">
+        <div className="text-5xl font-mono font-bold text-slate-900 dark:text-white mb-2">
           {formatTime(elapsedSeconds)}
         </div>
-        <div className="text-sm text-slate-400">
+        <div className="text-sm text-slate-500 dark:text-slate-400">
           Cost: {currentCost.toFixed(2)} PLN | Rate: {hourlyRate} PLN/h
         </div>
       </div>
@@ -295,7 +295,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
           <button
             onClick={handleStart}
             disabled={loading}
-            className="px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
+            className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
           >
             {loading ? 'Starting...' : '🟢 Start'}
           </button>
@@ -306,14 +306,14 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
             <button
               onClick={handlePause}
               disabled={loading}
-              className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
+              className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
             >
               {loading ? 'Pausing...' : '🟡 Pause'}
             </button>
             <button
               onClick={handleStop}
               disabled={loading}
-              className="px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
+              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
             >
               {loading ? 'Stopping...' : '🔴 Stop'}
             </button>
@@ -325,14 +325,14 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
             <button
               onClick={handleResume}
               disabled={loading}
-              className="px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
+              className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
             >
               {loading ? 'Resuming...' : '▶️ Resume'}
             </button>
             <button
               onClick={handleStop}
               disabled={loading}
-              className="px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
+              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed rounded-lg font-medium transition"
             >
               {loading ? 'Stopping...' : '🔴 Stop'}
             </button>
@@ -341,10 +341,10 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
       </div>
 
       <div className="mt-4 text-center">
-        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
+        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium text-white ${
           status === 'running' ? 'bg-green-600' :
           status === 'paused' ? 'bg-yellow-600' :
-          'bg-slate-600'
+          'bg-slate-400 dark:bg-slate-600'
         }`}>
           {status.toUpperCase()}
         </span>

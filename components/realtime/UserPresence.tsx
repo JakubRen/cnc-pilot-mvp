@@ -49,15 +49,15 @@ export default function UserPresence({ companyId, userId }: UserPresenceProps) {
   if (onlineUsers.length === 0) return null
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-      <h3 className="text-sm font-semibold text-slate-300 mb-2">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+      <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">
         Online ({onlineUsers.length})
       </h3>
       <div className="space-y-1">
         {onlineUsers.map((user, i) => (
           <div key={i} className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-sm text-slate-400">
+            <span className="text-sm text-slate-500 dark:text-slate-400">
               User {user.user_id}
             </span>
           </div>

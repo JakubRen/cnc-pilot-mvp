@@ -29,7 +29,7 @@ export default function ExportButton({ onExport, disabled, className = '' }: Exp
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled || exporting}
-        className={`px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition flex items-center gap-2 disabled:opacity-50 ${className}`}
+        className={`px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-900 dark:text-white rounded-lg transition flex items-center gap-2 disabled:opacity-50 ${className}`}
       >
         {exporting ? (
           <>
@@ -65,35 +65,35 @@ export default function ExportButton({ onExport, disabled, className = '' }: Exp
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
 
           {/* Menu */}
-          <div className="absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-20 overflow-hidden">
+          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl z-20 overflow-hidden">
             <button
               onClick={() => handleExport('pdf')}
-              className="w-full px-4 py-3 text-left text-white hover:bg-slate-700 transition flex items-center gap-3"
+              className="w-full px-4 py-3 text-left text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-3"
             >
               <span className="text-red-400">📄</span>
               <div>
                 <p className="font-medium">PDF</p>
-                <p className="text-xs text-slate-400">Dokument do druku</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Dokument do druku</p>
               </div>
             </button>
             <button
               onClick={() => handleExport('excel')}
-              className="w-full px-4 py-3 text-left text-white hover:bg-slate-700 transition flex items-center gap-3 border-t border-slate-700"
+              className="w-full px-4 py-3 text-left text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-3 border-t border-slate-200 dark:border-slate-700"
             >
               <span className="text-green-400">📊</span>
               <div>
                 <p className="font-medium">Excel (.xlsx)</p>
-                <p className="text-xs text-slate-400">Arkusz kalkulacyjny</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Arkusz kalkulacyjny</p>
               </div>
             </button>
             <button
               onClick={() => handleExport('csv')}
-              className="w-full px-4 py-3 text-left text-white hover:bg-slate-700 transition flex items-center gap-3 border-t border-slate-700"
+              className="w-full px-4 py-3 text-left text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-3 border-t border-slate-200 dark:border-slate-700"
             >
               <span className="text-blue-400">📋</span>
               <div>
                 <p className="font-medium">CSV</p>
-                <p className="text-xs text-slate-400">Format tekstowy</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Format tekstowy</p>
               </div>
             </button>
           </div>

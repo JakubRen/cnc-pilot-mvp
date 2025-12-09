@@ -85,28 +85,28 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="text-white text-xl">Loading user data...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <div className="text-slate-900 dark:text-white text-xl">Loading user data...</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-8">Edit User</h1>
+        <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-8">Edit User</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email Field */}
           <div>
-            <label htmlFor="edit_email" className="block text-slate-300 mb-2 font-medium">
+            <label htmlFor="edit_email" className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
               Email <span className="text-red-400">*</span>
             </label>
             <input
               id="edit_email"
               {...register('email')}
               type="email"
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
               placeholder="user@example.com"
             />
             {errors.email && (
@@ -116,14 +116,14 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
 
           {/* Full Name Field */}
           <div>
-            <label htmlFor="edit_full_name" className="block text-slate-300 mb-2 font-medium">
+            <label htmlFor="edit_full_name" className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
               Full Name <span className="text-red-400">*</span>
             </label>
             <input
               id="edit_full_name"
               {...register('full_name')}
               type="text"
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
               placeholder="Jan Kowalski"
             />
             {errors.full_name && (
@@ -133,13 +133,13 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
 
           {/* Role Field */}
           <div>
-            <label htmlFor="edit_role" className="block text-slate-300 mb-2 font-medium">
+            <label htmlFor="edit_role" className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
               Role <span className="text-red-400">*</span>
             </label>
             <select
               id="edit_role"
               {...register('role')}
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
             >
               <option value="pending">⏳ Oczekujący (Pending)</option>
               <option value="operator">⚙️ Operator</option>
@@ -163,7 +163,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
             <button
               type="button"
               onClick={() => router.push('/users')}
-              className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 font-semibold transition"
+              className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 font-semibold transition"
             >
               Cancel
             </button>

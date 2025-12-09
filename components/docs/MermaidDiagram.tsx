@@ -49,7 +49,7 @@ export default function MermaidDiagram({ chart }: MermaidDiagramProps) {
   return (
     <div
       ref={containerRef}
-      className="my-6 p-4 bg-slate-800 rounded-lg overflow-x-auto"
+      className="my-6 p-4 bg-white dark:bg-slate-800 rounded-lg overflow-x-auto"
     />
   )
 }

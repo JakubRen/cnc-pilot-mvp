@@ -69,10 +69,10 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
   const selectedTagsData = tags.filter((tag) => selectedTags.includes(tag.id))
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-white">Filtruj po tagach</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Filtruj po tagach</h3>
         {selectedTags.length > 0 && (
           <button
             onClick={handleClearAll}
@@ -112,19 +112,19 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {selectedTags.length > 1 && (
         <div className="mb-4">
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-slate-400">Logika:</span>
+            <span className="text-slate-500 dark:text-slate-400">Logika:</span>
             <button
               onClick={() => setLogic(logic === 'AND' ? 'OR' : 'AND')}
               className={`px-3 py-1 rounded-lg font-medium transition ${
                 logic === 'AND'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
               }`}
             >
               {logic === 'AND' ? 'Wszystkie (AND)' : 'Dowolny (OR)'}
             </button>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
             {logic === 'AND'
               ? 'Pokaż elementy z wszystkimi wybranymi tagami'
               : 'Pokaż elementy z dowolnym z wybranych tagów'}
@@ -135,7 +135,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {/* Expand/Collapse Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition"
+        className="w-full flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-900 dark:text-white text-sm rounded-lg transition"
       >
         <span>
           {selectedTags.length === 0
@@ -156,7 +156,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {isOpen && (
         <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
           {tags.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">
               Brak dostępnych tagów
             </p>
           ) : (
@@ -168,8 +168,8 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
                   onClick={() => handleToggleTag(tag.id)}
                   className={`w-full flex items-center gap-3 p-2 rounded-lg text-sm transition ${
                     isSelected
-                      ? 'bg-slate-700'
-                      : 'hover:bg-slate-700/50'
+                      ? 'bg-slate-100 dark:bg-slate-700'
+                      : 'hover:bg-slate-100 dark:hover:bg-slate-700/50'
                   }`}
                 >
                   <div className="flex items-center gap-2 flex-1">
@@ -177,7 +177,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
                       className="w-4 h-4 rounded-full flex-shrink-0"
                       style={{ backgroundColor: tag.color }}
                     />
-                    <span className="text-white text-left">{tag.name}</span>
+                    <span className="text-slate-900 dark:text-white text-left">{tag.name}</span>
                   </div>
                   {isSelected && (
                     <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

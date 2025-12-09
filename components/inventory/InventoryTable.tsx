@@ -94,9 +94,9 @@ export default function InventoryTable({ items }: InventoryTableProps) {
 
     switch (columnId) {
       case 'sku':
-        return <span className="font-medium text-white font-mono">{item.sku}</span>
+        return <span className="font-medium text-slate-900 dark:text-white font-mono">{item.sku}</span>
       case 'name':
-        return <span className="text-slate-300">{item.name}</span>
+        return <span className="text-slate-600 dark:text-slate-300">{item.name}</span>
       case 'category':
         return (
           <Badge variant="outline">
@@ -104,11 +104,11 @@ export default function InventoryTable({ items }: InventoryTableProps) {
           </Badge>
         )
       case 'quantity':
-        return <span className="text-white font-semibold">{item.quantity} {item.unit}</span>
+        return <span className="text-slate-900 dark:text-white font-semibold">{item.quantity} {item.unit}</span>
       case 'location':
-        return <span className="text-slate-300">{item.location || '-'}</span>
+        return <span className="text-slate-600 dark:text-slate-300">{item.location || '-'}</span>
       case 'batch_number':
-        return <span className="text-slate-400 font-mono">{item.batch_number || '-'}</span>
+        return <span className="text-slate-500 dark:text-slate-400 font-mono">{item.batch_number || '-'}</span>
       case 'status':
         return <Badge variant={statusVariant}>{statusText}</Badge>
       case 'actions':
@@ -159,9 +159,9 @@ export default function InventoryTable({ items }: InventoryTableProps) {
       )}
 
       {/* Table */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <table className="w-full min-w-max">
-          <thead className="bg-slate-700">
+          <thead className="bg-slate-100 dark:bg-slate-700">
             <tr>
               {visibleColumns.map((column) => (
                 <th
@@ -169,7 +169,7 @@ export default function InventoryTable({ items }: InventoryTableProps) {
                   draggable
                   onDragStart={(e) => handleHeaderDragStart(e, column.id)}
                   onDragEnd={handleHeaderDragEnd}
-                  className={`px-6 py-3 text-xs font-semibold text-slate-300 uppercase tracking-wider cursor-grab active:cursor-grabbing select-none hover:bg-slate-600/50 transition ${
+                  className={`px-6 py-3 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-grab active:cursor-grabbing select-none hover:bg-slate-200 dark:hover:bg-slate-600/50 transition ${
                     column.id === 'actions' ? 'text-right' : 'text-left'
                   } ${draggingHeader === column.id ? 'opacity-50' : ''}`}
                   title="Przeciągnij w górę aby ukryć"
@@ -184,9 +184,9 @@ export default function InventoryTable({ items }: InventoryTableProps) {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-700">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
             {items.map((item) => (
-              <tr key={item.id} className="hover:bg-slate-700/50 transition">
+              <tr key={item.id} className="hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
                 {visibleColumns.map((column) => (
                   <td
                     key={column.id}

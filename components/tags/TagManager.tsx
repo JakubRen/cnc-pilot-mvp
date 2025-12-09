@@ -177,8 +177,8 @@ export default function TagManager() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white">Zarządzanie Tagami</h2>
-          <p className="text-slate-400 text-sm mt-1">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Zarządzanie Tagami</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Twórz tagi do kategoryzacji zamówień i magazynu
           </p>
         </div>
@@ -193,10 +193,10 @@ export default function TagManager() {
 
       {/* Tags List */}
       {tags.length === 0 ? (
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-12 text-center">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-12 text-center">
           <div className="text-6xl mb-4">🏷️</div>
-          <h3 className="text-xl font-bold text-white mb-2">Brak tagów</h3>
-          <p className="text-slate-400 mb-6">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Brak tagów</h3>
+          <p className="text-slate-500 dark:text-slate-400 mb-6">
             Utwórz pierwszy tag, aby kategoryzować zamówienia i produkty
           </p>
           <button
@@ -211,7 +211,7 @@ export default function TagManager() {
           {tags.map((tag) => (
             <div
               key={tag.id}
-              className="bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-slate-600 transition"
+              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:border-slate-300 dark:hover:border-slate-600 transition"
             >
               <div className="flex items-center justify-between mb-3">
                 <div
@@ -224,7 +224,7 @@ export default function TagManager() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleEdit(tag)}
-                  className="flex-1 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-sm transition"
+                  className="flex-1 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded text-sm transition"
                 >
                   Edytuj
                 </button>
@@ -243,10 +243,10 @@ export default function TagManager() {
       {/* Create/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-xl max-w-md w-full">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-w-md w-full">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-700">
-              <h3 className="text-xl font-bold text-white">
+            <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                 {editingTag ? 'Edytuj Tag' : 'Nowy Tag'}
               </h3>
               <button
@@ -254,7 +254,7 @@ export default function TagManager() {
                   setIsModalOpen(false)
                   setEditingTag(null)
                 }}
-                className="text-slate-400 hover:text-white transition"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -266,7 +266,7 @@ export default function TagManager() {
             <form onSubmit={handleSubmit} className="p-6">
               {/* Name Input */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
                   Nazwa Taga
                 </label>
                 <input
@@ -274,14 +274,14 @@ export default function TagManager() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="np. Pilne, Ważne, Opóźnione"
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   autoFocus
                 />
               </div>
 
               {/* Color Picker */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-300 mb-3">
+                <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-3">
                   Kolor Taga
                 </label>
                 <div className="grid grid-cols-8 gap-2">
@@ -292,7 +292,7 @@ export default function TagManager() {
                       onClick={() => setFormData({ ...formData, color })}
                       className={`w-10 h-10 rounded-lg transition ${
                         formData.color === color
-                          ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-800 scale-110'
+                          ? 'ring-2 ring-slate-900 dark:ring-white ring-offset-2 ring-offset-white dark:ring-offset-slate-800 scale-110'
                           : 'hover:scale-105'
                       }`}
                       style={{ backgroundColor: color }}
@@ -303,7 +303,7 @@ export default function TagManager() {
 
               {/* Preview */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
                   Podgląd
                 </label>
                 <div
@@ -322,7 +322,7 @@ export default function TagManager() {
                     setIsModalOpen(false)
                     setEditingTag(null)
                   }}
-                  className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition font-semibold"
+                  className="flex-1 px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-lg transition font-semibold"
                 >
                   Anuluj
                 </button>

@@ -15,11 +15,11 @@ export default function QuoteWidget() {
   if (!quote) return null
 
   return (
-    <div className="relative max-w-md mx-auto mt-6 p-6 bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="relative max-w-md mx-auto mt-6 p-6 bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-xl shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="absolute -top-4 -left-2 text-4xl text-blue-500/40 font-serif">"</div>
       
       <figure className="relative z-10">
-        <blockquote className="text-lg text-slate-300 font-light leading-relaxed italic text-center">
+        <blockquote className="text-lg text-slate-600 dark:text-slate-300 font-light leading-relaxed italic text-center">
           {quote.text[lang]}
         </blockquote>
         

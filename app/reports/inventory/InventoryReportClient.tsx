@@ -64,36 +64,36 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
       {/* Summary Cards */}
       {summary && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Wszystkie pozycje</p>
-            <p className="text-2xl font-bold text-white">{summary.total_items}</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Wszystkie pozycje</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">{summary.total_items}</p>
           </div>
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Niski stan</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Niski stan</p>
             <p className="text-2xl font-bold text-red-400">{summary.low_stock_count}</p>
           </div>
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Kategorie</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Kategorie</p>
             <p className="text-2xl font-bold text-blue-400">{summary.categories}</p>
           </div>
-          <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
-            <p className="text-slate-400 text-xs mb-1">Wartość całkowita</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Wartość całkowita</p>
             <p className="text-2xl font-bold text-green-400">-</p>
-            <p className="text-xs text-slate-500 mt-1">Wymaga danych o kosztach</p>
+            <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">Wymaga danych o kosztach</p>
           </div>
         </div>
       )}
 
       {/* Filters & Export */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-4 mb-6">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 mb-6">
         <div className="flex items-center gap-4 flex-wrap">
           {/* Category Filter */}
           <div>
-            <label className="text-slate-400 text-sm mr-2">Kategoria:</label>
+            <label className="text-slate-500 dark:text-slate-400 text-sm mr-2">Kategoria:</label>
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+              className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             >
               <option value="all">Wszystkie</option>
               {categories.map((cat) => (
@@ -111,9 +111,9 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
               id="lowStockToggle"
               checked={lowStockOnly}
               onChange={(e) => setLowStockOnly(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-900"
+              className="w-4 h-4 rounded border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-900"
             />
-            <label htmlFor="lowStockToggle" className="text-slate-300 text-sm cursor-pointer">
+            <label htmlFor="lowStockToggle" className="text-slate-700 dark:text-slate-300 text-sm cursor-pointer">
               Tylko niski stan
             </label>
           </div>
@@ -125,7 +125,7 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
               placeholder="Szukaj po nazwie lub SKU..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-500 focus:border-blue-500 focus:outline-none"
             />
           </div>
 
@@ -153,48 +153,48 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
       </div>
 
       {/* Inventory Table */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-900 border-b border-slate-700">
+            <thead className="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   SKU
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Nazwa
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Kategoria
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Ilość
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Próg
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Lokalizacja
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Partia
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-700">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
               {filteredItems.map((item) => {
                 const isLowStock = item.quantity < item.low_stock_threshold;
                 return (
-                  <tr key={item.id} className="hover:bg-slate-700/50 transition">
-                    <td className="px-4 py-3 text-white font-mono text-sm">
+                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                    <td className="px-4 py-3 text-slate-900 dark:text-white font-mono text-sm">
                       {item.sku}
                     </td>
-                    <td className="px-4 py-3 text-white">{item.name}</td>
-                    <td className="px-4 py-3 text-slate-300">{item.category}</td>
+                    <td className="px-4 py-3 text-slate-900 dark:text-white">{item.name}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300">{item.category}</td>
                     <td className="px-4 py-3">
                       <span
                         className={`font-semibold ${
-                          isLowStock ? 'text-red-400' : 'text-white'
+                          isLowStock ? 'text-red-400' : 'text-slate-900 dark:text-white'
                         }`}
                       >
                         {item.quantity} {item.unit}
@@ -205,13 +205,13 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-slate-400">
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">
                       {item.low_stock_threshold} {item.unit}
                     </td>
-                    <td className="px-4 py-3 text-slate-300">
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
                       {item.location || '-'}
                     </td>
-                    <td className="px-4 py-3 text-slate-300 font-mono text-sm">
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-mono text-sm">
                       {item.batch_number || '-'}
                     </td>
                   </tr>
@@ -224,14 +224,14 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
         {/* Empty State */}
         {filteredItems.length === 0 && (
           <div className="p-12 text-center">
-            <p className="text-slate-400">Brak pozycji spełniających kryteria filtrowania</p>
+            <p className="text-slate-500 dark:text-slate-400">Brak pozycji spełniających kryteria filtrowania</p>
           </div>
         )}
 
         {/* Count */}
-        <div className="px-4 py-3 bg-slate-900 border-t border-slate-700">
-          <p className="text-slate-400 text-sm">
-            Wyświetlono <span className="text-white font-semibold">{filteredItems.length}</span> pozycji
+        <div className="px-4 py-3 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
+          <p className="text-slate-500 dark:text-slate-400 text-sm">
+            Wyświetlono <span className="text-slate-900 dark:text-white font-semibold">{filteredItems.length}</span> pozycji
           </p>
         </div>
       </div>

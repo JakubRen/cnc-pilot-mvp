@@ -124,16 +124,16 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
   ]
 
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
-      <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
         <span>🔔</span> Powiadomienia Email
       </h3>
 
       {/* Master toggle */}
-      <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg mb-6">
+      <div className="flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg mb-6">
         <div>
-          <p className="text-white font-medium">Włącz powiadomienia email</p>
-          <p className="text-slate-400 text-sm">Główny przełącznik dla wszystkich powiadomień</p>
+          <p className="text-slate-900 dark:text-white font-medium">Włącz powiadomienia email</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">Główny przełącznik dla wszystkich powiadomień</p>
         </div>
         <button
           onClick={() => handleToggle('email_enabled')}
@@ -154,13 +154,13 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
         {notificationTypes.map((type) => (
           <div
             key={type.key}
-            className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition"
+            className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">{type.icon}</span>
               <div>
-                <p className="text-white font-medium">{type.label}</p>
-                <p className="text-slate-400 text-sm">{type.description}</p>
+                <p className="text-slate-900 dark:text-white font-medium">{type.label}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{type.description}</p>
               </div>
             </div>
             <button
@@ -180,14 +180,14 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
 
         {/* Deadline days selector */}
         {preferences.deadline_approaching && (
-          <div className="p-4 bg-slate-700/30 rounded-lg ml-8">
-            <label className="block text-slate-300 text-sm mb-2">
+          <div className="p-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg ml-8">
+            <label className="block text-slate-600 dark:text-slate-300 text-sm mb-2">
               Powiadom o terminie na ile dni przed:
             </label>
             <select
               value={preferences.deadline_days_before}
               onChange={(e) => handleDaysChange(parseInt(e.target.value))}
-              className="bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-2"
+              className="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white rounded-lg px-4 py-2"
             >
               <option value={1}>1 dzień</option>
               <option value={2}>2 dni</option>
@@ -200,7 +200,7 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
       </div>
 
       {/* Save button */}
-      <div className="mt-6 pt-6 border-t border-slate-700">
+      <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
         <button
           onClick={handleSave}
           disabled={saving}
