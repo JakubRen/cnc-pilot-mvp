@@ -162,7 +162,10 @@ GitHub Actions automatycznie uruchamia:
 - ✅ Unit tests (Vitest)
 - ✅ E2E tests (Playwright)
 - ✅ Build verification
+- ✅ Lint & Type checking (ESLint + TypeScript)
 - ✅ Security checks (CVE scanning)
+
+**Status:** 🟢 All checks passing (0 errors, 91 warnings)
 
 ## 🌐 Deployment
 
@@ -240,6 +243,16 @@ Dostępny w aplikacji pod `/docs`:
    - **Status:** Naprawione
 
 ## 🔄 Recent Updates
+
+**2025-12-09** - TypeScript & CI/CD Fixes
+- ✅ Naprawiono wszystkie błędy TypeScript (19 errors → 0 errors)
+- ✅ Rozwiązano problemy case sensitivity (Badge.tsx → badge.tsx, Card.tsx → card.tsx)
+- ✅ Naprawiono useRef typing issues w hookach (useAutosave, useInfiniteScroll, useRealTimeData)
+- ✅ Naprawiono Playwright API errors (toHaveCount, nth property)
+- ✅ Naprawiono component prop types (FormField, KeyboardShortcutsHelp, OrdersChart)
+- ✅ Naprawiono test type assertions (IntersectionObserverEntry, export columns)
+- ✅ GitHub Actions CI/CD: 🟢 All checks passing
+- 📝 Commits: `ab3f8d0`, `f833d07`, `f41ca14`, `8fbe5bc`, `05cce16`, `6a45c51`
 
 **2024-12-07** - Portal Wiedzy + Mermaid
 - ✅ Dodano `/docs` z 4 sekcjami
