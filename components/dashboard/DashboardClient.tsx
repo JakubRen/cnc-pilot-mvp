@@ -177,7 +177,7 @@ export default function DashboardClient({
         {/* Orders Chart (Full Width) */}
         {preferences.ordersChart && (
           <div className="mb-6">
-            <OrdersChart data={dashboardData.ordersChartData} />
+            <OrdersChart />
           </div>
         )}
 

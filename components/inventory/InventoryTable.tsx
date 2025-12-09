@@ -4,7 +4,7 @@ import { useState, useRef } from 'react'
 import { useTableColumns } from '@/hooks/useTableColumns'
 import TableColumnConfig from '@/components/table/TableColumnConfig'
 import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 
 interface InventoryItem {
   id: string

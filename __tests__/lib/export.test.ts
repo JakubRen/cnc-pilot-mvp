@@ -29,7 +29,7 @@ describe('export utilities', () => {
         { id: 2, name: 'Item 2', price: 200 },
       ]
 
-      const columns = [
+      const columns: Array<{ key: keyof typeof data[0]; label: string }> = [
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Nazwa' },
         { key: 'price', label: 'Cena' },
@@ -47,7 +47,7 @@ describe('export utilities', () => {
         { name: 'Żółć', notes: 'Ważne!' },
       ]
 
-      const columns = [
+      const columns: Array<{ key: keyof typeof data[0]; label: string }> = [
         { key: 'name', label: 'Nazwa' },
         { key: 'notes', label: 'Notatki' },
       ]
@@ -62,7 +62,7 @@ describe('export utilities', () => {
         { name: 'Item, with comma', notes: 'Notes "with quotes"' },
       ]
 
-      const columns = [
+      const columns: Array<{ key: keyof typeof data[0]; label: string }> = [
         { key: 'name', label: 'Name' },
         { key: 'notes', label: 'Notes' },
       ]

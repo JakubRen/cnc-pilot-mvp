@@ -54,7 +54,7 @@ describe('useInfiniteScroll', () => {
     const mockEntry = {
       isIntersecting: true,
       target: result.current.loadMoreRef.current,
-    } as IntersectionObserverEntry
+    } as unknown as IntersectionObserverEntry
 
     intersectionCallback!([mockEntry], {} as IntersectionObserver)
 
@@ -85,7 +85,7 @@ describe('useInfiniteScroll', () => {
     const mockEntry = {
       isIntersecting: true,
       target: result.current.loadMoreRef.current,
-    } as IntersectionObserverEntry
+    } as unknown as IntersectionObserverEntry
 
     intersectionCallback!([mockEntry], {} as IntersectionObserver)
 
@@ -116,7 +116,7 @@ describe('useInfiniteScroll', () => {
     const mockEntry = {
       isIntersecting: true,
       target: result.current.loadMoreRef.current,
-    } as IntersectionObserverEntry
+    } as unknown as IntersectionObserverEntry
 
     intersectionCallback!([mockEntry], {} as IntersectionObserver)
 

@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import EmptyState from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 import { usePermissions } from '@/hooks/usePermissions';
 import { PriceDisplay } from '@/components/permissions';
 
