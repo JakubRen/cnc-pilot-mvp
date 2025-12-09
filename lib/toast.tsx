@@ -72,52 +72,56 @@ function renderToast(
   type: keyof typeof ToastIcons,
   options?: ToastOptions
 ) {
-  return (t: ToastType) => (
-    <div
-      className={`${
-        t.visible ? 'animate-enter' : 'animate-leave'
-      } max-w-md w-full glass-panel border border-slate-200 dark:border-slate-700 shadow-lg rounded-lg pointer-events-auto flex items-center gap-3 p-4`}
-    >
-      {/* Icon */}
-      <div className="flex-shrink-0">
-        {options?.icon || ToastIcons[type]}
-      </div>
-
-      {/* Message */}
-      <div className="flex-1">
-        <p className="text-sm font-medium text-slate-900 dark:text-white">
-          {message}
-        </p>
-      </div>
-
-      {/* Action button (e.g., Undo) */}
-      {options?.action && (
-        <button
-          onClick={() => {
-            options.action!.onClick()
-            toast.dismiss(t.id)
-          }}
-          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-semibold transition"
-        >
-          {options.action.label}
-        </button>
-      )}
-
-      {/* Close button */}
-      <button
-        onClick={() => toast.dismiss(t.id)}
-        className="flex-shrink-0 text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+  function ToastContent(t: ToastType) {
+    return (
+      <div
+        className={`${
+          t.visible ? 'animate-enter' : 'animate-leave'
+        } max-w-md w-full glass-panel border border-slate-200 dark:border-slate-700 shadow-lg rounded-lg pointer-events-auto flex items-center gap-3 p-4`}
       >
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path
-            fillRule="evenodd"
-            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-    </div>
-  )
+        {/* Icon */}
+        <div className="flex-shrink-0">
+          {options?.icon || ToastIcons[type]}
+        </div>
+
+        {/* Message */}
+        <div className="flex-1">
+          <p className="text-sm font-medium text-slate-900 dark:text-white">
+            {message}
+          </p>
+        </div>
+
+        {/* Action button (e.g., Undo) */}
+        {options?.action && (
+          <button
+            onClick={() => {
+              options.action!.onClick()
+              toast.dismiss(t.id)
+            }}
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-semibold transition"
+          >
+            {options.action.label}
+          </button>
+        )}
+
+        {/* Close button */}
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          className="flex-shrink-0 text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+    )
+  }
+
+  return ToastContent
 }
 
 // Enhanced toast helpers
