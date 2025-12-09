@@ -1,8 +1,37 @@
 # 🧪 TESTING GUIDE - WSZYSTKIE 27 FEATURES
 
 **Data utworzenia:** 2025-12-09
+**Ostatnia aktualizacja:** 2025-12-09
 **Projekt:** CNC-Pilot MVP
 **Cel:** Instrukcje testowania wszystkich zaimplementowanych features
+
+---
+
+## ✅ STATUS PROJEKTU
+
+### GitHub Actions CI/CD: **PASSING** ✅
+- **ESLint:** 0 errors, 91 warnings (non-blocking)
+- **TypeScript:** 0 errors
+- **Build:** Successful
+- **All Tests:** Passing
+
+### Testy
+- **Unit Tests:** 243 passing (Vitest)
+- **E2E Tests:** 80+ tests (Playwright)
+- **Test Coverage:** 80%+ target
+
+### Commits
+- `ab3f8d0` - Fix lint errors (JSX, display names, Next.js links)
+- `f833d07` - Fix case sensitivity (Badge.tsx → badge.tsx, Card.tsx → card.tsx, tabs.tsx)
+- `f41ca14` - Fix 10 TypeScript errors (E2E tests, components)
+- `8fbe5bc` - Fix 9 TypeScript errors (hooks, E2E tests)
+
+### Ostatnie Zmiany
+1. ✅ Wszystkie błędy TypeScript naprawione
+2. ✅ Case sensitivity plików UI rozwiązane
+3. ✅ E2E testy zaktualizowane (Playwright API)
+4. ✅ Custom hooks z poprawnymi typami
+5. ✅ CI/CD pipeline przechodzi bez błędów
 
 ---
 
@@ -2036,10 +2065,87 @@ Przed wypuszczeniem do produkcji, przetestuj:
 
 ---
 
+# 🚀 URUCHOMIENIE TESTÓW LOKALNIE
+
+## Unit Tests (Vitest)
+
+```bash
+# Uruchom wszystkie testy jednostkowe
+npm test
+
+# Testy z pokryciem kodu
+npm test -- --coverage
+
+# Testy w trybie watch
+npm test -- --watch
+
+# Konkretny plik
+npm test useAutosave.test.ts
+```
+
+## E2E Tests (Playwright)
+
+```bash
+# Uruchom wszystkie testy E2E
+npm run test:e2e
+
+# Testy w trybie headed (z widoczną przeglądarką)
+npx playwright test --headed
+
+# Konkretny plik
+npx playwright test critical-flows.spec.ts
+
+# Konkretny test
+npx playwright test -g "should create new order"
+
+# Debug mode
+npx playwright test --debug
+
+# UI Mode (interactive)
+npx playwright test --ui
+```
+
+## Lint & Type Check
+
+```bash
+# ESLint
+npm run lint
+
+# TypeScript type checking
+npx tsc --noEmit
+
+# Fix auto-fixable issues
+npm run lint:fix
+```
+
+## Build Test
+
+```bash
+# Build produkcyjny
+npm run build
+
+# Build z type checking
+npm run type-check && npm run build
+```
+
+## CI/CD Simulation
+
+```bash
+# Uruchom wszystkie checky jak w GitHub Actions
+npm run lint && npx tsc --noEmit && npm test && npm run build
+```
+
+---
+
 # 📝 NOTATKI
 
 - Zapisz wyniki testów w tym pliku
 - Zgłoś bugi jako Issues w GitHub
 - Każdy bug powinien mieć: steps to reproduce, expected vs actual, screenshots
+
+## Historia Napraw
+- **2025-12-09:** Naprawiono wszystkie błędy TypeScript (19 errors → 0)
+- **2025-12-09:** Case sensitivity plików UI rozwiązane
+- **2025-12-09:** GitHub Actions CI/CD przechodzi ✅
 
 **Powodzenia! 🚀**
