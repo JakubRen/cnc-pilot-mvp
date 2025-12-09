@@ -190,8 +190,8 @@ test.describe('New Features - 15 Advanced Implementations', () => {
       await page.goto('http://localhost:3000/orders')
 
       // Select 2 items
-      await page.check('input[type="checkbox"]', { nth: 1 })
-      await page.check('input[type="checkbox"]', { nth: 2 })
+      await page.locator('input[type="checkbox"]').nth(1).check()
+      await page.locator('input[type="checkbox"]').nth(2).check()
 
       // Export selected
       await page.click('button:has-text("Eksportuj zaznaczone")')
@@ -357,7 +357,7 @@ test.describe('New Features - 15 Advanced Implementations', () => {
 
       // Images below fold should have loading="lazy"
       const images = page.locator('img[loading="lazy"]')
-      await expect(images).toHaveCount({ minimum: 1 })
+      await expect(images.first()).toBeVisible()
     })
 
     test('should use WebP format when supported', async ({ page }) => {
@@ -365,7 +365,7 @@ test.describe('New Features - 15 Advanced Implementations', () => {
 
       // Check for Next.js optimized images
       const optimizedImages = page.locator('img[src*="_next/image"]')
-      await expect(optimizedImages).toHaveCount({ minimum: 1 })
+      await expect(optimizedImages.first()).toBeVisible()
     })
 
     test('should show blur placeholder while loading', async ({ page }) => {

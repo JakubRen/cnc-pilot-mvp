@@ -15,7 +15,7 @@ export function useInfiniteScroll({
   threshold = 100,
   rootMargin = '0px',
 }: UseInfiniteScrollOptions) {
-  const observerRef = useRef<IntersectionObserver>()
+  const observerRef = useRef<IntersectionObserver | undefined>(undefined)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
   const handleObserver = useCallback(

@@ -21,8 +21,8 @@ export function useAutosave<T>({
   storageKey,
 }: UseAutosaveOptions<T>) {
   const savedDataRef = useRef<T>(data)
-  const saveTimeoutRef = useRef<NodeJS.Timeout>()
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const saveTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const isSavingRef = useRef(false)
   const lastSaveTimeRef = useRef<number>(Date.now())
 

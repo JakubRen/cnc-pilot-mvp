@@ -16,7 +16,7 @@ export function useRealTimeData<T>({
   const [data, setData] = useState<T | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   const fetchData = async () => {
     try {
