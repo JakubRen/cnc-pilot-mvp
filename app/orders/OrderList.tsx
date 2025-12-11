@@ -73,23 +73,23 @@ export default function OrderList({
       const confirmed = confirm(
         `${t('orders', 'deleteConfirm')} #${orderNumber}?\n\n${t('common', 'undoOperation')}`
       )
-  
+
       if (!confirmed) return
-  
+
       const loadingToast = toast.loading(t('orders', 'deleting'))
-  
+
       const { error } = await supabase
         .from('orders')
         .delete()
         .eq('id', orderId)
-  
+
       toast.dismiss(loadingToast)
-  
+
       if (error) {
         toast.error(`${t('orders', 'deleteFailed')}: ${error.message}`)
         return
       }
-  
+
       toast.success(`${t('orders', 'order')} #${orderNumber} ${t('orders', 'deleted')}`)
       router.refresh()
     }
@@ -130,7 +130,7 @@ export default function OrderList({
         </div>
       )
     }
-  
+
     const getStatusBadge = (status: string) => {
       switch (status) {
         case 'completed': return <Badge variant="success">{t('orderStatus', 'completed')}</Badge>
@@ -140,162 +140,358 @@ export default function OrderList({
         default: return <Badge variant="outline">{t('orderStatus', 'pending')}</Badge>
       }
     }
-  
+
     return (
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-slate-100 dark:bg-slate-700">
-            <tr>
-              <th className="px-4 py-3 text-left">
-                <input
-                  type="checkbox"
-                  checked={allSelected}
-                  onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
-                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
-                  title={allSelected ? t('orders', 'deselectAll') : t('orders', 'selectAll')}
-                />
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                {t('orders', 'orderNumber')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                {t('orders', 'customer')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                {t('common', 'quantity')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                {t('orders', 'deadline')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                {t('common', 'status')}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                Operator
-              </th>
-              {showPrices && (
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                  {t('common', 'cost')}
-                </th>
-              )}
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                {t('common', 'actions')}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-            {orders.map((order) => (
-              <tr
-                key={order.id}
-                className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition ${selectedOrders.has(order.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
-              >
-                <td className="px-4 py-4">
+      <>
+        {/* Desktop View - Table (hidden on mobile) */}
+        <div className="hidden md:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-slate-100 dark:bg-slate-700">
+              <tr>
+                <th className="px-4 py-3 text-left">
                   <input
                     type="checkbox"
-                    checked={selectedOrders.has(order.id)}
-                    onChange={() => onToggleSelect(order.id)}
+                    checked={allSelected}
+                    onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
                     className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
-                    onClick={(e) => e.stopPropagation()}
+                    title={allSelected ? t('orders', 'deselectAll') : t('orders', 'selectAll')}
                   />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <Link
-                    href={`/orders/${order.id}`}
-                    className="text-blue-400 hover:text-blue-300 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    {order.order_number}
-                  </Link>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
-                  {order.customer_name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
-                  {order.quantity}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <div className="flex flex-col gap-1">
-                    <span className={isOrderOverdue(order.deadline, order.status) ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-slate-700 dark:text-slate-300'}>
-                      {new Date(order.deadline).toLocaleDateString()}
-                    </span>
-                    {isOrderOverdue(order.deadline, order.status) && (
-                      <Badge variant="danger" size="sm" className="w-fit">{t('orderStatus', 'overdue')}</Badge>
-                    )}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {getStatusBadge(order.status)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {order.assigned_operator_name ? (
-                    <span className="text-slate-700 dark:text-slate-300">{order.assigned_operator_name}</span>
-                  ) : (
-                    <span className="text-slate-400 dark:text-slate-500 text-xs">-</span>
-                  )}
-                </td>
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                  {t('orders', 'orderNumber')}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                  {t('orders', 'customer')}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                  {t('common', 'quantity')}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                  {t('orders', 'deadline')}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                  {t('common', 'status')}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                  Operator
+                </th>
                 {showPrices && (
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                    {t('common', 'cost')}
+                  </th>
+                )}
+                <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                  {t('common', 'actions')}
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+              {orders.map((order) => (
+                <tr
+                  key={order.id}
+                  className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition ${selectedOrders.has(order.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+                >
+                  <td className="px-4 py-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedOrders.has(order.id)}
+                      onChange={() => onToggleSelect(order.id)}
+                      className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <Link
+                      href={`/orders/${order.id}`}
+                      className="text-blue-400 hover:text-blue-300 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {order.order_number}
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
+                    {order.customer_name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
+                    {order.quantity}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    {order.total_cost && order.total_cost > 0 ? (
-                      <PriceDisplay
-                        value={order.total_cost}
-                        module="orders"
-                        className={`font-semibold ${
-                          order.total_cost > 5000 ? 'text-red-400' :
-                          order.total_cost > 2000 ? 'text-yellow-400' :
-                          'text-green-400'
-                        }`}
-                      />
+                    <div className="flex flex-col gap-1">
+                      <span className={isOrderOverdue(order.deadline, order.status) ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-slate-700 dark:text-slate-300'}>
+                        {new Date(order.deadline).toLocaleDateString()}
+                      </span>
+                      {isOrderOverdue(order.deadline, order.status) && (
+                        <Badge variant="danger" size="sm" className="w-fit">{t('orderStatus', 'overdue')}</Badge>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {getStatusBadge(order.status)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {order.assigned_operator_name ? (
+                      <span className="text-slate-700 dark:text-slate-300">{order.assigned_operator_name}</span>
                     ) : (
                       <span className="text-slate-400 dark:text-slate-500 text-xs">-</span>
                     )}
                   </td>
-                )}
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-right">
-                  <div className="relative inline-block" ref={openMenuId === order.id ? menuRef : null}>
-                    <button
-                      onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
-                      className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
-                    >
-                      <span className="text-slate-500 dark:text-slate-400">⋮</span>
-                    </button>
-                    {openMenuId === order.id && (
-                      <div className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1">
-                        <Link
-                          href={`/orders/${order.id}`}
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"
-                          onClick={() => setOpenMenuId(null)}
-                        >
-                          <span>👁</span> {t('common', 'view')}
-                        </Link>
-                        <Link
-                          href={`/orders/${order.id}/edit`}
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-600"
-                          onClick={() => setOpenMenuId(null)}
-                        >
-                          <span>✏️</span> {t('common', 'edit')}
-                        </Link>
-                        <button
-                          onClick={() => { handleDuplicate(order.id, order.order_number); setOpenMenuId(null); }}
-                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-orange-600 dark:text-orange-400 hover:bg-slate-50 dark:hover:bg-slate-600"
-                        >
-                          <span>📋</span> {t('common', 'duplicate')}
-                        </button>
-                        {currentUserRole === 'owner' && (
-                          <button
-                            onClick={() => { handleDelete(order.id, order.order_number); setOpenMenuId(null); }}
-                            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                  {showPrices && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {order.total_cost && order.total_cost > 0 ? (
+                        <PriceDisplay
+                          value={order.total_cost}
+                          module="orders"
+                          className={`font-semibold ${
+                            order.total_cost > 5000 ? 'text-red-400' :
+                            order.total_cost > 2000 ? 'text-yellow-400' :
+                            'text-green-400'
+                          }`}
+                        />
+                      ) : (
+                        <span className="text-slate-400 dark:text-slate-500 text-xs">-</span>
+                      )}
+                    </td>
+                  )}
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-right">
+                    <div className="relative inline-block" ref={openMenuId === order.id ? menuRef : null}>
+                      <button
+                        onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
+                        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
+                      >
+                        <span className="text-slate-500 dark:text-slate-400">⋮</span>
+                      </button>
+                      {openMenuId === order.id && (
+                        <div className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1">
+                          <Link
+                            href={`/orders/${order.id}`}
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"
+                            onClick={() => setOpenMenuId(null)}
                           >
-                            <span>🗑</span> {t('common', 'delete')}
+                            <span>👁</span> {t('common', 'view')}
+                          </Link>
+                          <Link
+                            href={`/orders/${order.id}/edit`}
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                            onClick={() => setOpenMenuId(null)}
+                          >
+                            <span>✏️</span> {t('common', 'edit')}
+                          </Link>
+                          <button
+                            onClick={() => { handleDuplicate(order.id, order.order_number); setOpenMenuId(null); }}
+                            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-orange-600 dark:text-orange-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                          >
+                            <span>📋</span> {t('common', 'duplicate')}
                           </button>
-                        )}
-                      </div>
+                          {currentUserRole === 'owner' && (
+                            <button
+                              onClick={() => { handleDelete(order.id, order.order_number); setOpenMenuId(null); }}
+                              className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                            >
+                              <span>🗑</span> {t('common', 'delete')}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile View - Cards (visible only on mobile) */}
+        <div className="md:hidden space-y-4">
+          {/* Select All Checkbox */}
+          <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
+              className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+            />
+            <span className="text-sm text-slate-600 dark:text-slate-300 font-medium">
+              {allSelected ? t('orders', 'deselectAll') : t('orders', 'selectAll')} ({orders.length})
+            </span>
+          </div>
+
+          {/* Order Cards */}
+          {orders.map((order) => (
+            <div
+              key={order.id}
+              className={`bg-white dark:bg-slate-800 border rounded-lg overflow-hidden transition ${
+                selectedOrders.has(order.id)
+                  ? 'border-blue-500 dark:border-blue-400 shadow-lg'
+                  : 'border-slate-200 dark:border-slate-700'
+              }`}
+            >
+              {/* Card Header */}
+              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedOrders.has(order.id)}
+                    onChange={() => onToggleSelect(order.id)}
+                    className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <Link
+                    href={`/orders/${order.id}`}
+                    className="text-lg font-bold text-blue-400 hover:text-blue-300"
+                  >
+                    {order.order_number}
+                  </Link>
+                </div>
+                {/* Actions Menu */}
+                <div className="relative" ref={openMenuId === order.id ? menuRef : null}>
+                  <button
+                    onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
+                    className="p-2 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition"
+                  >
+                    <span className="text-slate-500 dark:text-slate-400 text-xl">⋮</span>
+                  </button>
+                  {openMenuId === order.id && (
+                    <div className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1">
+                      <Link
+                        href={`/orders/${order.id}`}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"
+                        onClick={() => setOpenMenuId(null)}
+                      >
+                        <span>👁</span> {t('common', 'view')}
+                      </Link>
+                      <Link
+                        href={`/orders/${order.id}/edit`}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                        onClick={() => setOpenMenuId(null)}
+                      >
+                        <span>✏️</span> {t('common', 'edit')}
+                      </Link>
+                      <button
+                        onClick={() => { handleDuplicate(order.id, order.order_number); setOpenMenuId(null); }}
+                        className="flex items-center gap-2 w-full px-3 py-2 text-sm text-orange-600 dark:text-orange-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                      >
+                        <span>📋</span> {t('common', 'duplicate')}
+                      </button>
+                      {currentUserRole === 'owner' && (
+                        <button
+                          onClick={() => { handleDelete(order.id, order.order_number); setOpenMenuId(null); }}
+                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                        >
+                          <span>🗑</span> {t('common', 'delete')}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-4 space-y-3">
+                {/* Customer */}
+                <div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                    {t('orders', 'customer')}
+                  </p>
+                  <p className="text-base text-slate-900 dark:text-white font-medium">
+                    {order.customer_name}
+                  </p>
+                </div>
+
+                {/* Quantity & Part */}
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                      {t('common', 'quantity')}
+                    </p>
+                    <p className="text-base text-slate-900 dark:text-white">
+                      {order.quantity} {order.part_name && `× ${order.part_name}`}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Deadline */}
+                <div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                    {t('orders', 'deadline')}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className={`text-base font-medium ${
+                      isOrderOverdue(order.deadline, order.status)
+                        ? 'text-red-500 dark:text-red-400'
+                        : 'text-slate-900 dark:text-white'
+                    }`}>
+                      {new Date(order.deadline).toLocaleDateString('pl-PL')}
+                    </p>
+                    {isOrderOverdue(order.deadline, order.status) && (
+                      <Badge variant="danger" size="sm">{t('orderStatus', 'overdue')}</Badge>
                     )}
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </div>
+
+                {/* Status & Operator */}
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                      {t('common', 'status')}
+                    </p>
+                    {getStatusBadge(order.status)}
+                  </div>
+                  {order.assigned_operator_name && (
+                    <div className="flex-1">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                        Operator
+                      </p>
+                      <p className="text-base text-slate-900 dark:text-white">
+                        {order.assigned_operator_name}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Price (if permissions) */}
+                {showPrices && order.total_cost && order.total_cost > 0 && (
+                  <div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                      {t('common', 'cost')}
+                    </p>
+                    <PriceDisplay
+                      value={order.total_cost}
+                      module="orders"
+                      className={`text-lg font-bold ${
+                        order.total_cost > 5000 ? 'text-red-400' :
+                        order.total_cost > 2000 ? 'text-yellow-400' :
+                        'text-green-400'
+                      }`}
+                    />
+                  </div>
+                )}
+
+                {/* Tags (if any) */}
+                {order.tags && order.tags.length > 0 && (
+                  <div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                      Tagi
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {order.tags.map(tag => (
+                        <span
+                          key={tag.id}
+                          className="px-2 py-1 text-xs rounded"
+                          style={{
+                            backgroundColor: `${tag.color}20`,
+                            color: tag.color,
+                            border: `1px solid ${tag.color}40`
+                          }}
+                        >
+                          {tag.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
     )
   }
-  
