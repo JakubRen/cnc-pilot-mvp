@@ -74,12 +74,16 @@ export async function getInventoryReport(
     result = result.filter(item => item.quantity < item.low_stock_threshold);
   }
 
-  return result.map((item) => ({
-    ...item,
-    creator_name: Array.isArray(item.creator)
-      ? (item.creator[0] as any)?.full_name
-      : (item.creator as any)?.full_name,
-  }));
+  return result.map((item) => {
+    const creator = item.creator as { full_name: string } | { full_name: string }[] | null;
+    const creatorName = Array.isArray(creator)
+      ? creator[0]?.full_name
+      : creator?.full_name;
+    return {
+      ...item,
+      creator_name: creatorName ?? null,
+    };
+  });
 }
 
 // Get inventory summary statistics

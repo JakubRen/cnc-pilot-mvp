@@ -77,12 +77,16 @@ export async function getOrdersReport(
     return [];
   }
 
-  return (data || []).map((order) => ({
-    ...order,
-    creator_name: Array.isArray(order.creator)
-      ? (order.creator[0] as any)?.full_name
-      : (order.creator as any)?.full_name,
-  }));
+  return (data || []).map((order) => {
+    const creator = order.creator as { full_name: string } | { full_name: string }[] | null;
+    const creatorName = Array.isArray(creator)
+      ? creator[0]?.full_name
+      : creator?.full_name;
+    return {
+      ...order,
+      creator_name: creatorName ?? null,
+    };
+  });
 }
 
 // Get orders summary statistics

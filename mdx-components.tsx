@@ -35,9 +35,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         <code className="bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 px-2 py-1 rounded text-sm">{children}</code>
       )
     },
-    pre: ({ children }) => {
+    pre: ({ children }: { children?: React.ReactElement<{ className?: string }> }) => {
       // Check if the code block is mermaid (handled by code component above)
-      const childProps = (children as any)?.props
+      const childProps = children?.props
       if (childProps?.className?.includes('language-mermaid')) {
         return <>{children}</>
       }

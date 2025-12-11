@@ -76,16 +76,22 @@ export async function getTimeReport(
     const durationHours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
     const totalCost = durationHours * (log.hourly_rate || 0);
 
+    const order = log.order as { order_number: string } | { order_number: string }[] | null;
+    const orderNumber = Array.isArray(order)
+      ? order[0]?.order_number
+      : order?.order_number;
+
+    const user = log.user as { full_name: string } | { full_name: string }[] | null;
+    const userName = Array.isArray(user)
+      ? user[0]?.full_name
+      : user?.full_name;
+
     return {
       id: log.id,
       order_id: log.order_id,
-      order_number: Array.isArray(log.order)
-        ? (log.order[0] as any)?.order_number
-        : (log.order as any)?.order_number,
+      order_number: orderNumber ?? null,
       user_id: log.user_id,
-      user_name: Array.isArray(log.user)
-        ? (log.user[0] as any)?.full_name
-        : (log.user as any)?.full_name,
+      user_name: userName ?? null,
       start_time: log.start_time,
       end_time: log.end_time,
       status: log.status,
@@ -151,10 +157,10 @@ export async function getTimeByUser(companyId: string) {
 
   // Group by user
   const userMap = logs.reduce((acc, log) => {
-    const userName =
-      Array.isArray(log.user)
-        ? (log.user[0] as any)?.full_name
-        : (log.user as any)?.full_name;
+    const user = log.user as { full_name: string } | { full_name: string }[] | null;
+    const userName = (Array.isArray(user)
+      ? user[0]?.full_name
+      : user?.full_name) || 'Unknown';
 
     if (!acc[userName]) {
       acc[userName] = { user: userName, hours: 0, cost: 0 };

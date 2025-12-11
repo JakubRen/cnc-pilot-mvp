@@ -139,10 +139,11 @@ export async function getRevenueThisMonth(companyId: string) {
     return 0;
   }
 
-  const total = (data || []).reduce(
-    (sum, order) => sum + (parseFloat(order.total_cost as any) || 0),
-    0
-  );
+  const total = (data || []).reduce((sum, order) => {
+    const cost = order.total_cost;
+    const costNumber = typeof cost === 'string' ? parseFloat(cost) : (cost ?? 0);
+    return sum + (isNaN(costNumber) ? 0 : costNumber);
+  }, 0);
 
   return total;
 }
@@ -248,9 +249,10 @@ export async function getRecentActivity(companyId: string, limit = 10) {
   // Format as activity items
   return (data || []).map((order) => {
     // Handle creator - it might be an array from the join
-    const creatorName = Array.isArray(order.creator)
-      ? (order.creator[0] as any)?.full_name
-      : (order.creator as any)?.full_name;
+    const creator = order.creator as { full_name: string } | { full_name: string }[] | null;
+    const creatorName = Array.isArray(creator)
+      ? creator[0]?.full_name
+      : creator?.full_name;
 
     return {
       type: 'order_created',
@@ -288,7 +290,9 @@ export async function getTopCustomers(companyId: string, limit = 5) {
     if (!acc[customer]) {
       acc[customer] = { name: customer, revenue: 0, count: 0 };
     }
-    acc[customer].revenue += parseFloat(order.total_cost as any);
+    const cost = order.total_cost;
+    const costNumber = typeof cost === 'string' ? parseFloat(cost) : (cost ?? 0);
+    acc[customer].revenue += isNaN(costNumber) ? 0 : costNumber;
     acc[customer].count += 1;
     return acc;
   }, {} as Record<string, { name: string; revenue: number; count: number }>);
@@ -370,9 +374,10 @@ export async function getInventoryHistory(inventoryId: string, limit = 20) {
   }
 
   return (data || []).map((item) => {
-    const changerName = Array.isArray(item.changer)
-      ? (item.changer[0] as any)?.full_name
-      : (item.changer as any)?.full_name;
+    const changer = item.changer as { full_name: string } | { full_name: string }[] | null;
+    const changerName = Array.isArray(changer)
+      ? changer[0]?.full_name
+      : changer?.full_name;
 
     return {
       id: item.id,
