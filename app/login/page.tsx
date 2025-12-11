@@ -10,7 +10,6 @@ import { useTranslation } from '@/hooks/useTranslation'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { Starfield } from '@/components/ui/Starfield'
 import QuoteWidget from '@/components/auth/QuoteWidget'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 export default function LoginPage() {
@@ -66,11 +65,11 @@ export default function LoginPage() {
       {/* Ambient Glow (Bottom) */}
       <div className="absolute bottom-0 left-0 right-0 h-[50vh] bg-gradient-to-t from-blue-900/20 via-transparent to-transparent pointer-events-none z-0" />
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-md w-full relative z-10 p-6"
+      <div
+        className={cn(
+          "max-w-md w-full relative z-10 p-6",
+          "animate-in fade-in slide-in-from-bottom-4 zoom-in-95 duration-700"
+        )}
       >
         {/* Language Selector - Top Right */}
         <div className="flex justify-end mb-6 opacity-70 hover:opacity-100 transition-opacity">
@@ -78,18 +77,13 @@ export default function LoginPage() {
         </div>
 
         <div className="text-center mb-10">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="relative inline-block"
-          >
+          <div className="relative inline-block animate-in fade-in duration-1000 delay-300">
             {/* Logo Glow Effect */}
             <div className="absolute -inset-4 bg-blue-500/20 blur-2xl rounded-full opacity-50 animate-pulse" />
             <h1 className="relative text-5xl font-extralight tracking-tight text-white mb-2 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
               {t('common', 'appName') || 'CNC Pilot'}
             </h1>
-          </motion.div>
+          </div>
         </div>
         
         {/* Inspirational Quote */}
@@ -180,15 +174,10 @@ export default function LoginPage() {
           </div>
         </div>
         
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="text-center text-white/10 text-xs mt-8 font-light"
-        >
+        <p className="text-center text-white/10 text-xs mt-8 font-light animate-in fade-in duration-1000 delay-1000">
           System v2.0 • Secure Connection • 2025
-        </motion.p>
-      </motion.div>
+        </p>
+      </div>
     </div>
   )
 }
