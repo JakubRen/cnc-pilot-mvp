@@ -9,7 +9,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { useTranslation } from '@/hooks/useTranslation';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
 const data = [
@@ -23,7 +22,6 @@ const data = [
 ];
 
 export default function OrdersChart() {
-  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 

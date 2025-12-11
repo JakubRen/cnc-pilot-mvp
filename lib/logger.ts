@@ -41,9 +41,11 @@ function log(level: LogLevel, message: string, context?: LogContext) {
   if (process.env.NODE_ENV === 'development') {
     const emoji = { info: 'ℹ️', warn: '⚠️', error: '❌', debug: '🔍' }[level];
     const contextStr = context ? ` ${JSON.stringify(context)}` : '';
+    // eslint-disable-next-line no-console
     console.log(`${emoji} [${level.toUpperCase()}] ${message}${contextStr}`);
   } else {
     // In production - JSON for Vercel Logs
+    // eslint-disable-next-line no-console
     console.log(JSON.stringify(entry));
   }
 }
