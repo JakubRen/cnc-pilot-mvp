@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { logger } from '@/lib/logger';
 
 const profileSchema = z.object({
   full_name: z.string().min(2, 'Imię i nazwisko musi mieć co najmniej 2 znaki'),
@@ -92,7 +93,7 @@ export default function ProfileClient({ user }: Props) {
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error('Wystąpił błąd podczas zapisywania');
-      console.error('Error updating profile:', error);
+      logger.error('Error updating profile', { error });
     } finally {
       setIsSubmitting(false);
     }
@@ -119,7 +120,7 @@ export default function ProfileClient({ user }: Props) {
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error('Wystąpił błąd podczas zmiany hasła');
-      console.error('Error changing password:', error);
+      logger.error('Error changing password', { error });
     } finally {
       setIsChangingPassword(false);
     }

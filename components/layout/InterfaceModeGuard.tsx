@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { InterfaceMode } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 // Pages that kiosk_only users CAN access
 const KIOSK_ALLOWED_PATHS = ['/kiosk', '/logout', '/login', '/no-access'];
@@ -57,7 +58,7 @@ export default function InterfaceModeGuard({ children }: { children: React.React
           return;
         }
       } catch (error) {
-        console.error('Error checking interface mode:', error);
+        logger.error('Error checking interface mode', { error });
       }
 
       setIsChecking(false);

@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import NotificationSettings from '@/components/settings/NotificationSettings';
+import { logger } from '@/lib/logger';
 
 const companySchema = z.object({
   name: z.string().min(2, 'Nazwa firmy musi mieć co najmniej 2 znaki'),
@@ -102,7 +103,7 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error('Wystąpił błąd podczas zapisywania');
-      console.error('Error updating company:', error);
+      logger.error('Error updating company settings', { error });
     } finally {
       setIsSubmitting(false);
     }

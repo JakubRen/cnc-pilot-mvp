@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 
 export interface InventoryItem {
   id: string
@@ -38,7 +39,7 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
         // Get user's company_id
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) {
-          console.log('[useInventoryItems] No user found')
+          logger.debug('[useInventoryItems] No user found')
           setItems([])
           setLoading(false)
           return
@@ -51,14 +52,14 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
           .single()
 
         if (profileError) {
-          console.error('[useInventoryItems] Profile error:', profileError)
+          logger.error('[useInventoryItems] Profile error', { error: profileError })
           setItems([])
           setLoading(false)
           return
         }
 
         if (!userProfile?.company_id) {
-          console.log('[useInventoryItems] No company_id')
+          logger.debug('[useInventoryItems] No company_id')
           setItems([])
           setLoading(false)
           return
@@ -83,14 +84,14 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
         const { data, error: queryError } = await query
 
         if (queryError) {
-          console.error('[useInventoryItems] Query error:', queryError)
+          logger.error('[useInventoryItems] Query error', { error: queryError })
           throw queryError
         }
 
-        console.log(`[useInventoryItems] Found ${data?.length || 0} items for filter: ${filterKey}`)
+        logger.debug(`[useInventoryItems] Found ${data?.length || 0} items for filter: ${filterKey}`)
         setItems(data || [])
       } catch (err) {
-        console.error('[useInventoryItems] Error:', err)
+        logger.error('[useInventoryItems] Error', { error: err })
         setError(err instanceof Error ? err.message : 'Failed to load inventory')
         setItems([])
       } finally {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
+import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import CommandPalette from '@/components/ui/CommandPalette';
 import MobileBottomNav from './MobileBottomNav';

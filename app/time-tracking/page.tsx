@@ -10,6 +10,7 @@ import { redirect } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout';
 import TimeLogsClient from './TimeLogsClient';
 import StaleTimerAlert from '@/components/time-tracking/StaleTimerAlert';
+import { logger } from '@/lib/logger';
 
 export const metadata = {
   title: 'Time Tracking | CNC Pilot',
@@ -49,7 +50,7 @@ export default async function TimeTrackingPage() {
     .order('start_time', { ascending: false });
 
   if (error) {
-    console.error('Error fetching time logs:', error);
+    logger.error('Error fetching time logs', { error });
   }
 
   // Fetch all orders for filter dropdown

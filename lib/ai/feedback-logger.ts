@@ -8,6 +8,8 @@
  * This builds our unique training dataset (Golden Dataset / CNC MOAT)
  */
 
+import { logger } from '@/lib/logger'
+
 export type FeedbackFeature =
   | 'cnc_time_estimation' // Time estimation for CNC operations
   | 'material_selection' // Material recommendations
@@ -90,7 +92,7 @@ export function logAiCorrection(options: FeedbackOptions): void {
     }),
   }).catch((err) => {
     // Silent fail - log to console only
-    console.debug('[FeedbackLogger] Failed to log correction:', err)
+    logger.debug('[FeedbackLogger] Failed to log correction', { error: err })
   })
 }
 

@@ -11,6 +11,7 @@ import EmptyState from '@/components/ui/EmptyState'
 import { Button } from '@/components/ui/Button'
 import { useOrderFiltering } from '@/hooks/useOrderFiltering'
 import { useOrderSelection } from '@/hooks/useOrderSelection'
+import { logger } from '@/lib/logger'
 
 interface OrderWithTags {
   id: string
@@ -64,7 +65,7 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
       toast.success(`Wyeksportowano ${filteredOrders.length} zamówień do CSV`)
     } catch (error) {
       toast.error('Błąd podczas eksportu CSV')
-      console.error('Export error:', error)
+      logger.error('Export error', { error })
     }
   }
 
@@ -98,7 +99,7 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd aktualizacji zamówień')
-      console.error('Bulk update error:', error)
+      logger.error('Bulk update error', { error })
     }
   }
 

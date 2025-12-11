@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { logger } from '@/lib/logger'
 
 interface Material {
   id: string
@@ -144,7 +145,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Error creating report:', error)
+      logger.error('Error creating carbon report', { error })
       toast.error('Nie udało się utworzyć raportu')
     } finally {
       setIsSubmitting(false)

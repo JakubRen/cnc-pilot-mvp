@@ -8,6 +8,7 @@ import AppLayout from '@/components/layout/AppLayout'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import Link from 'next/link'
+import { logger } from '@/lib/logger'
 
 interface Cooperant {
   id: string
@@ -236,7 +237,7 @@ export default function SendToCooperationPage() {
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Error creating operation:', error)
+      logger.error('Error creating operation', { error })
       toast.error('Nie udało się utworzyć wysyłki')
     } finally {
       setIsSubmitting(false)

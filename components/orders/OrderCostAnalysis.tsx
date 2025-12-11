@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
+import { logger } from '@/lib/logger'
 
 interface TimeLog {
   id: string
@@ -114,7 +115,7 @@ export default function OrderCostAnalysis({
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Nie udało się zapisać ceny')
-      console.error(error)
+      logger.error('Error saving selling price', { error })
     } finally {
       setIsSaving(false)
     }

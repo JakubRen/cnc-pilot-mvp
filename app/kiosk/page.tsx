@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
+import { logger } from '@/lib/logger'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import KioskClient from './KioskClient'
@@ -30,7 +31,7 @@ export default async function KioskPage() {
     .single()
 
   if (timeLogError && timeLogError.code !== 'PGRST116') { // PGRST116 is 'No rows found'
-    console.error('Error fetching active time log:', timeLogError.message)
+    logger.error('Error fetching active time log', { error: timeLogError.message })
     // Handle error gracefully
   }
 
@@ -57,7 +58,7 @@ export default async function KioskPage() {
       .single()
 
     if (nextOrderError && nextOrderError.code !== 'PGRST116') {
-      console.error('Error fetching next order:', nextOrderError.message)
+      logger.error('Error fetching next order', { error: nextOrderError.message })
     }
 
     if (nextOrder) {

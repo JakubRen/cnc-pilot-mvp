@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 interface StaleTimer {
   id: string;
@@ -76,7 +77,7 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
 
       setStaleTimers(formatted);
     } catch (err) {
-      console.error('Failed to load stale timers:', err);
+      logger.error('Failed to load stale timers', { error: err });
     } finally {
       setLoading(false);
     }
@@ -96,7 +97,7 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
 
       setStaleTimers(prev => prev.filter(t => t.id !== timerId));
     } catch (err) {
-      console.error('Failed to stop timer:', err);
+      logger.error('Failed to stop timer', { error: err });
       alert('Failed to stop timer. Please try again.');
     }
   };

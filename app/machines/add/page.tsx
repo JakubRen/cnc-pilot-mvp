@@ -8,6 +8,8 @@ import AppLayout from '@/components/layout/AppLayout'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import Link from 'next/link'
+import { logger } from '@/lib/logger'
+import { sanitizeText } from '@/lib/sanitization'
 
 export default function AddMachinePage() {
   const router = useRouter()
@@ -47,6 +49,15 @@ export default function AddMachinePage() {
 
       if (!userProfile?.company_id) throw new Error('Brak firmy')
 
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedName = sanitizeText(name.trim())
+      const sanitizedCode = code ? sanitizeText(code) : null
+      const sanitizedSerialNumber = serialNumber ? sanitizeText(serialNumber) : null
+      const sanitizedManufacturer = manufacturer ? sanitizeText(manufacturer) : null
+      const sanitizedModel = model ? sanitizeText(model) : null
+      const sanitizedLocation = location ? sanitizeText(location) : null
+      const sanitizedNotes = notes ? sanitizeText(notes) : null
+
       // Calculate next maintenance date
       const intervalDays = parseInt(maintenanceInterval) || 90
       const nextMaintenanceDate = new Date()
@@ -56,17 +67,17 @@ export default function AddMachinePage() {
         .from('machines')
         .insert({
           company_id: userProfile.company_id,
-          name: name.trim(),
-          code: code || null,
-          serial_number: serialNumber || null,
-          manufacturer: manufacturer || null,
-          model: model || null,
-          location: location || null,
+          name: sanitizedName,
+          code: sanitizedCode,
+          serial_number: sanitizedSerialNumber,
+          manufacturer: sanitizedManufacturer,
+          model: sanitizedModel,
+          location: sanitizedLocation,
           purchase_date: purchaseDate || null,
           warranty_until: warrantyUntil || null,
           maintenance_interval_days: intervalDays,
           next_maintenance_date: nextMaintenanceDate.toISOString().split('T')[0],
-          notes: notes || null,
+          notes: sanitizedNotes,
           created_by: userProfile.id
         })
 
@@ -78,7 +89,7 @@ export default function AddMachinePage() {
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Error adding machine:', error)
+      logger.error('Error adding machine', { error })
       toast.error('Nie udało się dodać maszyny')
     } finally {
       setIsSubmitting(false)

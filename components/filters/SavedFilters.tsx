@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/logger'
 
 interface SavedFilter {
   id: string
@@ -58,7 +59,7 @@ export default function SavedFilters({
       if (error) throw error
       setSavedFilters(data || [])
     } catch (error) {
-      console.error('Error fetching saved filters:', error)
+      logger.error('Error fetching saved filters', { error })
     } finally {
       setLoading(false)
     }

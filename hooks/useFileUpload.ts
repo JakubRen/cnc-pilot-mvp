@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
 
 export interface UploadedFile {
@@ -62,7 +63,7 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
           })
 
         if (uploadError) {
-          console.error('Upload error:', uploadError)
+          logger.error('Upload error', { error: uploadError, filename: file.name })
           toast.error(`Błąd przesyłania: ${file.name}`)
           continue
         }
@@ -92,7 +93,7 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
           .single()
 
         if (dbError) {
-          console.error('Database error:', dbError)
+          logger.error('Database error', { error: dbError, filename: file.name })
           toast.error(`Błąd zapisu metadanych: ${file.name}`)
           continue
         }
@@ -112,7 +113,7 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
         onUploadComplete(uploadedFiles)
       }
     } catch (error) {
-      console.error('Upload error:', error)
+      logger.error('Upload error', { error })
       toast.error('Wystąpił błąd podczas przesyłania plików')
     } finally {
       setUploading(false)

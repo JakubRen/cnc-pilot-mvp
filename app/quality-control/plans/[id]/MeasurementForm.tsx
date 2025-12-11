@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { logger } from '@/lib/logger'
+import { sanitizeText } from '@/lib/sanitization'
 
 interface QCItem {
   id: string
@@ -72,6 +74,9 @@ export default function MeasurementForm({ planId, items, orders, userId, company
     const loadingToast = toast.loading('Zapisywanie pomiarów...')
 
     try {
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedBatchNumber = batchNumber ? sanitizeText(batchNumber) : null
+
       const measurementsToInsert = filledMeasurements.map(([itemId, value]) => {
         const item = items.find(i => i.id === itemId)!
         const numValue = parseFloat(value)
@@ -85,7 +90,7 @@ export default function MeasurementForm({ planId, items, orders, userId, company
           measured_value: numValue,
           is_pass: isPass,
           measured_by: userId,
-          batch_number: batchNumber || null,
+          batch_number: sanitizedBatchNumber,
           sample_number: parseInt(sampleNumber) || 1
         }
       })
@@ -113,7 +118,7 @@ export default function MeasurementForm({ planId, items, orders, userId, company
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Error saving measurements:', error)
+      logger.error('Error saving quality measurements', { error })
       toast.error('Nie udało się zapisać pomiarów')
     } finally {
       setIsSubmitting(false)

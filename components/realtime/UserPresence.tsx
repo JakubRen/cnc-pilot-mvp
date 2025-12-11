@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 
 interface PresenceUser {
   user_id: number;
@@ -27,10 +28,10 @@ export default function UserPresence({ companyId, userId }: UserPresenceProps) {
         setOnlineUsers(users)
       })
       .on('presence', { event: 'join' }, ({ newPresences }) => {
-        console.log('User joined:', newPresences)
+        logger.debug('User joined', { newPresences })
       })
       .on('presence', { event: 'leave' }, ({ leftPresences }) => {
-        console.log('User left:', leftPresences)
+        logger.debug('User left', { leftPresences })
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {

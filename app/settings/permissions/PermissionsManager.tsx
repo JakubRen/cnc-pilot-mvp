@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
+import { logger } from '@/lib/logger';
 
 type InterfaceMode = 'kiosk_only' | 'full_access' | 'both';
 
@@ -214,7 +215,7 @@ export default function PermissionsManager({
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error('Błąd zapisywania uprawnień');
-      console.error(error);
+      logger.error('Error saving user permissions', { error });
     } finally {
       setSaving(false);
     }

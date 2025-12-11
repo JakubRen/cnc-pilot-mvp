@@ -5,6 +5,7 @@ import { canAccessModule } from '@/lib/permissions-server';
 import AppLayout from '@/components/layout/AppLayout';
 import DashboardClient from '@/components/dashboard/DashboardClient';
 import { DashboardPreferences, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard';
+import { logger } from '@/lib/logger';
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -14,10 +15,10 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log('[HOME] User:', user ? `${user.id} (${user.email})` : 'null');
+  logger.debug('[HOME] User', { userId: user?.id, email: user?.email });
 
   if (!user) {
-    console.log('[HOME] No user - redirecting to /login');
+    logger.debug('[HOME] No user - redirecting to /login');
     redirect('/login');
   }
 
@@ -28,11 +29,11 @@ export default async function HomePage() {
     .eq('auth_id', user.id)
     .single();
 
-  console.log('[HOME] Current user:', currentUser ? `${currentUser.id} (company: ${currentUser.company_id})` : 'null');
-  console.log('[HOME] Query error:', error);
+  logger.debug('[HOME] Current user', { userId: currentUser?.id, companyId: currentUser?.company_id });
+  if (error) logger.error('[HOME] Query error', { error });
 
   if (!currentUser || !currentUser.company_id) {
-    console.log('[HOME] No currentUser or company_id - redirecting to /login');
+    logger.debug('[HOME] No currentUser or company_id - redirecting to /login');
     redirect('/login');
   }
 

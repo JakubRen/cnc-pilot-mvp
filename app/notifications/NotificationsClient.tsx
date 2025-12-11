@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import type { Notification } from '@/lib/notifications';
 import toast from 'react-hot-toast';
+import { logger } from '@/lib/logger';
 
 interface Props {
   notifications: Notification[];
@@ -36,7 +37,7 @@ export default function NotificationsClient({ notifications: initialNotification
         toast.error('Nie udało się oznaczyć powiadomienia');
       }
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      logger.error('Error marking notification as read', { error });
       toast.error('Wystąpił błąd');
     }
   };
@@ -57,7 +58,7 @@ export default function NotificationsClient({ notifications: initialNotification
         toast.error('Nie udało się oznaczyć powiadomień');
       }
     } catch (error) {
-      console.error('Error marking all as read:', error);
+      logger.error('Error marking all as read', { error });
       toast.error('Wystąpił błąd');
     }
   };

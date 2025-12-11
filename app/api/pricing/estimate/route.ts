@@ -3,9 +3,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { calculatePricing } from '@/lib/pricing-calculator'
 import type { PricingEstimateRequest } from '@/types/pricing'
+import { logger } from '@/lib/logger'
+import { rateLimit } from '@/lib/rate-limit'
+
+// Rate limiter: 20 requests per minute per IP
+const limiter = rateLimit({
+  interval: 60 * 1000, // 1 minute
+  uniqueTokenPerInterval: 500, // Max 500 unique IPs tracked
+})
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting - 20 requests per minute per IP
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'anonymous'
+
+    try {
+      await limiter.check(20, ip)
+    } catch {
+      return NextResponse.json(
+        { error: 'Zbyt wiele żądań. Spróbuj ponownie za chwilę.' },
+        { status: 429 }
+      )
+    }
+
     const body: PricingEstimateRequest = await request.json()
 
     // Validate required fields
@@ -37,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result, { status: 200 })
   } catch (error) {
-    console.error('Pricing calculation error:', error)
+    logger.error('Pricing calculation error', { error })
 
     return NextResponse.json(
       {

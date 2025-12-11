@@ -4,6 +4,7 @@
 import { cache } from 'react'
 import { createClient } from './supabase-server'
 import type { UserProfile } from './auth'
+import { logger } from '@/lib/logger'
 
 /**
  * Get user profile with role from database (SERVER-SIDE ONLY)
@@ -26,7 +27,7 @@ export const getUserProfile = cache(async (): Promise<UserProfile | null> => {
     .single()
 
   if (error || !profile) {
-    console.error('getUserProfile error:', error)
+    logger.error('getUserProfile error', { error })
     return null
   }
 

@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { usePermissions } from '@/hooks/usePermissions';
 import { PriceDisplay } from '@/components/permissions';
+import { logger } from '@/lib/logger';
 
 interface TimeLog {
   id: string;
@@ -61,7 +62,7 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
 
       router.refresh();
     } catch (error) {
-      console.error('Error deleting time log:', error);
+      logger.error('Error deleting time log', { error });
       alert('Nie udało się usunąć wpisu.');
     }
   };

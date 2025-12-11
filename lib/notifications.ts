@@ -1,6 +1,7 @@
 // Notification utilities
 
 import { createClient } from '@/lib/supabase-server';
+import { logger } from '@/lib/logger';
 
 export interface Notification {
   id: string;
@@ -31,7 +32,7 @@ export async function getUnreadNotifications(
     .limit(10);
 
   if (error) {
-    console.error('Error fetching notifications:', error);
+    logger.error('Error fetching notifications', { error });
     return [];
   }
 
@@ -56,7 +57,7 @@ export async function getAllNotifications(
     .range(offset, offset + limit - 1);
 
   if (error) {
-    console.error('Error fetching notifications:', error);
+    logger.error('Error fetching notifications', { error });
     return [];
   }
 
@@ -79,12 +80,12 @@ export async function markNotificationAsRead(
     .eq('company_id', companyId);
 
   if (error) {
-    console.error('Error marking notification as read:', error);
+    logger.error('Error marking notification as read', { error });
     return false;
   }
 
   if (count === 0) {
-    console.warn('Notification not found or access denied:', notificationId);
+    logger.warn('Notification not found or access denied', { notificationId });
     return false;
   }
 
@@ -106,7 +107,7 @@ export async function markAllNotificationsAsRead(
     .eq('read', false);
 
   if (error) {
-    console.error('Error marking all notifications as read:', error);
+    logger.error('Error marking all notifications as read', { error });
     return false;
   }
 
@@ -134,7 +135,7 @@ export async function createNotification(
   });
 
   if (error) {
-    console.error('Error creating notification:', error);
+    logger.error('Error creating notification', { error });
     return false;
   }
 
@@ -156,7 +157,7 @@ export async function getUnreadCount(
     .eq('read', false);
 
   if (error) {
-    console.error('Error getting unread count:', error);
+    logger.error('Error getting unread count', { error });
     return 0;
   }
 

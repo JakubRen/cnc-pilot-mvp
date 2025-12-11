@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { logger } from '@/lib/logger';
 
 export default function PendingActivationPage() {
   const [userEmail, setUserEmail] = useState<string>('');
@@ -37,7 +38,7 @@ export default function PendingActivationPage() {
         .single();
 
       if (error) {
-        console.error('Error checking user status:', error);
+        logger.error('Error checking user status', { error });
         return;
       }
 
@@ -46,7 +47,7 @@ export default function PendingActivationPage() {
         router.push('/');
       }
     } catch (error) {
-      console.error('Error:', error);
+      logger.error('Error in checkUserStatus', { error });
     } finally {
       setLoading(false);
     }

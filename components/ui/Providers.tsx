@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import { TranslationProvider } from '@/hooks/useTranslation';
 import { PermissionsProvider } from '@/hooks/usePermissions';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ErrorBoundary } from './ErrorBoundary';
 import type { UserPermissionsMap } from '@/types/permissions';
 
 interface ProvidersProps {

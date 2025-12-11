@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/logger'
 
 interface NotificationPreferences {
   email_enabled: boolean
@@ -72,7 +73,7 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
     } catch (err) {
       toast.dismiss(loadingToast)
       toast.error('Błąd podczas zapisywania')
-      console.error(err)
+      logger.error('Error saving notification preferences', { error: err })
     } finally {
       setSaving(false)
     }

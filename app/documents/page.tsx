@@ -11,6 +11,7 @@ import AppLayout from '@/components/layout/AppLayout'
 import EmptyState from '@/components/ui/EmptyState'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/badge'
+import { logger } from '@/lib/logger'
 
 export const metadata = {
   title: 'Wydania | CNC Pilot',
@@ -45,7 +46,7 @@ export default async function DocumentsPage() {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Error fetching documents:', error)
+    logger.error('Error fetching documents', { error })
   }
 
   const getDocTypeBadge = (type: string) => {

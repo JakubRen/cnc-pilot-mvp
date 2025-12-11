@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { validateTimeRange } from '@/lib/time-utils';
+import { logger } from '@/lib/logger';
 
 interface TimeLog {
   id: string;
@@ -86,7 +87,7 @@ export default function EditTimeLogForm({ timeLog, orders }: Props) {
     } catch (err: unknown) {
       const error = err as Error | null
       setError(error?.message || 'Failed to update time log');
-      console.error('Update error:', err);
+      logger.error('Update error', { error: err });
     } finally {
       setLoading(false);
     }

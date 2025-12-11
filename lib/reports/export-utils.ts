@@ -29,7 +29,7 @@ export function formatCurrencyForExport(amount: number, currency = 'PLN'): strin
 }
 
 // Download JSON
-export function downloadJSON(data: any, filename: string) {
+export function downloadJSON(data: unknown, filename: string) {
   const json = JSON.stringify(data, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
   saveAs(blob, `${filename}.json`);

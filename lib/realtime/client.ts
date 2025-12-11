@@ -1,9 +1,13 @@
 // Supabase Realtime Client - Subscriptions
 import { supabase } from '@/lib/supabase'
+import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js'
+import { logger } from '@/lib/logger'
+
+type RealtimePayload = RealtimePostgresChangesPayload<Record<string, unknown>>
 
 export function subscribeToOrders(
   companyId: string,
-  callback: (payload: any) => void
+  callback: (payload: RealtimePayload) => void
 ) {
   return supabase
     .channel('orders-changes')
@@ -19,17 +23,17 @@ export function subscribeToOrders(
     )
     .subscribe((status, err) => {
       if (status === 'SUBSCRIBED') {
-        console.log('Realtime: subscribed to orders')
+        logger.info('Realtime: subscribed to orders')
       }
       if (status === 'CHANNEL_ERROR' || err) {
-        console.error('Realtime orders subscription error:', { status, err })
+        logger.error('Realtime orders subscription error', { status, error: err })
       }
     })
 }
 
 export function subscribeToNotifications(
   userId: number,
-  callback: (payload: any) => void
+  callback: (payload: RealtimePayload) => void
 ) {
   return supabase
     .channel('notifications-changes')
@@ -45,17 +49,17 @@ export function subscribeToNotifications(
     )
     .subscribe((status, err) => {
       if (status === 'SUBSCRIBED') {
-        console.log('Realtime: subscribed to notifications')
+        logger.info('Realtime: subscribed to notifications')
       }
       if (status === 'CHANNEL_ERROR' || err) {
-        console.error('Realtime notifications subscription error:', { status, err })
+        logger.error('Realtime notifications subscription error', { status, error: err })
       }
     })
 }
 
 export function subscribeToTimeLogs(
   companyId: string,
-  callback: (payload: any) => void
+  callback: (payload: RealtimePayload) => void
 ) {
   return supabase
     .channel('time-logs-changes')
@@ -71,17 +75,17 @@ export function subscribeToTimeLogs(
     )
     .subscribe((status, err) => {
       if (status === 'SUBSCRIBED') {
-        console.log('Realtime: subscribed to time_logs')
+        logger.info('Realtime: subscribed to time_logs')
       }
       if (status === 'CHANNEL_ERROR' || err) {
-        console.error('Realtime time_logs subscription error:', { status, err })
+        logger.error('Realtime time_logs subscription error', { status, error: err })
       }
     })
 }
 
 export function subscribeToInventory(
   companyId: string,
-  callback: (payload: any) => void
+  callback: (payload: RealtimePayload) => void
 ) {
   return supabase
     .channel('inventory-changes')
@@ -97,10 +101,10 @@ export function subscribeToInventory(
     )
     .subscribe((status, err) => {
       if (status === 'SUBSCRIBED') {
-        console.log('Realtime: subscribed to inventory')
+        logger.info('Realtime: subscribed to inventory')
       }
       if (status === 'CHANNEL_ERROR' || err) {
-        console.error('Realtime inventory subscription error:', { status, err })
+        logger.error('Realtime inventory subscription error', { status, error: err })
       }
     })
 }

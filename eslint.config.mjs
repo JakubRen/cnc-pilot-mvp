@@ -32,6 +32,8 @@ const eslintConfig = defineConfig([
       "react-hooks/static-components": "warn",
       // General JS rules
       "prefer-const": "warn",
+      // Console statements - error for .log/.info/.debug, allow warn/error
+      "no-console": ["error", { "allow": ["warn", "error"] }],
     },
   },
 ]);

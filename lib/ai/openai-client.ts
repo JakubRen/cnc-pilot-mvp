@@ -1,5 +1,6 @@
 // OpenAI Client for AI-powered features
 import OpenAI from 'openai'
+import { logger } from '@/lib/logger'
 
 // Initialize OpenAI client (will use OPENAI_API_KEY from env)
 const openai = new OpenAI({
@@ -110,7 +111,7 @@ Respond ONLY with valid JSON in this exact format:
 
     return result
   } catch (error) {
-    console.error('OpenAI API error:', error)
+    logger.error('OpenAI API error', { error })
 
     // Fallback to simple heuristic estimation
     const complexityMultiplier = {
@@ -140,7 +141,16 @@ Respond ONLY with valid JSON in this exact format:
   }
 }
 
-export async function generateOrderSummary(orderId: string, orderDetails: any): Promise<string> {
+export interface OrderDetails {
+  customerName: string
+  partName: string
+  material: string
+  quantity: number
+  status: string
+  deadline: string
+}
+
+export async function generateOrderSummary(orderId: string, orderDetails: OrderDetails): Promise<string> {
   const prompt = `
 Generate a professional order summary for this CNC manufacturing order:
 
@@ -174,7 +184,7 @@ Write a concise 2-3 sentence summary suitable for email or export.
 
     return response.choices[0]?.message?.content || 'Order summary unavailable.'
   } catch (error) {
-    console.error('OpenAI API error:', error)
+    logger.error('OpenAI API error', { error })
     return `Order #${orderId} for ${orderDetails.customerName}: ${orderDetails.partName} (${orderDetails.material}, qty: ${orderDetails.quantity}). Due by ${orderDetails.deadline}.`
   }
 }

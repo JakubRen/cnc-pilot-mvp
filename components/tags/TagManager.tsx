@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/logger'
 
 interface Tag {
   id: string
@@ -64,7 +65,7 @@ export default function TagManager() {
       if (error) throw error
       setTags(data || [])
     } catch (error) {
-      console.error('Error fetching tags:', error)
+      logger.error('Error fetching tags', { error })
       toast.error('Błąd ładowania tagów')
     } finally {
       setLoading(false)

@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 interface TimerProps {
   orderId: string;
@@ -95,7 +96,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
         setStatus(data.status as 'running' | 'paused');
       }
     } catch (err) {
-      console.error('Failed to load active timer:', err);
+      logger.error('Failed to load active timer', { error: err });
     }
   };
 
@@ -111,7 +112,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
         })
         .eq('id', currentLogId);
     } catch (err) {
-      console.error('Auto-save failed:', err);
+      logger.error('Auto-save failed', { error: err });
     }
   };
 
@@ -173,7 +174,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to start timer';
       setError(message);
-      console.error('Start timer error:', err);
+      logger.error('Start timer error', { error: err });
     } finally {
       setLoading(false);
     }
@@ -200,7 +201,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to pause timer';
       setError(message);
-      console.error('Pause timer error:', err);
+      logger.error('Pause timer error', { error: err });
     } finally {
       setLoading(false);
     }
@@ -224,7 +225,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to resume timer';
       setError(message);
-      console.error('Resume timer error:', err);
+      logger.error('Resume timer error', { error: err });
     } finally {
       setLoading(false);
     }
@@ -254,7 +255,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to stop timer';
       setError(message);
-      console.error('Stop timer error:', err);
+      logger.error('Stop timer error', { error: err });
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 // Email Client using Nodemailer
 import nodemailer from 'nodemailer'
+import { logger } from '@/lib/logger'
 
 // Create reusable transporter
 const transporter = nodemailer.createTransport({
@@ -35,10 +36,10 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
       attachments: options.attachments,
     })
 
-    console.log('Email sent:', info.messageId)
+    logger.info('Email sent', { messageId: info.messageId })
     return true
   } catch (error) {
-    console.error('Email send error:', error)
+    logger.error('Email send error', { error })
     return false
   }
 }

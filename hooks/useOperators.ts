@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 interface Operator {
   id: number;
@@ -51,7 +52,7 @@ export function useOperators() {
 
         setOperators(data || []);
       } catch (err) {
-        console.error('Error fetching operators:', err);
+        logger.error('Error fetching operators', { error: err });
         setError(err instanceof Error ? err.message : 'Failed to fetch operators');
       } finally {
         setLoading(false);

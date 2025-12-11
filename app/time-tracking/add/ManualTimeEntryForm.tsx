@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { validateTimeRange } from '@/lib/time-utils';
+import { logger } from '@/lib/logger';
 
 interface Order {
   id: string;
@@ -87,7 +88,7 @@ export default function ManualTimeEntryForm({
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to create time entry';
       setError(message);
-      console.error('Create error:', err);
+      logger.error('Create error', { error: err });
     } finally {
       setLoading(false);
     }

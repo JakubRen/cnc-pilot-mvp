@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
+import { logger } from '@/lib/logger'
 
 interface Props {
   documentId: string
@@ -43,7 +44,7 @@ export default function DeleteButton({ documentId, documentNumber, companyId }: 
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd usuwania: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Error deleting document', { error })
     } finally {
       setIsDeleting(false)
     }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { customToast } from '@/lib/toast'
+import { logger } from '@/lib/logger'
 
 interface UseAutosaveOptions<T> {
   data: T
@@ -55,7 +56,7 @@ export function useAutosave<T>({
         })
       }
     } catch (error) {
-      console.error('Autosave failed:', error)
+      logger.error('Autosave failed', { error })
       if (showToast) {
         customToast.error('Nie udało się zapisać zmian')
       }
@@ -113,7 +114,7 @@ export function useAutosave<T>({
           const parsed = JSON.parse(saved)
           savedDataRef.current = parsed
         } catch (error) {
-          console.error('Failed to restore from localStorage:', error)
+          logger.error('Failed to restore from localStorage', { error })
         }
       }
     }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
+import { logger } from '@/lib/logger'
 
 export interface FileBrowserFile {
   id: string
@@ -59,7 +60,7 @@ export default function FileBrowser({ files, onFileDeleted }: FileBrowserProps) 
 
       toast.success('Plik pobierany!')
     } catch (error) {
-      console.error('Download error:', error)
+      logger.error('Download error', { error })
       toast.error('Błąd pobierania pliku')
     }
   }
@@ -91,7 +92,7 @@ export default function FileBrowser({ files, onFileDeleted }: FileBrowserProps) 
       onFileDeleted?.()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Delete error:', error)
+      logger.error('Delete error', { error })
       toast.error('Błąd usuwania pliku')
     }
   }

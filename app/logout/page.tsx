@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { signOut } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 export default function LogoutPage() {
   useEffect(() => {
@@ -9,7 +10,7 @@ export default function LogoutPage() {
       try {
         await signOut();
       } catch (error) {
-        console.error('Logout error:', error);
+        logger.error('Logout error', { error });
       }
       // Clear permissions cache
       localStorage.removeItem('cnc-pilot-permissions');

@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from 'react-hot-toast'
-import { Providers } from '@/components/Providers'
-import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
+import { Providers } from '@/components/ui/Providers'
+import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp'
 import "./globals.css";
 
 const geistSans = Geist({

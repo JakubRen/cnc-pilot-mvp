@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 
 interface Tag {
   id: string
@@ -50,7 +51,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       if (error) throw error
       setTags(data || [])
     } catch (error) {
-      console.error('Error fetching tags:', error)
+      logger.error('Error fetching tags', { error })
     }
   }
 

@@ -3,7 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
+import { sanitizeText } from '@/lib/sanitization'
 
 interface InventoryItem {
   id: string
@@ -105,6 +107,10 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
         p_document_type: documentType
       })
 
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedContractor = sanitizeText(contractor)
+      const sanitizedDescription = description ? sanitizeText(description) : null
+
       // Wstaw dokument
       const { data: doc, error: docError } = await supabase
         .from('warehouse_documents')
@@ -112,8 +118,8 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
           company_id: companyId,
           document_type: documentType,
           document_number: docNumber,
-          contractor,
-          description,
+          contractor: sanitizedContractor,
+          description: sanitizedDescription,
           status: 'draft',
           created_by: userId
         })
@@ -130,7 +136,7 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
             document_id: doc.id,
             inventory_id: item.inventory_id,
             quantity: item.quantity,
-            notes: item.notes || null
+            notes: item.notes ? sanitizeText(item.notes) : null
           }))
         )
 
@@ -144,7 +150,7 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd zapisu: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Document operation error', { error })
     } finally {
       setIsSubmitting(false)
     }
@@ -172,6 +178,10 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
         p_document_type: documentType
       })
 
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedContractor = sanitizeText(contractor)
+      const sanitizedDescription = description ? sanitizeText(description) : null
+
       // Wstaw dokument jako confirmed
       const { data: doc, error: docError } = await supabase
         .from('warehouse_documents')
@@ -179,8 +189,8 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
           company_id: companyId,
           document_type: documentType,
           document_number: docNumber,
-          contractor,
-          description,
+          contractor: sanitizedContractor,
+          description: sanitizedDescription,
           status: 'confirmed', // Natychmiast zatwierdzony → trigger zaktualizuje stany
           created_by: userId
         })
@@ -197,7 +207,7 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
             document_id: doc.id,
             inventory_id: item.inventory_id,
             quantity: item.quantity,
-            notes: item.notes || null
+            notes: item.notes ? sanitizeText(item.notes) : null
           }))
         )
 
@@ -211,7 +221,7 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd zapisu: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Document operation error', { error })
     } finally {
       setIsSubmitting(false)
     }

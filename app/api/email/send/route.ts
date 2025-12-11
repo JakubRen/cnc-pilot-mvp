@@ -17,6 +17,14 @@ import {
   StockAlertData,
   TeamInviteData,
 } from '@/lib/email'
+import { logger } from '@/lib/logger'
+import { rateLimit } from '@/lib/rate-limit'
+
+// Rate limiter: 10 email sends per minute per user
+const limiter = rateLimit({
+  interval: 60 * 1000, // 1 minute
+  uniqueTokenPerInterval: 300, // Max 300 users tracked
+})
 
 interface SendEmailRequest {
   type: EmailType
@@ -32,6 +40,16 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Rate limiting - 10 requests per minute per user
+    try {
+      await limiter.check(10, user.id)
+    } catch {
+      return NextResponse.json(
+        { error: 'Zbyt wiele emaili wysłanych. Poczekaj chwilę.' },
+        { status: 429 }
+      )
     }
 
     // Get user profile and company
@@ -108,7 +126,7 @@ export async function POST(req: NextRequest) {
       results,
     })
   } catch (error) {
-    console.error('[API/EMAIL] Error:', error)
+    logger.error('[API/EMAIL] Error', { error })
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }

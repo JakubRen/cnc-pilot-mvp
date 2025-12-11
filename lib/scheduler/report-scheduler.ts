@@ -2,9 +2,72 @@
 import cron from 'node-cron'
 import { sendEmail, reportEmail } from '../email/email-client'
 import { createClient } from '@/lib/supabase-server'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { logger } from '@/lib/logger'
 
 // Scheduled report types
 type ReportType = 'orders' | 'inventory' | 'time' | 'revenue' | 'productivity'
+
+// Report filter types
+interface OrderFilters {
+  status?: 'pending' | 'in_progress' | 'completed' | 'delayed' | 'cancelled'
+  dateFrom?: string
+  dateTo?: string
+  customer?: string
+}
+
+interface InventoryFilters {
+  category?: string
+  lowStockOnly?: boolean
+}
+
+interface TimeFilters {
+  dateFrom: string
+  dateTo: string
+  userId?: number
+}
+
+interface RevenueFilters {
+  dateFrom?: string
+  dateTo?: string
+}
+
+interface ProductivityFilters {
+  dateFrom?: string
+  dateTo?: string
+  userId?: number
+}
+
+type ReportFilters = OrderFilters | InventoryFilters | TimeFilters | RevenueFilters | ProductivityFilters
+
+// Report data types
+interface OrdersReportData {
+  totalOrders: number
+  completedOrders: number
+  pendingOrders: number
+}
+
+interface InventoryReportData {
+  totalItems: number
+  lowStockItems: number
+}
+
+interface TimeReportData {
+  totalHours: number
+  activeSessions: number
+}
+
+interface RevenueReportData {
+  totalRevenue: number
+  averageOrderValue: number
+}
+
+interface ProductivityReportData {
+  totalEmployees: number
+  averageEfficiency: number
+}
+
+type ReportData = OrdersReportData | InventoryReportData | TimeReportData | RevenueReportData | ProductivityReportData
 
 interface ScheduledReport {
   id: string
@@ -16,7 +79,7 @@ interface ScheduledReport {
   dayOfWeek?: number // 0-6 (Sunday-Saturday)
   dayOfMonth?: number // 1-31
   timeOfDay: string // HH:MM format
-  filters?: any
+  filters?: ReportFilters
   isActive: boolean
   nextSendAt: string
 }
@@ -36,7 +99,7 @@ export async function initializeScheduler() {
     .eq('is_active', true)
 
   if (error) {
-    console.error('Error loading scheduled reports:', error)
+    logger.error('Error loading scheduled reports', { error })
     return
   }
 
@@ -44,7 +107,7 @@ export async function initializeScheduler() {
     scheduleReport(report as ScheduledReport)
   })
 
-  console.log(`✅ Initialized ${reports?.length || 0} scheduled reports`)
+  logger.info(`Initialized ${reports?.length || 0} scheduled reports`)
 }
 
 /**
@@ -64,7 +127,7 @@ export function scheduleReport(report: ScheduledReport) {
   })
 
   activeJobs.set(report.id, task)
-  console.log(`📅 Scheduled report: ${report.name} (${cronExpression})`)
+  logger.info(`Scheduled report: ${report.name} (${cronExpression})`)
 }
 
 /**
@@ -74,7 +137,7 @@ export function unscheduleReport(reportId: string) {
   if (activeJobs.has(reportId)) {
     activeJobs.get(reportId)?.stop()
     activeJobs.delete(reportId)
-    console.log(`🛑 Unscheduled report: ${reportId}`)
+    logger.info(`Unscheduled report: ${reportId}`)
   }
 }
 
@@ -108,38 +171,38 @@ function getCronExpression(report: ScheduledReport): string {
  * Execute a report and send via email
  */
 async function executeReport(report: ScheduledReport) {
-  console.log(`📊 Executing report: ${report.name}`)
+  logger.info(`Executing report: ${report.name}`)
 
   try {
     const supabase = await createClient()
 
     // Generate report data based on type
-    let reportData: any
+    let reportData: ReportData
     let summary: string
 
     switch (report.reportType) {
       case 'orders':
-        reportData = await generateOrdersReport(supabase, report.companyId, report.filters)
+        reportData = await generateOrdersReport(supabase, report.companyId, report.filters as OrderFilters | undefined)
         summary = `Wygenerowano raport zamówień: ${reportData.totalOrders} zamówień, ${reportData.completedOrders} ukończonych, ${reportData.pendingOrders} w toku.`
         break
 
       case 'inventory':
-        reportData = await generateInventoryReport(supabase, report.companyId, report.filters)
+        reportData = await generateInventoryReport(supabase, report.companyId, report.filters as InventoryFilters | undefined)
         summary = `Raport magazynu: ${reportData.totalItems} pozycji, ${reportData.lowStockItems} z niskim stanem.`
         break
 
       case 'time':
-        reportData = await generateTimeReport(supabase, report.companyId, report.filters)
+        reportData = await generateTimeReport(supabase, report.companyId, report.filters as TimeFilters | undefined)
         summary = `Raport czasu pracy: ${reportData.totalHours.toFixed(1)} godzin, ${reportData.activeSessions} aktywnych sesji.`
         break
 
       case 'revenue':
-        reportData = await generateRevenueReport(supabase, report.companyId, report.filters)
+        reportData = await generateRevenueReport(supabase, report.companyId, report.filters as RevenueFilters | undefined)
         summary = `Raport przychodów: ${reportData.totalRevenue.toFixed(2)} PLN, średnia wartość zamówienia: ${reportData.averageOrderValue.toFixed(2)} PLN.`
         break
 
       case 'productivity':
-        reportData = await generateProductivityReport(supabase, report.companyId, report.filters)
+        reportData = await generateProductivityReport(supabase, report.companyId, report.filters as ProductivityFilters | undefined)
         summary = `Raport produktywności: ${reportData.totalEmployees} pracowników, średnia wydajność: ${reportData.averageEfficiency.toFixed(1)}%.`
         break
 
@@ -182,9 +245,9 @@ async function executeReport(report: ScheduledReport) {
       })
       .eq('id', report.id)
 
-    console.log(`✅ Report sent: ${report.name} to ${report.recipients.length} recipients`)
+    logger.info(`Report sent: ${report.name} to ${report.recipients.length} recipients`)
   } catch (error) {
-    console.error(`❌ Error executing report ${report.name}:`, error)
+    logger.error(`Error executing report ${report.name}`, { error })
 
     // TODO: Log error to database or send alert
   }
@@ -228,40 +291,54 @@ function calculateNextSendTime(report: ScheduledReport): string {
 }
 
 // Report generation functions
-async function generateOrdersReport(supabase: any, companyId: string, filters: any) {
+async function generateOrdersReport(supabase: SupabaseClient, companyId: string, filters?: OrderFilters): Promise<OrdersReportData> {
   const { data: orders } = await supabase
     .from('orders')
     .select('*')
     .eq('company_id', companyId)
 
+  interface Order {
+    status: string
+  }
+
   return {
     totalOrders: orders?.length || 0,
-    completedOrders: orders?.filter((o: any) => o.status === 'completed').length || 0,
-    pendingOrders: orders?.filter((o: any) => o.status === 'in_progress').length || 0,
+    completedOrders: orders?.filter((o: Order) => o.status === 'completed').length || 0,
+    pendingOrders: orders?.filter((o: Order) => o.status === 'in_progress').length || 0,
   }
 }
 
-async function generateInventoryReport(supabase: any, companyId: string, filters: any) {
+async function generateInventoryReport(supabase: SupabaseClient, companyId: string, filters?: InventoryFilters): Promise<InventoryReportData> {
   const { data: items } = await supabase
     .from('inventory')
     .select('*')
     .eq('company_id', companyId)
 
+  interface InventoryItem {
+    quantity: number
+    low_stock_threshold: number
+  }
+
   return {
     totalItems: items?.length || 0,
-    lowStockItems: items?.filter((i: any) => i.quantity < i.low_stock_threshold).length || 0,
+    lowStockItems: items?.filter((i: InventoryItem) => i.quantity < i.low_stock_threshold).length || 0,
   }
 }
 
-async function generateTimeReport(supabase: any, companyId: string, filters: any) {
+async function generateTimeReport(supabase: SupabaseClient, companyId: string, filters?: TimeFilters): Promise<TimeReportData> {
   const { data: timeLogs } = await supabase
     .from('time_logs')
     .select('*')
     .eq('company_id', companyId)
     .eq('status', 'completed')
 
+  interface TimeLog {
+    start_time: string | null
+    end_time: string | null
+  }
+
   const totalHours =
-    timeLogs?.reduce((sum: number, log: any) => {
+    timeLogs?.reduce((sum: number, log: TimeLog) => {
       if (log.end_time && log.start_time) {
         const hours = (new Date(log.end_time).getTime() - new Date(log.start_time).getTime()) / 3600000
         return sum + hours
@@ -275,14 +352,18 @@ async function generateTimeReport(supabase: any, companyId: string, filters: any
   }
 }
 
-async function generateRevenueReport(supabase: any, companyId: string, filters: any) {
+async function generateRevenueReport(supabase: SupabaseClient, companyId: string, filters?: RevenueFilters): Promise<RevenueReportData> {
   const { data: orders } = await supabase
     .from('orders')
     .select('total_cost')
     .eq('company_id', companyId)
     .not('total_cost', 'is', null)
 
-  const totalRevenue = orders?.reduce((sum: number, o: any) => sum + (o.total_cost || 0), 0) || 0
+  interface Order {
+    total_cost: number | null
+  }
+
+  const totalRevenue = orders?.reduce((sum: number, o: Order) => sum + (o.total_cost || 0), 0) || 0
   const averageOrderValue = orders && orders.length > 0 ? totalRevenue / orders.length : 0
 
   return {
@@ -291,7 +372,7 @@ async function generateRevenueReport(supabase: any, companyId: string, filters: 
   }
 }
 
-async function generateProductivityReport(supabase: any, companyId: string, filters: any) {
+async function generateProductivityReport(supabase: SupabaseClient, companyId: string, filters?: ProductivityFilters): Promise<ProductivityReportData> {
   const { data: users } = await supabase
     .from('users')
     .select('id')

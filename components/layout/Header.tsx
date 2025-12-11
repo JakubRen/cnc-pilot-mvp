@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import NotificationBell from './NotificationBell';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import { useTranslation } from '@/hooks/useTranslation';
+import { logger } from '@/lib/logger';
 
 interface HeaderProps {
   isSidebarOpen?: boolean;
@@ -31,7 +32,7 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
             .single();
 
           if (error) {
-            console.error('Error fetching profile:', error);
+            logger.error('Error fetching profile', { error });
             setUserName(user.email || 'User');
             setUserRole('operator');
             return;
@@ -46,7 +47,7 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
           }
         }
       } catch (error) {
-        console.error('Error in fetchUserProfile:', error);
+        logger.error('Error in fetchUserProfile', { error });
         setUserName('User');
         setUserRole('operator');
       }

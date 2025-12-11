@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
+import { logger } from '@/lib/logger'
 
 interface GenerateClientLinkProps {
   customerName: string
@@ -38,7 +39,7 @@ export default function GenerateClientLink({ customerName }: GenerateClientLinkP
         toast.success('Link wygenerowany pomyślnie!')
       }
     } catch (error) {
-      console.error('Error generating link:', error)
+      logger.error('Error generating client portal link', { error })
       toast.error('Nie udało się wygenerować linku')
     } finally {
       setIsLoading(false)

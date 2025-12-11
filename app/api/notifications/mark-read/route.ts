@@ -4,6 +4,7 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
 } from '@/lib/notifications';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
       );
     }
   } catch (error) {
-    console.error('Error in mark-read API:', error);
+    logger.error('Error in mark-read API', { error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

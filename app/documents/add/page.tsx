@@ -8,6 +8,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import AddDocumentForm from './AddDocumentForm'
+import { logger } from '@/lib/logger'
 
 export const metadata = {
   title: 'Nowy Dokument | CNC Pilot',
@@ -30,7 +31,7 @@ export default async function AddDocumentPage() {
     .order('name', { ascending: true })
 
   if (error) {
-    console.error('Error fetching inventory:', error)
+    logger.error('Error fetching inventory', { error })
   }
 
   return (

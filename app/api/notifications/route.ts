@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getUserProfile } from '@/lib/auth-server';
 import { getUnreadNotifications, getAllNotifications, getUnreadCount } from '@/lib/notifications';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: Request) {
   try {
@@ -33,7 +34,7 @@ export async function GET(request: Request) {
       unread_count: unreadCount,
     });
   } catch (error) {
-    console.error('Error in notifications API:', error);
+    logger.error('Error in notifications API', { error });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

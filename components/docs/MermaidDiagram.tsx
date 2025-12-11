@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import mermaid from 'mermaid'
+import { logger } from '@/lib/logger'
 
 interface MermaidDiagramProps {
   chart: string
@@ -35,7 +36,7 @@ export default function MermaidDiagram({ chart }: MermaidDiagramProps) {
             containerRef.current.innerHTML = svg
           }
         } catch (error) {
-          console.error('Mermaid rendering error:', error)
+          logger.error('Mermaid rendering error', { error })
           if (containerRef.current) {
             containerRef.current.innerHTML = `<pre className="text-red-400">${chart}</pre>`
           }

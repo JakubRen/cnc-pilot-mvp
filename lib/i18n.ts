@@ -90,13 +90,13 @@ export function getLocale(): Locale {
 
 export function t(key: string): string {
   const keys = key.split('.')
-  let value: any = translations[getLocale()]
+  let value: unknown = translations[getLocale()]
 
   for (const k of keys) {
-    value = value?.[k]
+    value = (value as Record<string, unknown>)?.[k]
   }
 
-  return value || key
+  return (typeof value === 'string' ? value : key)
 }
 
 // React hook

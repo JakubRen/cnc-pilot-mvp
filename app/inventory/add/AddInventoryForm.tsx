@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useTranslation } from '@/hooks/useTranslation'
 import { usePermissions } from '@/hooks/usePermissions'
+import { sanitizeText } from '@/lib/sanitization'
 
 type InventoryFormData = {
   sku: string
@@ -85,11 +86,23 @@ export default function AddInventoryForm() {
       return
     }
 
+    // Sanitize user inputs to prevent XSS attacks
+    const sanitizedData = {
+      ...data,
+      sku: sanitizeText(data.sku),
+      name: sanitizeText(data.name),
+      description: data.description ? sanitizeText(data.description) : null,
+      location: data.location ? sanitizeText(data.location) : null,
+      supplier: data.supplier ? sanitizeText(data.supplier) : null,
+      batch_number: data.batch_number ? sanitizeText(data.batch_number) : null,
+      notes: data.notes ? sanitizeText(data.notes) : null,
+    }
+
     // Create inventory item
     const { data: newItem, error: itemError } = await supabase
       .from('inventory')
       .insert({
-        ...data,
+        ...sanitizedData,
         quantity: Number(data.quantity),
         low_stock_threshold: Number(data.low_stock_threshold),
         unit_cost: data.unit_cost ? Number(data.unit_cost) : null,

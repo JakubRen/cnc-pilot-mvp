@@ -5,6 +5,7 @@ import { cache } from 'react';
 import { createClient } from './supabase-server';
 import { getUserProfile } from './auth-server';
 import type { UserPermissionsMap, AppModule, PermissionCode } from '@/types/permissions';
+import { logger } from '@/lib/logger';
 
 /**
  * Pobiera uprawnienia użytkownika (SERVER-SIDE)
@@ -26,7 +27,7 @@ export const getUserPermissions = cache(async (): Promise<UserPermissionsMap> =>
     .eq('role', userProfile.role);
 
   if (roleError) {
-    console.error('Error fetching role permissions:', roleError);
+    logger.error('Error fetching role permissions', { error: roleError });
   }
 
   // 2. Pobierz nadpisania dla tego użytkownika
@@ -36,7 +37,7 @@ export const getUserPermissions = cache(async (): Promise<UserPermissionsMap> =>
     .eq('user_id', userProfile.id);
 
   if (overrideError) {
-    console.error('Error fetching user overrides:', overrideError);
+    logger.error('Error fetching user overrides', { error: overrideError });
   }
 
   // 3. Zbuduj mapę uprawnień

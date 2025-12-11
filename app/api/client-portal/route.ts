@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 
 // POST - Generate new token for customer
 export async function POST(request: NextRequest) {
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) {
-      console.error('Error creating token:', error)
+      logger.error('Error creating token', { error })
       return NextResponse.json({ error: 'Failed to create token' }, { status: 500 })
     }
 
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest) {
       existing: false
     })
   } catch (error) {
-    console.error('Client portal API error:', error)
+    logger.error('Client portal API error', { error })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -92,7 +93,7 @@ export async function GET() {
 
     return NextResponse.json({ tokens })
   } catch (error) {
-    console.error('Client portal API error:', error)
+    logger.error('Client portal API error', { error })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -127,7 +128,7 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Client portal API error:', error)
+    logger.error('Client portal API error', { error })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

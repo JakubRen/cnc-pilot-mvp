@@ -13,6 +13,7 @@ import {
   useMemo,
 } from 'react';
 import { supabase } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 import type {
   UserPermissionsMap,
   PermissionsContextType,
@@ -106,7 +107,7 @@ export function PermissionsProvider({
         .single();
 
       if (profileError || !profile) {
-        console.error('Error fetching user profile:', profileError);
+        logger.error('Error fetching user profile', { error: profileError });
         setPermissions({});
         return;
       }
@@ -118,7 +119,7 @@ export function PermissionsProvider({
         .eq('role', profile.role);
 
       if (roleError) {
-        console.error('Error fetching role permissions:', roleError);
+        logger.error('Error fetching role permissions', { error: roleError });
       }
 
       // Pobierz nadpisania użytkownika
@@ -128,7 +129,7 @@ export function PermissionsProvider({
         .eq('user_id', profile.id);
 
       if (overrideError) {
-        console.error('Error fetching user overrides:', overrideError);
+        logger.error('Error fetching user overrides', { error: overrideError });
       }
 
       // Zbuduj mapę
@@ -143,7 +144,7 @@ export function PermissionsProvider({
       setPermissions(map);
       cachePermissions(map); // Cache for next page load
     } catch (error) {
-      console.error('Error fetching permissions:', error);
+      logger.error('Error fetching permissions', { error });
       setPermissions({});
     } finally {
       setLoading(false);

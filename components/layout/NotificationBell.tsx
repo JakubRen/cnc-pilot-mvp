@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { Notification } from '@/lib/notifications';
 import { useRealtimeNotifications } from '@/lib/realtime/hooks';
 import { supabase } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -53,7 +54,7 @@ export default function NotificationBell() {
         setUnreadCount(data.unread_count || 0);
       }
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      logger.error('Error fetching notifications', { error });
     }
   };
 
@@ -87,7 +88,7 @@ export default function NotificationBell() {
         fetchNotifications(); // Refresh
       }
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      logger.error('Error marking notification as read', { error });
     }
   };
 
@@ -105,7 +106,7 @@ export default function NotificationBell() {
         fetchNotifications(); // Refresh
       }
     } catch (error) {
-      console.error('Error marking all as read:', error);
+      logger.error('Error marking all as read', { error });
     } finally {
       setIsLoading(false);
     }

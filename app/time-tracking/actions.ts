@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { revalidatePath } from 'next/cache'
+import { logger } from '@/lib/logger'
 
 interface TimeLogActionResponse {
   success: boolean
@@ -30,7 +31,7 @@ export async function startTimer(orderId: string): Promise<TimeLogActionResponse
     .single()
 
   if (activeLogError && activeLogError.code !== 'PGRST116') { // PGRST116 = no rows
-    console.error('Error checking for active timer:', activeLogError.message)
+    logger.error('Error checking for active timer', { error: activeLogError.message })
     return { success: false, message: 'Failed to check for active timer.' }
   }
 
@@ -47,7 +48,7 @@ export async function startTimer(orderId: string): Promise<TimeLogActionResponse
     .single()
 
   if (orderFetchError || !orderToStart) {
-    console.error('Error fetching order for timer start:', orderFetchError?.message)
+    logger.error('Error fetching order for timer start', { error: orderFetchError?.message })
     return { success: false, message: 'Failed to retrieve order details.' }
   }
 
@@ -64,7 +65,7 @@ export async function startTimer(orderId: string): Promise<TimeLogActionResponse
       .single()
 
     if (inventoryFetchError || !inventoryItem) {
-      console.error('Error fetching inventory item for auto-deduct:', inventoryFetchError?.message)
+      logger.error('Error fetching inventory item for auto-deduct', { error: inventoryFetchError?.message })
       return { success: false, message: 'Failed to retrieve linked inventory item.' }
     }
 
@@ -80,7 +81,7 @@ export async function startTimer(orderId: string): Promise<TimeLogActionResponse
       .eq('company_id', userProfile.company_id)
 
     if (deductError) {
-      console.error('Error deducting material from inventory:', deductError.message)
+      logger.error('Error deducting material from inventory', { error: deductError.message })
       return { success: false, message: 'Failed to deduct material from inventory.' }
     }
     revalidatePath('/inventory') // Revalidate inventory page
@@ -106,7 +107,7 @@ export async function startTimer(orderId: string): Promise<TimeLogActionResponse
     .single()
 
   if (insertError) {
-    console.error('Error starting timer:', insertError.message)
+    logger.error('Error starting timer', { error: insertError.message })
     // IMPORTANT: If timer insertion fails AFTER deduction, we need to revert inventory.
     // For MVP, we'll keep it simple, but in production, this needs a transaction or compensating action.
     return { success: false, message: `Failed to start timer: ${insertError.message}` }
@@ -121,7 +122,7 @@ export async function startTimer(orderId: string): Promise<TimeLogActionResponse
       .eq('company_id', userProfile.company_id)
 
     if (updateOrderError) {
-      console.error('Error updating order status to in_progress:', updateOrderError.message)
+      logger.error('Error updating order status to in_progress', { error: updateOrderError.message })
       // This is not critical enough to fail the timer start, but log it
     }
   }
@@ -153,7 +154,7 @@ export async function stopTimer(timeLogId: string, finalOrderStatus: string = 'c
     .single()
 
   if (fetchError) {
-    console.error('Error fetching time log:', fetchError.message)
+    logger.error('Error fetching time log', { error: fetchError.message })
     return { success: false, message: `Failed to fetch time log: ${fetchError.message}` }
   }
 
@@ -177,7 +178,7 @@ export async function stopTimer(timeLogId: string, finalOrderStatus: string = 'c
     .eq('id', timeLogId)
 
   if (updateError) {
-    console.error('Error stopping timer:', updateError.message)
+    logger.error('Error stopping timer', { error: updateError.message })
     return { success: false, message: `Failed to stop timer: ${updateError.message}` }
   }
 
@@ -190,7 +191,7 @@ export async function stopTimer(timeLogId: string, finalOrderStatus: string = 'c
       .eq('company_id', userProfile.company_id)
 
     if (updateOrderError) {
-      console.error('Error updating order status after stopping timer:', updateOrderError.message)
+      logger.error('Error updating order status after stopping timer', { error: updateOrderError.message })
     }
     revalidatePath(`/orders/${timeLog.orders.id}`)
     revalidatePath('/orders')

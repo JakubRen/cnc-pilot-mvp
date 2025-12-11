@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { revalidatePath } from 'next/cache'
+import { logger } from '@/lib/logger'
 
 export async function duplicateOrder(orderId: string): Promise<{ success: boolean; newOrderId?: string; error?: string }> {
   const supabase = await createClient()
@@ -21,7 +22,7 @@ export async function duplicateOrder(orderId: string): Promise<{ success: boolea
     .single()
 
   if (fetchError) {
-    console.error('Error fetching original order:', fetchError.message)
+    logger.error('Error fetching original order', { error: fetchError.message })
     return { success: false, error: `Failed to fetch original order: ${fetchError.message}` }
   }
 
@@ -53,7 +54,7 @@ export async function duplicateOrder(orderId: string): Promise<{ success: boolea
     .single()
 
   if (insertError) {
-    console.error('Error duplicating order:', insertError.message)
+    logger.error('Error duplicating order', { error: insertError.message })
     return { success: false, error: `Failed to duplicate order: ${insertError.message}` }
   }
 

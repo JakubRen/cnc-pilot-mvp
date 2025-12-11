@@ -8,6 +8,8 @@ import AppLayout from '@/components/layout/AppLayout'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import Link from 'next/link'
+import { logger } from '@/lib/logger'
+import { sanitizeText } from '@/lib/sanitization'
 
 interface QCItem {
   id: string
@@ -94,14 +96,19 @@ export default function AddQCPlanPage() {
 
       if (!userProfile?.company_id) throw new Error('Brak firmy')
 
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedPlanName = sanitizeText(planName)
+      const sanitizedPartName = partName ? sanitizeText(partName) : null
+      const sanitizedDescription = description ? sanitizeText(description) : null
+
       // Create plan
       const { data: plan, error: planError } = await supabase
         .from('quality_control_plans')
         .insert({
           company_id: userProfile.company_id,
-          name: planName,
-          part_name: partName || null,
-          description: description || null,
+          name: sanitizedPlanName,
+          part_name: sanitizedPartName,
+          description: sanitizedDescription,
           created_by: userProfile.id
         })
         .select()
@@ -112,7 +119,7 @@ export default function AddQCPlanPage() {
       // Create items
       const itemsToInsert = validItems.map((item, index) => ({
         plan_id: plan.id,
-        name: item.name,
+        name: sanitizeText(item.name),
         nominal_value: parseFloat(item.nominal_value),
         tolerance_plus: parseFloat(item.tolerance_plus) || 0,
         tolerance_minus: parseFloat(item.tolerance_minus) || 0,
@@ -133,7 +140,7 @@ export default function AddQCPlanPage() {
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Error creating plan:', error)
+      logger.error('Error creating QC plan', { error })
       toast.error('Nie udało się utworzyć planu')
     } finally {
       setIsSubmitting(false)

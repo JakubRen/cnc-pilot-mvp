@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { DashboardPreferences, DASHBOARD_WIDGETS, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard'
 import { useEscapeKey } from '@/hooks/useKeyboardShortcut'
+import { logger } from '@/lib/logger'
 
 interface Props {
   isOpen: boolean
@@ -79,7 +80,7 @@ export default function PersonalizationModal({
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd zapisu: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Error saving dashboard preferences', { error })
     } finally {
       setIsSaving(false)
     }

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { logger } from '@/lib/logger';
 
 export default function Error({
   error,
@@ -11,7 +12,7 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('Orders page error:', error);
+    logger.error('Orders page error', { error });
   }, [error]);
 
   return (

@@ -8,6 +8,8 @@ import AppLayout from '@/components/layout/AppLayout'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import Link from 'next/link'
+import { logger } from '@/lib/logger'
+import { sanitizeText, sanitizeEmail } from '@/lib/sanitization'
 
 export default function AddCooperantPage() {
   const router = useRouter()
@@ -63,18 +65,19 @@ export default function AddCooperantPage() {
 
       if (!userProfile?.company_id) throw new Error('Brak firmy')
 
+      // Sanitize user inputs to prevent XSS attacks
       const { error } = await supabase
         .from('cooperants')
         .insert({
           company_id: userProfile.company_id,
-          name: name.trim(),
-          service_type: serviceType,
-          contact_person: contactPerson || null,
-          phone: phone || null,
-          email: email || null,
-          address: address || null,
+          name: sanitizeText(name.trim()),
+          service_type: sanitizeText(serviceType),
+          contact_person: contactPerson ? sanitizeText(contactPerson) : null,
+          phone: phone ? sanitizeText(phone) : null,
+          email: email ? sanitizeEmail(email) : null,
+          address: address ? sanitizeText(address) : null,
           avg_lead_days: parseInt(avgLeadDays) || 7,
-          notes: notes || null
+          notes: notes ? sanitizeText(notes) : null
         })
 
       if (error) throw error
@@ -85,7 +88,7 @@ export default function AddCooperantPage() {
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Error adding cooperant:', error)
+      logger.error('Error adding cooperant', { error })
       toast.error('Nie udało się dodać kooperanta')
     } finally {
       setIsSubmitting(false)

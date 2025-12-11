@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
+import { logger } from '@/lib/logger'
 
 interface OperationStatusUpdateProps {
   operationId: string
@@ -92,7 +93,7 @@ export default function OperationStatusUpdate({ operationId, currentStatus, user
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Error updating status:', error)
+      logger.error('Error updating status', { error })
       toast.error('Nie udało się zmienić statusu')
     } finally {
       setIsUpdating(false)

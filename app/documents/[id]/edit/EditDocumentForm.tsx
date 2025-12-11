@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/logger'
+import { sanitizeText } from '@/lib/sanitization'
 
 interface InventoryItem {
   id: string
@@ -129,13 +131,17 @@ export default function EditDocumentForm({ documentId, document, items: existing
     const loadingToast = toast.loading('Aktualizuję dokument...')
 
     try {
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedContractor = sanitizeText(contractor)
+      const sanitizedDescription = description ? sanitizeText(description) : null
+
       // Update document
       const { error: docError } = await supabase
         .from('warehouse_documents')
         .update({
           document_type: documentType,
-          contractor,
-          description,
+          contractor: sanitizedContractor,
+          description: sanitizedDescription,
           updated_at: new Date().toISOString()
         })
         .eq('id', documentId)
@@ -159,7 +165,7 @@ export default function EditDocumentForm({ documentId, document, items: existing
             document_id: documentId,
             inventory_id: item.inventory_id,
             quantity: item.quantity,
-            notes: item.notes || null
+            notes: item.notes ? sanitizeText(item.notes) : null
           }))
         )
 
@@ -173,7 +179,7 @@ export default function EditDocumentForm({ documentId, document, items: existing
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd aktualizacji: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Document operation error', { error })
     } finally {
       setIsSubmitting(false)
     }
@@ -195,13 +201,17 @@ export default function EditDocumentForm({ documentId, document, items: existing
     const loadingToast = toast.loading('Aktualizuję i zatwierdzam dokument...')
 
     try {
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedContractor = sanitizeText(contractor)
+      const sanitizedDescription = description ? sanitizeText(description) : null
+
       // Update document
       const { error: docError } = await supabase
         .from('warehouse_documents')
         .update({
           document_type: documentType,
-          contractor,
-          description,
+          contractor: sanitizedContractor,
+          description: sanitizedDescription,
           status: 'confirmed', // Change to confirmed → trigger will update inventory
           updated_at: new Date().toISOString()
         })
@@ -226,7 +236,7 @@ export default function EditDocumentForm({ documentId, document, items: existing
             document_id: documentId,
             inventory_id: item.inventory_id,
             quantity: item.quantity,
-            notes: item.notes || null
+            notes: item.notes ? sanitizeText(item.notes) : null
           }))
         )
 
@@ -240,7 +250,7 @@ export default function EditDocumentForm({ documentId, document, items: existing
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd zapisu: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Document operation error', { error })
     } finally {
       setIsSubmitting(false)
     }

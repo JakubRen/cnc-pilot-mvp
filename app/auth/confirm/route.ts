@@ -4,6 +4,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 /**
  * Handles email confirmation links from Supabase
@@ -50,7 +51,7 @@ export async function GET(request: NextRequest) {
       }
 
       // Error during confirmation
-      console.error('Email verification error:', error);
+      logger.error('Email verification error', { error });
       return NextResponse.redirect(
         new URL(
           `/login?error=${encodeURIComponent('Weryfikacja email nie powiodła się. Link może być wygasły.')}`,
@@ -58,7 +59,7 @@ export async function GET(request: NextRequest) {
         )
       );
     } catch (err) {
-      console.error('Verification exception:', err);
+      logger.error('Verification exception', { error: err });
       return NextResponse.redirect(
         new URL(
           `/login?error=${encodeURIComponent('Wystąpił błąd podczas weryfikacji.')}`,

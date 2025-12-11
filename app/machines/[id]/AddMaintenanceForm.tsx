@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { logger } from '@/lib/logger'
+import { sanitizeText } from '@/lib/sanitization'
 
 interface AddMaintenanceFormProps {
   machineId: string
@@ -39,6 +41,11 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
     const loadingToast = toast.loading('Dodawanie wpisu...')
 
     try {
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedTitle = sanitizeText(title.trim())
+      const sanitizedDescription = description ? sanitizeText(description) : null
+      const sanitizedExternalTechnician = externalTechnician ? sanitizeText(externalTechnician) : null
+
       const parts = parseFloat(partsCost) || 0
       const labor = parseFloat(laborCost) || 0
       const total = parts + labor
@@ -50,13 +57,13 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
           machine_id: machineId,
           type,
           status: markCompleted ? 'completed' : 'planned',
-          title: title.trim(),
-          description: description || null,
+          title: sanitizedTitle,
+          description: sanitizedDescription,
           labor_hours: parseFloat(laborHours) || null,
           parts_cost: parts || null,
           labor_cost: labor || null,
           total_cost: total || null,
-          external_technician: externalTechnician || null,
+          external_technician: sanitizedExternalTechnician,
           performed_by: markCompleted ? userId : null,
           completed_at: markCompleted ? new Date().toISOString() : null,
           scheduled_date: !markCompleted ? new Date().toISOString().split('T')[0] : null,
@@ -80,9 +87,9 @@ export default function AddMaintenanceForm({ machineId, companyId, userId }: Add
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
-      console.error('Error adding maintenance:', error)
+      logger.error('Error adding maintenance entry', { error })
       toast.error('Nie udało się dodać wpisu')
-    } finally {
+    } finally{
       setIsSubmitting(false)
     }
   }

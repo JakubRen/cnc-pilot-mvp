@@ -1,6 +1,7 @@
 // Dashboard data queries for metrics and widgets
 import { createClient } from '@/lib/supabase-server';
 import { getRevenueOverTime, getEmployeeProductivity, getTopCustomers as getTopCustomersAnalytics } from '@/lib/analytics/queries';
+import { logger } from '@/lib/logger';
 
 // ============================================
 // METRIC QUERIES
@@ -14,7 +15,7 @@ export async function getTotalOrders(companyId: string) {
     .eq('company_id', companyId);
 
   if (error) {
-    console.error('Error fetching total orders:', error);
+    logger.error('Error fetching total orders', { error });
     return 0;
   }
   return count || 0;
@@ -29,7 +30,7 @@ export async function getActiveOrders(companyId: string) {
     .eq('status', 'in_progress');
 
   if (error) {
-    console.error('Error fetching active orders:', error);
+    logger.error('Error fetching active orders', { error });
     return 0;
   }
   return count || 0;
@@ -48,7 +49,7 @@ export async function getCompletedThisWeek(companyId: string) {
     .gte('created_at', oneWeekAgo.toISOString()); // Changed from completed_at to created_at
 
   if (error) {
-    console.error('Error fetching completed this week:', error);
+    logger.error('Error fetching completed this week', { error });
     return 0;
   }
   return count || 0;
@@ -67,7 +68,7 @@ export async function getOverdueOrders(companyId: string) {
     .order('deadline', { ascending: true });
 
   if (error) {
-    console.error('Error fetching overdue orders:', error);
+    logger.error('Error fetching overdue orders', { error });
     return [];
   }
   return data || [];
@@ -82,7 +83,7 @@ export async function getActiveTimers(companyId: string) {
     .eq('status', 'running');
 
   if (error) {
-    console.error('Error fetching active timers:', error);
+    logger.error('Error fetching active timers', { error });
     return 0;
   }
   return count || 0;
@@ -106,7 +107,7 @@ export async function getLowStockItems(companyId: string) {
       .order('quantity', { ascending: true });
 
     if (fallbackError) {
-      console.error('Error fetching low stock items:', fallbackError);
+      logger.error('Error fetching low stock items', { error: fallbackError });
       return [];
     }
 
@@ -134,7 +135,7 @@ export async function getRevenueThisMonth(companyId: string) {
     .gte('created_at', startOfMonth.toISOString());
 
   if (error) {
-    console.error('Error fetching revenue this month:', error);
+    logger.error('Error fetching revenue this month', { error });
     return 0;
   }
 
@@ -163,7 +164,7 @@ export async function getOrdersDueToday(companyId: string) {
     .order('deadline', { ascending: true });
 
   if (error) {
-    console.error('Error fetching orders due today:', error);
+    logger.error('Error fetching orders due today', { error });
     return [];
   }
   return data || [];
@@ -186,7 +187,7 @@ export async function getStaleTimers(companyId: string, hoursThreshold = 12) {
     .lt('start_time', thresholdTime.toISOString());
 
   if (error) {
-    console.error('Error fetching stale timers:', error);
+    logger.error('Error fetching stale timers', { error });
     return [];
   }
   return data || [];
@@ -211,7 +212,7 @@ export async function getProductionPlan(companyId: string) {
     .limit(20); // Top 20 most urgent
 
   if (error) {
-    console.error('Error fetching production plan:', error);
+    logger.error('Error fetching production plan', { error });
     return [];
   }
   return data || [];
@@ -240,7 +241,7 @@ export async function getRecentActivity(companyId: string, limit = 10) {
     .limit(limit);
 
   if (error) {
-    console.error('Error fetching recent activity:', error);
+    logger.error('Error fetching recent activity', { error });
     return [];
   }
 
@@ -277,7 +278,7 @@ export async function getTopCustomers(companyId: string, limit = 5) {
     .gt('total_cost', 0);
 
   if (error) {
-    console.error('Error fetching top customers:', error);
+    logger.error('Error fetching top customers', { error });
     return [];
   }
 
@@ -317,7 +318,7 @@ export async function getOrdersChartData(companyId: string) {
     .order('created_at', { ascending: true });
 
   if (error) {
-    console.error('Error fetching orders chart data:', error);
+    logger.error('Error fetching orders chart data', { error });
     return [];
   }
 
@@ -364,7 +365,7 @@ export async function getInventoryHistory(inventoryId: string, limit = 20) {
     .limit(limit);
 
   if (error) {
-    console.error('Error fetching inventory history:', error);
+    logger.error('Error fetching inventory history', { error });
     return [];
   }
 
@@ -426,7 +427,7 @@ export async function getDashboardStatsRPC(companyId: string): Promise<Dashboard
     .rpc('get_dashboard_stats', { p_company_id: companyId });
 
   if (error) {
-    console.error('Error fetching dashboard stats via RPC:', error);
+    logger.error('Error fetching dashboard stats via RPC', { error });
     return null;
   }
 
@@ -451,7 +452,7 @@ export async function getProfitabilitySummary(companyId: string, days = 30) {
     .neq('status', 'cancelled');
 
   if (error) {
-    console.error('Error fetching profitability data:', error);
+    logger.error('Error fetching profitability data', { error });
     return {
       totalRevenue: 0,
       totalCost: 0,

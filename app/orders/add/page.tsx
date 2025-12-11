@@ -12,6 +12,7 @@ import { useSmartPricing } from '@/hooks/useSmartPricing'
 import SmartEstimateCard from '@/components/orders/SmartEstimateCard'
 import SimilarOrdersWidget from '@/components/orders/SimilarOrdersWidget'
 import { logAiCorrection } from '@/lib/ai/feedback-logger'
+import { logger } from '@/lib/logger'
 import { useMaterials, useParts } from '@/hooks/useInventoryItems'
 import InventorySelect from '@/components/inventory/InventorySelect'
 import { Input } from '@/components/ui/Input'
@@ -20,6 +21,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/Button'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useOperators } from '@/hooks/useOperators'
+import { sanitizeText } from '@/lib/sanitization'
 
 export default function AddOrderPage() {
   const router = useRouter()
@@ -190,7 +192,7 @@ export default function AddOrderPage() {
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error(error instanceof Error ? error.message : t('orders', 'pricingCalculationError'))
-      console.error('Pricing estimate error:', error)
+      logger.error('Pricing estimate error', { error })
     } finally {
       setIsCalculating(false)
     }
@@ -240,10 +242,14 @@ export default function AddOrderPage() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { length, width, height, complexity, ...orderData } = data
 
-    // Ensure material is stored as string but linked_inventory_item_id is also set
+    // Sanitize user inputs to prevent XSS attacks
     const finalOrderData = {
       ...orderData,
-      material: materialString, // Ensure the material name is stored
+      customer_name: sanitizeText(orderData.customer_name),
+      order_number: sanitizeText(orderData.order_number),
+      part_name: orderData.part_name ? sanitizeText(orderData.part_name) : null,
+      material: materialString ? sanitizeText(materialString) : null,
+      notes: orderData.notes ? sanitizeText(orderData.notes) : null,
       linked_inventory_item_id: data.linked_inventory_item_id,
       material_quantity_needed: data.material_quantity_needed,
       assigned_operator_id: data.assigned_operator_id,

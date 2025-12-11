@@ -3,6 +3,7 @@
 // ============================================
 
 import { Resend } from 'resend'
+import { logger } from '@/lib/logger'
 
 // Initialize Resend client only if API key is available
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
@@ -57,7 +58,7 @@ export interface TeamInviteData {
 export async function sendEmail(payload: EmailPayload): Promise<{ success: boolean; error?: string; id?: string }> {
   try {
     if (!resend) {
-      console.warn('[EMAIL] RESEND_API_KEY not configured - skipping email')
+      logger.warn('[EMAIL] RESEND_API_KEY not configured - skipping email')
       return { success: false, error: 'Email not configured' }
     }
 
@@ -70,14 +71,14 @@ export async function sendEmail(payload: EmailPayload): Promise<{ success: boole
     })
 
     if (error) {
-      console.error('[EMAIL] Send error:', error)
+      logger.error('[EMAIL] Send error', { error })
       return { success: false, error: error.message }
     }
 
-    console.log('[EMAIL] Sent successfully:', data?.id)
+    logger.info('[EMAIL] Sent successfully', { emailId: data?.id })
     return { success: true, id: data?.id }
   } catch (err) {
-    console.error('[EMAIL] Exception:', err)
+    logger.error('[EMAIL] Exception', { error: err })
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
   }
 }

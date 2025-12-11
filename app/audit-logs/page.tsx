@@ -3,6 +3,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import AuditLogsClient from './AuditLogsClient'
+import { logger } from '@/lib/logger'
 
 export const metadata = {
   title: 'Dziennik Zdarzeń | CNC Pilot',
@@ -50,7 +51,7 @@ export default async function AuditLogsPage() {
     .limit(500)
 
   if (error) {
-    console.error('Error fetching audit logs:', error)
+    logger.error('Error fetching audit logs', { error })
   }
 
   return (

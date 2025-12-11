@@ -8,6 +8,8 @@ import toast from 'react-hot-toast'
 import { useState } from 'react'
 import AppLayout from '@/components/layout/AppLayout'
 import { Button } from '@/components/ui/Button'
+import { logger } from '@/lib/logger'
+import { sanitizeText, sanitizeEmail } from '@/lib/sanitization'
 
 // Walidacja formularza
 const userSchema = z.object({
@@ -40,12 +42,19 @@ export default function AddUserPage() {
     const loadingToast = toast.loading('Tworzenie użytkownika...')
 
     try {
+      // Sanitize user inputs to prevent XSS attacks
+      const sanitizedData = {
+        ...data,
+        email: sanitizeEmail(data.email),
+        full_name: sanitizeText(data.full_name),
+      }
+
       const response = await fetch('/api/users/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(sanitizedData),
       })
 
       const result = await response.json()
@@ -62,7 +71,7 @@ export default function AddUserPage() {
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Wystąpił błąd podczas tworzenia użytkownika')
-      console.error('Create user error:', error)
+      logger.error('Create user error', { error })
     }
   }
 

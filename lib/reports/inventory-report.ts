@@ -1,6 +1,7 @@
 // Inventory Report queries and data processing
 
 import { createClient } from '@/lib/supabase-server';
+import { logger } from '@/lib/logger';
 
 export interface InventoryReportFilters {
   category?: string;
@@ -62,7 +63,7 @@ export async function getInventoryReport(
   const { data, error } = await query;
 
   if (error) {
-    console.error('Error fetching inventory report:', error);
+    logger.error('Error fetching inventory report', { error });
     return [];
   }
 

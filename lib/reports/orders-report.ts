@@ -1,6 +1,7 @@
 // Orders Report queries and data processing
 
 import { createClient } from '@/lib/supabase-server';
+import { logger } from '@/lib/logger';
 
 export interface OrdersReportFilters {
   status?: string;
@@ -72,7 +73,7 @@ export async function getOrdersReport(
   const { data, error } = await query;
 
   if (error) {
-    console.error('Error fetching orders report:', error);
+    logger.error('Error fetching orders report', { error });
     return [];
   }
 

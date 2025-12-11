@@ -8,6 +8,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect, notFound } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import EditDocumentForm from './EditDocumentForm'
+import { logger } from '@/lib/logger'
 
 export const metadata = {
   title: 'Edytuj Dokument | CNC Pilot',
@@ -76,7 +77,7 @@ export default async function EditDocumentPage({ params }: { params: Promise<{ i
     .order('created_at', { ascending: true })
 
   if (itemsError) {
-    console.error('Error fetching items:', itemsError)
+    logger.error('Error fetching items', { error: itemsError })
   }
 
   // Fetch inventory for dropdown
@@ -87,7 +88,7 @@ export default async function EditDocumentPage({ params }: { params: Promise<{ i
     .order('name', { ascending: true })
 
   if (invError) {
-    console.error('Error fetching inventory:', invError)
+    logger.error('Error fetching inventory', { error: invError })
   }
 
   return (

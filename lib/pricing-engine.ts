@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 
 export interface PricingEstimate {
   avgPrice: number
@@ -81,7 +82,7 @@ export async function getSmartPricing(
     }
 
   } catch (error) {
-    console.error('Error getting smart pricing:', error)
+    logger.error('Error getting smart pricing', { error })
     return null
   }
 }
@@ -117,7 +118,7 @@ export async function getSimilarOrdersList(
     return data || []
 
   } catch (error) {
-    console.error('Error getting similar orders:', error)
+    logger.error('Error getting similar orders', { error })
     return []
   }
 }

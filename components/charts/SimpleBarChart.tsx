@@ -3,22 +3,21 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useTheme } from '@/components/theme/ThemeProvider'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface SimpleBarChartProps {
-  data: any[]
+interface SimpleBarChartProps<T = Record<string, unknown>> {
+  data: T[]
   xKey: string
   yKey: string
   color?: string
   height?: number
 }
 
-export default function SimpleBarChart({
+export default function SimpleBarChart<T = Record<string, unknown>>({
   data,
   xKey,
   yKey,
   color = '#3b82f6',
   height = 300
-}: SimpleBarChartProps) {
+}: SimpleBarChartProps<T>) {
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === 'dark'
 

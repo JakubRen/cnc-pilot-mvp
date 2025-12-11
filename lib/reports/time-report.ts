@@ -1,6 +1,7 @@
 // Time Report queries and data processing
 
 import { createClient } from '@/lib/supabase-server';
+import { logger } from '@/lib/logger';
 
 export interface TimeReportFilters {
   userId?: number;
@@ -65,7 +66,7 @@ export async function getTimeReport(
   const { data, error } = await query;
 
   if (error) {
-    console.error('Error fetching time report:', error);
+    logger.error('Error fetching time report', { error });
     return [];
   }
 

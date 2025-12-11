@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getSmartPricing, getSimilarOrdersList, PricingEstimate, SimilarOrder } from '@/lib/pricing-engine'
+import { logger } from '@/lib/logger'
 
 // Debounce helper
 function useDebounce<T>(value: T, delay: number): T {
@@ -44,7 +45,7 @@ export function useSmartPricing(partName: string, material: string) {
       setEstimate(est)
       setSimilarOrders(similar)
     } catch (error) {
-      console.error('Failed to fetch insights:', error)
+      logger.error('Failed to fetch pricing insights', { error })
     } finally {
       setLoading(false)
     }

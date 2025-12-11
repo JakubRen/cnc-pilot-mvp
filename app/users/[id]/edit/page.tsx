@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { sanitizeText, sanitizeEmail } from '@/lib/sanitization'
 
 // Validation schema
 const userSchema = z.object({
@@ -67,9 +68,16 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
   const onSubmit = async (data: UserFormData) => {
     const loadingToast = toast.loading('Updating user...')
 
+    // Sanitize user inputs to prevent XSS attacks
+    const sanitizedData = {
+      ...data,
+      email: sanitizeEmail(data.email),
+      full_name: sanitizeText(data.full_name),
+    }
+
     const { error } = await supabase
       .from('users')
-      .update(data)
+      .update(sanitizedData)
       .eq('id', userId)
 
     toast.dismiss(loadingToast)

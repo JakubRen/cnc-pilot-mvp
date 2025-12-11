@@ -1,5 +1,13 @@
 import { createClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
+import { rateLimit } from '@/lib/rate-limit'
+
+// Rate limiter: 30 feedback submissions per minute per user
+const limiter = rateLimit({
+  interval: 60 * 1000, // 1 minute
+  uniqueTokenPerInterval: 300, // Max 300 users tracked
+})
 
 /**
  * AI Feedback Loop - Data Collection Endpoint
@@ -23,6 +31,23 @@ interface FeedbackPayload {
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createClient()
+
+    // Get user from session for rate limiting
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // Rate limiting - 30 requests per minute per user
+    if (user) {
+      try {
+        await limiter.check(30, user.id)
+      } catch {
+        return NextResponse.json(
+          { status: 'rate_limited', error: 'Zbyt wiele feedbacków. Spróbuj ponownie za chwilę.' },
+          { status: 429 }
+        )
+      }
+    }
+
     const json: FeedbackPayload = await request.json()
     const { feature_name, input_context, ai_output, user_correction, correction_reason, session_id, metadata } = json
 
@@ -37,16 +62,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'feature_name is required' }, { status: 400 })
     }
 
-    const supabase = await createClient()
-
-    // Get user from session (server-side - secure)
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    // User already fetched for rate limiting above
 
     if (!user) {
       // Silent fail for unauthenticated users (shouldn't happen but don't break UX)
-      console.warn('[FeedbackAPI] No authenticated user, skipping feedback log')
+      logger.warn('[FeedbackAPI] No authenticated user, skipping feedback log')
       return NextResponse.json({ status: 'skipped_no_auth' })
     }
 
@@ -58,7 +78,7 @@ export async function POST(request: Request) {
       .single()
 
     if (profileError || !userProfile) {
-      console.warn('[FeedbackAPI] Could not get user profile:', profileError?.message)
+      logger.warn('[FeedbackAPI] Could not get user profile', { error: profileError?.message })
       return NextResponse.json({ status: 'skipped_no_profile' })
     }
 
@@ -77,7 +97,7 @@ export async function POST(request: Request) {
 
     if (insertError) {
       // Log error but don't fail - this is background data collection
-      console.error('[FeedbackAPI] Insert error:', insertError.message)
+      logger.error('[FeedbackAPI] Insert error', { error: insertError.message })
       return NextResponse.json({ status: 'error', error: insertError.message }, { status: 500 })
     }
 
@@ -85,7 +105,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: 'logged' })
   } catch (error) {
     // Catch-all - never crash the app for feedback logging
-    console.error('[FeedbackAPI] Unexpected error:', error)
+    logger.error('[FeedbackAPI] Unexpected error', { error })
     return NextResponse.json({ status: 'error', error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -135,7 +155,7 @@ export async function GET(request: Request) {
     const { data, error, count } = await query
 
     if (error) {
-      console.error('[FeedbackAPI] Fetch error:', error.message)
+      logger.error('[FeedbackAPI] Fetch error', { error: error.message })
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
@@ -146,7 +166,7 @@ export async function GET(request: Request) {
       offset,
     })
   } catch (error) {
-    console.error('[FeedbackAPI] Unexpected error:', error)
+    logger.error('[FeedbackAPI] Unexpected error', { error })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

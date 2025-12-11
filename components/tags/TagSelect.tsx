@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/logger'
 
 interface Tag {
   id: string
@@ -65,7 +66,7 @@ export default function TagSelect({
       if (error) throw error
       setAvailableTags(data || [])
     } catch (error) {
-      console.error('Error fetching tags:', error)
+      logger.error('Error fetching tags', { error })
     }
   }
 

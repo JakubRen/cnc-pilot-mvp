@@ -12,6 +12,7 @@ import InventorySelect from '@/components/inventory/InventorySelect' // Import I
 import { Input } from '@/components/ui/Input' // Import Input
 import { Select } from '@/components/ui/Select'
 import { useOperators } from '@/hooks/useOperators'
+import { sanitizeText } from '@/lib/sanitization'
 
 const orderSchema = z.object({
   order_number: z.string().min(1, 'Numer zamówienia wymagany'),
@@ -124,9 +125,14 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
   const onSubmit = async (data: OrderFormData) => {
     const loadingToast = toast.loading('Aktualizowanie zamówienia...')
 
+    // Sanitize user inputs to prevent XSS attacks
     const finalOrderData = {
       ...data,
-      material: materialString, // Ensure the material name is stored
+      customer_name: sanitizeText(data.customer_name),
+      order_number: sanitizeText(data.order_number),
+      part_name: data.part_name ? sanitizeText(data.part_name) : null,
+      material: materialString ? sanitizeText(materialString) : null,
+      notes: data.notes ? sanitizeText(data.notes) : null,
       linked_inventory_item_id: data.linked_inventory_item_id,
       material_quantity_needed: data.material_quantity_needed,
       assigned_operator_id: data.assigned_operator_id,

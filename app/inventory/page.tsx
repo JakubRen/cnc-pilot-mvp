@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import EmptyState from '@/components/ui/EmptyState'
 import InventoryTable from '@/components/inventory/InventoryTable'
+import { logger } from '@/lib/logger'
 
 export default async function InventoryPage() {
   const supabase = await createClient()
@@ -28,7 +29,7 @@ export default async function InventoryPage() {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Error fetching inventory:', error)
+    logger.error('Error fetching inventory', { error })
   }
 
   return (

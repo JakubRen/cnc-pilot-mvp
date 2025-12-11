@@ -2,10 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { subscribeToOrders, subscribeToNotifications, subscribeToTimeLogs } from './client'
+import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js'
 import toast from 'react-hot-toast'
 
+type OrderRecord = Record<string, unknown> & { order_number?: string }
+type NotificationRecord = Record<string, unknown> & { type?: string; title?: string }
+type TimerRecord = Record<string, unknown> & { id?: string; status?: string; user_id?: number }
+
 export function useRealtimeOrders(companyId: string) {
-  const [updates, setUpdates] = useState<any[]>([])
+  const [updates, setUpdates] = useState<RealtimePostgresChangesPayload<OrderRecord>[]>([])
 
   useEffect(() => {
     if (!companyId) return
@@ -13,14 +18,17 @@ export function useRealtimeOrders(companyId: string) {
     const subscription = subscribeToOrders(companyId, (payload) => {
       const { eventType, new: newOrder, old: oldOrder } = payload
 
-      setUpdates(prev => [...prev, payload])
+      setUpdates(prev => [...prev, payload as RealtimePostgresChangesPayload<OrderRecord>])
 
-      if (eventType === 'INSERT') {
-        toast.success(`Nowe zamówienie: ${newOrder.order_number}`)
-      } else if (eventType === 'UPDATE') {
-        toast(`Zaktualizowano: ${newOrder.order_number}`)
-      } else if (eventType === 'DELETE') {
-        toast.error(`Usunięto: ${oldOrder.order_number}`)
+      if (eventType === 'INSERT' && newOrder) {
+        const order = newOrder as OrderRecord
+        toast.success(`Nowe zamówienie: ${order.order_number || 'N/A'}`)
+      } else if (eventType === 'UPDATE' && newOrder) {
+        const order = newOrder as OrderRecord
+        toast(`Zaktualizowano: ${order.order_number || 'N/A'}`)
+      } else if (eventType === 'DELETE' && oldOrder) {
+        const order = oldOrder as OrderRecord
+        toast.error(`Usunięto: ${order.order_number || 'N/A'}`)
       }
     })
 
@@ -33,7 +41,7 @@ export function useRealtimeOrders(companyId: string) {
 }
 
 export function useRealtimeNotifications(userId: number) {
-  const [newNotifications, setNewNotifications] = useState<any[]>([])
+  const [newNotifications, setNewNotifications] = useState<NotificationRecord[]>([])
 
   useEffect(() => {
     if (!userId) return
@@ -41,7 +49,10 @@ export function useRealtimeNotifications(userId: number) {
     const subscription = subscribeToNotifications(userId, (payload) => {
       const { new: notification } = payload
 
-      setNewNotifications(prev => [notification, ...prev])
+      if (!notification) return
+
+      const notificationRecord = notification as NotificationRecord
+      setNewNotifications(prev => [notificationRecord, ...prev])
 
       // Show toast based on type
       const toastFn = {
@@ -49,9 +60,9 @@ export function useRealtimeNotifications(userId: number) {
         error: toast.error,
         warning: toast,
         info: toast
-      }[notification.type as string] || toast
+      }[notificationRecord.type || 'info'] || toast
 
-      toastFn(notification.title)
+      toastFn(notificationRecord.title || 'Notification')
     })
 
     return () => {
@@ -63,7 +74,7 @@ export function useRealtimeNotifications(userId: number) {
 }
 
 export function useRealtimeTimers(companyId: string) {
-  const [activeTimers, setActiveTimers] = useState<any[]>([])
+  const [activeTimers, setActiveTimers] = useState<TimerRecord[]>([])
 
   useEffect(() => {
     if (!companyId) return
@@ -71,15 +82,19 @@ export function useRealtimeTimers(companyId: string) {
     const subscription = subscribeToTimeLogs(companyId, (payload) => {
       const { eventType, new: newTimer, old: oldTimer } = payload
 
-      if (eventType === 'INSERT' && newTimer.status === 'running') {
-        setActiveTimers(prev => [newTimer, ...prev])
-        toast(`Timer started by ${newTimer.user_id}`)
-      } else if (eventType === 'UPDATE') {
+      if (eventType === 'INSERT' && newTimer) {
+        const timer = newTimer as TimerRecord
+        if (timer.status === 'running') {
+          setActiveTimers(prev => [timer, ...prev])
+          toast(`Timer started by ${timer.user_id || 'Unknown'}`)
+        }
+      } else if (eventType === 'UPDATE' && newTimer) {
+        const timer = newTimer as TimerRecord
         setActiveTimers(prev => {
-          if (newTimer.status === 'running') {
-            return prev.map(t => t.id === newTimer.id ? newTimer : t)
+          if (timer.status === 'running') {
+            return prev.map(t => t.id === timer.id ? timer : t)
           } else {
-            return prev.filter(t => t.id !== newTimer.id)
+            return prev.filter(t => t.id !== timer.id)
           }
         })
       }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Command } from 'cmdk'
 import Fuse from 'fuse.js'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 
 interface SearchResult {
   id: string
@@ -127,7 +128,7 @@ export default function GlobalSearch() {
       const searchResults = fuse.search(query).map(result => result.item)
       setResults(searchResults.slice(0, 10))
     } catch (error) {
-      console.error('Search error:', error)
+      logger.error('Global search error', { error })
       setResults(PAGES)
     } finally {
       setLoading(false)

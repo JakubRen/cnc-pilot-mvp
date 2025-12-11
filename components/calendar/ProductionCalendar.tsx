@@ -8,6 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { EventClickArg, DateSelectArg } from '@fullcalendar/core'
 import Link from 'next/link'
 import { useTheme } from '@/components/theme/ThemeProvider'
+import { logger } from '@/lib/logger'
 
 interface Order {
   id: string
@@ -79,7 +80,7 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
 
   const handleDateSelect = (info: DateSelectArg) => {
     // Could open a modal to create new order with this deadline
-    console.log('Selected dates:', info.startStr, info.endStr)
+    logger.debug('Calendar date selected', { startStr: info.startStr, endStr: info.endStr })
   }
 
   const statusLabels: Record<string, string> = {

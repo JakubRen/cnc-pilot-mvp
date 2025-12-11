@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useEffect } from 'react'
 import { usePermissions } from '@/hooks/usePermissions'
+import { sanitizeText } from '@/lib/sanitization'
 
 const inventorySchema = z.object({
   sku: z.string().min(1, 'SKU wymagane'),
@@ -82,10 +83,22 @@ export default function EditInventoryForm({ item }: EditInventoryFormProps) {
   const onSubmit = async (data: InventoryFormData) => {
     const loadingToast = toast.loading('Aktualizowanie pozycji...')
 
+    // Sanitize user inputs to prevent XSS attacks
+    const sanitizedData = {
+      ...data,
+      sku: sanitizeText(data.sku),
+      name: sanitizeText(data.name),
+      description: data.description ? sanitizeText(data.description) : null,
+      location: data.location ? sanitizeText(data.location) : null,
+      supplier: data.supplier ? sanitizeText(data.supplier) : null,
+      batch_number: data.batch_number ? sanitizeText(data.batch_number) : null,
+      notes: data.notes ? sanitizeText(data.notes) : null,
+    }
+
     const { error } = await supabase
       .from('inventory')
       .update({
-        ...data,
+        ...sanitizedData,
         quantity: Number(data.quantity),
         low_stock_threshold: Number(data.low_stock_threshold),
         unit_cost: data.unit_cost ? Number(data.unit_cost) : null,

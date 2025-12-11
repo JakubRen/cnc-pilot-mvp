@@ -6,6 +6,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { logger } from '@/lib/logger'
+import { rateLimit } from '@/lib/rate-limit'
+
+// Rate limiter: 5 user creations per minute per admin
+const limiter = rateLimit({
+  interval: 60 * 1000, // 1 minute
+  uniqueTokenPerInterval: 200, // Max 200 admins tracked
+})
 
 interface CreateUserRequest {
   email: string
@@ -20,6 +28,18 @@ export async function POST(request: NextRequest) {
     // 1. Sprawdź czy użytkownik jest zalogowany i ma uprawnienia
     const supabase = await createClient()
     const { data: { user: authUser } } = await supabase.auth.getUser()
+
+    // Rate limiting - 5 requests per minute per user
+    if (authUser) {
+      try {
+        await limiter.check(5, authUser.id)
+      } catch {
+        return NextResponse.json(
+          { error: 'Zbyt wiele żądań. Poczekaj chwilę przed utworzeniem kolejnego użytkownika.' },
+          { status: 429 }
+        )
+      }
+    }
 
     if (!authUser) {
       return NextResponse.json(
@@ -101,7 +121,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (authError) {
-      console.error('Auth error:', authError)
+      logger.error('Auth error', { error: authError })
       return NextResponse.json(
         { error: 'Błąd tworzenia konta: ' + authError.message },
         { status: 500 }
@@ -120,7 +140,7 @@ export async function POST(request: NextRequest) {
       })
 
     if (insertError) {
-      console.error('Insert error:', insertError)
+      logger.error('Insert error', { error: insertError })
       // Spróbuj usunąć konto auth jeśli insert się nie powiódł
       await supabaseAdmin.auth.admin.deleteUser(newAuthUser.user.id)
       return NextResponse.json(
@@ -146,7 +166,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Create user error:', error)
+    logger.error('Create user error', { error })
     return NextResponse.json(
       { error: 'Wystąpił nieoczekiwany błąd' },
       { status: 500 }
