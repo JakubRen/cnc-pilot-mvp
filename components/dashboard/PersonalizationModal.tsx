@@ -24,7 +24,6 @@ export default function PersonalizationModal({
 }: Props) {
   const [preferences, setPreferences] = useState<DashboardPreferences>(currentPreferences)
   const [isSaving, setIsSaving] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
   const saveButtonRef = useRef<HTMLButtonElement>(null)
 
   // Close modal on Escape key
