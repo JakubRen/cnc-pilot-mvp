@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { memo } from 'react';
 import {
   AreaChart,
   Area,
@@ -21,7 +22,8 @@ const data = [
   { name: 'Ndz', orders: 3, value: 1800 },
 ];
 
-export default function OrdersChart() {
+// Memoized to prevent unnecessary re-renders when parent state changes
+const OrdersChart = memo(function OrdersChart() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
@@ -104,4 +106,6 @@ export default function OrdersChart() {
       </div>
     </div>
   );
-}
+});
+
+export default OrdersChart;

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { useTableColumns } from '@/hooks/useTableColumns'
 import TableColumnConfig from '@/components/table/TableColumnConfig'
 import { Button } from '@/components/ui/Button'
@@ -51,30 +51,30 @@ export default function InventoryTable({ items }: InventoryTableProps) {
   const [showDropZone, setShowDropZone] = useState(false)
   const tableRef = useRef<HTMLDivElement>(null)
 
-  // Handle header drag start
-  const handleHeaderDragStart = (e: React.DragEvent, columnId: string) => {
+  // Handle header drag start - memoized to prevent re-renders
+  const handleHeaderDragStart = useCallback((e: React.DragEvent, columnId: string) => {
     setDraggingHeader(columnId)
     e.dataTransfer.effectAllowed = 'move'
     e.dataTransfer.setData('text/plain', columnId)
     // Show drop zone after a small delay
     setTimeout(() => setShowDropZone(true), 50)
-  }
+  }, [])
 
-  // Handle header drag end
-  const handleHeaderDragEnd = () => {
+  // Handle header drag end - memoized to prevent re-renders
+  const handleHeaderDragEnd = useCallback(() => {
     setDraggingHeader(null)
     setShowDropZone(false)
-  }
+  }, [])
 
-  // Handle drop on hide zone (above table)
-  const handleDropToHide = (e: React.DragEvent) => {
+  // Handle drop on hide zone (above table) - memoized to prevent re-renders
+  const handleDropToHide = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     if (draggingHeader) {
       toggleColumn(draggingHeader)
     }
     setDraggingHeader(null)
     setShowDropZone(false)
-  }
+  }, [draggingHeader, toggleColumn])
 
   // Render cell content based on column id
   const renderCell = (item: InventoryItem, columnId: string) => {

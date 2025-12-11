@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import MetricCard from './MetricCard';
 import { formatRevenue, formatNumber } from '@/lib/dashboard-utils';
 import { PermissionGuard } from '@/components/permissions';
@@ -16,7 +17,8 @@ interface MetricCardsProps {
   };
 }
 
-export default function MetricCards({ metrics }: MetricCardsProps) {
+// Memoized to prevent unnecessary re-renders when parent state changes
+const MetricCards = memo(function MetricCards({ metrics }: MetricCardsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Total Orders */}
@@ -61,4 +63,6 @@ export default function MetricCards({ metrics }: MetricCardsProps) {
       />
     </div>
   );
-}
+});
+
+export default MetricCards;

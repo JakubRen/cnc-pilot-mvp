@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import AppLayout from '@/components/layout/AppLayout'
-import ProductionCalendar from '@/components/calendar/ProductionCalendar'
+import LazyProductionCalendar from '@/components/calendar/LazyProductionCalendar'
 import Link from 'next/link'
 
 export default async function CalendarPage() {
@@ -94,7 +94,7 @@ export default async function CalendarPage() {
           </div>
 
           {/* Calendar */}
-          <ProductionCalendar orders={calendarOrders} />
+          <LazyProductionCalendar orders={calendarOrders} />
         </div>
       </div>
     </AppLayout>
