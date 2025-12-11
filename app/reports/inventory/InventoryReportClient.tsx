@@ -152,8 +152,8 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
         </div>
       </div>
 
-      {/* Inventory Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+      {/* Desktop View - Table (hidden on mobile) */}
+      <div className="hidden md:block bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
@@ -234,6 +234,127 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
             Wyświetlono <span className="text-slate-900 dark:text-white font-semibold">{filteredItems.length}</span> pozycji
           </p>
         </div>
+      </div>
+
+      {/* Mobile View - Cards (visible only on mobile) */}
+      <div className="md:hidden space-y-4">
+        {filteredItems.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
+            <p className="text-slate-500 dark:text-slate-400">Brak pozycji spełniających kryteria filtrowania</p>
+          </div>
+        ) : (
+          <>
+            {filteredItems.map((item) => {
+              const isLowStock = item.quantity < item.low_stock_threshold;
+              return (
+                <div
+                  key={item.id}
+                  className={`bg-white dark:bg-slate-800 border rounded-lg overflow-hidden ${
+                    isLowStock
+                      ? 'border-red-500 dark:border-red-400'
+                      : 'border-slate-200 dark:border-slate-700'
+                  }`}
+                >
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                        SKU
+                      </p>
+                      <p className="text-base font-mono font-bold text-slate-900 dark:text-white">
+                        {item.sku}
+                      </p>
+                    </div>
+                    {isLowStock && (
+                      <span className="px-3 py-1 bg-red-600 text-white text-sm font-semibold rounded">
+                        Niski stan
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Card Body */}
+                  <div className="p-4 space-y-3">
+                    {/* Name */}
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                        Nazwa
+                      </p>
+                      <p className="text-base text-slate-900 dark:text-white font-medium">
+                        {item.name}
+                      </p>
+                    </div>
+
+                    {/* Category */}
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                        Kategoria
+                      </p>
+                      <p className="text-base text-slate-900 dark:text-white">
+                        {item.category}
+                      </p>
+                    </div>
+
+                    {/* Quantity + Threshold */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                          Ilość
+                        </p>
+                        <p className={`text-lg font-bold ${
+                          isLowStock ? 'text-red-400' : 'text-slate-900 dark:text-white'
+                        }`}>
+                          {item.quantity} {item.unit}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                          Próg
+                        </p>
+                        <p className="text-lg text-slate-500 dark:text-slate-400">
+                          {item.low_stock_threshold} {item.unit}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Location + Batch */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                          Lokalizacja
+                        </p>
+                        <p className="text-sm text-slate-900 dark:text-white">
+                          {item.location || '-'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                          Partia
+                        </p>
+                        <p className="text-sm font-mono text-slate-900 dark:text-white">
+                          {item.batch_number || '-'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Creator + Date */}
+                    <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        Utworzone {new Date(item.created_at).toLocaleDateString('pl-PL')} przez {item.creator_name || 'Unknown'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Count */}
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+              <p className="text-slate-500 dark:text-slate-400 text-sm text-center">
+                Wyświetlono <span className="text-slate-900 dark:text-white font-semibold">{filteredItems.length}</span> pozycji
+              </p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
