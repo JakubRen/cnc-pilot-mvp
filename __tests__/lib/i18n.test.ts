@@ -117,7 +117,6 @@ describe('i18n', () => {
   describe('all translation keys', () => {
     it('should have matching keys in both locales', () => {
       const plKeys = ['common.save', 'common.cancel', 'common.delete', 'orders.title']
-      const enKeys = plKeys
 
       plKeys.forEach(key => {
         setLocale('pl')

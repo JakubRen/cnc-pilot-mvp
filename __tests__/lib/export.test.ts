@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { exportToCSV, exportToJSON } from '@/lib/export'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 describe('export utilities', () => {
-  let createElementSpy: any
   let clickSpy: any
 
   beforeEach(() => {
     // Mock document.createElement for download link
     clickSpy = vi.fn()
-    createElementSpy = vi.spyOn(document, 'createElement').mockReturnValue({
+    vi.spyOn(document, 'createElement').mockReturnValue({
       href: '',
       download: '',
       click: clickSpy,

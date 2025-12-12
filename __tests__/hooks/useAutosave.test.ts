@@ -16,7 +16,7 @@ describe('useAutosave', () => {
     const onSave = vi.fn()
     const data = { name: 'Test' }
 
-    const { result, rerender } = renderHook(
+    const { rerender } = renderHook(
       ({ data }) => useAutosave({ data, onSave, debounce: 2000, interval: 30000 }),
       { initialProps: { data } }
     )

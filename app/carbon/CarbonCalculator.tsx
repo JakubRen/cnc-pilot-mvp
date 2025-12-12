@@ -163,6 +163,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
   }, {} as Record<string, Material[]>)
 
   const getCategoryLabel = (cat: string) => {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const labels: Record<string, string> = {
       steel: `🔩 ${t('carbon', 'steel' as any)}`,
       aluminum: `🪶 ${t('carbon', 'aluminum' as any)}`,
@@ -171,6 +172,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
       plastic: `🧪 ${t('carbon', 'plastics' as any)}`,
       iron: `⚫ ${t('carbon', 'iron' as any)}`,
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     return labels[cat] || cat
   }
 
