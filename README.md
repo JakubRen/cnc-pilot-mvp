@@ -1,292 +1,214 @@
-# CNC-Pilot MVP
+# 🏭 CNC-Pilot MVP
 
-System zarządzania produkcją dla firm CNC - kompleksowe rozwiązanie do zarządzania zamówieniami, czasem pracy, magazynem i raportowaniem.
+> Modern production management system for CNC manufacturing workshops
 
-## 📋 Opis projektu
+[![Deployment Status](https://img.shields.io/badge/deployment-live-brightgreen)](https://cnc-pilot-mvp.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-CNC-Pilot to aplikacja SaaS typu multi-tenant, zaprojektowana dla małych i średnich firm zajmujących się obróbką CNC. System zapewnia:
+**[🚀 Live Demo](https://cnc-pilot-mvp.vercel.app)** | **[📚 Documentation](https://cnc-pilot-mvp.vercel.app/docs)**
 
-- **Multi-tenancy** - pełna izolacja danych między firmami na poziomie RLS (Row Level Security)
-- **Zarządzanie zamówieniami** - od oferty po realizację
-- **Śledzenie czasu pracy** - timer + automatyczne obliczanie kosztów
-- **Magazyn** - stany, wydania, alerty niskiego stanu
-- **Portal Wiedzy** - dokumentacja z interaktywnymi diagramami Mermaid
-- **Raporty** - eksport do CSV/Excel/PDF
+---
+
+## 📋 About The Project
+
+CNC-Pilot is a comprehensive **multi-tenant SaaS solution** designed for small and medium-sized CNC manufacturing companies. It provides complete production management from order creation to delivery, with real-time tracking, inventory management, and detailed reporting.
+
+### ✨ Key Features
+
+- 🎯 **Multi-Tenancy** - Complete data isolation with Row Level Security (RLS)
+- 📦 **Order Management** - Full lifecycle from quote to completion
+- ⏱️ **Time Tracking** - Built-in timer with automatic cost calculation
+- 🏭 **Inventory Management** - Stock levels, materials tracking, low-stock alerts
+- 📊 **Dashboard** - Real-time metrics and KPIs
+- 📈 **Reports & Analytics** - Export to CSV/Excel/PDF
+- 👥 **User Management** - Role-based access control (Owner/Admin/Manager/Operator/Viewer)
+- 📚 **Knowledge Portal** - Interactive documentation with Mermaid diagrams
+- 🌍 **Multi-language** - Polish & English support
+- 🌓 **Dark Mode** - Full dark theme support
+
+---
 
 ## 🛠️ Tech Stack
 
-| Kategoria | Technologia |
-|-----------|-------------|
-| **Framework** | Next.js 16 (App Router, Turbopack) |
-| **Język** | TypeScript |
-| **Styling** | Tailwind CSS + shadcn/ui |
-| **Database** | Supabase (PostgreSQL + RLS) |
-| **Auth** | Supabase Auth |
-| **Testing** | Vitest (243 unit tests) + Playwright (E2E) |
-| **CI/CD** | GitHub Actions |
-| **Deployment** | Vercel |
-| **Monitoring** | UptimeRobot |
-| **Documentation** | MDX + Mermaid.js |
-| **AI Assistant** | Claude Code (patrz: CLAUDE.md) |
+### Frontend
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Language:** TypeScript 5
+- **Styling:** Tailwind CSS 4 + shadcn/ui
+- **State Management:** React 19 + Server Components
+- **Forms:** React Hook Form + Zod validation
 
-## ✨ Features
+### Backend & Database
+- **Database:** Supabase (PostgreSQL)
+- **Authentication:** Supabase Auth
+- **Security:** Row Level Security (RLS)
+- **API:** Next.js API Routes
 
-### Główne moduły
-- 📊 **Dashboard** - przegląd kluczowych metryk
-- 📦 **Zamówienia** - zarządzanie zleceniami produkcyjnymi
-- 📅 **Kalendarz** - harmonogram realizacji
-- 🏭 **Magazyn** - stany materiałów i narzędzi
-- 📄 **Dokumenty** - oferty, faktury, protokoły
-- 📁 **Pliki** - rysunki techniczne, dokumentacja
-- ⏱️ **Śledzenie czasu** - timer + koszty pracy
-- ✅ **Kontrola jakości** - protokoły QC
-- 🚚 **Współpraca** - podwykonawcy i dostawcy
-- 🔧 **Maszyny** - status i wykorzystanie maszyn
-- 🌱 **Ślad węglowy** - monitoring zużycia energii
-- 💰 **Koszty** - analiza rentowności
-- 📈 **Raporty** - eksport danych
-- 🏷️ **Tagi** - kategoryzacja
-- 👥 **Użytkownicy** - zarządzanie uprawnieniami
+### Testing & CI/CD
+- **Unit Tests:** Vitest (243 tests)
+- **E2E Tests:** Playwright
+- **CI/CD:** GitHub Actions
+- **Deployment:** Vercel
+- **Monitoring:** UptimeRobot
 
-### Portal Wiedzy (Knowledge Base)
-- 📚 **Getting Started** - pierwsze kroki w systemie
-- ❓ **FAQ** - najczęściej zadawane pytania
-- 🎥 **Video Tutorials** - tutoriale wideo
-- 📊 **Flowcharts** - interaktywne diagramy Mermaid
-  - Proces rejestracji użytkownika
-  - Proces logowania
-  - Tworzenie zamówienia
-  - Śledzenie czasu pracy
-  - Wydanie materiału z magazynu
-  - Aktywacja użytkownika przez admina
-  - Multi-tenancy izolacja danych
-  - Generowanie raportu
+---
 
-## 📁 Struktura projektu
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm/yarn/pnpm
+- Supabase account ([free tier available](https://supabase.com))
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/JakubRen/cnc-pilot-mvp.git
+   cd cnc-pilot-mvp
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Fill in your Supabase credentials in `.env.local`:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+   ```
+
+4. **Set up the database**
+   - Create a new Supabase project
+   - Run the SQL migration: `migrations/DAY_10_COMPLETE_SETUP.sql`
+   - This creates all tables, RLS policies, and default data
+
+5. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) in your browser
+
+---
+
+## 📁 Project Structure
 
 ```
 cnc-pilot-mvp/
 ├── app/                      # Next.js App Router
-│   ├── docs/                # Portal Wiedzy (MDX)
-│   │   ├── flowcharts/      # Diagramy procesów
-│   │   ├── user-guide/      # Pierwsze kroki
-│   │   ├── faq/             # FAQ
-│   │   └── video-tutorials/ # Tutoriale
-│   ├── (auth)/              # Strony autentykacji
-│   └── (dashboard)/         # Chronione strony
-├── components/              # Komponenty React
-│   ├── docs/               # Komponenty dokumentacji
-│   │   └── MermaidDiagram.tsx  # Renderer diagramów
-│   ├── layout/             # Layout components
-│   └── ui/                 # shadcn/ui components
-├── lib/                    # Utilities
-│   ├── supabase/          # Klient Supabase
-│   ├── auth.ts            # Helpery autentykacji
+│   ├── (auth)/              # Authentication pages
+│   ├── (dashboard)/         # Protected pages
+│   ├── docs/               # Knowledge Portal (MDX)
+│   └── api/                # API routes
+├── components/              # React components
+│   ├── dashboard/          # Dashboard widgets
+│   ├── layout/            # Layout components
+│   └── ui/                # shadcn/ui components
+├── lib/                    # Utilities & helpers
+│   ├── supabase/          # Supabase client
+│   ├── auth.ts            # Auth helpers
 │   └── translations.ts    # i18n (PL/EN)
 ├── hooks/                 # Custom React hooks
-├── tests/                 # Testy
-│   ├── unit/             # 243 unit tests (Vitest)
-│   └── e2e/              # E2E tests (Playwright)
-├── middleware.ts          # Session refresh + protected routes
-├── mdx-components.tsx     # Konfiguracja MDX + Mermaid
-└── next.config.ts         # Next.js config
-
-CLAUDE.md                  # Executive Team System (CEO/COO/CSO/CMO/CTO)
+├── migrations/            # Database migrations
+├── tests/                # Unit & E2E tests
+└── middleware.ts         # Session & route protection
 ```
 
-## 🚀 Setup
-
-### Wymagania
-- Node.js 18+
-- npm/yarn/pnpm
-- Konto Supabase
-
-### Instalacja
-
-1. **Clone repository:**
-```bash
-git clone https://github.com/JakubRen/cnc-pilot-mvp.git
-cd cnc-pilot-mvp
-```
-
-2. **Install dependencies:**
-```bash
-npm install
-```
-
-3. **Configure environment:**
-```bash
-cp .env.example .env.local
-```
-
-Uzupełnij `.env.local`:
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-```
-
-4. **Run development server:**
-```bash
-npm run dev
-```
-
-Otwórz [http://localhost:3000](http://localhost:3000)
+---
 
 ## 🧪 Testing
 
 ### Unit Tests (Vitest)
 ```bash
-npm run test           # Uruchom wszystkie testy
-npm run test:watch     # Watch mode
-npm run test:ui        # Vitest UI
+npm run test              # Run all tests
+npm run test:watch        # Watch mode
+npm run test:ui           # Vitest UI
 ```
 
-**Coverage:** 243 testy jednostkowe
+**Coverage:** 243 unit tests covering critical business logic
 
 ### E2E Tests (Playwright)
 ```bash
-npm run test:e2e       # Headless mode
-npm run test:e2e:ui    # Playwright UI mode
+npm run test:e2e          # Headless mode
+npm run test:e2e:ui       # Interactive UI mode
 ```
 
-**Test suites:**
-- Homepage load
-- User registration flow
-- Login flow
-- Orders CRUD
-- Time tracking
-- Docs navigation
+---
 
-### CI/CD
-GitHub Actions automatycznie uruchamia:
-- ✅ Unit tests (Vitest)
-- ✅ E2E tests (Playwright)
-- ✅ Build verification
-- ✅ Lint & Type checking (ESLint + TypeScript)
-- ✅ Security checks (CVE scanning)
+## 📸 Screenshots
 
-**Status:** 🟢 All checks passing (0 errors, 91 warnings)
+> Coming soon - Dashboard, Orders, Time Tracking, Reports
 
-## 🌐 Deployment
+---
 
-### Vercel (Production)
-```bash
-npm run build          # Build production
-vercel deploy          # Deploy preview
-vercel --prod          # Deploy to production
-```
+## 🏗️ Architecture Highlights
 
-**Environment variables required:**
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+### Multi-Tenancy Implementation
+- **Email domain-based** company identification
+- Automatic company assignment during registration
+- Database-level isolation with RLS
+- Blocked public domains (gmail.com, etc.)
 
-### Status Monitoring
-- [UptimeRobot Status](https://stats.uptimerobot.com/g4Pua2N0Z3)
+### Security Features
+- Row Level Security (RLS) on all tables
+- Rate limiting on sensitive endpoints
+- Input sanitization (DOMPurify)
+- Environment variable validation
+- Secure session management
 
-## 🔒 Multi-Tenancy Architecture
+### Performance
+- Server Components for optimal performance
+- Parallel data fetching with Promise.all
+- Optimistic UI updates
+- Image optimization
+- ~2 second cold start with Turbopack
 
-System zapewnia pełną izolację danych między firmami:
+---
 
-1. **Rejestracja:**
-   - Email firmowy (nie gmail/wp/onet)
-   - Automatyczne wyciągnięcie domeny
-   - Przypisanie `company_id` z tabeli `companies`
+## 🤝 Contributing
 
-2. **Row Level Security (RLS):**
-   - Wszystkie tabele: `company_id` filter
-   - Polityki RLS na poziomie Supabase
-   - Niemożliwy wyciek danych między firmami
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-3. **Middleware:**
-   - Automatyczne dodawanie `company_id` do queries
-   - Session refresh
-   - Protected routes
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 🤖 AI Development (CLAUDE.md)
-
-Projekt używa **Executive Team System** - 5 wyspecjalizowanych AI asystentów:
-
-- `@CEO` - Strategia, finanse, stress testy
-- `@COO` - Egzekucja, procesy, brutalna szczerość
-- `@CSO` - Sprzedaż, pipeline, pricing
-- `@CMO` - Marketing, leady, content
-- `@CTO` - Tech stack, debugging, architektura
-
-**Więcej:** Zobacz `CLAUDE.md` w katalogu głównym projektu.
-
-## 📚 Documentation
-
-### Portal Wiedzy (wbudowany)
-Dostępny w aplikacji pod `/docs`:
-- Interaktywne diagramy Mermaid
-- FAQ i poradniki
-- Video tutorials
-- Flowcharty procesów
-
-### External Links
-- [Next.js Docs](https://nextjs.org/docs)
-- [Supabase Docs](https://supabase.com/docs)
-- [Tailwind CSS](https://tailwindcss.com/docs)
-- [shadcn/ui](https://ui.shadcn.com)
-- [Mermaid.js](https://mermaid.js.org)
-
-## 🐛 Known Issues
-
-1. **Turbopack + MDX plugins**
-   - `rehype-highlight` powoduje błąd serializacji
-   - **Rozwiązanie:** Usunięto, Mermaid renderowany client-side
-   - **Status:** Działa poprawnie
-
-2. **E2E tests w CI**
-   - Timeouty podczas nawigacji linkowej
-   - **Rozwiązanie:** Refactor na bezpośrednie `goto()`
-   - **Status:** Naprawione
-
-## 🔄 Recent Updates
-
-**2025-12-11** - Code Quality: Type Safety Complete
-- ✅ Usunięto wszystkie `as any` type assertions (17 instancji → 0)
-- ✅ Naprawiono Supabase join types (dashboard-queries.ts, reports/*)
-- ✅ Zweryfikowano console.log cleanup (0 w application code)
-- ✅ Potwierdzono Phase 4 Security (rate limiting, sanitization, env validation, headers)
-- ✅ Build: 100% success rate (68 routes generated)
-- 📝 Commit: `08ac9e2`
-
-**2025-12-09** - TypeScript & CI/CD Fixes
-- ✅ Naprawiono wszystkie błędy TypeScript (19 errors → 0 errors)
-- ✅ Rozwiązano problemy case sensitivity (Badge.tsx → badge.tsx, Card.tsx → card.tsx)
-- ✅ Naprawiono useRef typing issues w hookach (useAutosave, useInfiniteScroll, useRealTimeData)
-- ✅ Naprawiono Playwright API errors (toHaveCount, nth property)
-- ✅ Naprawiono component prop types (FormField, KeyboardShortcutsHelp, OrdersChart)
-- ✅ Naprawiono test type assertions (IntersectionObserverEntry, export columns)
-- ✅ GitHub Actions CI/CD: 🟢 All checks passing
-- 📝 Commits: `ab3f8d0`, `f833d07`, `f41ca14`, `8fbe5bc`, `05cce16`, `6a45c51`
-
-**2024-12-07** - Portal Wiedzy + Mermaid
-- ✅ Dodano `/docs` z 4 sekcjami
-- ✅ Integracja Mermaid.js dla flowchartów
-- ✅ Link "Portal Wiedzy" w sidebarze
-- ✅ 8 interaktywnych diagramów procesów
-- ✅ CI/CD przechodzi bez błędów
-
-**2024-12-07** - Security Update
-- ✅ Next.js 16.0.1 → 16.0.7 (fix CVE-2025-66478)
+---
 
 ## 📄 License
 
-Proprietary - All rights reserved
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 👤 Author
 
 **Jakub Ren**
 - GitHub: [@JakubRen](https://github.com/JakubRen)
-
-## 🔗 Links
-
-- **Production:** [Vercel deployment URL]
-- **Repository:** https://github.com/JakubRen/cnc-pilot-mvp
-- **Status:** [UptimeRobot](https://stats.uptimerobot.com/g4Pua2N0Z3)
+- Project Link: [https://github.com/JakubRen/cnc-pilot-mvp](https://github.com/JakubRen/cnc-pilot-mvp)
+- Live Demo: [https://cnc-pilot-mvp.vercel.app](https://cnc-pilot-mvp.vercel.app)
 
 ---
 
-© 2024 CNC-Pilot - Production Management System
+## 🙏 Acknowledgments
+
+- Built with [Next.js](https://nextjs.org/)
+- UI components from [shadcn/ui](https://ui.shadcn.com/)
+- Database & Auth by [Supabase](https://supabase.com/)
+- Deployed on [Vercel](https://vercel.com/)
+- Developed with assistance from [Claude Code](https://claude.com/claude-code)
+
+---
+
+<p align="center">Made with ❤️ for CNC manufacturers</p>
