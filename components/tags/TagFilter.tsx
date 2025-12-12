@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface Tag {
   id: string
@@ -15,6 +16,7 @@ interface TagFilterProps {
 }
 
 export default function TagFilter({ onFilterChange }: TagFilterProps) {
+  const { t } = useTranslation()
   const [tags, setTags] = useState<Tag[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [logic, setLogic] = useState<'AND' | 'OR'>('OR')
@@ -73,13 +75,13 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
     <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Filtruj po tagach</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{t('tags', 'filterByTags')}</h3>
         {selectedTags.length > 0 && (
           <button
             onClick={handleClearAll}
             className="text-xs text-blue-400 hover:text-blue-300 transition"
           >
-            Wyczyść
+            {t('tagsSection', 'clearFilter')}
           </button>
         )}
       </div>
@@ -113,7 +115,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {selectedTags.length > 1 && (
         <div className="mb-4">
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-slate-500 dark:text-slate-400">Logika:</span>
+            <span className="text-slate-500 dark:text-slate-400">{t('tags', 'logic')}:</span>
             <button
               onClick={() => setLogic(logic === 'AND' ? 'OR' : 'AND')}
               className={`px-3 py-1 rounded-lg font-medium transition ${
@@ -122,13 +124,13 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
                   : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
               }`}
             >
-              {logic === 'AND' ? 'Wszystkie (AND)' : 'Dowolny (OR)'}
+              {logic === 'AND' ? t('tags', 'allAND') : t('tags', 'anyOR')}
             </button>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
             {logic === 'AND'
-              ? 'Pokaż elementy z wszystkimi wybranymi tagami'
-              : 'Pokaż elementy z dowolnym z wybranych tagów'}
+              ? t('tagsSection', 'matchAll')
+              : t('tagsSection', 'matchAny')}
           </p>
         </div>
       )}
@@ -140,8 +142,8 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       >
         <span>
           {selectedTags.length === 0
-            ? 'Wybierz tagi'
-            : `Wybrano: ${selectedTags.length}`}
+            ? t('tags', 'selectTags')
+            : `${t('tags', 'selected')}: ${selectedTags.length}`}
         </span>
         <svg
           className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -158,7 +160,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
         <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
           {tags.length === 0 ? (
             <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">
-              Brak dostępnych tagów
+              {t('tagsSection', 'noAvailableTags')}
             </p>
           ) : (
             tags.map((tag) => {
@@ -195,7 +197,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {/* Info */}
       {tags.length === 0 && (
         <p className="text-xs text-slate-500 mt-3">
-          Utwórz tagi, aby filtrować zamówienia i produkty
+          {t('tagsSection', 'createToFilter')}
         </p>
       )}
     </div>

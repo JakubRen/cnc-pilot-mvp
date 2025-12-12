@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { logger } from '@/lib/logger'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface Tag {
   id: string
@@ -24,6 +25,7 @@ export default function TagSelect({
   selectedTags,
   onTagsChange,
 }: TagSelectProps) {
+  const { t } = useTranslation()
   const [availableTags, setAvailableTags] = useState<Tag[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -107,7 +109,7 @@ export default function TagSelect({
         onTagsChange?.(newTags)
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Błąd podczas aktualizacji tagów'
+      const message = error instanceof Error ? error.message : t('tagsSection', 'errorUpdating')
       toast.error(message)
     }
   }
@@ -121,7 +123,7 @@ export default function TagSelect({
       {/* Selected Tags Display */}
       <div className="flex flex-wrap gap-2 mb-2">
         {selectedTags.length === 0 ? (
-          <span className="text-sm text-slate-500 dark:text-slate-400">Brak tagów</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">{t('tagsSection', 'noTagsSelected')}</span>
         ) : (
           selectedTags.map((tag) => (
             <div
@@ -178,7 +180,7 @@ export default function TagSelect({
           <div className="max-h-64 overflow-y-auto p-2">
             {filteredTags.length === 0 ? (
               <div className="p-4 text-center text-slate-500 dark:text-slate-400 text-sm">
-                {searchQuery ? 'Nie znaleziono tagów' : 'Brak dostępnych tagów'}
+                {searchQuery ? t('tagsSection', 'noTagsFound') : t('tagsSection', 'noAvailableTags')}
               </div>
             ) : (
               filteredTags.map((tag) => {

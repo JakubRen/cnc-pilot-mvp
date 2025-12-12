@@ -3,11 +3,13 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import AuditLogsClient from './AuditLogsClient'
+import AuditLogsHeader from './AuditLogsHeader'
+import NoAccessMessage from './NoAccessMessage'
 import { logger } from '@/lib/logger'
 
 export const metadata = {
-  title: 'Dziennik Zdarzeń | CNC Pilot',
-  description: 'Historia zmian i akcji użytkowników'
+  title: 'Audit Log | CNC Pilot',
+  description: 'History of user changes and actions'
 }
 
 export default async function AuditLogsPage() {
@@ -23,14 +25,7 @@ export default async function AuditLogsPage() {
   if (!allowedRoles.includes(user.role)) {
     return (
       <AppLayout>
-        <div className="min-h-screen flex items-center justify-center p-8">
-          <div className="bg-red-900/20 border border-red-700/50 rounded-lg p-8 text-center max-w-md">
-            <h1 className="text-2xl font-bold text-red-200 mb-4">Brak dostępu</h1>
-            <p className="text-red-300">
-              Tylko właściciele i administratorzy mogą przeglądać dziennik zdarzeń.
-            </p>
-          </div>
-        </div>
+        <NoAccessMessage />
       </AppLayout>
     )
   }
@@ -58,13 +53,7 @@ export default async function AuditLogsPage() {
     <AppLayout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Dziennik Zdarzeń</h1>
-            <p className="text-slate-400">
-              Historia wszystkich akcji i zmian wykonanych przez użytkowników
-            </p>
-          </div>
-
+          <AuditLogsHeader />
           <AuditLogsClient logs={logs || []} />
         </div>
       </div>

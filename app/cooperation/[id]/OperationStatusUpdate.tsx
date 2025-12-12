@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { logger } from '@/lib/logger'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface OperationStatusUpdateProps {
   operationId: string
@@ -15,31 +16,35 @@ interface OperationStatusUpdateProps {
 
 export default function OperationStatusUpdate({ operationId, currentStatus, userId }: OperationStatusUpdateProps) {
   const router = useRouter()
+  const { t } = useTranslation()
   const [isUpdating, setIsUpdating] = useState(false)
 
-  const statusFlow: Record<string, { next: string[]; label: string }> = {
-    pending: { next: ['sent'], label: 'Przygotowane' },
-    sent: { next: ['in_progress', 'returning'], label: 'Wysłane' },
-    in_progress: { next: ['returning', 'delayed'], label: 'U kooperanta' },
-    returning: { next: ['completed'], label: 'W drodze powrotnej' },
-    delayed: { next: ['in_progress', 'returning', 'completed'], label: 'Opóźnione' },
-    completed: { next: [], label: 'Zakończone' }
+  const statusFlow: Record<string, { next: string[] }> = {
+    pending: { next: ['sent'] },
+    sent: { next: ['in_progress', 'returning'] },
+    in_progress: { next: ['returning', 'delayed'] },
+    returning: { next: ['completed'] },
+    delayed: { next: ['in_progress', 'returning', 'completed'] },
+    completed: { next: [] }
   }
 
-  const statusLabels: Record<string, string> = {
-    pending: 'Przygotowane',
-    sent: 'Wysłane',
-    in_progress: 'U kooperanta',
-    returning: 'W drodze powrotnej',
-    completed: 'Zakończone',
-    delayed: 'Opóźnione'
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      pending: t('cooperation', 'prepared'),
+      sent: t('cooperation', 'sent'),
+      in_progress: t('cooperation', 'atCooperant'),
+      returning: t('cooperation', 'onWayBack'),
+      completed: t('cooperation', 'completed'),
+      delayed: t('cooperation', 'delayed')
+    }
+    return labels[status] || status
   }
 
   const nextStatuses = statusFlow[currentStatus]?.next || []
 
   const updateStatus = async (newStatus: string) => {
     setIsUpdating(true)
-    const loadingToast = toast.loading('Aktualizacja statusu...')
+    const loadingToast = toast.loading(t('cooperation', 'updatingStatus'))
 
     try {
       const updateData: Record<string, unknown> = {
@@ -89,12 +94,12 @@ export default function OperationStatusUpdate({ operationId, currentStatus, user
       }
 
       toast.dismiss(loadingToast)
-      toast.success(`Status zmieniony na: ${statusLabels[newStatus]}`)
+      toast.success(`${t('cooperation', 'statusChangedTo')} ${getStatusLabel(newStatus)}`)
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
       logger.error('Error updating status', { error })
-      toast.error('Nie udało się zmienić statusu')
+      toast.error(t('cooperation', 'statusChangeError'))
     } finally {
       setIsUpdating(false)
     }
@@ -103,7 +108,7 @@ export default function OperationStatusUpdate({ operationId, currentStatus, user
   if (currentStatus === 'completed') {
     return (
       <div className="text-center py-4">
-        <span className="text-green-400 text-lg font-semibold">✓ Operacja zakończona</span>
+        <span className="text-green-400 text-lg font-semibold">{t('cooperation', 'operationCompleted')}</span>
       </div>
     )
   }
@@ -118,11 +123,11 @@ export default function OperationStatusUpdate({ operationId, currentStatus, user
           variant={status === 'completed' ? 'primary' : status === 'delayed' ? 'danger' : 'ghost'}
           className={status === 'completed' ? 'bg-green-600 hover:bg-green-700' : ''}
         >
-          {status === 'sent' && '📤 Wyślij'}
-          {status === 'in_progress' && '🔧 U kooperanta'}
-          {status === 'returning' && '🚚 W drodze powrotnej'}
-          {status === 'completed' && '✓ Zakończ'}
-          {status === 'delayed' && '⚠️ Opóźnione'}
+          {status === 'sent' && `📤 ${t('cooperation', 'btnSend')}`}
+          {status === 'in_progress' && `🔧 ${t('cooperation', 'btnAtCooperant')}`}
+          {status === 'returning' && `🚚 ${t('cooperation', 'btnOnWayBack')}`}
+          {status === 'completed' && `✓ ${t('cooperation', 'btnComplete')}`}
+          {status === 'delayed' && `⚠️ ${t('cooperation', 'btnDelayed')}`}
         </Button>
       ))}
     </div>

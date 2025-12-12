@@ -6,6 +6,7 @@ import { Command } from 'cmdk'
 import Fuse from 'fuse.js'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface SearchResult {
   id: string
@@ -16,15 +17,16 @@ interface SearchResult {
   icon: string
 }
 
-const PAGES: SearchResult[] = [
-  { id: 'dashboard', type: 'page', title: 'Dashboard', url: '/', icon: '📊' },
-  { id: 'orders', type: 'page', title: 'Zamówienia', url: '/orders', icon: '📦' },
-  { id: 'inventory', type: 'page', title: 'Magazyn', url: '/inventory', icon: '📦' },
-  { id: 'time', type: 'page', title: 'Czas pracy', url: '/time-tracking', icon: '⏱️' },
-  { id: 'users', type: 'page', title: 'Użytkownicy', url: '/users', icon: '👥' },
-]
-
 export default function GlobalSearch() {
+  const { t } = useTranslation()
+
+  const PAGES: SearchResult[] = [
+    { id: 'dashboard', type: 'page', title: t('nav', 'dashboard'), url: '/', icon: '📊' },
+    { id: 'orders', type: 'page', title: t('nav', 'orders'), url: '/orders', icon: '📦' },
+    { id: 'inventory', type: 'page', title: t('nav', 'inventory'), url: '/inventory', icon: '📦' },
+    { id: 'time', type: 'page', title: t('nav', 'timeTracking'), url: '/time-tracking', icon: '⏱️' },
+    { id: 'users', type: 'page', title: t('nav', 'users'), url: '/users', icon: '👥' },
+  ]
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
@@ -159,10 +161,10 @@ export default function GlobalSearch() {
   }, {} as Record<string, SearchResult[]>)
 
   const typeLabels = {
-    page: 'Strony',
-    order: 'Zamówienia',
-    inventory: 'Magazyn',
-    user: 'Użytkownicy',
+    page: t('search', 'typePages'),
+    order: t('search', 'typeOrders'),
+    inventory: t('search', 'typeInventory'),
+    user: t('search', 'typeUsers'),
   }
 
   return (
@@ -180,7 +182,7 @@ export default function GlobalSearch() {
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
         </svg>
-        <span>Szukaj...</span>
+        <span>{t('search', 'button')}</span>
         <kbd className="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded">
           Ctrl+K
         </kbd>
@@ -211,7 +213,7 @@ export default function GlobalSearch() {
             <Command.Input
               value={search}
               onValueChange={setSearch}
-              placeholder="Szukaj zamówień, magazynu, użytkowników..."
+              placeholder={t('search', 'placeholder')}
               className="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 outline-none"
             />
             {loading && (
@@ -223,7 +225,7 @@ export default function GlobalSearch() {
           <Command.List className="p-2 max-h-96 overflow-y-auto">
             {results.length === 0 && !loading && search && (
               <div className="py-8 text-center text-slate-500 dark:text-slate-400">
-                Nie znaleziono wyników dla &quot;{search}&quot;
+                {t('search', 'noResults')} &quot;{search}&quot;
               </div>
             )}
 
@@ -257,16 +259,16 @@ export default function GlobalSearch() {
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1">
                 <kbd className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded">↑↓</kbd>
-                Nawigacja
+                {t('search', 'navigation')}
               </span>
               <span className="flex items-center gap-1">
                 <kbd className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded">Enter</kbd>
-                Wybierz
+                {t('search', 'select')}
               </span>
             </div>
             <span className="flex items-center gap-1">
               <kbd className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded">Esc</kbd>
-              Zamknij
+              {t('search', 'close')}
             </span>
           </div>
         </div>

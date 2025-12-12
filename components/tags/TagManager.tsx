@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { logger } from '@/lib/logger'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface Tag {
   id: string
@@ -33,6 +34,7 @@ const PRESET_COLORS = [
 ]
 
 export default function TagManager() {
+  const { t } = useTranslation()
   const [tags, setTags] = useState<Tag[]>([])
   const [loading, setLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -66,7 +68,7 @@ export default function TagManager() {
       setTags(data || [])
     } catch (error) {
       logger.error('Error fetching tags', { error })
-      toast.error('Błąd ładowania tagów')
+      toast.error(t('tagsSection', 'errorLoading'))
     } finally {
       setLoading(false)
     }
@@ -76,11 +78,11 @@ export default function TagManager() {
     e.preventDefault()
 
     if (!formData.name.trim()) {
-      toast.error('Podaj nazwę taga')
+      toast.error(t('tagsSection', 'enterName'))
       return
     }
 
-    const loadingToast = toast.loading(editingTag ? 'Aktualizowanie...' : 'Tworzenie...')
+    const loadingToast = toast.loading(editingTag ? t('common', 'loading') : t('common', 'loading'))
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -103,7 +105,7 @@ export default function TagManager() {
           .eq('company_id', userProfile.company_id)
 
         if (error) throw error
-        toast.success('Tag zaktualizowany!')
+        toast.success(t('common', 'success'))
       } else {
         // Create new tag
         const { error } = await supabase
@@ -115,7 +117,7 @@ export default function TagManager() {
           })
 
         if (error) throw error
-        toast.success('Tag utworzony!')
+        toast.success(t('common', 'success'))
       }
 
       toast.dismiss(loadingToast)
@@ -125,7 +127,7 @@ export default function TagManager() {
       fetchTags()
     } catch (error) {
       toast.dismiss(loadingToast)
-      const message = error instanceof Error ? error.message : 'Błąd podczas zapisywania'
+      const message = error instanceof Error ? error.message : t('tagsSection', 'errorSaving')
       toast.error(message)
     }
   }
@@ -137,9 +139,9 @@ export default function TagManager() {
   }
 
   const handleDelete = async (tagId: string) => {
-    if (!confirm('Czy na pewno chcesz usunąć ten tag?')) return
+    if (!confirm(t('tagsSection', 'deleteConfirm'))) return
 
-    const loadingToast = toast.loading('Usuwanie...')
+    const loadingToast = toast.loading(t('common', 'loading'))
 
     try {
       const { error } = await supabase
@@ -150,11 +152,11 @@ export default function TagManager() {
       if (error) throw error
 
       toast.dismiss(loadingToast)
-      toast.success('Tag usunięty!')
+      toast.success(t('tagsSection', 'deleted'))
       fetchTags()
     } catch (error) {
       toast.dismiss(loadingToast)
-      const message = error instanceof Error ? error.message : 'Błąd podczas usuwania'
+      const message = error instanceof Error ? error.message : t('tagsSection', 'errorDeleting')
       toast.error(message)
     }
   }
@@ -178,9 +180,9 @@ export default function TagManager() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Zarządzanie Tagami</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('tagsSection', 'manage')}</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Twórz tagi do kategoryzacji zamówień i magazynu
+            {t('tagsSection', 'subtitle')}
           </p>
         </div>
         <button
@@ -188,7 +190,7 @@ export default function TagManager() {
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold flex items-center gap-2"
         >
           <span className="text-lg">+</span>
-          Nowy Tag
+          {t('tagsSection', 'create')}
         </button>
       </div>
 
@@ -196,15 +198,15 @@ export default function TagManager() {
       {tags.length === 0 ? (
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-12 text-center">
           <div className="text-6xl mb-4">🏷️</div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Brak tagów</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('tagsSection', 'noTags')}</h3>
           <p className="text-slate-500 dark:text-slate-400 mb-6">
-            Utwórz pierwszy tag, aby kategoryzować zamówienia i produkty
+            {t('tagsSection', 'noTagsDesc')}
           </p>
           <button
             onClick={openCreateModal}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
           >
-            Utwórz pierwszy tag
+            {t('tagsSection', 'createFirst')}
           </button>
         </div>
       ) : (
@@ -227,13 +229,13 @@ export default function TagManager() {
                   onClick={() => handleEdit(tag)}
                   className="flex-1 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded text-sm transition"
                 >
-                  Edytuj
+                  {t('common', 'edit')}
                 </button>
                 <button
                   onClick={() => handleDelete(tag.id)}
                   className="flex-1 px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded text-sm transition"
                 >
-                  Usuń
+                  {t('tagsSection', 'delete')}
                 </button>
               </div>
             </div>
@@ -248,7 +250,7 @@ export default function TagManager() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                {editingTag ? 'Edytuj Tag' : 'Nowy Tag'}
+                {editingTag ? t('common', 'edit') : t('tagsSection', 'create')}
               </h3>
               <button
                 onClick={() => {
@@ -268,13 +270,13 @@ export default function TagManager() {
               {/* Name Input */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
-                  Nazwa Taga
+                  {t('tagsSection', 'name')}
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="np. Pilne, Ważne, Opóźnione"
+                  placeholder={t('tagsSection', 'namePlaceholder')}
                   className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   autoFocus
                 />
@@ -283,7 +285,7 @@ export default function TagManager() {
               {/* Color Picker */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-3">
-                  Kolor Taga
+                  {t('tagsSection', 'color')}
                 </label>
                 <div className="grid grid-cols-8 gap-2">
                   {PRESET_COLORS.map((color) => (
@@ -305,13 +307,13 @@ export default function TagManager() {
               {/* Preview */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
-                  Podgląd
+                  {t('tagsSection', 'preview')}
                 </label>
                 <div
                   className="inline-block px-4 py-2 rounded-full text-white font-semibold"
                   style={{ backgroundColor: formData.color }}
                 >
-                  {formData.name || 'Nazwa taga'}
+                  {formData.name || t('tagsSection', 'name')}
                 </div>
               </div>
 
@@ -325,13 +327,13 @@ export default function TagManager() {
                   }}
                   className="flex-1 px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-lg transition font-semibold"
                 >
-                  Anuluj
+                  {t('common', 'cancel')}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
                 >
-                  {editingTag ? 'Zapisz' : 'Utwórz'}
+                  {editingTag ? t('tagsSection', 'save') : t('tagsSection', 'create')}
                 </button>
               </div>
             </form>

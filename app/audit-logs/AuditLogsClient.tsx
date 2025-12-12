@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import DateRangeFilter from '@/components/ui/DateRangeFilter'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface AuditLog {
   id: string
@@ -25,6 +26,7 @@ interface AuditLogsClientProps {
 }
 
 export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
+  const { t } = useTranslation()
   const [actionFilter, setActionFilter] = useState('all')
   const [entityTypeFilter, setEntityTypeFilter] = useState('all')
   const [userFilter, setUserFilter] = useState('all')
@@ -112,12 +114,12 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
       <div className="space-y-4">
         {/* Search */}
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Szukaj</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">{t('common', 'search')}</label>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Szukaj w logach..."
+            placeholder={t('auditLogs', 'searchPlaceholder')}
             className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
@@ -125,18 +127,18 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
         {/* Date Range Filter */}
         <DateRangeFilter
           onFilterChange={(start, end) => setDateRange({ start, end })}
-          label="Zakres dat"
+          label={t('auditLogs', 'dateRange')}
         />
 
         {/* Action Filter */}
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Akcja</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">{t('auditLogs', 'action')}</label>
           <select
             value={actionFilter}
             onChange={(e) => setActionFilter(e.target.value)}
             className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
           >
-            <option value="all">Wszystkie</option>
+            <option value="all">{t('common', 'all')}</option>
             {uniqueActions.map(action => (
               <option key={action} value={action}>{action}</option>
             ))}
@@ -145,13 +147,13 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
 
         {/* Entity Type Filter */}
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Typ encji</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">{t('auditLogs', 'entityType')}</label>
           <select
             value={entityTypeFilter}
             onChange={(e) => setEntityTypeFilter(e.target.value)}
             className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
           >
-            <option value="all">Wszystkie</option>
+            <option value="all">{t('common', 'all')}</option>
             {uniqueEntityTypes.map(type => (
               <option key={type} value={type}>{type}</option>
             ))}
@@ -160,13 +162,13 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
 
         {/* User Filter */}
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Użytkownik</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">{t('auditLogs', 'user')}</label>
           <select
             value={userFilter}
             onChange={(e) => setUserFilter(e.target.value)}
             className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
           >
-            <option value="all">Wszyscy</option>
+            <option value="all">{t('common', 'all')}</option>
             {uniqueUsers.map(user => user && (
               <option key={user.email} value={user.email}>
                 {user.full_name}
@@ -177,9 +179,9 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
 
         {/* Results Count */}
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Wyniki</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t('common', 'results')}</p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">{filteredLogs.length}</p>
-          <p className="text-xs text-slate-500">z {logs.length} logów</p>
+          <p className="text-xs text-slate-500">{t('auditLogs', 'showing', { total: logs.length })}</p>
         </div>
       </div>
 
@@ -190,19 +192,19 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
             <thead className="bg-slate-100 dark:bg-slate-700 sticky top-0 z-10">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  Data
+                  {t('common', 'date')}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  Użytkownik
+                  {t('auditLogs', 'user')}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  Akcja
+                  {t('common', 'actions')}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  Typ
+                  {t('common', 'type')}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  ID Encji
+                  ID
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   IP
@@ -213,7 +215,7 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
               {filteredLogs.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
-                    Brak logów spełniających kryteria
+                    {t('auditLogs', 'noLogs')}
                   </td>
                 </tr>
               ) : (

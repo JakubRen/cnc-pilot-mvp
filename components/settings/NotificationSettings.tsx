@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { logger } from '@/lib/logger'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface NotificationPreferences {
   email_enabled: boolean
@@ -35,6 +36,7 @@ const defaultPreferences: NotificationPreferences = {
 }
 
 export default function NotificationSettings({ userId, initialPreferences }: NotificationSettingsProps) {
+  const { t } = useTranslation()
   const [preferences, setPreferences] = useState<NotificationPreferences>(
     initialPreferences || defaultPreferences
   )
@@ -57,7 +59,7 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
 
   const handleSave = async () => {
     setSaving(true)
-    const loadingToast = toast.loading('Zapisywanie preferencji...')
+    const loadingToast = toast.loading(t('notifications', 'saving'))
 
     try {
       const { error } = await supabase
@@ -69,10 +71,10 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
 
       if (error) throw error
 
-      toast.success('Preferencje zapisane!')
+      toast.success(t('notifications', 'saved'))
     } catch (err) {
       toast.dismiss(loadingToast)
-      toast.error('Błąd podczas zapisywania')
+      toast.error(t('notifications', 'errorSaving'))
       logger.error('Error saving notification preferences', { error: err })
     } finally {
       setSaving(false)
@@ -82,44 +84,44 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
   const notificationTypes = [
     {
       key: 'order_created' as const,
-      label: 'Nowe zamówienia',
-      description: 'Powiadomienie gdy zostanie utworzone nowe zamówienie',
+      label: t('notifications', 'newOrder'),
+      description: t('notifications', 'newOrderDesc'),
       icon: '📦',
     },
     {
       key: 'order_status_changed' as const,
-      label: 'Zmiana statusu',
-      description: 'Powiadomienie gdy status zamówienia się zmieni',
+      label: t('notifications', 'orderStatusChange'),
+      description: t('notifications', 'orderStatusChangeDesc'),
       icon: '🔄',
     },
     {
       key: 'deadline_approaching' as const,
-      label: 'Zbliżające się terminy',
-      description: 'Przypomnienie o zbliżających się terminach realizacji',
+      label: t('notifications', 'deadlineApproaching'),
+      description: t('notifications', 'deadlineApproachingDesc'),
       icon: '⏰',
     },
     {
       key: 'low_stock_alert' as const,
-      label: 'Niskie stany magazynowe',
-      description: 'Alert gdy stan magazynowy spadnie poniżej progu',
+      label: t('notifications', 'lowStock'),
+      description: t('notifications', 'lowStockDesc'),
       icon: '🚨',
     },
     {
       key: 'team_changes' as const,
-      label: 'Zmiany w zespole',
-      description: 'Powiadomienie o nowych członkach zespołu',
+      label: t('notifications', 'newTeamMember'),
+      description: t('notifications', 'newTeamMemberDesc'),
       icon: '👥',
     },
     {
       key: 'daily_summary' as const,
-      label: 'Dzienny raport',
-      description: 'Codzienne podsumowanie aktywności (rano)',
+      label: t('notifications', 'dailyDigest'),
+      description: t('notifications', 'dailyDigestDesc'),
       icon: '📊',
     },
     {
       key: 'weekly_report' as const,
-      label: 'Tygodniowy raport',
-      description: 'Raport tygodniowy z podsumowaniem (poniedziałek)',
+      label: t('notifications', 'weeklyReport'),
+      description: t('notifications', 'weeklyReportDesc'),
       icon: '📈',
     },
   ]
@@ -127,14 +129,14 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
   return (
     <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
       <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-        <span>🔔</span> Powiadomienia Email
+        <span>🔔</span> {t('notifications', 'title')}
       </h3>
 
       {/* Master toggle */}
       <div className="flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg mb-6">
         <div>
-          <p className="text-slate-900 dark:text-white font-medium">Włącz powiadomienia email</p>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">Główny przełącznik dla wszystkich powiadomień</p>
+          <p className="text-slate-900 dark:text-white font-medium">{t('notifications', 'enableAll')}</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">{t('notifications', 'enableAllDesc')}</p>
         </div>
         <button
           onClick={() => handleToggle('email_enabled')}
@@ -183,18 +185,18 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
         {preferences.deadline_approaching && (
           <div className="p-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg ml-8">
             <label className="block text-slate-600 dark:text-slate-300 text-sm mb-2">
-              Powiadom o terminie na ile dni przed:
+              {t('notifications', 'deadlineReminder')}:
             </label>
             <select
               value={preferences.deadline_days_before}
               onChange={(e) => handleDaysChange(parseInt(e.target.value))}
               className="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white rounded-lg px-4 py-2"
             >
-              <option value={1}>1 dzień</option>
-              <option value={2}>2 dni</option>
-              <option value={3}>3 dni</option>
-              <option value={5}>5 dni</option>
-              <option value={7}>7 dni</option>
+              <option value={1}>{t('notifications', 'days1')}</option>
+              <option value={2}>{t('notifications', 'days2')}</option>
+              <option value={3}>{t('notifications', 'days3')}</option>
+              <option value={5}>{t('notifications', 'days5')}</option>
+              <option value={7}>{t('notifications', 'days7')}</option>
             </select>
           </div>
         )}
@@ -207,7 +209,7 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
           disabled={saving}
           className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition disabled:opacity-50"
         >
-          {saving ? 'Zapisywanie...' : 'Zapisz preferencje'}
+          {saving ? t('notifications', 'saving') : t('notifications', 'saveSettings')}
         </button>
       </div>
     </div>

@@ -34,6 +34,8 @@ export const translations = {
     status: { pl: 'Status', en: 'Status' },
     date: { pl: 'Data', en: 'Date' },
     name: { pl: 'Nazwa', en: 'Name' },
+    type: { pl: 'Typ', en: 'Type' },
+    results: { pl: 'Wyniki', en: 'Results' },
     description: { pl: 'Opis', en: 'Description' },
     notes: { pl: 'Notatki', en: 'Notes' },
     quantity: { pl: 'Ilość', en: 'Quantity' },
@@ -63,6 +65,7 @@ export const translations = {
     hours: { pl: 'godz.', en: 'hours' },
     minutes: { pl: 'min.', en: 'min.' },
     undoOperation: { pl: 'Tej operacji nie można cofnąć.', en: 'This operation cannot be undone.' },
+    pcs: { pl: 'szt.', en: 'pcs' },
   },
 
   // ============================================
@@ -91,6 +94,7 @@ export const translations = {
     logout: { pl: 'Wyloguj', en: 'Logout' },
     closeMenu: { pl: 'Zamknij menu', en: 'Close menu' },
     toggleSidebar: { pl: 'Przełącz pasek boczny', en: 'Toggle sidebar' },
+    clientPortal: { pl: 'Portal Klienta', en: 'Client Portal' },
   },
 
   // ============================================
@@ -506,6 +510,13 @@ export const translations = {
     updating: { pl: 'Aktualizowanie...', en: 'Updating...' },
     creating: { pl: 'Tworzenie...', en: 'Creating...' },
     deleting: { pl: 'Usuwanie...', en: 'Deleting...' },
+    // Filter
+    filterByTags: { pl: 'Filtruj po tagach', en: 'Filter by tags' },
+    logic: { pl: 'Logika', en: 'Logic' },
+    allAND: { pl: 'Wszystkie (AND)', en: 'All (AND)' },
+    anyOR: { pl: 'Dowolny (OR)', en: 'Any (OR)' },
+    selectTags: { pl: 'Wybierz tagi', en: 'Select tags' },
+    selected: { pl: 'Wybrano', en: 'Selected' },
   },
 
   // ============================================
@@ -513,6 +524,451 @@ export const translations = {
   // ============================================
   profile: {
     title: { pl: 'Mój Profil', en: 'My Profile' },
+  },
+
+  // ============================================
+  // GLOBAL SEARCH
+  // ============================================
+  search: {
+    button: { pl: 'Szukaj...', en: 'Search...' },
+    placeholder: { pl: 'Szukaj zamówień, magazynu, użytkowników...', en: 'Search orders, inventory, users...' },
+    noResults: { pl: 'Nie znaleziono wyników dla', en: 'No results found for' },
+    // Type labels
+    typePages: { pl: 'Strony', en: 'Pages' },
+    typeOrders: { pl: 'Zamówienia', en: 'Orders' },
+    typeInventory: { pl: 'Magazyn', en: 'Inventory' },
+    typeUsers: { pl: 'Użytkownicy', en: 'Users' },
+    // Keyboard shortcuts
+    navigation: { pl: 'Nawigacja', en: 'Navigate' },
+    select: { pl: 'Wybierz', en: 'Select' },
+    close: { pl: 'Zamknij', en: 'Close' },
+  },
+
+  // ============================================
+  // NOTIFICATION SETTINGS
+  // ============================================
+  notifications: {
+    title: { pl: 'Powiadomienia Email', en: 'Email Notifications' },
+    enableAll: { pl: 'Włącz powiadomienia email', en: 'Enable email notifications' },
+    enableAllDesc: { pl: 'Główny przełącznik dla wszystkich powiadomień', en: 'Main toggle for all notifications' },
+    deadlineReminder: { pl: 'Powiadom o terminie na ile dni przed', en: 'Remind about deadline days before' },
+    deadlineReminderDays: { pl: 'Przypominaj na {days} dni przed terminem', en: 'Remind {days} days before deadline' },
+    days1: { pl: '1 dzień', en: '1 day' },
+    days2: { pl: '2 dni', en: '2 days' },
+    days3: { pl: '3 dni', en: '3 days' },
+    days5: { pl: '5 dni', en: '5 days' },
+    days7: { pl: '7 dni', en: '7 days' },
+    // Events
+    newOrder: { pl: 'Nowe zamówienia', en: 'New Orders' },
+    newOrderDesc: { pl: 'Powiadomienie gdy zostanie utworzone nowe zamówienie', en: 'Notification when a new order is created' },
+    orderStatusChange: { pl: 'Zmiana statusu zamówienia', en: 'Order Status Change' },
+    orderStatusChangeDesc: { pl: 'Powiadomienie gdy status zamówienia się zmieni', en: 'Notification when order status changes' },
+    deadlineApproaching: { pl: 'Zbliżające się terminy', en: 'Approaching Deadlines' },
+    deadlineApproachingDesc: { pl: 'Przypomnienie o zbliżających się terminach realizacji', en: 'Reminder about approaching completion deadlines' },
+    lowStock: { pl: 'Niski stan magazynowy', en: 'Low Stock' },
+    lowStockDesc: { pl: 'Alert gdy stan magazynowy spadnie poniżej progu', en: 'Alert when inventory level falls below threshold' },
+    newTeamMember: { pl: 'Nowy członek zespołu', en: 'New Team Member' },
+    newTeamMemberDesc: { pl: 'Powiadomienie o nowych członkach zespołu', en: 'Notification about new team members' },
+    dailyDigest: { pl: 'Podsumowanie dzienne', en: 'Daily Digest' },
+    dailyDigestDesc: { pl: 'Codzienne podsumowanie aktywności (rano)', en: 'Daily activity summary (morning)' },
+    weeklyReport: { pl: 'Raport tygodniowy', en: 'Weekly Report' },
+    weeklyReportDesc: { pl: 'Raport tygodniowy z podsumowaniem (poniedziałek)', en: 'Weekly summary report (Monday)' },
+    saving: { pl: 'Zapisywanie...', en: 'Saving...' },
+    saveSettings: { pl: 'Zapisz ustawienia', en: 'Save Settings' },
+    saved: { pl: 'Ustawienia zapisane!', en: 'Settings saved!' },
+    errorSaving: { pl: 'Błąd podczas zapisywania', en: 'Error saving settings' },
+  },
+
+  // ============================================
+  // TAGS
+  // ============================================
+  tagsSection: {
+    manage: { pl: 'Zarządzanie Tagami', en: 'Tag Management' },
+    subtitle: { pl: 'Twórz tagi do kategoryzacji zamówień i magazynu', en: 'Create tags to categorize orders and inventory' },
+    noTags: { pl: 'Brak tagów', en: 'No tags' },
+    noTagsDesc: { pl: 'Utwórz pierwszy tag, aby kategoryzować zamówienia i produkty', en: 'Create your first tag to categorize orders and products' },
+    createFirst: { pl: 'Utwórz pierwszy tag', en: 'Create first tag' },
+    name: { pl: 'Nazwa tagu', en: 'Tag name' },
+    namePlaceholder: { pl: 'np. Pilne, Ważne, Opóźnione', en: 'e.g., Urgent, Important, Delayed' },
+    color: { pl: 'Kolor', en: 'Color' },
+    preview: { pl: 'Podgląd', en: 'Preview' },
+    create: { pl: 'Utwórz', en: 'Create' },
+    save: { pl: 'Zapisz', en: 'Save' },
+    delete: { pl: 'Usuń', en: 'Delete' },
+    deleteConfirm: { pl: 'Czy na pewno chcesz usunąć ten tag?', en: 'Are you sure you want to delete this tag?' },
+    deleted: { pl: 'Tag usunięty!', en: 'Tag deleted!' },
+    errorLoading: { pl: 'Błąd ładowania tagów', en: 'Error loading tags' },
+    errorSaving: { pl: 'Błąd podczas zapisywania', en: 'Error saving' },
+    errorDeleting: { pl: 'Błąd podczas usuwania', en: 'Error deleting' },
+    enterName: { pl: 'Podaj nazwę taga', en: 'Enter tag name' },
+    // Tag Filter
+    clearFilter: { pl: 'Wyczyść', en: 'Clear' },
+    matchAll: { pl: 'Pokaż elementy z wszystkimi wybranymi tagami', en: 'Show items with all selected tags' },
+    matchAny: { pl: 'Pokaż elementy z dowolnym z wybranych tagów', en: 'Show items with any selected tags' },
+    noAvailableTags: { pl: 'Brak dostępnych tagów', en: 'No available tags' },
+    createToFilter: { pl: 'Utwórz tagi, aby filtrować zamówienia i produkty', en: 'Create tags to filter orders and products' },
+    // Tag Select
+    noTagsSelected: { pl: 'Brak tagów', en: 'No tags' },
+    noTagsFound: { pl: 'Nie znaleziono tagów', en: 'No tags found' },
+    searchTags: { pl: 'Szukaj tagów...', en: 'Search tags...' },
+    errorUpdating: { pl: 'Błąd podczas aktualizacji tagów', en: 'Error updating tags' },
+  },
+
+  // ============================================
+  // CALENDAR
+  // ============================================
+  calendar: {
+    title: { pl: 'Kalendarz Produkcji', en: 'Production Calendar' },
+    subtitle: { pl: 'Wizualizacja terminów realizacji zamówień', en: 'Visualization of order completion deadlines' },
+    newOrder: { pl: 'Nowe zamówienie', en: 'New order' },
+    allOrders: { pl: 'Wszystkie zamówienia', en: 'All orders' },
+    // Views
+    month: { pl: 'Miesiąc', en: 'Month' },
+    week: { pl: 'Tydzień', en: 'Week' },
+    timeline: { pl: 'Oś czasu', en: 'Timeline' },
+    today: { pl: 'Dziś', en: 'Today' },
+    day: { pl: 'Dzień', en: 'Day' },
+    // Modal
+    orderDetails: { pl: 'Szczegóły zamówienia', en: 'Order Details' },
+    orderNumber: { pl: 'Numer zamówienia', en: 'Order Number' },
+    part: { pl: 'Część', en: 'Part' },
+    quantity: { pl: 'Ilość', en: 'Quantity' },
+    viewOrder: { pl: 'Zobacz zamówienie →', en: 'View order →' },
+  },
+
+  // ============================================
+  // AUDIT LOGS
+  // ============================================
+  auditLogs: {
+    title: { pl: 'Dziennik Zdarzeń', en: 'Audit Log' },
+    subtitle: { pl: 'Historia wszystkich akcji i zmian wykonanych przez użytkowników', en: 'History of all actions and changes made by users' },
+    metaTitle: { pl: 'Dziennik Zdarzeń | CNC Pilot', en: 'Audit Log | CNC Pilot' },
+    metaDesc: { pl: 'Historia zmian i akcji użytkowników', en: 'History of user changes and actions' },
+    noAccess: { pl: 'Brak dostępu', en: 'Access Denied' },
+    noAccessMessage: { pl: 'Tylko właściciele i administratorzy mogą przeglądać dziennik zdarzeń.', en: 'Only owners and administrators can view the audit log.' },
+    user: { pl: 'Użytkownik', en: 'User' },
+    showing: { pl: 'z {total} logów', en: 'of {total} logs' },
+    noLogs: { pl: 'Brak logów spełniających kryteria', en: 'No logs matching criteria' },
+    searchPlaceholder: { pl: 'Szukaj w logach...', en: 'Search in logs...' },
+    dateRange: { pl: 'Zakres dat', en: 'Date Range' },
+    action: { pl: 'Akcja', en: 'Action' },
+    entityType: { pl: 'Typ encji', en: 'Entity Type' },
+  },
+
+  // ============================================
+  // COOPERATION
+  // ============================================
+  cooperation: {
+    title: { pl: 'Kooperacja', en: 'Cooperation' },
+    subtitle: { pl: 'Zarządzanie procesami zewnętrznymi (hartowanie, anodowanie, etc.)', en: 'Managing external processes (hardening, anodizing, etc.)' },
+    newShipment: { pl: 'Nowa wysyłka', en: 'New Shipment' },
+    delayed: { pl: 'Opóźnione', en: 'Delayed' },
+    delayedReturns: { pl: 'Opóźnione powroty', en: 'Delayed Returns' },
+    daysDelay: { pl: '{days} dni opóźnienia', en: '{days} days delay' },
+    noActiveOperations: { pl: 'Brak aktywnych operacji zewnętrznych', en: 'No active external operations' },
+    createFirst: { pl: 'Utwórz pierwszą wysyłkę', en: 'Create first shipment' },
+    returnDate: { pl: 'Powrót:', en: 'Return:' },
+    sentDate: { pl: 'Wysłano:', en: 'Sent:' },
+    moreItems: { pl: '+{count} więcej', en: '+{count} more' },
+    noPartners: { pl: 'Brak kooperantów. Dodaj pierwszego.', en: 'No partners. Add the first one.' },
+    recentlyCompleted: { pl: 'Ostatnio zakończone', en: 'Recently Completed' },
+    noCompleted: { pl: 'Brak zakończonych operacji', en: 'No completed operations' },
+    // Status
+    sent: { pl: 'Wysłane', en: 'Sent' },
+    inProgress: { pl: 'W trakcie', en: 'In Progress' },
+    returning: { pl: 'Powrót', en: 'Returning' },
+    completed: { pl: 'Zakończone', en: 'Completed' },
+    // Error
+    errorTitle: { pl: 'Wystąpił błąd', en: 'An Error Occurred' },
+    errorMessage: { pl: 'Nie udało się załadować modułu kooperacji. Spróbuj ponownie.', en: 'Failed to load cooperation module. Try again.' },
+    tryAgain: { pl: 'Spróbuj ponownie', en: 'Try Again' },
+    backHome: { pl: 'Wróć do strony głównej', en: 'Back to Home' },
+    // Send page
+    sendTitle: { pl: 'Nowa wysyłka do kooperacji', en: 'New Cooperation Shipment' },
+    shipmentData: { pl: 'Dane wysyłki', en: 'Shipment Data' },
+    plannedReturn: { pl: 'Planowany powrót', en: 'Planned Return' },
+    trackingNumber: { pl: 'Nr przesyłki / Kurier', en: 'Tracking Number / Courier' },
+    itemsToSend: { pl: 'Pozycje do wysyłki', en: 'Items to Send' },
+    addFromOrder: { pl: 'Dodaj z zamówienia', en: 'Add from Order' },
+    selectOrder: { pl: '-- Wybierz zamówienie --', en: '-- Select Order --' },
+    partName: { pl: 'Nazwa części (ręcznie)', en: 'Part Name (manual)' },
+    noItems: { pl: 'Brak pozycji. Wybierz zamówienie lub dodaj ręcznie.', en: 'No items. Select order or add manually.' },
+    remove: { pl: 'Usuń', en: 'Remove' },
+    creating: { pl: 'Tworzenie...', en: 'Creating...' },
+    createShipment: { pl: 'Utwórz wysyłkę', en: 'Create Shipment' },
+    orderAlreadyAdded: { pl: 'To zamówienie jest już dodane', en: 'This order is already added' },
+    enterPartName: { pl: 'Podaj nazwę części', en: 'Enter part name' },
+    addOneItem: { pl: 'Dodaj przynajmniej jedną pozycję', en: 'Add at least one item' },
+    creatingShipment: { pl: 'Tworzenie wysyłki...', en: 'Creating shipment...' },
+    shipmentCreated: { pl: 'Wysyłka utworzona!', en: 'Shipment created!' },
+    errorCreating: { pl: 'Nie udało się utworzyć wysyłki', en: 'Failed to create shipment' },
+    // Details page
+    back: { pl: '← Wróć', en: '← Back' },
+    changeStatus: { pl: 'Zmień status', en: 'Change Status' },
+    items: { pl: 'Pozycje', en: 'Items' },
+    lost: { pl: 'Zgubione', en: 'Lost' },
+    sendDate: { pl: 'Data wysyłki', en: 'Send Date' },
+    expectedReturn: { pl: 'Planowany powrót', en: 'Expected Return' },
+    actualReturn: { pl: 'Rzeczywisty powrót', en: 'Actual Return' },
+    statusChangeError: { pl: 'Nie udało się zmienić statusu', en: 'Failed to change status' },
+    operationCompleted: { pl: '✓ Operacja zakończona', en: '✓ Operation Completed' },
+    // Main page
+    cooperants: { pl: 'Kooperanci', en: 'Cooperants' },
+    prepared: { pl: 'Przygotowane', en: 'Prepared' },
+    atCooperant: { pl: 'U kooperanta', en: 'At Cooperant' },
+    onWayBack: { pl: 'W drodze powrotnej', en: 'On Way Back' },
+    activeOperations: { pl: 'Aktywne operacje', en: 'Active Operations' },
+    noCooperant: { pl: 'Brak kooperanta', en: 'No cooperant' },
+    pcs: { pl: 'szt', en: 'pcs' },
+    overdue: { pl: 'OPÓŹNIONE', en: 'OVERDUE' },
+    // Status update
+    updatingStatus: { pl: 'Aktualizacja statusu...', en: 'Updating status...' },
+    statusChangedTo: { pl: 'Status zmieniony na:', en: 'Status changed to:' },
+    btnSend: { pl: 'Wyślij', en: 'Send' },
+    btnAtCooperant: { pl: 'U kooperanta', en: 'At Cooperant' },
+    btnOnWayBack: { pl: 'W drodze powrotnej', en: 'On Way Back' },
+    btnComplete: { pl: 'Zakończ', en: 'Complete' },
+    btnDelayed: { pl: 'Opóźnione', en: 'Delayed' },
+    // Operation types
+    opHartowanie: { pl: 'Hartowanie', en: 'Hardening' },
+    opAnodowanie: { pl: 'Anodowanie', en: 'Anodizing' },
+    opCynkowanie: { pl: 'Cynkowanie', en: 'Galvanizing' },
+    opMalowanie: { pl: 'Malowanie proszkowe', en: 'Powder Coating' },
+    opSzlifowanie: { pl: 'Szlifowanie', en: 'Grinding' },
+    opChromowanie: { pl: 'Chromowanie', en: 'Chrome Plating' },
+    opNiklowanie: { pl: 'Niklowanie', en: 'Nickel Plating' },
+    opTrawienie: { pl: 'Trawienie', en: 'Etching' },
+    opPiaskowanie: { pl: 'Piaskowanie', en: 'Sandblasting' },
+    opInne: { pl: 'Inne', en: 'Other' },
+  },
+
+  // ============================================
+  // CARBON FOOTPRINT / CBAM
+  // ============================================
+  carbon: {
+    title: { pl: 'Paszport Węglowy', en: 'Carbon Passport' },
+    subtitle: { pl: 'Kalkulator emisji CO2 zgodny z CBAM', en: 'CBAM-compliant CO2 emissions calculator' },
+    cbamReady: { pl: 'CBAM Ready', en: 'CBAM Ready' },
+    cbamTitle: { pl: 'Carbon Border Adjustment Mechanism (CBAM)', en: 'Carbon Border Adjustment Mechanism (CBAM)' },
+    cbamDescription: { pl: 'Od 1 stycznia 2026 wchodzi w życie pełna faza CBAM. Eksporterzy do UE muszą deklarować ślad węglowy produktów. Ten kalkulator pomoże Ci obliczyć emisje CO2 dla Twoich wyrobów.', en: 'From January 1, 2026, the full CBAM phase comes into effect. Exporters to the EU must declare the carbon footprint of products. This calculator will help you calculate CO2 emissions for your products.' },
+    reports: { pl: 'Raporty', en: 'Reports' },
+    totalEmissions: { pl: 'Suma emisji', en: 'Total Emissions' },
+    materialsInDatabase: { pl: 'Materiały w bazie', en: 'Materials in Database' },
+    energySources: { pl: 'Źródła energii', en: 'Energy Sources' },
+    calculator: { pl: 'Kalkulator emisji CO2', en: 'CO2 Emissions Calculator' },
+    recentReports: { pl: 'Ostatnie raporty', en: 'Recent Reports' },
+    noReports: { pl: 'Brak raportów. Oblicz pierwszą emisję!', en: 'No reports. Calculate your first emission!' },
+    formula: { pl: 'Formuła obliczeniowa', en: 'Calculation Formula' },
+    materialEmissionFactor: { pl: 'współczynnik emisji materiału (kg CO₂/kg)', en: 'material emission factor (kg CO₂/kg)' },
+    energyEmissionFactor: { pl: 'współczynnik emisji energii (kg CO₂/kWh)', en: 'energy emission factor (kg CO₂/kWh)' },
+    materialCoefficients: { pl: 'Współczynniki materiałów', en: 'Material Coefficients' },
+    steel: { pl: 'Stal', en: 'Steel' },
+    aluminum: { pl: 'Aluminium', en: 'Aluminum' },
+    copperBrass: { pl: 'Miedź/Mosiądz', en: 'Copper/Brass' },
+    titanium: { pl: 'Tytan', en: 'Titanium' },
+    plastics: { pl: 'Tworzywa', en: 'Plastics' },
+    iron: { pl: 'Żeliwo', en: 'Cast Iron' },
+    // Calculator component
+    productName: { pl: 'Nazwa produktu', en: 'Product Name' },
+    productNamePlaceholder: { pl: 'np. Wałek Ø50x200', en: 'e.g. Shaft Ø50x200' },
+    quantityPcs: { pl: 'Ilość (szt)', en: 'Quantity (pcs)' },
+    linkToOrder: { pl: 'Powiąż z zamówieniem (opcjonalne)', en: 'Link to Order (optional)' },
+    noLink: { pl: '-- Bez powiązania --', en: '-- No Link --' },
+    materialEmission: { pl: 'Emisja z materiału', en: 'Material Emission' },
+    material: { pl: 'Materiał', en: 'Material' },
+    selectMaterial: { pl: '-- Wybierz materiał --', en: '-- Select Material --' },
+    materialWeightKg: { pl: 'Waga materiału (kg)', en: 'Material Weight (kg)' },
+    materialWeightPlaceholder: { pl: 'np. 2.5', en: 'e.g. 2.5' },
+    materialEmissionResult: { pl: 'Emisja materiału:', en: 'Material Emission:' },
+    energyEmission: { pl: 'Emisja z energii', en: 'Energy Emission' },
+    energySource: { pl: 'Źródło energii', en: 'Energy Source' },
+    selectSource: { pl: '-- Wybierz źródło --', en: '-- Select Source --' },
+    consumption: { pl: 'Zużycie', en: 'Consumption' },
+    consumptionPlaceholder: { pl: 'np. 15.5', en: 'e.g. 15.5' },
+    energyEmissionResult: { pl: 'Emisja energii:', en: 'Energy Emission:' },
+    calculationResult: { pl: 'Wynik obliczeń', en: 'Calculation Result' },
+    totalEmission: { pl: 'Całkowita emisja', en: 'Total Emission' },
+    emissionPerUnit: { pl: 'Emisja na sztukę', en: 'Emission Per Unit' },
+    perPcs: { pl: 'CO₂ / szt', en: 'CO₂ / pcs' },
+    material2: { pl: 'Materiał:', en: 'Material:' },
+    energy: { pl: 'Energia:', en: 'Energy:' },
+    saveCarbonPassport: { pl: 'Zapisz Paszport Węglowy', en: 'Save Carbon Passport' },
+    generating: { pl: 'Generowanie...', en: 'Generating...' },
+    productNameRequired: { pl: 'Podaj nazwę produktu', en: 'Enter product name' },
+    calculateBeforeSaving: { pl: 'Oblicz emisję przed zapisaniem', en: 'Calculate emission before saving' },
+    generatingReport: { pl: 'Generowanie raportu...', en: 'Generating report...' },
+    reportCreated: { pl: 'Raport {number} utworzony!', en: 'Report {number} created!' },
+    reportCreateError: { pl: 'Nie udało się utworzyć raportu', en: 'Failed to create report' },
+    // Detail page
+    backToCalculator: { pl: 'Powrót do kalkulatora', en: 'Back to Calculator' },
+    carbonPassport: { pl: 'Paszport Węglowy', en: 'Carbon Passport' },
+    cbamCompliant: { pl: 'Dokument zgodny z CBAM', en: 'CBAM Compliant Document' },
+    cbamRegulation: { pl: 'Carbon Border Adjustment Mechanism - Rozporządzenie UE 2023/956', en: 'Carbon Border Adjustment Mechanism - EU Regulation 2023/956' },
+    productInfo: { pl: 'Informacje o produkcie', en: 'Product Information' },
+    productName2: { pl: 'Nazwa produktu', en: 'Product Name' },
+    quantity2: { pl: 'Ilość', en: 'Quantity' },
+    orderNumber: { pl: 'Nr zamówienia', en: 'Order Number' },
+    customer: { pl: 'Klient', en: 'Customer' },
+    emissionSummary: { pl: 'Podsumowanie emisji', en: 'Emission Summary' },
+    totalCO2Emission: { pl: 'Całkowita emisja CO₂', en: 'Total CO₂ Emission' },
+    kgCO2: { pl: 'kilogramów CO₂', en: 'kilograms CO₂' },
+    emissionPerUnit2: { pl: 'Emisja na jednostkę', en: 'Emission Per Unit' },
+    calculationDetails: { pl: 'Szczegóły obliczenia', en: 'Calculation Details' },
+    materialEmission2: { pl: 'Emisja z materiału', en: 'Material Emission' },
+    material3: { pl: 'Materiał', en: 'Material' },
+    weight: { pl: 'Waga', en: 'Weight' },
+    emissionFactor: { pl: 'Wsp. emisji', en: 'Emission Factor' },
+    emission: { pl: 'Emisja', en: 'Emission' },
+    noMaterialData: { pl: 'Brak danych o materiale', en: 'No material data' },
+    energyEmission2: { pl: 'Emisja z energii', en: 'Energy Emission' },
+    energyConsumption: { pl: 'Zużycie energii', en: 'Energy Consumption' },
+    noEnergyData: { pl: 'Brak danych o energii', en: 'No energy data' },
+    formulaUsed: { pl: 'Zastosowana formuła:', en: 'Formula Used:' },
+    documentData: { pl: 'Dane dokumentu', en: 'Document Data' },
+    reportNumber: { pl: 'Numer raportu', en: 'Report Number' },
+    createdAt: { pl: 'Data utworzenia', en: 'Created At' },
+    createdBy: { pl: 'Utworzony przez', en: 'Created By' },
+    calculationMethod: { pl: 'Metoda obliczeń', en: 'Calculation Method' },
+    simplified: { pl: 'Uproszczona', en: 'Simplified' },
+    notesLabel: { pl: 'Uwagi:', en: 'Notes:' },
+    // PDF component
+    printPDF: { pl: 'Drukuj / PDF', en: 'Print / PDF' },
+    autoGenerated: { pl: 'Dokument wygenerowany automatycznie przez CNC-Pilot', en: 'Document automatically generated by CNC-Pilot' },
+    printDate: { pl: 'Data wydruku:', en: 'Print Date:' },
+    noData: { pl: 'Brak danych', en: 'No data' },
+  },
+
+  // ============================================
+  // COSTS & PROFITABILITY
+  // ============================================
+  costs: {
+    title: { pl: 'Analiza Kosztów i Rentowności', en: 'Cost & Profitability Analysis' },
+    lastDays: { pl: 'Ostatnie {days} dni • {count} zamówień', en: 'Last {days} days • {count} orders' },
+    lastNDays: { pl: 'Ostatnie {days} dni', en: 'Last {days} days' },
+    orders: { pl: 'zamówień', en: 'orders' },
+    revenue: { pl: 'Przychód', en: 'Revenue' },
+    totalCost: { pl: 'Koszt całkowity', en: 'Total Cost' },
+    profit: { pl: 'Zysk', en: 'Profit' },
+    avgMargin: { pl: '{margin}% marży', en: '{margin}% margin' },
+    avgLaborCost: { pl: '{cost} PLN/h śr.', en: '{cost} PLN/h avg.' },
+    profitable: { pl: 'Rentowne', en: 'Profitable' },
+    unprofitable: { pl: 'Nierentowne', en: 'Unprofitable' },
+    unprofitableCount: { pl: 'nierentownych', en: 'unprofitable' },
+    laborHours: { pl: 'Godziny pracy', en: 'Labor Hours' },
+    avg: { pl: 'śr.', en: 'avg.' },
+    noPrice: { pl: 'Bez ceny', en: 'No Price' },
+    noAnalysis: { pl: 'brak analizy', en: 'no analysis' },
+    materials: { pl: 'Materiały', en: 'Materials' },
+    labor: { pl: 'Praca', en: 'Labor' },
+    overhead: { pl: 'Ogólne', en: 'Overhead' },
+    ofCosts: { pl: 'kosztów', en: 'of costs' },
+    order: { pl: 'Zamówienie', en: 'Order' },
+    customer: { pl: 'Klient', en: 'Customer' },
+    cost: { pl: 'Koszt', en: 'Cost' },
+    price: { pl: 'Cena', en: 'Price' },
+    margin: { pl: 'Marża', en: 'Margin' },
+    hours: { pl: 'Godziny', en: 'Hours' },
+    noOrders: { pl: 'Brak zamówień spełniających kryteria', en: 'No orders matching criteria' },
+    profitability: { pl: 'Rentowność', en: 'Profitability' },
+    period: { pl: 'Okres', en: 'Period' },
+    days7: { pl: '7 dni', en: '7 days' },
+    days14: { pl: '14 dni', en: '14 days' },
+    days30: { pl: '30 dni', en: '30 days' },
+    days60: { pl: '60 dni', en: '60 days' },
+    days90: { pl: '90 dni', en: '90 days' },
+    year: { pl: 'Rok', en: 'Year' },
+    clearFilters: { pl: 'Wyczyść filtry', en: 'Clear filters' },
+  },
+
+  // ============================================
+  // CLIENT PORTAL
+  // ============================================
+  clientPortal: {
+    linkExpired: { pl: 'Link wygasł', en: 'Link Expired' },
+    linkExpiredMessage: { pl: 'Ten link do portalu klienta wygasł. Skontaktuj się z dostawcą, aby otrzymać nowy link.', en: 'This client portal link has expired. Contact your supplier to receive a new link.' },
+    yourOrders: { pl: 'Twoje zamówienia', en: 'Your Orders' },
+    noOrders: { pl: 'Brak aktywnych zamówień', en: 'No active orders' },
+    qty: { pl: 'Ilość: {qty} szt. | Termin: {deadline}', en: 'Qty: {qty} pcs | Deadline: {deadline}' },
+    accepted: { pl: 'Przyjęte', en: 'Accepted' },
+    questions: { pl: 'Masz pytania? Skontaktuj się bezpośrednio z dostawcą.', en: 'Have questions? Contact your supplier directly.' },
+    completed: { pl: 'Ukończone', en: 'Completed' },
+    lastUpdate: { pl: 'Ostatnia aktualizacja', en: 'Last update' },
+    // Generate link
+    linkGenerated: { pl: 'Link wygenerowany pomyślnie!', en: 'Link generated successfully!' },
+    linkExists: { pl: 'Link dla tego klienta już istnieje', en: 'Link for this client already exists' },
+    errorGenerating: { pl: 'Nie udało się wygenerować linku', en: 'Failed to generate link' },
+    sendToClient: { pl: 'Wyślij ten link do {customer}, aby mogli śledzić status swoich zamówień.', en: 'Send this link to {customer} so they can track their order status.' },
+    validFor: { pl: 'Link jest ważny przez 30 dni. Klient nie potrzebuje logowania.', en: 'Link is valid for 30 days. No login required.' },
+  },
+
+  // ============================================
+  // ============================================
+  // TIME STATS
+  // ============================================
+  timeStats: {
+    today: { pl: 'Dziś', en: 'Today' },
+    thisWeek: { pl: 'Ten tydzień', en: 'This Week' },
+    thisMonth: { pl: 'Ten miesiąc', en: 'This Month' },
+    costMonth: { pl: 'Koszt (miesiąc)', en: 'Cost (month)' },
+    totalLaborCost: { pl: 'Całkowity koszt pracy', en: 'Total labor cost' },
+  },
+
+  // ============================================
+  // VIEW MODE
+  // ============================================
+  viewMode: {
+    fullView: { pl: 'Pełny widok', en: 'Full View' },
+    kioskMode: { pl: 'Tryb Kiosk', en: 'Kiosk Mode' },
+  },
+
+  // ============================================
+  // TOP CUSTOMERS
+  // ============================================
+  topCustomers: {
+    title: { pl: '👥 Top 5 Klientów', en: '👥 Top 5 Customers' },
+    subtitle: { pl: 'Największy przychód', en: 'Highest Revenue' },
+    ordersCount: { pl: '{count} zlecenie', en: '{count} order' },
+    ordersCount_plural: { pl: '{count} zlecenia', en: '{count} orders' },
+    ordersCount_many: { pl: '{count} zleceń', en: '{count} orders' },
+    willAppear: { pl: 'Zamówienia z kosztami pojawią się tutaj po ukończeniu', en: 'Orders with costs will appear here after completion' },
+  },
+
+  // ============================================
+  // TABLE
+  // ============================================
+  table: {
+    dragToReorder: { pl: 'Przeciągnij aby zmienić kolejność', en: 'Drag to reorder' },
+    restoreDefaults: { pl: 'Przywróć domyślne', en: 'Restore Defaults' },
+  },
+
+  // ============================================
+  // FILES
+  // ============================================
+  filesSection: {
+    uploading: { pl: 'Przesyłanie plików...', en: 'Uploading files...' },
+    dropHere: { pl: 'Upuść pliki tutaj...', en: 'Drop files here...' },
+    dragDrop: { pl: 'Przeciągnij pliki tutaj lub kliknij aby wybrać', en: 'Drag files here or click to select' },
+    maxFiles: { pl: 'Maksymalnie {count} plików, {size}MB każdy', en: 'Maximum {count} files, {size}MB each' },
+    supported: { pl: 'Obsługiwane: PDF, obrazy, Excel, CSV', en: 'Supported: PDF, images, Excel, CSV' },
+    fileTooLarge: { pl: 'plik za duży', en: 'file too large' },
+    errorDownload: { pl: 'Błąd pobierania pliku', en: 'Error downloading file' },
+    confirmDelete: { pl: 'Czy na pewno chcesz usunąć plik: {filename}?', en: 'Are you sure you want to delete file: {filename}?' },
+    deleted: { pl: 'Plik usunięty!', en: 'File deleted!' },
+    errorDelete: { pl: 'Błąd usuwania pliku', en: 'Error deleting file' },
+    noFiles: { pl: 'Brak plików', en: 'No files' },
+    noFilesType: { pl: 'Brak plików tego typu', en: 'No files of this type' },
+    uploadFirst: { pl: 'Prześlij pierwszy plik używając formularza powyżej', en: 'Upload your first file using the form above' },
+    changeFilter: { pl: 'Zmień filtr aby zobaczyć inne pliki', en: 'Change filter to see other files' },
+    preview: { pl: 'Podgląd', en: 'Preview' },
+    previewUnavailable: { pl: 'Podgląd niedostępny dla tego typu pliku', en: 'Preview unavailable for this file type' },
+  },
+
+  // ============================================
+  // DOCS / KNOWLEDGE PORTAL
+  // ============================================
+  docs: {
+    userGuide: { pl: 'Poradnik Użytkownika', en: 'User Guide' },
+    processDiagrams: { pl: 'Diagramy Procesów', en: 'Process Diagrams' },
   },
 
   // ============================================
