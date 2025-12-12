@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import { useState } from 'react'
@@ -44,21 +43,21 @@ export default function AddCooperantPage() {
     e.preventDefault()
 
     if (!name.trim()) {
-      toast.error(t('cooperation', 'cooperantNameRequired'))
+      toast.error(t('cooperation', 'cooperantNameRequired' as any))
       return
     }
 
     if (!serviceType) {
-      toast.error(t('cooperation', 'selectServiceType'))
+      toast.error(t('cooperation', 'selectServiceType' as any))
       return
     }
 
     setIsSubmitting(true)
-    const loadingToast = toast.loading(t('cooperation', 'addingCooperant'))
+    const loadingToast = toast.loading(t('cooperation', 'addingCooperant' as any))
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error(t('cooperation', 'notLoggedIn'))
+      if (!user) throw new Error(t('cooperation', 'notLoggedIn' as any))
 
       const { data: userProfile } = await supabase
         .from('users')
@@ -66,7 +65,7 @@ export default function AddCooperantPage() {
         .eq('auth_id', user.id)
         .single()
 
-      if (!userProfile?.company_id) throw new Error(t('cooperation', 'noCompany'))
+      if (!userProfile?.company_id) throw new Error(t('cooperation', 'noCompany' as any))
 
       // Sanitize user inputs to prevent XSS attacks
       const { error } = await supabase
@@ -86,13 +85,13 @@ export default function AddCooperantPage() {
       if (error) throw error
 
       toast.dismiss(loadingToast)
-      toast.success(t('cooperation', 'cooperantAdded'))
+      toast.success(t('cooperation', 'cooperantAdded' as any))
       router.push('/cooperation/cooperants')
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
       logger.error('Error adding cooperant', { error })
-      toast.error(t('cooperation', 'cooperantAddError'))
+      toast.error(t('cooperation', 'cooperantAddError' as any))
     } finally {
       setIsSubmitting(false)
     }
@@ -107,38 +106,38 @@ export default function AddCooperantPage() {
             <Link href="/cooperation/cooperants" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               ← {t('common', 'back')}
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t('cooperation', 'newCooperant')}</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t('cooperation', 'newCooperant' as any)}</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'basicInfo')}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'basicInfo' as any)}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'companyName')} *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'companyName' as any)} *</label>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={t('cooperation', 'companyNamePlaceholder')}
+                    placeholder={t('cooperation', 'companyNamePlaceholder' as any)}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'serviceType')} *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'serviceType' as any)} *</label>
                   <select
                     value={serviceType}
                     onChange={(e) => setServiceType(e.target.value)}
                     className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     required
                   >
-                    <option value="">{t('cooperation', 'select')}</option>
+                    <option value="">{t('cooperation', 'select' as any)}</option>
                     {serviceTypes.map(type => (
-                      <option key={type.key} value={type.value}>{t('cooperation', type.key)}</option>
+                      <option key={type.key} value={type.value}>{t('cooperation', type.key as any)}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'avgLeadTimeDays')}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'avgLeadTimeDays' as any)}</label>
                   <Input
                     type="number"
                     min="1"
@@ -151,40 +150,40 @@ export default function AddCooperantPage() {
             </div>
 
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'contactInfo')}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'contactInfo' as any)}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'contactPerson')}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'contactPerson' as any)}</label>
                   <Input
                     value={contactPerson}
                     onChange={(e) => setContactPerson(e.target.value)}
-                    placeholder={t('cooperation', 'contactPersonPlaceholder')}
+                    placeholder={t('cooperation', 'contactPersonPlaceholder' as any)}
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'phone')}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'phone' as any)}</label>
                   <Input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder={t('cooperation', 'phonePlaceholder')}
+                    placeholder={t('cooperation', 'phonePlaceholder' as any)}
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'email')}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'email' as any)}</label>
                   <Input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t('cooperation', 'emailPlaceholder')}
+                    placeholder={t('cooperation', 'emailPlaceholder' as any)}
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'address')}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'address' as any)}</label>
                   <Input
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder={t('cooperation', 'addressPlaceholder')}
+                    placeholder={t('cooperation', 'addressPlaceholder' as any)}
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -192,7 +191,7 @@ export default function AddCooperantPage() {
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder={t('cooperation', 'notesPlaceholder')}
+                    placeholder={t('cooperation', 'notesPlaceholder' as any)}
                     className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     rows={3}
                   />
@@ -208,7 +207,7 @@ export default function AddCooperantPage() {
                 variant="primary"
                 className="flex-1"
               >
-                {isSubmitting ? t('cooperation', 'adding') : t('cooperation', 'addCooperant')}
+                {isSubmitting ? t('cooperation', 'adding' as any) : t('cooperation', 'addCooperant' as any)}
               </Button>
               <Link href="/cooperation/cooperants">
                 <Button type="button" variant="ghost">

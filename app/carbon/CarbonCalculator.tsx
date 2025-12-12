@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -19,10 +18,11 @@ interface Material {
 
 interface Energy {
   id: string
-  energy_name: string
   energy_type: string
   emission_factor: number
   unit: string
+  is_active: boolean
+  company_id: string | null
 }
 
 interface CarbonCalculatorProps {
@@ -164,12 +164,12 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
 
   const getCategoryLabel = (cat: string) => {
     const labels: Record<string, string> = {
-      steel: `🔩 ${t('carbon', 'steel')}`,
-      aluminum: `🪶 ${t('carbon', 'aluminum')}`,
-      copper: `🔶 ${t('carbon', 'copperBrass')}`,
-      titanium: `⚙️ ${t('carbon', 'titanium')}`,
-      plastic: `🧪 ${t('carbon', 'plastics')}`,
-      iron: `⚫ ${t('carbon', 'iron')}`,
+      steel: `🔩 ${t('carbon', 'steel' as any)}`,
+      aluminum: `🪶 ${t('carbon', 'aluminum' as any)}`,
+      copper: `🔶 ${t('carbon', 'copperBrass' as any)}`,
+      titanium: `⚙️ ${t('carbon', 'titanium' as any)}`,
+      plastic: `🧪 ${t('carbon', 'plastics' as any)}`,
+      iron: `⚫ ${t('carbon', 'iron' as any)}`,
     }
     return labels[cat] || cat
   }
@@ -276,7 +276,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
               <option value="">{t('carbon', 'selectSource')}</option>
               {energies.map(en => (
                 <option key={en.id} value={en.id}>
-                  {en.energy_name} ({en.emission_factor} kg CO₂/{en.unit})
+                  {en.energy_type} ({en.emission_factor} kg CO₂/{en.unit})
                 </option>
               ))}
             </select>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import { useTranslation } from '@/hooks/useTranslation'
@@ -52,10 +51,10 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
 
   const getStatusConfig = (status: string) => {
     const config: Record<string, { bg: string; text: string; label: string }> = {
-      pending: { bg: 'bg-yellow-600', text: 'text-yellow-100', label: t('cooperation', 'prepared') },
-      sent: { bg: 'bg-blue-600', text: 'text-blue-100', label: t('cooperation', 'btnSend') },
-      in_progress: { bg: 'bg-purple-600', text: 'text-purple-100', label: t('cooperation', 'atCooperant') },
-      returning: { bg: 'bg-cyan-600', text: 'text-cyan-100', label: t('cooperation', 'onWayBack') },
+      pending: { bg: 'bg-yellow-600', text: 'text-yellow-100', label: t('cooperation', 'prepared' as any) },
+      sent: { bg: 'bg-blue-600', text: 'text-blue-100', label: t('cooperation', 'btnSend' as any) },
+      in_progress: { bg: 'bg-purple-600', text: 'text-purple-100', label: t('cooperation', 'atCooperant' as any) },
+      returning: { bg: 'bg-cyan-600', text: 'text-cyan-100', label: t('cooperation', 'onWayBack' as any) },
       completed: { bg: 'bg-green-600', text: 'text-green-100', label: t('cooperation', 'completed') },
       delayed: { bg: 'bg-red-600', text: 'text-red-100', label: t('cooperation', 'delayed') },
     }
@@ -72,9 +71,9 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
     operation.status !== 'completed'
 
   const getItemStatusLabel = (status: string) => {
-    if (status === 'returned') return t('cooperation', 'returned')
-    if (status === 'lost') return t('cooperation', 'lost')
-    return t('cooperation', 'sent')
+    if (status === 'returned') return t('cooperation', 'returned' as any)
+    if (status === 'lost') return t('cooperation', 'lost' as any)
+    return t('cooperation', 'sent' as any)
   }
 
   return (
@@ -111,7 +110,7 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
           <div className="lg:col-span-2 space-y-6">
             {/* Status Update */}
             <div className="bg-white dark:bg-slate-800 border border-blue-700 dark:border-blue-700 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'changeStatus')}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'changeStatus' as any)}</h2>
               <OperationStatusUpdate
                 operationId={operation.id}
                 currentStatus={operation.status}
@@ -170,11 +169,11 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
           <div className="space-y-6">
             {/* Dates */}
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'dates')}</h3>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'dates' as any)}</h3>
               <div className="space-y-3">
                 {operation.sent_date && (
                   <div>
-                    <p className="text-slate-500 text-xs">{t('cooperation', 'sendDate')}</p>
+                    <p className="text-slate-500 text-xs">{t('cooperation', 'sendDate' as any)}</p>
                     <p className="text-slate-900 dark:text-white">
                       {new Date(operation.sent_date).toLocaleDateString('pl-PL', {
                         day: 'numeric',
@@ -186,7 +185,7 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
                 )}
                 {operation.expected_return_date && (
                   <div>
-                    <p className="text-slate-500 text-xs">{t('cooperation', 'expectedReturn')}</p>
+                    <p className="text-slate-500 text-xs">{t('cooperation', 'expectedReturn' as any)}</p>
                     <p className={`font-semibold ${isOverdue ? 'text-red-400' : 'text-slate-900 dark:text-white'}`}>
                       {new Date(operation.expected_return_date).toLocaleDateString('pl-PL', {
                         day: 'numeric',
@@ -199,7 +198,7 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
                 )}
                 {operation.actual_return_date && (
                   <div>
-                    <p className="text-slate-500 text-xs">{t('cooperation', 'actualReturn')}</p>
+                    <p className="text-slate-500 text-xs">{t('cooperation', 'actualReturn' as any)}</p>
                     <p className="text-green-400">
                       {new Date(operation.actual_return_date).toLocaleDateString('pl-PL', {
                         day: 'numeric',
@@ -215,13 +214,13 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
             {/* Cooperant */}
             {operation.cooperants && (
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'cooperant')}</h3>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'cooperant' as any)}</h3>
                 <div className="space-y-2">
                   <p className="text-slate-900 dark:text-white font-medium">{operation.cooperants.name}</p>
                   <p className="text-slate-500 dark:text-slate-400 text-sm">{operation.cooperants.service_type}</p>
                   {operation.cooperants.contact_person && (
                     <p className="text-slate-500 dark:text-slate-400 text-sm">
-                      {t('cooperation', 'contact')}: {operation.cooperants.contact_person}
+                      {t('cooperation', 'contact' as any)}: {operation.cooperants.contact_person}
                     </p>
                   )}
                   {operation.cooperants.phone && (
@@ -247,16 +246,16 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
             {/* Transport */}
             {operation.transport_info && (
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'transport')}</h3>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'transport' as any)}</h3>
                 <p className="text-slate-700 dark:text-slate-300">{operation.transport_info}</p>
               </div>
             )}
 
             {/* Created by */}
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'created')}</h3>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'created' as any)}</h3>
               <p className="text-slate-700 dark:text-slate-300">
-                {operation.sent_by_user?.full_name || t('cooperation', 'unknown')}
+                {operation.sent_by_user?.full_name || t('cooperation', 'unknown' as any)}
               </p>
               <p className="text-slate-500 text-sm">
                 {new Date(operation.created_at).toLocaleDateString('pl-PL')}

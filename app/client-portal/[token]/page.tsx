@@ -3,16 +3,6 @@ import { notFound } from 'next/navigation'
 import ExpiredLinkMessage from './ExpiredLinkMessage'
 import ClientPortalContent from './ClientPortalContent'
 
-interface ClientOrder {
-  id: string
-  order_number: string
-  part_name: string | null
-  quantity: number
-  deadline: string
-  status: string
-  created_at: string
-}
-
 export default async function ClientPortalPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params
   const supabase = await createClient()

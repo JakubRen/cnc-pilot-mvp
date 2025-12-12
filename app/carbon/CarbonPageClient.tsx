@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import { useTranslation } from '@/hooks/useTranslation'
@@ -57,11 +56,11 @@ export default function CarbonPageClient({
   const { t } = useTranslation()
 
   const materialCategories = [
-    { cat: 'steel', label: t('carbon', 'steel'), range: '1.5-6.2 kg CO₂/kg' },
-    { cat: 'aluminum', label: t('carbon', 'aluminum'), range: '8-12 kg CO₂/kg' },
-    { cat: 'copper', label: t('carbon', 'copperBrass'), range: '3.5-4 kg CO₂/kg' },
-    { cat: 'titanium', label: t('carbon', 'titanium'), range: '35+ kg CO₂/kg' },
-    { cat: 'plastic', label: t('carbon', 'plastics'), range: '3-26 kg CO₂/kg' },
+    { cat: 'steel', label: t('carbon', 'steel' as any), range: '1.5-6.2 kg CO₂/kg' },
+    { cat: 'aluminum', label: t('carbon', 'aluminum' as any), range: '8-12 kg CO₂/kg' },
+    { cat: 'copper', label: t('carbon', 'copperBrass' as any), range: '3.5-4 kg CO₂/kg' },
+    { cat: 'titanium', label: t('carbon', 'titanium' as any), range: '35+ kg CO₂/kg' },
+    { cat: 'plastic', label: t('carbon', 'plastics' as any), range: '3-26 kg CO₂/kg' },
   ]
 
   return (

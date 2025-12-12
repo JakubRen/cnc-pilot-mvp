@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import { useTranslation } from '@/hooks/useTranslation'
@@ -6,6 +5,7 @@ import Link from 'next/link'
 import CarbonPassportPDF from './CarbonPassportPDF'
 
 interface CarbonReportDetailClientProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   report: any
   createdAt: string
   creatorName: string | undefined
@@ -68,7 +68,7 @@ export default function CarbonReportDetailClient({
               <div className="flex justify-between">
                 <dt className="text-slate-500 dark:text-slate-400">{t('carbon', 'quantity2')}</dt>
                 <dd className="text-slate-900 dark:text-white font-medium">
-                  {report.product_quantity} {report.product_unit || t('carbon', 'pcs')}
+                  {report.product_quantity} {report.product_unit || t('common', 'pcs')}
                 </dd>
               </div>
               {report.orders && (
@@ -103,7 +103,7 @@ export default function CarbonReportDetailClient({
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500 dark:text-slate-400">{t('carbon', 'emissionPerUnit2')}</span>
                   <span className="text-slate-900 dark:text-white font-semibold">
-                    {report.co2_per_unit?.toFixed(3)} kg CO₂/{report.product_unit || t('carbon', 'pcs')}
+                    {report.co2_per_unit?.toFixed(3)} kg CO₂/{report.product_unit || t('common', 'pcs')}
                   </span>
                 </div>
               </div>
