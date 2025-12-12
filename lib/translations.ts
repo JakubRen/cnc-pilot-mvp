@@ -82,6 +82,7 @@ export const translations = {
     carbon: { pl: 'Paszport Węglowy', en: 'Carbon Passport' },
     costs: { pl: 'Koszty i Rentowność', en: 'Costs & Profitability' },
     reports: { pl: 'Raporty', en: 'Reports' },
+    revenue: { pl: 'Przychody', en: 'Revenue' },
     tags: { pl: 'Tagi', en: 'Tags' },
     users: { pl: 'Użytkownicy', en: 'Users' },
     settings: { pl: 'Ustawienia', en: 'Settings' },
@@ -126,6 +127,10 @@ export const translations = {
     companyNotFound: { pl: 'Nie można zidentyfikować firmy', en: 'Cannot identify company' },
     registrationError: { pl: 'Błąd rejestracji', en: 'Registration error' },
     genericError: { pl: 'Wystąpił błąd. Spróbuj ponownie.', en: 'An error occurred. Please try again.' },
+    noAccess: { pl: 'Brak dostępu', en: 'Access Denied' },
+    noAccessMessage: { pl: 'Nie masz uprawnień do wyświetlenia tej strony. Skontaktuj się z administratorem, jeśli uważasz, że to błąd.', en: "You don't have permission to view this page. Contact your administrator if you believe this is an error." },
+    returnToDashboard: { pl: 'Wróć do Pulpitu', en: 'Return to Dashboard' },
+    loggingOut: { pl: 'Wylogowywanie...', en: 'Logging out...' },
   },
 
   // ============================================
@@ -368,9 +373,32 @@ export const translations = {
     lowStockStatus: { pl: 'Niski stan', en: 'Low stock' },
     onlyLeft: { pl: 'Tylko {qty} {unit} (min: {threshold})', en: 'Only {qty} {unit} (min: {threshold})' },
     unknownOrder: { pl: 'Nieznane zlecenie', en: 'Unknown order' },
+    operator: { pl: 'Operator', en: 'Operator' },
     unknownOperator: { pl: 'Nieznany', en: 'Unknown' },
     runningFor: { pl: 'Działa przez {hours}h', en: 'Running for {hours}h' },
     moreItems: { pl: '+ {count} więcej', en: '+ {count} more' },
+    // Production Plan
+    productionPlan: { pl: 'Plan Produkcji', en: 'Production Plan' },
+    noActiveOrders: { pl: 'Brak aktywnych zleceń', en: 'No active orders' },
+    allOrdersCompleted: { pl: 'Wszystkie zlecenia zostały zakończone', en: 'All orders have been completed' },
+    seeAll: { pl: 'Zobacz wszystkie', en: 'See all' },
+    seeAllOrders: { pl: 'Zobacz wszystkie zlecenia', en: 'See all orders' },
+    quantity: { pl: 'Ilość', en: 'Quantity' },
+    pieces: { pl: 'szt', en: 'pcs' },
+    value: { pl: 'Wartość', en: 'Value' },
+    // Personalization Modal
+    savingPreferences: { pl: 'Zapisuję preferencje...', en: 'Saving preferences...' },
+    chooseWidgets: { pl: 'Wybierz, które widgety mają być widoczne na dashboardzie', en: 'Choose which widgets should be visible on the dashboard' },
+    saving: { pl: 'Zapisuję...', en: 'Saving...' },
+    savePreferences: { pl: 'Zapisz Preferencje', en: 'Save Preferences' },
+    reset: { pl: 'Resetuj', en: 'Reset' },
+    cancel: { pl: 'Anuluj', en: 'Cancel' },
+    // Profitability Widget
+    profitability30Days: { pl: 'Rentowność (30 dni)', en: 'Profitability (30 days)' },
+    totalProfit: { pl: 'Zysk całkowity', en: 'Total Profit' },
+    margin: { pl: 'Marża', en: 'Margin' },
+    revenue: { pl: 'Przychód', en: 'Revenue' },
+    cost: { pl: 'Koszt', en: 'Cost' },
   },
 
   // ============================================
@@ -378,6 +406,8 @@ export const translations = {
   // ============================================
   reports: {
     title: { pl: 'Raporty', en: 'Reports' },
+    titleAnalytics: { pl: 'Raporty & Analityka', en: 'Reports & Analytics' },
+    subtitle: { pl: 'Przegląd danych, eksport raportów, i wizualizacje', en: 'Data overview, report exports, and visualizations' },
     ordersReport: { pl: 'Raport Zamówień', en: 'Orders Report' },
     ordersReportDesc: { pl: 'Analiza zamówień, filtrowanie, export CSV/PDF', en: 'Orders analysis, filtering, CSV/PDF export' },
     inventoryReport: { pl: 'Raport Magazynu', en: 'Inventory Report' },

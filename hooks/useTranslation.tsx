@@ -27,10 +27,18 @@ interface TranslationProviderProps {
 }
 
 export function TranslationProvider({ children }: TranslationProviderProps) {
-  const [lang, setLang] = useState<Language>('pl') // Default default, will be updated by useEffect
+  // Initialize with stored language immediately (no flash)
+  const [lang, setLang] = useState<Language>(() => {
+    if (typeof window === 'undefined') return 'pl'
+    return getStoredLanguage()
+  })
 
   useEffect(() => {
-    setLang(getStoredLanguage())
+    // Double-check and sync on mount
+    const stored = getStoredLanguage()
+    if (stored !== lang) {
+      setLang(stored)
+    }
   }, [])
 
   const handleSetLanguage = useCallback((newLang: Language) => {

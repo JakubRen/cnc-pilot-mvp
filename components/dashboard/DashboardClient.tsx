@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { DashboardPreferences, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard'
+import { useTranslation } from '@/hooks/useTranslation'
 import PersonalizationModal from './PersonalizationModal'
 import MetricCards from './MetricCards'
 import UrgentTasks from './UrgentTasks'
@@ -75,6 +76,7 @@ export default function DashboardClient({
   initialPreferences,
   dashboardData,
 }: Props) {
+  const { t } = useTranslation()
   const [preferences, setPreferences] = useState<DashboardPreferences>(
     initialPreferences || DEFAULT_DASHBOARD_PREFERENCES
   )
@@ -92,9 +94,9 @@ export default function DashboardClient({
           <div className="flex items-center justify-between">
             <div>
               {/* FIXED: text-white -> text-foreground */}
-              <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight">Dashboard</h1>
+              <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight">{t('nav', 'dashboard')}</h1>
               <p className="text-muted-foreground">
-                Witaj, {userName}! Oto podsumowanie Twojej produkcji.
+                {t('dashboard', 'welcome').replace('{name}', userName)}
               </p>
             </div>
             <div className="text-right flex gap-4 items-start">
@@ -122,7 +124,7 @@ export default function DashboardClient({
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                Personalizuj
+                {t('dashboard', 'customize')}
               </button>
 
               {/* Company & Date Info */}
@@ -224,15 +226,15 @@ export default function DashboardClient({
           // FIXED: bg-slate-800 -> glass-panel / bg-card
           <div className="glass-panel rounded-lg border border-border p-12 text-center shadow-sm">
             <div className="text-6xl mb-4 opacity-50">📊</div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Dashboard jest pusty</h2>  
+            <h2 className="text-2xl font-bold text-foreground mb-2">{t('dashboard', 'emptyDashboard')}</h2>
             <p className="text-muted-foreground mb-6">
-              Włącz widgety w ustawieniach, aby zobaczyć dane
+              {t('dashboard', 'enableWidgets')}
             </p>
             <button
               onClick={() => setIsModalOpen(true)}
               className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition font-semibold"
             >
-              ⚙️ Personalizuj Dashboard
+              ⚙️ {t('dashboard', 'customizeDashboard')}
             </button>
           </div>
         )}

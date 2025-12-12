@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
 import { logger } from '@/lib/logger';
+import { useTranslation } from '@/hooks/useTranslation';
 
 type InterfaceMode = 'kiosk_only' | 'full_access' | 'both';
 
@@ -46,18 +47,7 @@ interface Props {
   userOverrides: UserOverride[];
 }
 
-// Module labels in Polish
-const MODULE_LABELS: Record<string, string> = {
-  dashboard: 'Dashboard',
-  orders: 'Zamówienia',
-  inventory: 'Magazyn',
-  documents: 'Dokumenty',
-  files: 'Pliki',
-  'time-tracking': 'Czas pracy',
-  reports: 'Raporty',
-  tags: 'Tagi',
-  users: 'Użytkownicy',
-};
+// Module labels are now provided by translation system
 
 // Role labels in Polish
 const ROLE_LABELS: Record<string, string> = {
@@ -101,10 +91,21 @@ export default function PermissionsManager({
   userOverrides,
 }: Props) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [overrides, setOverrides] = useState<Record<string, boolean | null>>({});
   const [interfaceMode, setInterfaceMode] = useState<InterfaceMode>('full_access');
   const [saving, setSaving] = useState(false);
+
+  // Helper function to get module label from translation system
+  const getModuleLabel = (module: string): string => {
+    // Map module keys to translation keys
+    const moduleKeyMap: Record<string, string> = {
+      'time-tracking': 'timeTracking',
+    };
+    const translationKey = moduleKeyMap[module] || module;
+    return t('nav', translationKey as any) || module;
+  };
 
   // Group permissions by module
   const permissionsByModule = permissionDefs.reduce(
@@ -356,7 +357,7 @@ export default function PermissionsManager({
                       {module === 'tags' && '🏷️'}
                       {module === 'users' && '👥'}
                     </span>
-                    {MODULE_LABELS[module] || module}
+                    {getModuleLabel(module)}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {perms.map((perm) => {

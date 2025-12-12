@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface ProfitabilitySummary {
   totalRevenue: number
@@ -20,13 +21,14 @@ interface ProfitabilityWidgetProps {
 }
 
 export default function ProfitabilityWidget({ data }: ProfitabilityWidgetProps) {
+  const { t } = useTranslation()
   const isProfitable = data.totalProfit >= 0
 
   return (
     <div className="glass-panel border border-slate-200 dark:border-border rounded-lg p-6 shadow-sm dark:shadow-none">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-lg font-semibold text-slate-900 dark:text-foreground flex items-center gap-2">
-          <span>💰</span> Rentowność (30 dni)
+          <span>💰</span> {t('dashboard', 'profitability30Days')}
         </h3>
         <Link
           href="/costs"
@@ -40,13 +42,13 @@ export default function ProfitabilityWidget({ data }: ProfitabilityWidgetProps) 
       <div className={`p-4 rounded-lg mb-4 ${isProfitable ? 'bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700/50' : 'bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50'}`}>
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">Zysk całkowity</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">{t('dashboard', 'totalProfit')}</p>
             <p className={`text-3xl font-bold ${isProfitable ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
               {data.totalProfit.toFixed(0)} PLN
             </p>
           </div>
           <div className="text-right">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">Marża</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">{t('dashboard', 'margin')}</p>
             <p className={`text-2xl font-semibold ${isProfitable ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
               {data.avgMarginPercent.toFixed(1)}%
             </p>
@@ -57,11 +59,11 @@ export default function ProfitabilityWidget({ data }: ProfitabilityWidgetProps) 
       {/* Revenue vs Cost */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="bg-slate-100 dark:bg-slate-700/50 p-3 rounded-lg">
-          <p className="text-slate-500 dark:text-slate-400 text-xs">Przychód</p>
+          <p className="text-slate-500 dark:text-slate-400 text-xs">{t('dashboard', 'revenue')}</p>
           <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{data.totalRevenue.toFixed(0)} PLN</p>
         </div>
         <div className="bg-slate-100 dark:bg-slate-700/50 p-3 rounded-lg">
-          <p className="text-slate-500 dark:text-slate-400 text-xs">Koszt</p>
+          <p className="text-slate-500 dark:text-slate-400 text-xs">{t('dashboard', 'cost')}</p>
           <p className="text-xl font-bold text-slate-900 dark:text-white">{data.totalCost.toFixed(0)} PLN</p>
         </div>
       </div>

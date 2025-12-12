@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { DashboardPreferences, DASHBOARD_WIDGETS, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard'
 import { useEscapeKey } from '@/hooks/useKeyboardShortcut'
 import { logger } from '@/lib/logger'
+import { useTranslation } from '@/hooks/useTranslation'
 
 interface Props {
   isOpen: boolean
@@ -22,6 +23,7 @@ export default function PersonalizationModal({
   userId,
   onSave,
 }: Props) {
+  const { t } = useTranslation()
   const [preferences, setPreferences] = useState<DashboardPreferences>(currentPreferences)
   const [isSaving, setIsSaving] = useState(false)
   const saveButtonRef = useRef<HTMLButtonElement>(null)
@@ -62,7 +64,7 @@ export default function PersonalizationModal({
 
   const handleSave = async () => {
     setIsSaving(true)
-    const loadingToast = toast.loading('Zapisuję preferencje...')
+    const loadingToast = toast.loading(t('dashboard', 'savingPreferences'))
 
     try {
       const { error } = await supabase
@@ -108,10 +110,10 @@ export default function PersonalizationModal({
             <div className="flex justify-between items-start">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                  ⚙️ Personalizuj Dashboard
+                  ⚙️ {t('dashboard', 'customizeDashboard')}
                 </h2>
                 <p className="text-slate-500 dark:text-slate-400 text-sm">
-                  Wybierz, które widgety mają być widoczne na dashboardzie
+                  {t('dashboard', 'chooseWidgets')}
                 </p>
               </div>
               <button
@@ -186,20 +188,20 @@ export default function PersonalizationModal({
               disabled={isSaving}
               className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800"
             >
-              {isSaving ? 'Zapisuję...' : '✓ Zapisz Preferencje'}
+              {isSaving ? t('dashboard', 'saving') : `✓ ${t('dashboard', 'savePreferences')}`}
             </button>
             <button
               onClick={handleReset}
               disabled={isSaving}
               className="px-6 py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-white rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition"
             >
-              Resetuj
+              {t('dashboard', 'reset')}
             </button>
             <button
               onClick={onClose}
               className="px-6 py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-white rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 font-semibold transition"
             >
-              Anuluj
+              {t('dashboard', 'cancel')}
             </button>
           </div>
         </div>

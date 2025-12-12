@@ -1,4 +1,7 @@
-﻿import Link from 'next/link';
+﻿'use client';
+
+import Link from 'next/link';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface OverdueOrder {
   id: string;
@@ -36,7 +39,8 @@ interface UrgentTasksProps {
 }
 
 export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
-  const { overdueOrders, ordersDueToday, lowStockItems, staleTimers } = urgentTasks;      
+  const { t } = useTranslation();
+  const { overdueOrders, ordersDueToday, lowStockItems, staleTimers } = urgentTasks;
 
   const totalTasks =
     overdueOrders.length +
@@ -47,28 +51,28 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
   // DUAL THEME CONTAINER
   const containerClass = "glass-panel rounded-xl p-6 shadow-sm border border-slate-200 dark:border-border h-full";
   const headerTextClass = "text-xl font-bold text-slate-900 dark:text-foreground";
-  
+
   if (totalTasks === 0) {
     return (
-      <div className={containerClass}>     
+      <div className={containerClass}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className={headerTextClass}>🎉 Pilne Zadania</h2>
+          <h2 className={headerTextClass}>🎉 {t('dashboard', 'urgentTasks')}</h2>
         </div>
         <div className="text-center py-8 h-full flex flex-col justify-center">
           <p className="text-6xl mb-4">✅</p>
-          <p className="text-lg font-medium text-green-600 dark:text-green-400">Wszystko w porządku!</p>     
-          <p className="text-sm text-slate-500 dark:text-muted-foreground mt-2">Brak pilnych problemów</p>
+          <p className="text-lg font-medium text-green-600 dark:text-green-400">{t('dashboard', 'allGood')}</p>
+          <p className="text-sm text-slate-500 dark:text-muted-foreground mt-2">{t('dashboard', 'noUrgentIssues')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={containerClass}>       
+    <div className={containerClass}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className={headerTextClass}>
-          🔴 Pilne Zadania ({totalTasks})
+          🔴 {t('dashboard', 'urgentTasks')} ({totalTasks})
         </h2>
       </div>
 
@@ -76,7 +80,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
         {/* Overdue Orders */}
         {overdueOrders.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-red-600 dark:text-red-400 mb-2 uppercase tracking-wide text-xs">⚠️ Po terminie</h3>
+            <h3 className="text-sm font-semibold text-red-600 dark:text-red-400 mb-2 uppercase tracking-wide text-xs">⚠️ {t('dashboard', 'overdueSection')}</h3>
             {overdueOrders.slice(0, 3).map((order) => (
               <Link
                 key={order.id}
@@ -86,15 +90,15 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="font-medium text-slate-900 dark:text-foreground group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors">
-                      Zlecenie #{order.order_number}
+                      {t('dashboard', 'orderLabel')} #{order.order_number}
                     </p>
-                    <p className="text-sm text-slate-500 dark:text-muted-foreground">{order.customer_name}</p>       
+                    <p className="text-sm text-slate-500 dark:text-muted-foreground">{order.customer_name}</p>
                     <p className="text-xs text-red-600 dark:text-red-400 mt-1 font-mono">
-                      Termin: {new Date(order.deadline).toLocaleDateString('pl-PL')}      
+                      {t('dashboard', 'deadlineLabel')}: {new Date(order.deadline).toLocaleDateString('pl-PL')}
                     </p>
                   </div>
-                  <span className="text-[10px] uppercase font-bold bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300 px-2 py-1 rounded">      
-                    Po terminie
+                  <span className="text-[10px] uppercase font-bold bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300 px-2 py-1 rounded">
+                    {t('dashboard', 'overdueStatus')}
                   </span>
                 </div>
               </Link>
@@ -104,7 +108,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
                 href="/orders"
                 className="text-sm text-blue-600 dark:text-primary hover:underline block mt-2 ml-1"
               >
-                + {overdueOrders.length - 3} więcej
+                {t('dashboard', 'moreItems').replace('{count}', String(overdueOrders.length - 3))}
               </Link>
             )}
           </div>
@@ -113,7 +117,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
         {/* Orders Due Today */}
         {ordersDueToday.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-amber-600 dark:text-amber-400 mb-2 uppercase tracking-wide text-xs">📅 Dzisiaj</h3>  
+            <h3 className="text-sm font-semibold text-amber-600 dark:text-amber-400 mb-2 uppercase tracking-wide text-xs">📅 {t('dashboard', 'todaySection')}</h3>
             {ordersDueToday.slice(0, 2).map((order) => (
               <Link
                 key={order.id}
@@ -123,12 +127,12 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="font-medium text-slate-900 dark:text-foreground group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
-                      Zlecenie #{order.order_number}
+                      {t('dashboard', 'orderLabel')} #{order.order_number}
                     </p>
-                    <p className="text-sm text-slate-500 dark:text-muted-foreground">{order.customer_name}</p>       
+                    <p className="text-sm text-slate-500 dark:text-muted-foreground">{order.customer_name}</p>
                   </div>
-                  <span className="text-[10px] uppercase font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-2 py-1 rounded">   
-                    Dziś
+                  <span className="text-[10px] uppercase font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 px-2 py-1 rounded">
+                    {t('dashboard', 'todayStatus')}
                   </span>
                 </div>
               </Link>
@@ -139,7 +143,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
         {/* Low Stock Items */}
         {lowStockItems.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-orange-600 dark:text-orange-400 mb-2 uppercase tracking-wide text-xs">📦 Niski stan</h3>
+            <h3 className="text-sm font-semibold text-orange-600 dark:text-orange-400 mb-2 uppercase tracking-wide text-xs">📦 {t('dashboard', 'lowStockSection')}</h3>
             {lowStockItems.slice(0, 2).map((item) => (
               <Link
                 key={item.id}
@@ -150,11 +154,14 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
                   <div>
                     <p className="font-medium text-slate-900 dark:text-foreground group-hover:text-orange-700 dark:group-hover:text-orange-300 transition-colors">{item.name}</p>
                     <p className="text-sm text-slate-500 dark:text-muted-foreground">
-                      Tylko {item.quantity} {item.unit} (min: {item.low_stock_threshold}) 
+                      {t('dashboard', 'onlyLeft')
+                        .replace('{qty}', String(item.quantity))
+                        .replace('{unit}', item.unit)
+                        .replace('{threshold}', String(item.low_stock_threshold))}
                     </p>
                   </div>
-                  <span className="text-[10px] uppercase font-bold bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300 px-2 py-1 rounded">   
-                    Low Stock
+                  <span className="text-[10px] uppercase font-bold bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300 px-2 py-1 rounded">
+                    {t('dashboard', 'lowStockStatus')}
                   </span>
                 </div>
               </Link>
@@ -164,7 +171,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
                 href="/inventory"
                 className="text-sm text-blue-600 dark:text-primary hover:underline block mt-2 ml-1"
               >
-                + {lowStockItems.length - 2} więcej
+                {t('dashboard', 'moreItems').replace('{count}', String(lowStockItems.length - 2))}
               </Link>
             )}
           </div>
@@ -173,7 +180,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
         {/* Stale Timers */}
         {staleTimers.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-purple-600 dark:text-purple-400 mb-2 uppercase tracking-wide text-xs">⏱️ Stare Timery</h3>
+            <h3 className="text-sm font-semibold text-purple-600 dark:text-purple-400 mb-2 uppercase tracking-wide text-xs">⏱️ {t('dashboard', 'oldTimersSection')}</h3>
             {staleTimers.slice(0, 2).map((timer) => {
               const hoursRunning = Math.floor(
                 (new Date().getTime() - new Date(timer.start_time).getTime()) /
@@ -187,16 +194,16 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-medium text-slate-900 dark:text-foreground">
-                        {timer.order?.order_number || 'Nieznane zlecenie'}
+                        {timer.order?.order_number || t('dashboard', 'unknownOrder')}
                       </p>
                       <p className="text-sm text-slate-500 dark:text-muted-foreground">
-                        Operator: {timer.user?.name || 'Unknown'}
+                        {t('dashboard', 'operator')}: {timer.user?.name || t('dashboard', 'unknownOperator')}
                       </p>
                       <p className="text-xs text-purple-600 dark:text-purple-400 mt-1 font-mono">
-                        Działa przez {hoursRunning}h
+                        {t('dashboard', 'runningFor').replace('{hours}', String(hoursRunning))}
                       </p>
                     </div>
-                    <span className="text-[10px] uppercase font-bold bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 px-2 py-1 rounded"> 
+                    <span className="text-[10px] uppercase font-bold bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 px-2 py-1 rounded">
                       {hoursRunning}h
                     </span>
                   </div>

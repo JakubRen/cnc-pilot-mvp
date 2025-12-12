@@ -47,3 +47,31 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 nul
+
+# Planning and temporary files
+/plan/
+/DAY_*.md
+/day*_summary.md
+/future_plan.md
+/JUST_*.md
+/USE_*.md
+/*QUICKSTART*.md
+/*SUMMARY*.md
+/FEATURES_*.md
+/FINAL_*.md
+/TOAST_*.md
+/ANIMATIONS.md
+/FORM_*.md
+/PERFORMANCE_*.md
+/PRODUCTION_*.md
+/CONTRIBUTING.md
+/migrations/*CHANGELOG*.md
+/migrations/START_HERE.md
+/migrations/V*_COMPARISON.md
+
+# Screenshots and PDFs (root only)
+/*.png
+/*.jpg
+/*.jpeg
+/*.pdf
+/*.gif

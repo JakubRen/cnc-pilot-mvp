@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { getOrderPriorityColor, getStatusBadgeColor } from '@/lib/dashboard-utils';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface PlanOrder {
   id: string;
@@ -19,6 +22,7 @@ interface ProductionPlanProps {
 }
 
 export default function ProductionPlan({ productionPlan }: ProductionPlanProps) {
+  const { t } = useTranslation();
   // DUAL THEME STYLES
   const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border";
   const headerTextClass = "text-xl font-bold text-slate-900 dark:text-foreground";
@@ -26,12 +30,12 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
   if (productionPlan.length === 0) {
     return (
       <div className={containerClass}>
-        <h2 className={headerTextClass}>📋 Plan Produkcji</h2>
+        <h2 className={headerTextClass}>📋 {t('dashboard', 'productionPlan')}</h2>
         <div className="text-center py-8">
           <p className="text-6xl mb-4">✅</p>
-          <p className="text-lg font-medium text-green-600 dark:text-green-400">Brak aktywnych zleceń</p>
+          <p className="text-lg font-medium text-green-600 dark:text-green-400">{t('dashboard', 'noActiveOrders')}</p>
           <p className="text-sm text-slate-500 dark:text-muted-foreground mt-2">
-            Wszystkie zlecenia zostały zakończone
+            {t('dashboard', 'allOrdersCompleted')}
           </p>
         </div>
       </div>
@@ -43,13 +47,13 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className={headerTextClass}>
-          📋 Plan Produkcji ({productionPlan.length})
+          📋 {t('dashboard', 'productionPlan')} ({productionPlan.length})
         </h2>
         <Link
           href="/orders"
           className="text-sm text-blue-600 dark:text-primary hover:underline"
         >
-          Zobacz wszystkie →
+          {t('dashboard', 'seeAll')} →
         </Link>
       </div>
 
@@ -109,13 +113,13 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
 
               {/* Order Meta */}
               <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                <span>Ilość: {order.quantity} szt</span>
+                <span>{t('dashboard', 'quantity')}: {order.quantity} {t('dashboard', 'pieces')}</span>
                 {order.assigned_operator?.name && (
-                  <span>Operator: {order.assigned_operator.name}</span>
+                  <span>{t('dashboard', 'operator')}: {order.assigned_operator.name}</span>
                 )}
                 {order.total_cost && (
                   <span>
-                    Wartość: {parseFloat(String(order.total_cost)).toFixed(2)} PLN
+                    {t('dashboard', 'value')}: {parseFloat(String(order.total_cost)).toFixed(2)} PLN
                   </span>
                 )}
               </div>
@@ -131,7 +135,7 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
             href="/orders"
             className="text-sm text-blue-600 dark:text-primary hover:underline"
           >
-            Zobacz wszystkie zlecenia →
+            {t('dashboard', 'seeAllOrders')} →
           </Link>
         </div>
       )}

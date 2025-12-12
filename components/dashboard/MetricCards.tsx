@@ -4,6 +4,7 @@ import { memo } from 'react';
 import MetricCard from './MetricCard';
 import { formatRevenue, formatNumber } from '@/lib/dashboard-utils';
 import { PermissionGuard } from '@/components/permissions';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface MetricCardsProps {
   metrics: {
@@ -19,24 +20,26 @@ interface MetricCardsProps {
 
 // Memoized to prevent unnecessary re-renders when parent state changes
 const MetricCards = memo(function MetricCards({ metrics }: MetricCardsProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Total Orders */}
       <MetricCard
-        title="Wszystkie Zlecenia"
+        title={t('dashboard', 'allOrders')}
         value={formatNumber(metrics.totalOrders)}
         icon="📦"
-        subtitle={`${metrics.activeOrders} w realizacji`}
+        subtitle={`${metrics.activeOrders} ${t('dashboard', 'inProgress')}`}
         color="blue"
         link="/orders"
       />
 
       {/* Overdue Orders */}
       <MetricCard
-        title="Po Terminie"
+        title={t('dashboard', 'overdueLabel')}
         value={formatNumber(metrics.overdueCount)}
         icon="⚠️"
-        subtitle={metrics.overdueCount > 0 ? 'Wymaga uwagi!' : 'Wszystko w terminie'}
+        subtitle={metrics.overdueCount > 0 ? t('dashboard', 'needsAttention') : t('dashboard', 'allOnTime')}
         color={metrics.overdueCount > 0 ? 'red' : 'green'}
         link="/orders"
       />
@@ -44,20 +47,20 @@ const MetricCards = memo(function MetricCards({ metrics }: MetricCardsProps) {
       {/* Revenue This Month - TYLKO DLA UPRAWNIONYCH */}
       <PermissionGuard prices="dashboard">
         <MetricCard
-          title="Przychód (Miesiąc)"
+          title={t('dashboard', 'revenueMonth')}
           value={formatRevenue(metrics.revenueThisMonth)}
           icon="💰"
-          subtitle={`${metrics.completedThisWeek} ukończonych w tym tygodniu`}
+          subtitle={`${metrics.completedThisWeek} ${t('dashboard', 'completedThisWeek')}`}
           color="green"
         />
       </PermissionGuard>
 
       {/* Active Timers */}
       <MetricCard
-        title="Aktywne Timery"
+        title={t('dashboard', 'activeTimers')}
         value={formatNumber(metrics.activeTimers)}
         icon="⏱️"
-        subtitle={metrics.activeTimers > 0 ? 'Operatorzy pracują' : 'Brak aktywnych'}
+        subtitle={metrics.activeTimers > 0 ? t('dashboard', 'operatorsWorking') : t('dashboard', 'noActive')}
         color={metrics.activeTimers > 0 ? 'purple' : 'blue'}
         link="/time-tracking"
       />
