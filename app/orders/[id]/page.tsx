@@ -89,6 +89,34 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     .order('measured_at', { ascending: false })
     .limit(20)
 
+  // Fetch drawing file if exists
+  let drawingFile = null
+  if (order.drawing_file_id) {
+    const { data: file } = await supabase
+      .from('files')
+      .select('id, name, url, file_type, file_size')
+      .eq('id', order.drawing_file_id)
+      .single()
+
+    drawingFile = file
+  }
+
+  // Fetch production plans (order_items) for this order
+  const { data: productionPlans } = await supabase
+    .from('order_items')
+    .select(`
+      id,
+      part_name,
+      quantity,
+      material,
+      total_setup_time_minutes,
+      total_run_time_minutes,
+      total_cost,
+      operations!inner (id)
+    `)
+    .eq('order_id', id)
+    .order('created_at', { ascending: true })
+
   // Transform tags data to flat array
   type TagRecord = { id: string; name: string; color: string }
   const tags = (orderTags || [])
@@ -225,6 +253,150 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                 <p className="text-slate-900 dark:text-white">{order.creator?.email || 'Brak'}</p>
               </div>
             </div>
+          </div>
+
+          {/* Technical Drawing */}
+          {drawingFile && (
+            <div className="col-span-2 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-lg border-2 border-blue-500/50">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <span className="text-2xl">📐</span>
+                Rysunek Techniczny
+              </h2>
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="text-4xl">
+                      {drawingFile.name.toLowerCase().endsWith('.pdf') ? '📄' :
+                       drawingFile.name.toLowerCase().endsWith('.dxf') ? '📐' : '🖼️'}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900 dark:text-white">
+                        {drawingFile.name}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {(drawingFile.file_size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={drawingFile.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow-lg"
+                  >
+                    📱 Otwórz na tablecie →
+                  </a>
+                </div>
+
+                {/* PDF Preview */}
+                {drawingFile.name.toLowerCase().endsWith('.pdf') && (
+                  <div className="mt-4">
+                    <iframe
+                      src={drawingFile.url}
+                      className="w-full h-96 border border-slate-300 dark:border-slate-600 rounded-lg"
+                      title="Podgląd rysunku PDF"
+                    />
+                  </div>
+                )}
+
+                {/* Image Preview */}
+                {(drawingFile.file_type?.startsWith('image/') ||
+                  drawingFile.name.toLowerCase().match(/\.(png|jpg|jpeg)$/)) && (
+                  <div className="mt-4">
+                    <img
+                      src={drawingFile.url}
+                      alt="Rysunek techniczny"
+                      className="w-full h-auto border border-slate-300 dark:border-slate-600 rounded-lg"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-3 italic">
+                💡 Operator przy maszynie może otworzyć rysunek na tablecie przez przycisk powyżej
+              </p>
+            </div>
+          )}
+
+          {/* Production Plans */}
+          <div className="col-span-2 bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-6 rounded-lg border-2 border-green-500/50">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                <span className="text-2xl">⚙️</span>
+                Plany Produkcji
+              </h2>
+              <Link
+                href={`/production/create?order_id=${id}`}
+                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-lg"
+              >
+                + Utwórz Plan Produkcji
+              </Link>
+            </div>
+
+            {!productionPlans || productionPlans.length === 0 ? (
+              <div className="bg-white dark:bg-slate-800 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 p-8 text-center">
+                <div className="text-5xl mb-4">⚙️</div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                  Brak planów produkcji
+                </h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-4">
+                  Utwórz plan produkcji z operacjami technologicznymi (Setup/Run Time, routing, przypisanie maszyn)
+                </p>
+                <Link
+                  href={`/production/create?order_id=${id}`}
+                  className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
+                >
+                  + Utwórz Plan Produkcji
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {productionPlans.map((plan: any) => {
+                  const operationsCount = plan.operations?.length || 0
+                  const totalTime = (plan.total_setup_time_minutes || 0) + (plan.total_run_time_minutes || 0)
+
+                  return (
+                    <Link
+                      key={plan.id}
+                      href={`/production/${plan.id}`}
+                      className="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:border-green-500 hover:shadow-lg transition"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+                            {plan.part_name}
+                          </h3>
+                          <p className="text-sm text-slate-500 dark:text-slate-400">
+                            {plan.quantity} szt.
+                            {plan.material && ` • ${plan.material}`}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-6">
+                          <div className="text-right">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">Operacje</p>
+                            <p className="text-lg font-bold text-slate-900 dark:text-white">
+                              {operationsCount}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">Czas</p>
+                            <p className="text-lg font-bold text-slate-900 dark:text-white">
+                              {Math.floor(totalTime / 60)}h {totalTime % 60}m
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">Koszt</p>
+                            <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                              {(plan.total_cost || 0).toFixed(2)} PLN
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
           {/* Assigned Operator */}

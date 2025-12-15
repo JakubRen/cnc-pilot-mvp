@@ -8,7 +8,7 @@ import type { AppModule } from '@/types/permissions';
 import type { InterfaceMode } from '@/lib/auth';
 import ViewModeToggle from './ViewModeToggle';
 
-type NavKey = 'dashboard' | 'orders' | 'calendar' | 'inventory' | 'documents' | 'files' | 'timeTracking' | 'qualityControl' | 'cooperation' | 'machines' | 'carbon' | 'costs' | 'reports' | 'tags' | 'users' | 'settings' | 'docs';
+type NavKey = 'dashboard' | 'orders' | 'production' | 'customers' | 'quotes' | 'calendar' | 'inventory' | 'documents' | 'timeTracking' | 'qualityControl' | 'cooperation' | 'machines' | 'carbon' | 'costs' | 'reports' | 'users' | 'settings' | 'docs';
 
 interface SidebarLink {
   href: string;
@@ -26,21 +26,22 @@ interface SidebarProps {
 const linkDefinitions: SidebarLink[] = [
   { href: '/', icon: '📊', labelKey: 'dashboard', module: 'dashboard' },
   { href: '/orders', icon: '📦', labelKey: 'orders', module: 'orders' },
+  { href: '/production', icon: '⚙️', labelKey: 'production', module: 'orders' },
+  { href: '/customers', icon: '👥', labelKey: 'customers', module: 'orders' },
+  { href: '/quotes', icon: '📋', labelKey: 'quotes', module: 'orders' },
   { href: '/calendar', icon: '📅', labelKey: 'calendar', module: 'calendar' },
   { href: '/inventory', icon: '🔩', labelKey: 'inventory', module: 'inventory' },
   { href: '/documents', icon: '📄', labelKey: 'documents', module: 'documents' },
-  { href: '/files', icon: '📎', labelKey: 'files', module: 'files' },
   { href: '/time-tracking', icon: '⏱️', labelKey: 'timeTracking', module: 'time-tracking' },
-  { href: '/quality-control', icon: '✅', labelKey: 'qualityControl', module: 'quality-control' },       
+  { href: '/quality-control', icon: '✅', labelKey: 'qualityControl', module: 'quality-control' },
   { href: '/cooperation', icon: '🚛', labelKey: 'cooperation', module: 'cooperation' },
   { href: '/machines', icon: '🔧', labelKey: 'machines', module: 'machines' },
   { href: '/carbon', icon: '🌿', labelKey: 'carbon', module: 'carbon' },
   { href: '/costs', icon: '💰', labelKey: 'costs', module: 'costs' },
   { href: '/reports', icon: '📈', labelKey: 'reports', module: 'reports' },
-  { href: '/tags', icon: '🏷️', labelKey: 'tags', module: 'tags' },
-  { href: '/users', icon: '👥', labelKey: 'users', module: 'users' },
+  { href: '/users', icon: '👤', labelKey: 'users', module: 'users' },
   { href: '/settings', icon: '⚙️', labelKey: 'settings', module: 'users' },
-  { href: '/docs', icon: '📚', labelKey: 'docs', module: 'dashboard' },     
+  { href: '/docs', icon: '📚', labelKey: 'docs', module: 'dashboard' },
 ];
 
 export default function Sidebar({ onClose, interfaceMode }: SidebarProps) {
