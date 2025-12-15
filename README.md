@@ -27,6 +27,38 @@ CNC-Pilot is a comprehensive **multi-tenant SaaS solution** designed for small a
 - 📚 **Knowledge Portal** - Interactive documentation with Mermaid diagrams
 - 🌍 **Multi-language** - Polish & English support
 - 🌓 **Dark Mode** - Full dark theme support
+- ⚙️ **Production Planning** - Operations routing with Setup/Run Time calculation
+
+---
+
+## 📅 Recent Updates
+
+### 2025-12-15 - Production Module Architecture Refactoring
+
+**Critical Fix: Proper Separation of Concerns**
+
+**Problem:** Operations were incorrectly embedded in Orders module, mixing commercial and technical workflows.
+
+**Solution:** Created separate `/production` module following manufacturing best practices:
+- ✅ Orders (📦 Zamówienia) → Commercial layer (customer, deadline, pricing)
+- ✅ Production Plans (⚙️ Plan Produkcji) → Technical layer (operations, machines, routing)
+- ✅ Operations (🔧 Operacje) → Execution layer (Setup/Run Time, costs)
+
+**Achievements:**
+- Created 3 new routes: `/production`, `/production/create`, `/production/[id]`
+- Refactored order details page to show production plans section
+- Added AppLayout to all production pages (sidebar + topbar)
+- Rewrote 23 E2E tests for new architecture
+- Updated documentation (TEST_INSTRUCTIONS.md, READY_TO_TEST.md)
+
+**Commits:**
+- `f4219a8` - Production module implementation (+3926 lines, 14 files)
+- `c8d6396` - E2E tests rewritten for new workflow
+
+**Impact:**
+- Proper workflow: Order → "Utwórz Plan Produkcji" → `/production/create?order_id={id}`
+- Clear separation improves scalability and maintainability
+- Setup/Run Time calculations work correctly in production context
 
 ---
 
