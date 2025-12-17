@@ -291,7 +291,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👤 Author
 
-**Jakub Ren** - Full-Stack Developer & Manufacturing Technology Enthusiast
+**Jakub Ren** - Product Manager & AI-Assisted Development Specialist
 
 ### Connect With Me:
 - 🐙 **GitHub:** [@JakubRen](https://github.com/JakubRen)
@@ -305,9 +305,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - 📚 **Documentation:** [cnc-pilot-mvp.vercel.app/docs](https://cnc-pilot-mvp.vercel.app/docs)
 
 ### About This Project:
-Built as a comprehensive production management solution for CNC manufacturing, combining enterprise-grade architecture with practical shop floor needs. Developed with modern technologies and best practices, focusing on performance, security, and user experience.
+Built as a comprehensive production management solution for CNC manufacturing, combining enterprise-grade architecture with practical shop floor needs. **Developed using AI-assisted development with Claude Code (Anthropic)**, demonstrating how Product Managers can leverage AI tools to build production-ready SaaS applications without traditional coding.
 
-**Tech Expertise:** Next.js, TypeScript, React, PostgreSQL, Supabase, Tailwind CSS, Testing (Vitest, Playwright)
+**Development Approach:** Product Management + AI-Assisted Development (Claude Code, Claude Sonnet 4.5)
+**Tech Stack:** Next.js, TypeScript, React, PostgreSQL, Supabase, Tailwind CSS, Testing (Vitest, Playwright)
 
 ---
 
