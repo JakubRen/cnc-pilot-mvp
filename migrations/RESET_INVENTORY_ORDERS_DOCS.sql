@@ -15,6 +15,11 @@
 -- =====================================================
 
 -- =====================================================
+-- 0. DISABLE TRIGGERS (to prevent audit_logs issues)
+-- =====================================================
+SET session_replication_role = replica;
+
+-- =====================================================
 -- 1. DELETE INVENTORY DATA
 -- =====================================================
 
@@ -57,14 +62,37 @@ DELETE FROM quote_items;
 DELETE FROM quotes;
 
 -- =====================================================
--- 5. AUTO-NUMBERING INFO
+-- 5. DELETE AUDIT LOGS (for deleted records)
+-- =====================================================
+
+-- Delete audit logs for deleted tables
+DELETE FROM audit_logs WHERE table_name IN (
+  'inventory',
+  'inventory_transactions',
+  'orders',
+  'time_logs',
+  'production_plans',
+  'operations',
+  'warehouse_documents',
+  'warehouse_document_items',
+  'quotes',
+  'quote_items'
+);
+
+-- =====================================================
+-- 6. RE-ENABLE TRIGGERS
+-- =====================================================
+SET session_replication_role = DEFAULT;
+
+-- =====================================================
+-- 7. AUTO-NUMBERING INFO
 -- =====================================================
 -- Auto-numbering uses yearly counters.
 -- The generate_* functions will automatically restart from 0001
 -- if no records exist for current year.
 
 -- =====================================================
--- VERIFICATION QUERIES
+-- 8. VERIFICATION QUERIES
 -- =====================================================
 
 -- Check remaining counts
