@@ -60,7 +60,7 @@ export interface OrderItem {
 // Operation (operacja technologiczna)
 export interface Operation {
   id: string
-  order_item_id: string
+  production_plan_id: string  // Changed from order_item_id - now points to production_plans table
   operation_number: number
   operation_type: OperationType
   operation_name: string
