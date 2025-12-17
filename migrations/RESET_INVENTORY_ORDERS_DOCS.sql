@@ -24,8 +24,6 @@ DELETE FROM inventory_transactions;
 -- Delete inventory items
 DELETE FROM inventory;
 
-RAISE NOTICE '✅ Inventory cleared (items + transactions)';
-
 -- =====================================================
 -- 2. DELETE ORDERS DATA
 -- =====================================================
@@ -38,8 +36,6 @@ DELETE FROM operations WHERE order_id IS NOT NULL;
 -- Delete orders
 DELETE FROM orders;
 
-RAISE NOTICE '✅ Orders cleared (including time logs, production plans, operations)';
-
 -- =====================================================
 -- 3. DELETE WAREHOUSE DOCUMENTS
 -- =====================================================
@@ -49,8 +45,6 @@ DELETE FROM warehouse_document_items;
 
 -- Delete warehouse documents
 DELETE FROM warehouse_documents;
-
-RAISE NOTICE '✅ Warehouse documents cleared (documents + items)';
 
 -- =====================================================
 -- 4. DELETE QUOTES (Optional - related to orders)
@@ -62,18 +56,12 @@ DELETE FROM quote_items;
 -- Delete quotes
 DELETE FROM quotes;
 
-RAISE NOTICE '✅ Quotes cleared (quotes + items)';
-
 -- =====================================================
--- 5. RESET AUTO-NUMBERING SEQUENCES (Optional)
+-- 5. AUTO-NUMBERING INFO
 -- =====================================================
--- This ensures next orders/inventory will start from 0001 again
-
--- Note: Auto-numbering uses yearly counters, so this is optional.
+-- Auto-numbering uses yearly counters.
 -- The generate_* functions will automatically restart from 0001
 -- if no records exist for current year.
-
-RAISE NOTICE '✅ Auto-numbering will restart from 0001 for current year';
 
 -- =====================================================
 -- VERIFICATION QUERIES
