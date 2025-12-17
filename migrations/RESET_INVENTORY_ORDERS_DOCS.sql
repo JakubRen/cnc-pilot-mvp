@@ -35,8 +35,12 @@ DELETE FROM inventory;
 
 -- Delete order-related data first (foreign key dependencies)
 DELETE FROM time_logs WHERE order_id IS NOT NULL;
-DELETE FROM production_plans WHERE order_id IS NOT NULL;
-DELETE FROM operations WHERE order_id IS NOT NULL;
+
+-- Delete operations (linked to order_items)
+DELETE FROM operations;
+
+-- Delete order items (linked to orders)
+DELETE FROM order_items;
 
 -- Delete orders
 DELETE FROM orders;
@@ -70,8 +74,8 @@ DELETE FROM audit_logs WHERE table_name IN (
   'inventory',
   'inventory_transactions',
   'orders',
+  'order_items',
   'time_logs',
-  'production_plans',
   'operations',
   'warehouse_documents',
   'warehouse_document_items',
@@ -100,12 +104,16 @@ DO $$
 DECLARE
   inventory_count INTEGER;
   orders_count INTEGER;
+  order_items_count INTEGER;
+  operations_count INTEGER;
   docs_count INTEGER;
   users_count INTEGER;
   companies_count INTEGER;
 BEGIN
   SELECT COUNT(*) INTO inventory_count FROM inventory;
   SELECT COUNT(*) INTO orders_count FROM orders;
+  SELECT COUNT(*) INTO order_items_count FROM order_items;
+  SELECT COUNT(*) INTO operations_count FROM operations;
   SELECT COUNT(*) INTO docs_count FROM warehouse_documents;
   SELECT COUNT(*) INTO users_count FROM users;
   SELECT COUNT(*) INTO companies_count FROM companies;
@@ -115,6 +123,8 @@ BEGIN
   RAISE NOTICE '==========================================';
   RAISE NOTICE 'Inventory items: %', inventory_count;
   RAISE NOTICE 'Orders: %', orders_count;
+  RAISE NOTICE 'Order items: %', order_items_count;
+  RAISE NOTICE 'Operations: %', operations_count;
   RAISE NOTICE 'Warehouse documents: %', docs_count;
   RAISE NOTICE '==========================================';
   RAISE NOTICE 'PRESERVED (should NOT be 0):';
@@ -122,8 +132,8 @@ BEGIN
   RAISE NOTICE 'Companies: %', companies_count;
   RAISE NOTICE '==========================================';
 
-  IF inventory_count = 0 AND orders_count = 0 AND docs_count = 0 THEN
-    RAISE NOTICE '✅ SUCCESS: Inventory, Orders, and Documents cleared!';
+  IF inventory_count = 0 AND orders_count = 0 AND order_items_count = 0 AND operations_count = 0 AND docs_count = 0 THEN
+    RAISE NOTICE '✅ SUCCESS: All data cleared!';
   ELSE
     RAISE WARNING '⚠️ Some data may remain. Check manually.';
   END IF;
