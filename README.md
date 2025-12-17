@@ -295,9 +295,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Connect With Me:
 - 🐙 **GitHub:** [@JakubRen](https://github.com/JakubRen)
-- 💼 **LinkedIn:** [linkedin.com/in/jakubren](https://linkedin.com/in/jakubren) *(Update with your actual LinkedIn)*
-- 📧 **Email:** jakub.ren@example.com *(Update with your actual email)*
-- 🌐 **Portfolio:** [jakubren.dev](https://jakubren.dev) *(Update with your actual portfolio)*
+- 💼 **LinkedIn:** 
+- 📧 **Email:** jakub.renkowski@outlook.com 
+- 🌐 **Portfolio:** 
 
 ### Project Links:
 - 📦 **Repository:** [github.com/JakubRen/cnc-pilot-mvp](https://github.com/JakubRen/cnc-pilot-mvp)
