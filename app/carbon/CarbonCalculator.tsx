@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { logger } from '@/lib/logger'
 import { useTranslation } from '@/hooks/useTranslation'
+import { tCarbon } from '@/lib/translation-helpers'
 
 interface Material {
   id: string
@@ -33,7 +34,7 @@ interface CarbonCalculatorProps {
 }
 
 export default function CarbonCalculator({ materials, energies, companyId, userId }: CarbonCalculatorProps) {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -163,16 +164,14 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
   }, {} as Record<string, Material[]>)
 
   const getCategoryLabel = (cat: string) => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
     const labels: Record<string, string> = {
-      steel: `🔩 ${t('carbon', 'steel' as any)}`,
-      aluminum: `🪶 ${t('carbon', 'aluminum' as any)}`,
-      copper: `🔶 ${t('carbon', 'copperBrass' as any)}`,
-      titanium: `⚙️ ${t('carbon', 'titanium' as any)}`,
-      plastic: `🧪 ${t('carbon', 'plastics' as any)}`,
-      iron: `⚫ ${t('carbon', 'iron' as any)}`,
+      steel: `🔩 ${tCarbon('steel', lang)}`,
+      aluminum: `🪶 ${tCarbon('aluminum', lang)}`,
+      copper: `🔶 ${tCarbon('copperBrass', lang)}`,
+      titanium: `⚙️ ${tCarbon('titanium', lang)}`,
+      plastic: `🧪 ${tCarbon('plastics', lang)}`,
+      iron: `⚫ ${tCarbon('iron', lang)}`,
     }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
     return labels[cat] || cat
   }
 

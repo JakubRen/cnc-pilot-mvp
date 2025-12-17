@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
 import { logger } from '@/lib/logger';
 import { useTranslation } from '@/hooks/useTranslation';
+import { tNav, NavTranslationKey } from '@/lib/translation-helpers';
 
 type InterfaceMode = 'kiosk_only' | 'full_access' | 'both';
 
@@ -91,7 +92,7 @@ export default function PermissionsManager({
   userOverrides,
 }: Props) {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [overrides, setOverrides] = useState<Record<string, boolean | null>>({});
   const [interfaceMode, setInterfaceMode] = useState<InterfaceMode>('full_access');
@@ -104,7 +105,7 @@ export default function PermissionsManager({
       'time-tracking': 'timeTracking',
     };
     const translationKey = moduleKeyMap[module] || module;
-    return t('nav', translationKey as any) || module;
+    return tNav(translationKey as NavTranslationKey, lang) || module;
   };
 
   // Group permissions by module

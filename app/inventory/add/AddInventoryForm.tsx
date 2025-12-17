@@ -9,9 +9,10 @@ import toast from 'react-hot-toast'
 import { useTranslation } from '@/hooks/useTranslation'
 import { usePermissions } from '@/hooks/usePermissions'
 import { sanitizeText } from '@/lib/sanitization'
+import { useEffect, useState } from 'react'
+import { logger } from '@/lib/logger'
 
 type InventoryFormData = {
-  sku: string
   name: string
   description?: string
   category: 'raw_material' | 'part' | 'tool' | 'consumable' | 'finished_good'
@@ -31,9 +32,11 @@ export default function AddInventoryForm() {
   const { t } = useTranslation()
   const { canViewPrices } = usePermissions()
   const showPrices = canViewPrices('inventory')
+  const [generatedSKU, setGeneratedSKU] = useState<string>('')
+  const [isGeneratingNumber, setIsGeneratingNumber] = useState(true)
+  const [companyId, setCompanyId] = useState<string>('')
 
   const inventorySchema = z.object({
-    sku: z.string().min(1, t('inventory', 'skuRequired')),
     name: z.string().min(2, t('inventory', 'nameRequired')),
     description: z.string().optional(),
     category: z.enum(['raw_material', 'part', 'tool', 'consumable', 'finished_good']),
@@ -62,8 +65,56 @@ export default function AddInventoryForm() {
     }
   })
 
+  // Get company ID and generate SKU
+  useEffect(() => {
+    async function fetchCompanyAndGenerateSKU() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data: userData } = await supabase
+        .from('users')
+        .select('company_id')
+        .eq('auth_id', user.id)
+        .single()
+
+      if (!userData?.company_id) return
+
+      setCompanyId(userData.company_id)
+
+      // Generate SKU
+      setIsGeneratingNumber(true)
+      try {
+        const { data, error } = await supabase
+          .rpc('generate_inventory_sku', { p_company_id: userData.company_id })
+
+        if (error) {
+          logger.error('Failed to generate inventory SKU', { error })
+          toast.error('Nie udało się wygenerować SKU')
+          setGeneratedSKU('SKU-TEMP-0001')
+        } else {
+          setGeneratedSKU(data)
+        }
+      } catch (error) {
+        logger.error('Error generating SKU', { error })
+        toast.error('Błąd generowania SKU')
+        setGeneratedSKU('SKU-TEMP-0001')
+      } finally {
+        setIsGeneratingNumber(false)
+      }
+    }
+
+    fetchCompanyAndGenerateSKU()
+  }, [])
+
   const onSubmit = async (data: InventoryFormData) => {
     const loadingToast = toast.loading(t('inventory', 'creatingItem'))
+
+    // Validate that SKU was generated
+    if (!generatedSKU || isGeneratingNumber) {
+      toast.dismiss(loadingToast)
+      toast.error('Poczekaj na wygenerowanie SKU')
+      return
+    }
 
     // Get current user
     const { data: { user } } = await supabase.auth.getUser()
@@ -89,7 +140,7 @@ export default function AddInventoryForm() {
     // Sanitize user inputs to prevent XSS attacks
     const sanitizedData = {
       ...data,
-      sku: sanitizeText(data.sku),
+      sku: generatedSKU, // Use auto-generated SKU
       name: sanitizeText(data.name),
       description: data.description ? sanitizeText(data.description) : null,
       location: data.location ? sanitizeText(data.location) : null,
@@ -147,17 +198,26 @@ export default function AddInventoryForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700">
       <div className="grid grid-cols-2 gap-6 mb-6">
-        {/* SKU */}
+        {/* SKU - Auto-generated */}
         <div>
-          <label htmlFor="sku" className="block text-slate-700 dark:text-slate-300 mb-2">{t('inventory', 'sku')} *</label>
-          <input
-            id="sku"
-            autoFocus
-            {...register('sku')}
-            placeholder="ALU-6061-100"
-            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none font-mono"
-          />
-          {errors.sku && <p className="text-red-400 text-sm mt-1">{errors.sku.message}</p>}
+          <label className="block text-slate-700 dark:text-slate-300 mb-2">
+            {t('inventory', 'sku')} *
+          </label>
+          <div className="relative">
+            <input
+              value={isGeneratingNumber ? 'Generowanie...' : generatedSKU}
+              disabled
+              className="w-full px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed font-mono"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              {isGeneratingNumber ? (
+                <span className="animate-spin text-blue-500">⏳</span>
+              ) : (
+                <span className="text-green-500">✓</span>
+              )}
+            </div>
+          </div>
+          <p className="text-xs text-blue-400 mt-1">SKU nadane automatycznie</p>
         </div>
 
         {/* Category */}

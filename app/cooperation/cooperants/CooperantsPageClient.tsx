@@ -2,6 +2,7 @@
 'use client'
 
 import { useTranslation } from '@/hooks/useTranslation'
+import { tCooperation } from '@/lib/translation-helpers'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 
@@ -23,7 +24,7 @@ interface CooperantsPageClientProps {
 }
 
 export default function CooperantsPageClient({ cooperants }: CooperantsPageClientProps) {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
 
   return (
     <div className="p-8">
@@ -36,11 +37,11 @@ export default function CooperantsPageClient({ cooperants }: CooperantsPageClien
                 ← {t('common', 'back')}
               </Link>
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t('cooperation', 'cooperants' as any)}</h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">{t('cooperation', 'manageCooperants' as any)}</p>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{tCooperation('cooperants', lang)}</h1>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">Zarządzaj kooperantami</p>
           </div>
           <Link href="/cooperation/cooperants/add">
-            <Button variant="primary">+ {t('cooperation', 'addCooperant' as any)}</Button>
+            <Button variant="primary">+ Dodaj kooperanta</Button>
           </Link>
         </div>
 
@@ -49,13 +50,13 @@ export default function CooperantsPageClient({ cooperants }: CooperantsPageClien
           <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-12 text-center">
             <div className="text-6xl mb-4">🏭</div>
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-              {t('cooperation', 'noCooperantsTitle' as any)}
+              Brak kooperantów
             </h2>
             <p className="text-slate-500 dark:text-slate-400 mb-6">
-              {t('cooperation', 'noCooperantsDescription' as any)}
+              Dodaj pierwszego kooperanta, aby rozpocząć współpracę
             </p>
             <Link href="/cooperation/cooperants/add">
-              <Button variant="primary">{t('cooperation', 'addFirstCooperant' as any)}</Button>
+              <Button variant="primary">Dodaj pierwszego kooperanta</Button>
             </Link>
           </div>
         ) : (
@@ -74,7 +75,7 @@ export default function CooperantsPageClient({ cooperants }: CooperantsPageClien
                   </div>
                   {!coop.is_active && (
                     <span className="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">
-                      {t('cooperation', 'inactive' as any)}
+                      Nieaktywny
                     </span>
                   )}
                 </div>
@@ -82,12 +83,12 @@ export default function CooperantsPageClient({ cooperants }: CooperantsPageClien
                 <div className="space-y-2 text-sm mb-4">
                   {coop.contact_person && (
                     <p className="text-slate-500 dark:text-slate-400">
-                      <span className="text-slate-500">{t('cooperation', 'contact' as any)}:</span> {coop.contact_person}
+                      <span className="text-slate-500">Kontakt:</span> {coop.contact_person}
                     </p>
                   )}
                   {coop.phone && (
                     <p className="text-slate-500 dark:text-slate-400">
-                      <span className="text-slate-500">{t('cooperation', 'tel' as any)}:</span>{' '}
+                      <span className="text-slate-500">Tel:</span>{' '}
                       <a href={`tel:${coop.phone}`} className="text-blue-400 hover:underline">
                         {coop.phone}
                       </a>
@@ -95,24 +96,24 @@ export default function CooperantsPageClient({ cooperants }: CooperantsPageClien
                   )}
                   {coop.email && (
                     <p className="text-slate-500 dark:text-slate-400">
-                      <span className="text-slate-500">{t('common', 'email' as any)}:</span>{' '}
+                      <span className="text-slate-500">Email:</span>{' '}
                       <a href={`mailto:${coop.email}`} className="text-blue-400 hover:underline">
                         {coop.email}
                       </a>
                     </p>
                   )}
                   <p className="text-slate-500 dark:text-slate-400">
-                    <span className="text-slate-500">{t('cooperation', 'avgLeadTime' as any)}:</span> {coop.avg_lead_days} {t('cooperation', 'days' as any)}
+                    <span className="text-slate-500">Średni czas realizacji:</span> {coop.avg_lead_days} dni
                   </p>
                 </div>
 
                 <div className="flex justify-between items-center pt-4 border-t border-slate-200 dark:border-slate-700">
                   <div className="flex gap-4 text-sm">
                     <span className="text-slate-500 dark:text-slate-400">
-                      {t('cooperation', 'allOperations' as any)}: <span className="text-slate-900 dark:text-white font-semibold">{coop.totalOperations}</span>
+                      Wszystkie: <span className="text-slate-900 dark:text-white font-semibold">{coop.totalOperations}</span>
                     </span>
                     <span className="text-slate-500 dark:text-slate-400">
-                      {t('cooperation', 'activeOperations' as any)}: <span className="text-blue-400 font-semibold">{coop.activeOperations}</span>
+                      {tCooperation('activeOperations', lang)}: <span className="text-blue-400 font-semibold">{coop.activeOperations}</span>
                     </span>
                   </div>
                   <Link

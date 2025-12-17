@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
 import OperationForm from '@/components/operations/OperationForm'
 import DrawingUpload from '@/components/orders/DrawingUpload'
@@ -182,7 +183,7 @@ export default function AddOrderItemPage() {
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Error adding operation', { error })
     } finally {
       setIsSubmitting(false)
     }

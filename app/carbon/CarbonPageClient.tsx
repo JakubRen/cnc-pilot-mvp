@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useTranslation } from '@/hooks/useTranslation'
+import { tCarbon } from '@/lib/translation-helpers'
 import Link from 'next/link'
 import CarbonCalculator from './CarbonCalculator'
 
@@ -54,14 +54,14 @@ export default function CarbonPageClient({
   companyId,
   userId
 }: CarbonPageClientProps) {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
 
   const materialCategories = [
-    { cat: 'steel', label: t('carbon', 'steel' as any), range: '1.5-6.2 kg CO₂/kg' },
-    { cat: 'aluminum', label: t('carbon', 'aluminum' as any), range: '8-12 kg CO₂/kg' },
-    { cat: 'copper', label: t('carbon', 'copperBrass' as any), range: '3.5-4 kg CO₂/kg' },
-    { cat: 'titanium', label: t('carbon', 'titanium' as any), range: '35+ kg CO₂/kg' },
-    { cat: 'plastic', label: t('carbon', 'plastics' as any), range: '3-26 kg CO₂/kg' },
+    { cat: 'steel', label: tCarbon('steel', lang), range: '1.5-6.2 kg CO₂/kg' },
+    { cat: 'aluminum', label: tCarbon('aluminum', lang), range: '8-12 kg CO₂/kg' },
+    { cat: 'copper', label: tCarbon('copperBrass', lang), range: '3.5-4 kg CO₂/kg' },
+    { cat: 'titanium', label: tCarbon('titanium', lang), range: '35+ kg CO₂/kg' },
+    { cat: 'plastic', label: tCarbon('plastics', lang), range: '3-26 kg CO₂/kg' },
   ]
 
   return (

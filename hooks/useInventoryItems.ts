@@ -100,7 +100,7 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
     }
 
     fetchItems()
-  }, [filterKey, categoryFilter])
+  }, [filterKey])  // Only filterKey - it already includes categoryFilter changes
 
   return { items, loading, error }
 }

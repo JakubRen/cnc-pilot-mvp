@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
 import { sanitizeText } from '@/lib/sanitization'
+import InventoryAutocomplete from '@/components/form/InventoryAutocomplete'
+import CustomerAutocomplete from '@/components/form/CustomerAutocomplete'
 
 interface InventoryItem {
   id: string
@@ -13,6 +15,12 @@ interface InventoryItem {
   name: string
   quantity: number
   unit: string
+}
+
+interface Customer {
+  id: string
+  name: string
+  type: 'client' | 'supplier' | 'cooperator'
 }
 
 interface DocumentItem {
@@ -23,11 +31,12 @@ interface DocumentItem {
 
 interface Props {
   inventoryItems: InventoryItem[]
+  customers: Customer[]
   userId: number
   companyId: string
 }
 
-export default function AddDocumentForm({ inventoryItems, userId, companyId }: Props) {
+export default function AddDocumentForm({ inventoryItems, customers, userId, companyId }: Props) {
   const router = useRouter()
 
   // Form state
@@ -261,13 +270,11 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
         <label htmlFor="contractor" className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
           Kontrahent *
         </label>
-        <input
-          id="contractor"
-          type="text"
+        <CustomerAutocomplete
           value={contractor}
-          onChange={(e) => setContractor(e.target.value)}
-          className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
-          placeholder="Nazwa firmy lub dostawcy"
+          onChange={setContractor}
+          customers={customers}
+          placeholder="Wybierz lub wpisz nazwę kontrahenta..."
         />
       </div>
 
@@ -324,18 +331,12 @@ export default function AddDocumentForm({ inventoryItems, userId, companyId }: P
                   {/* Komponent */}
                   <div>
                     <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">Komponent *</label>
-                    <select
+                    <InventoryAutocomplete
                       value={item.inventory_id}
-                      onChange={(e) => updateItem(index, 'inventory_id', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
-                    >
-                      <option value="">Wybierz komponent...</option>
-                      {inventoryItems.map((inv) => (
-                        <option key={inv.id} value={inv.id}>
-                          {inv.sku} - {inv.name} (Dostępne: {inv.quantity} {inv.unit})
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(value) => updateItem(index, 'inventory_id', value)}
+                      items={inventoryItems}
+                      placeholder="Wyszukaj komponent..."
+                    />
                   </div>
 
                   {/* Ilość */}

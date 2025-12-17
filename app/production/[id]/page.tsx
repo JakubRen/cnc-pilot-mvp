@@ -3,7 +3,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
-import { formatCost, formatDuration, operationTypeLabels, operationStatusLabels, operationStatusColors } from '@/types/operations'
+import { formatCost, formatDuration, operationTypeLabels, operationStatusLabels, operationStatusColors, Operation } from '@/types/operations'
 
 export default async function ProductionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -206,8 +206,8 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
           ) : (
             <div className="space-y-4">
               {operations
-                .sort((a, b) => a.operation_number - b.operation_number)
-                .map((operation) => {
+                .sort((a: Operation, b: Operation) => a.operation_number - b.operation_number)
+                .map((operation: Operation) => {
                   const machine = Array.isArray(operation.machine) ? operation.machine[0] : operation.machine
                   const operator = Array.isArray(operation.assigned_operator)
                     ? operation.assigned_operator[0]

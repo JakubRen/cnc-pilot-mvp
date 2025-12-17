@@ -12,9 +12,10 @@ import Link from 'next/link'
 import { logger } from '@/lib/logger'
 import { sanitizeText, sanitizeEmail } from '@/lib/sanitization'
 import { useTranslation } from '@/hooks/useTranslation'
+import { tCooperation, CooperationTranslationKey } from '@/lib/translation-helpers'
 
 export default function AddCooperantPage() {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -44,21 +45,21 @@ export default function AddCooperantPage() {
     e.preventDefault()
 
     if (!name.trim()) {
-      toast.error(t('cooperation', 'cooperantNameRequired' as any))
+      toast.error('Nazwa kooperanta jest wymagana')
       return
     }
 
     if (!serviceType) {
-      toast.error(t('cooperation', 'selectServiceType' as any))
+      toast.error('Wybierz typ usługi')
       return
     }
 
     setIsSubmitting(true)
-    const loadingToast = toast.loading(t('cooperation', 'addingCooperant' as any))
+    const loadingToast = toast.loading('Dodawanie kooperanta...')
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error(t('cooperation', 'notLoggedIn' as any))
+      if (!user) throw new Error('Musisz być zalogowany')
 
       const { data: userProfile } = await supabase
         .from('users')
@@ -66,7 +67,7 @@ export default function AddCooperantPage() {
         .eq('auth_id', user.id)
         .single()
 
-      if (!userProfile?.company_id) throw new Error(t('cooperation', 'noCompany' as any))
+      if (!userProfile?.company_id) throw new Error('Brak przypisanej firmy')
 
       // Sanitize user inputs to prevent XSS attacks
       const { error } = await supabase
@@ -86,13 +87,13 @@ export default function AddCooperantPage() {
       if (error) throw error
 
       toast.dismiss(loadingToast)
-      toast.success(t('cooperation', 'cooperantAdded' as any))
+      toast.success('Kooperant dodany pomyślnie!')
       router.push('/cooperation/cooperants')
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
       logger.error('Error adding cooperant', { error })
-      toast.error(t('cooperation', 'cooperantAddError' as any))
+      toast.error('Błąd podczas dodawania kooperanta')
     } finally {
       setIsSubmitting(false)
     }
@@ -107,38 +108,38 @@ export default function AddCooperantPage() {
             <Link href="/cooperation/cooperants" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               ← {t('common', 'back')}
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t('cooperation', 'newCooperant' as any)}</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Nowy Kooperant</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'basicInfo' as any)}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Podstawowe informacje</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'companyName' as any)} *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa firmy *</label>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={t('cooperation', 'companyNamePlaceholder' as any)}
+                    placeholder="np. Hartownia Poznań"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'serviceType' as any)} *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Typ usługi *</label>
                   <select
                     value={serviceType}
                     onChange={(e) => setServiceType(e.target.value)}
                     className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     required
                   >
-                    <option value="">{t('cooperation', 'select' as any)}</option>
+                    <option value="">Wybierz</option>
                     {serviceTypes.map(type => (
-                      <option key={type.key} value={type.value}>{t('cooperation', type.key as any)}</option>
+                      <option key={type.key} value={type.value}>{tCooperation(type.key as CooperationTranslationKey, lang)}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'avgLeadTimeDays' as any)}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Średni czas realizacji (dni)</label>
                   <Input
                     type="number"
                     min="1"
@@ -151,40 +152,40 @@ export default function AddCooperantPage() {
             </div>
 
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'contactInfo' as any)}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Dane kontaktowe</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'contactPerson' as any)}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Osoba kontaktowa</label>
                   <Input
                     value={contactPerson}
                     onChange={(e) => setContactPerson(e.target.value)}
-                    placeholder={t('cooperation', 'contactPersonPlaceholder' as any)}
+                    placeholder="np. Jan Kowalski"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'phone' as any)}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Telefon</label>
                   <Input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder={t('cooperation', 'phonePlaceholder' as any)}
+                    placeholder="+48 123 456 789"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'email' as any)}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Email</label>
                   <Input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t('cooperation', 'emailPlaceholder' as any)}
+                    placeholder="kontakt@firma.pl"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'address' as any)}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Adres</label>
                   <Input
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder={t('cooperation', 'addressPlaceholder' as any)}
+                    placeholder="ul. Przemysłowa 1, Poznań"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -192,7 +193,7 @@ export default function AddCooperantPage() {
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder={t('cooperation', 'notesPlaceholder' as any)}
+                    placeholder="Dodatkowe informacje..."
                     className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     rows={3}
                   />
@@ -208,7 +209,7 @@ export default function AddCooperantPage() {
                 variant="primary"
                 className="flex-1"
               >
-                {isSubmitting ? t('cooperation', 'adding' as any) : t('cooperation', 'addCooperant' as any)}
+                {isSubmitting ? 'Dodawanie...' : 'Dodaj kooperanta'}
               </Button>
               <Link href="/cooperation/cooperants">
                 <Button type="button" variant="ghost">

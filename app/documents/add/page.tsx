@@ -34,6 +34,17 @@ export default async function AddDocumentPage() {
     logger.error('Error fetching inventory', { error })
   }
 
+  // Fetch customers dla dropdown kontrahentów
+  const { data: customers, error: customersError } = await supabase
+    .from('customers')
+    .select('id, name, type')
+    .eq('company_id', user.company_id)
+    .order('name', { ascending: true })
+
+  if (customersError) {
+    logger.error('Error fetching customers', { error: customersError })
+  }
+
   return (
     <AppLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
@@ -41,6 +52,7 @@ export default async function AddDocumentPage() {
           <h1 className="text-3xl font-bold text-white mb-8">Nowy Dokument Magazynowy</h1>
           <AddDocumentForm
             inventoryItems={inventoryItems || []}
+            customers={customers || []}
             userId={user.id}
             companyId={user.company_id}
           />

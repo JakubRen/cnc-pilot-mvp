@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/Input'
 import Link from 'next/link'
 import { logger } from '@/lib/logger'
 import { useTranslation } from '@/hooks/useTranslation'
+import { tCooperation, CooperationTranslationKey } from '@/lib/translation-helpers'
 
 interface Cooperant {
   id: string
@@ -36,7 +37,7 @@ interface SelectedItem {
 }
 
 export default function SendToCooperationPage() {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [cooperants, setCooperants] = useState<Cooperant[]>([])
@@ -121,7 +122,7 @@ export default function SendToCooperationPage() {
 
   const addOrderToItems = (order: Order) => {
     if (selectedItems.some(item => item.order_id === order.id)) {
-      toast.error(t('cooperation', 'orderAlreadyAdded' as any))
+      toast.error(tCooperation('orderAlreadyAdded', lang))
       return
     }
     setSelectedItems([
@@ -138,7 +139,7 @@ export default function SendToCooperationPage() {
 
   const addCustomItem = () => {
     if (!customPartName.trim()) {
-      toast.error(t('cooperation', 'enterPartName' as any))
+      toast.error(tCooperation('enterPartName', lang))
       return
     }
     setSelectedItems([
@@ -161,21 +162,21 @@ export default function SendToCooperationPage() {
     e.preventDefault()
 
     if (!operationType) {
-      toast.error(t('cooperation', 'selectOperationType' as any))
+      toast.error('Wybierz typ operacji')
       return
     }
 
     if (selectedItems.length === 0) {
-      toast.error(t('cooperation', 'addAtLeastOneItem' as any))
+      toast.error(tCooperation('addOneItem', lang))
       return
     }
 
     setIsSubmitting(true)
-    const loadingToast = toast.loading(t('cooperation', 'creatingShipment' as any))
+    const loadingToast = toast.loading(tCooperation('creatingShipment', lang))
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error(t('cooperation', 'notLoggedIn' as any))
+      if (!user) throw new Error('Musisz być zalogowany')
 
       const { data: userProfile } = await supabase
         .from('users')
@@ -183,7 +184,7 @@ export default function SendToCooperationPage() {
         .eq('auth_id', user.id)
         .single()
 
-      if (!userProfile?.company_id) throw new Error(t('cooperation', 'noCompany' as any))
+      if (!userProfile?.company_id) throw new Error('Brak przypisanej firmy')
 
       // Generate operation number
       const { data: opNumber } = await supabase
@@ -235,13 +236,13 @@ export default function SendToCooperationPage() {
       }
 
       toast.dismiss(loadingToast)
-      toast.success(t('cooperation', 'shipmentCreated' as any))
+      toast.success(tCooperation('shipmentCreated', lang))
       router.push('/cooperation')
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
       logger.error('Error creating operation', { error })
-      toast.error(t('cooperation', 'shipmentCreateError' as any))
+      toast.error(tCooperation('errorCreating', lang))
     } finally {
       setIsSubmitting(false)
     }
@@ -256,22 +257,22 @@ export default function SendToCooperationPage() {
             <Link href="/cooperation" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               ← {t('common', 'back')}
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t('cooperation', 'newShipment' as any)}</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{tCooperation('newShipment', lang)}</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
             {/* Cooperant & Type */}
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'shipmentData' as any)}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{tCooperation('shipmentData', lang)}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'cooperant' as any)}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{tCooperation('cooperants', lang)}</label>
                   <select
                     value={selectedCooperant}
                     onChange={(e) => setSelectedCooperant(e.target.value)}
                     className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="">{t('cooperation', 'selectCooperant' as any)}</option>
+                    <option value="">{tCooperation('noCooperant', lang)}</option>
                     {cooperants.map(coop => (
                       <option key={coop.id} value={coop.id}>
                         {coop.name} ({coop.service_type})
@@ -281,27 +282,27 @@ export default function SendToCooperationPage() {
                   {cooperants.length === 0 && (
                     <p className="text-slate-500 text-sm mt-1">
                       <Link href="/cooperation/cooperants/add" className="text-blue-400 hover:underline">
-                        {t('cooperation', 'addFirstCooperant' as any)}
+                        Dodaj pierwszego kooperanta
                       </Link>
                     </p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'operationType' as any)} *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Typ operacji *</label>
                   <select
                     value={operationType}
                     onChange={(e) => setOperationType(e.target.value)}
                     className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     required
                   >
-                    <option value="">{t('cooperation', 'selectType' as any)}</option>
+                    <option value="">Wybierz typ</option>
                     {operationTypes.map(type => (
-                      <option key={type.key} value={type.value}>{t('cooperation', type.key as any)}</option>
+                      <option key={type.key} value={type.value}>{tCooperation(type.key as CooperationTranslationKey, lang)}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'expectedReturn' as any)}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{tCooperation('expectedReturn', lang)}</label>
                   <Input
                     type="date"
                     value={expectedReturnDate}
@@ -309,11 +310,11 @@ export default function SendToCooperationPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'trackingNumber' as any)}</label>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Numer przesyłki</label>
                   <Input
                     value={transportInfo}
                     onChange={(e) => setTransportInfo(e.target.value)}
-                    placeholder={t('cooperation', 'trackingPlaceholder' as any)}
+                    placeholder="np. UPS 1234567890"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -321,7 +322,7 @@ export default function SendToCooperationPage() {
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder={t('cooperation', 'notesPlaceholder' as any)}
+                    placeholder="Dodatkowe informacje o przesyłce..."
                     className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     rows={2}
                   />
@@ -331,11 +332,11 @@ export default function SendToCooperationPage() {
 
             {/* Items */}
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'shipmentItems' as any)}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{tCooperation('items', lang)}</h2>
 
               {/* Add from orders */}
               <div className="mb-4">
-                <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('cooperation', 'addFromOrder' as any)}</label>
+                <label className="block text-slate-700 dark:text-slate-300 mb-2">{tCooperation('addFromOrder', lang)}</label>
                 <select
                   onChange={(e) => {
                     const order = orders.find(o => o.id === e.target.value)
@@ -344,10 +345,10 @@ export default function SendToCooperationPage() {
                   }}
                   className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                 >
-                  <option value="">{t('cooperation', 'selectOrder' as any)}</option>
+                  <option value="">{tCooperation('selectOrder', lang)}</option>
                   {orders.map(order => (
                     <option key={order.id} value={order.id}>
-                      {order.order_number} - {order.customer_name} ({order.part_name || t('cooperation', 'noName' as any)})
+                      {order.order_number} - {order.customer_name} ({order.part_name || 'Bez nazwy'})
                     </option>
                   ))}
                 </select>
@@ -359,7 +360,7 @@ export default function SendToCooperationPage() {
                   <Input
                     value={customPartName}
                     onChange={(e) => setCustomPartName(e.target.value)}
-                    placeholder={t('cooperation', 'partNameManual' as any)}
+                    placeholder="Nazwa części..."
                   />
                 </div>
                 <div className="w-24">
@@ -372,14 +373,14 @@ export default function SendToCooperationPage() {
                   />
                 </div>
                 <Button type="button" variant="ghost" onClick={addCustomItem}>
-                  + {t('cooperation', 'addButton' as any)}
+                  + Dodaj
                 </Button>
               </div>
 
               {/* Selected items list */}
               {selectedItems.length === 0 ? (
                 <div className="text-center py-8 text-slate-500">
-                  <p>{t('cooperation', 'noItems')}</p>
+                  <p>{tCooperation('noItems', lang)}</p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -416,7 +417,7 @@ export default function SendToCooperationPage() {
                 variant="primary"
                 className="flex-1"
               >
-                {isSubmitting ? t('cooperation', 'creating' as any) : t('cooperation', 'createShipment' as any)}
+                {isSubmitting ? tCooperation('creating', lang) : tCooperation('createShipment', lang)}
               </Button>
               <Link href="/cooperation">
                 <Button type="button" variant="ghost">

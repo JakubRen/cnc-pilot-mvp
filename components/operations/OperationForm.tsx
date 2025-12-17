@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
 import {
   OperationType,
@@ -54,7 +55,7 @@ export default function OperationForm({
         if (error) throw error
         setMachines(data || [])
       } catch (error) {
-        console.error('Error loading machines:', error)
+        logger.error('Error loading machines', { error })
         toast.error('Nie udało się załadować listy maszyn')
       } finally {
         setIsLoadingMachines(false)

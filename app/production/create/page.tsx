@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
 import OperationForm from '@/components/operations/OperationForm'
 import DrawingUpload from '@/components/orders/DrawingUpload'
@@ -197,7 +198,7 @@ export default function CreateProductionPlanPage() {
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Error creating production plan', { error })
     } finally {
       setIsSubmitting(false)
     }

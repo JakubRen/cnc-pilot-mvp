@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 
@@ -105,7 +106,7 @@ export default function DrawingUpload({ value, onChange, companyId, userId }: Dr
     } catch (error) {
       toast.dismiss(loadingToast)
       toast.error('Błąd podczas przesyłania pliku: ' + (error as Error).message)
-      console.error(error)
+      logger.error('Error uploading drawing', { error })
     } finally {
       setIsUploading(false)
     }
