@@ -43,41 +43,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 GRANT EXECUTE ON FUNCTION generate_order_number(UUID) TO authenticated;
 
 -- =====================================================
--- 2. INVENTORY - Automatyczne numerowanie SKU
--- =====================================================
--- Format: SKU-2025-0001
-
-CREATE OR REPLACE FUNCTION generate_inventory_sku(p_company_id UUID)
-RETURNS TEXT AS $$
-DECLARE
-  v_count INTEGER;
-  v_year TEXT;
-  v_number TEXT;
-  v_sku TEXT;
-BEGIN
-  -- Get current year
-  v_year := TO_CHAR(NOW(), 'YYYY');
-
-  -- Count inventory items for this company in current year
-  SELECT COUNT(*) INTO v_count
-  FROM inventory
-  WHERE company_id = p_company_id
-    AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM NOW());
-
-  -- Generate padded number (0001, 0002, etc.)
-  v_number := LPAD((v_count + 1)::TEXT, 4, '0');
-
-  -- Combine into SKU: SKU-2025-0001
-  v_sku := 'SKU-' || v_year || '-' || v_number;
-
-  RETURN v_sku;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-GRANT EXECUTE ON FUNCTION generate_inventory_sku(UUID) TO authenticated;
-
--- =====================================================
--- 3. QUALITY CONTROL - Automatyczne numerowanie raportów QC
+-- 2. QUALITY CONTROL - Automatyczne numerowanie raportów QC
 -- =====================================================
 -- Format: QC-2025-0001
 
@@ -111,7 +77,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 GRANT EXECUTE ON FUNCTION generate_qc_report_number(UUID) TO authenticated;
 
 -- =====================================================
--- 4. CUSTOMERS - Automatyczne numerowanie klientów
+-- 3. CUSTOMERS - Automatyczne numerowanie klientów
 -- =====================================================
 -- Format: CUS-2025-0001
 
@@ -145,7 +111,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 GRANT EXECUTE ON FUNCTION generate_customer_number(UUID) TO authenticated;
 
 -- =====================================================
--- 5. PRODUCTION PLANS - Automatyczne numerowanie planów produkcji
+-- 4. PRODUCTION PLANS - Automatyczne numerowanie planów produkcji
 -- =====================================================
 -- Format: PP-2025-0001
 
@@ -185,9 +151,6 @@ GRANT EXECUTE ON FUNCTION generate_production_plan_number(UUID) TO authenticated
 -- Test order number generation:
 -- SELECT generate_order_number('your-company-uuid');
 
--- Test inventory SKU generation:
--- SELECT generate_inventory_sku('your-company-uuid');
-
 -- Test QC report number generation:
 -- SELECT generate_qc_report_number('your-company-uuid');
 
@@ -206,3 +169,7 @@ GRANT EXECUTE ON FUNCTION generate_production_plan_number(UUID) TO authenticated
 -- 4. Functions are idempotent (safe to run multiple times)
 -- 5. Existing documents keep their manual numbers
 -- 6. New documents will use auto-generated numbers
+--
+-- IMPORTANT: Inventory SKU is NOT auto-generated!
+-- Users manually enter SKU for products (e.g., "ALU-6061", "STEEL-304")
+-- Only workflow documents are auto-numbered (Orders, Reports, etc.)

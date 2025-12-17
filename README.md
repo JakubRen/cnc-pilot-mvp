@@ -91,10 +91,10 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 - Eliminated 98% of dangerous `as any` type assertions
 - Created comprehensive type system with utility functions
 
-**🔢 Auto Document Numbering** - All documents now auto-numbered
+**🔢 Auto Document Numbering** - Workflow documents auto-numbered
 - Orders: ORD-2025-0001
-- Inventory: SKU-2025-0001
 - Quality Reports: QC-2025-0001
+- Warehouse Documents: PZ-2025-0001, WZ-2025-0001
 
 **📦 New Modules** - Customers & Quotes management
 - Full CRUD for customers with quick-add modal

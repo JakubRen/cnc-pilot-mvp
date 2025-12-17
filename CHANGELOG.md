@@ -77,12 +77,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Problem Solved:** Manual document numbering was error-prone and time-consuming.
 
 #### Implementation
-Created 5 PostgreSQL RPC functions for automatic document numbering:
+Created 4 PostgreSQL RPC functions for automatic workflow document numbering:
 - `generate_order_number()` → **ORD-2025-0001**
-- `generate_inventory_sku()` → **SKU-2025-0001**
 - `generate_qc_report_number()` → **QC-2025-0001**
 - `generate_customer_number()` → **CUS-2025-0001**
 - `generate_production_plan_number()` → **PP-2025-0001**
+
+**Note:** Inventory SKU is NOT auto-generated - users manually name products (e.g., "ALU-6061", "STEEL-304")
 
 #### Features
 - **Yearly reset** - Numbers reset every January 1st (PREFIX-YYYY-NNNN format)
