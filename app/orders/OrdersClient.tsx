@@ -2,15 +2,14 @@
 
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 import { exportOrdersToCSV } from '@/lib/csv-export'
 import OrderFilters, { FilterState } from './OrderFilters'
-import OrderList from './OrderList'
+import { ResponsiveOrderList } from '@/components/orders/ResponsiveOrderList'
 import EmptyState from '@/components/ui/EmptyState'
 import { Button } from '@/components/ui/Button'
 import { useOrderFiltering } from '@/hooks/useOrderFiltering'
 import { useOrderSelection } from '@/hooks/useOrderSelection'
+import { useOptimisticOrders } from '@/hooks/useOptimisticOrders'
 import { logger } from '@/lib/logger'
 
 interface OrderWithTags {
@@ -34,14 +33,21 @@ interface OrdersClientProps {
   currentUserRole: string
 }
 
-export default function OrdersClient({ orders, currentUserRole }: OrdersClientProps) {
-  const router = useRouter()
+export default function OrdersClient({ orders: initialOrders, currentUserRole }: OrdersClientProps) {
   const [filters, setFilters] = useState<FilterState>({
     status: 'all',
     deadline: 'all',
     search: '',
     sortBy: 'deadline',
   })
+
+  // Optimistic Updates Hook
+  const {
+    orders,
+    bulkUpdateStatus,
+    isPending,
+    hasPendingUpdates
+  } = useOptimisticOrders(initialOrders)
 
   // Custom Hooks
   const filteredOrders = useOrderFiltering(orders, filters, [], 'OR')
@@ -69,7 +75,7 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
     }
   }
 
-  // Bulk status change
+  // Bulk status change with optimistic updates
   const handleBulkStatusChange = async (newStatus: string) => {
     if (selectedOrders.size === 0) return
 
@@ -78,29 +84,9 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
     )
     if (!confirmed) return
 
-    const loadingToast = toast.loading(`Aktualizacja ${selectedOrders.size} zamówień...`)
-
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .update({ status: newStatus })
-        .in('id', Array.from(selectedOrders))
-
-      toast.dismiss(loadingToast)
-
-      if (error) {
-        toast.error('Nie udało się zaktualizować zamówień: ' + error.message)
-        return
-      }
-
-      toast.success(`Pomyślnie zaktualizowano ${selectedOrders.size} zamówień`)
-      setSelectedOrders(new Set()) // Clear selection
-      router.refresh() // Refresh data
-    } catch (error) {
-      toast.dismiss(loadingToast)
-      toast.error('Błąd aktualizacji zamówień')
-      logger.error('Bulk update error', { error })
-    }
+    // Use optimistic hook - no loading toast needed, UI updates instantly
+    await bulkUpdateStatus(Array.from(selectedOrders), newStatus)
+    setSelectedOrders(new Set()) // Clear selection after update
   }
 
   return (
@@ -181,13 +167,14 @@ export default function OrdersClient({ orders, currentUserRole }: OrdersClientPr
           />
         </div>
       ) : (
-        <OrderList
+        <ResponsiveOrderList
           orders={filteredOrders}
           currentUserRole={currentUserRole}
           selectedOrders={selectedOrders}
           onToggleSelect={handleToggleSelect}
           onSelectAll={handleSelectAll}
           onDeselectAll={handleDeselectAll}
+          isPending={isPending}
         />
       )}
     </div>

@@ -10,6 +10,7 @@ import MobileBottomNav from './MobileBottomNav';
 import { supabase } from '@/lib/supabase';
 import InterfaceModeGuard from './InterfaceModeGuard';
 import type { InterfaceMode } from '@/lib/auth';
+import { LiveRegionProvider } from '@/components/ui/LiveRegion';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -50,6 +51,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
       <InterfaceModeGuard>
+      <LiveRegionProvider>
+      {/* Skip link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-lg focus:font-semibold"
+      >
+        Przejdź do treści głównej
+      </a>
+
       {/* FIXED: Używamy bg-background dla spójności motywów */}
       <div className="flex min-h-screen bg-background">
       {/* Sidebar - Hidden on mobile by default, shown when toggled */}
@@ -78,7 +88,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto pb-20 lg:pb-0">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-auto pb-20 lg:pb-0">
           {children}
         </main>
       </div>
@@ -109,6 +119,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </span>
       </button>
       </div>
+      </LiveRegionProvider>
       </InterfaceModeGuard>
   );
 }

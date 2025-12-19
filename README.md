@@ -84,7 +84,18 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
-### Latest Release: v2.1.0 (2025-12-16)
+### Latest Release: v2.2.0 (2025-12-19)
+
+**🎨 UX/UI Improvements** - Enhanced user experience and accessibility
+- Optimistic UI updates with visual pending indicators
+- Desktop table view matches mobile card UX (spinner overlay, disabled state)
+- Comprehensive accessibility implementation (WCAG 2.1 AA compliant)
+- Skip link for keyboard navigation
+- LiveRegion system for screen reader announcements
+- Complete ARIA labels (role="table", role="menu", role="gridcell", etc.)
+- Future Plan 8: 100% complete (Weeks 3, 4, 5)
+
+### Previous Release: v2.1.0 (2025-12-16)
 
 **🎯 Code Quality & Type Safety** - Achieved 100% code quality standards
 - Type coverage increased from 80% to 95%

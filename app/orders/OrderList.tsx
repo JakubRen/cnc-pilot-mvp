@@ -32,6 +32,7 @@ interface OrderListProps {
   onToggleSelect: (orderId: string) => void
   onSelectAll: () => void
   onDeselectAll: () => void
+  isPending?: (orderId: string) => boolean
 }
 
 export default function OrderList({
@@ -41,6 +42,7 @@ export default function OrderList({
   onToggleSelect,
   onSelectAll,
   onDeselectAll,
+  isPending = () => false,
 }: OrderListProps) {
   const router = useRouter()
   const { t } = useTranslation()
@@ -144,60 +146,82 @@ export default function OrderList({
     return (
       <>
         {/* Desktop View - Table (hidden on mobile) */}
-        <div className="hidden md:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-          <table className="w-full">
+        <div
+          className="hidden md:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+          role="region"
+          aria-label="Lista zamówień"
+        >
+          <table className="w-full" role="table" aria-label="Tabela zamówień">
             <thead className="bg-slate-100 dark:bg-slate-700">
-              <tr>
-                <th className="px-4 py-3 text-left">
+              <tr role="row">
+                <th className="px-4 py-3 text-left" role="columnheader" scope="col">
                   <input
                     type="checkbox"
                     checked={allSelected}
                     onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
                     className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
                     title={allSelected ? t('orders', 'deselectAll') : t('orders', 'selectAll')}
+                    aria-label={allSelected ? 'Odznacz wszystkie zamówienia' : 'Zaznacz wszystkie zamówienia'}
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
                   {t('orders', 'orderNumber')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
                   {t('orders', 'customer')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
                   {t('common', 'quantity')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
                   {t('orders', 'deadline')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
                   {t('common', 'status')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
                   Operator
                 </th>
                 {showPrices && (
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
                     {t('common', 'cost')}
                   </th>
                 )}
-                <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
                   {t('common', 'actions')}
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {orders.map((order) => (
+              {orders.map((order) => {
+                const pending = isPending(order.id)
+                return (
                 <tr
                   key={order.id}
-                  className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition ${selectedOrders.has(order.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+                  role="row"
+                  aria-selected={selectedOrders.has(order.id)}
+                  className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition relative ${
+                    selectedOrders.has(order.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                  } ${pending ? 'opacity-60 pointer-events-none' : ''}`}
                 >
-                  <td className="px-4 py-4">
+                  {/* Pending indicator overlay */}
+                  {pending && (
+                    <td
+                      colSpan={showPrices ? 9 : 8}
+                      className="absolute inset-0 flex items-center justify-center bg-slate-900/10 dark:bg-slate-900/30 z-10"
+                    >
+                      <div className="animate-spin h-6 w-6 border-3 border-blue-500 border-t-transparent rounded-full" />
+                    </td>
+                  )}
+                  <td className="px-4 py-4" role="gridcell">
                     <input
                       type="checkbox"
                       checked={selectedOrders.has(order.id)}
                       onChange={() => onToggleSelect(order.id)}
                       className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
                       onClick={(e) => e.stopPropagation()}
+                      disabled={pending}
+                      aria-label={`Zaznacz zamówienie ${order.order_number}`}
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -251,20 +275,28 @@ export default function OrderList({
                       )}
                     </td>
                   )}
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-right">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-right" role="gridcell">
                     <div className="relative inline-block" ref={openMenuId === order.id ? menuRef : null}>
                       <button
                         onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
                         className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
+                        aria-label={`Akcje dla zamówienia ${order.order_number}`}
+                        aria-haspopup="menu"
+                        aria-expanded={openMenuId === order.id}
                       >
                         <span className="text-slate-500 dark:text-slate-400">⋮</span>
                       </button>
                       {openMenuId === order.id && (
-                        <div className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1">
+                        <div
+                          className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1"
+                          role="menu"
+                          aria-orientation="vertical"
+                        >
                           <Link
                             href={`/orders/${order.id}`}
                             className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"
                             onClick={() => setOpenMenuId(null)}
+                            role="menuitem"
                           >
                             <span>👁</span> {t('common', 'view')}
                           </Link>
@@ -272,12 +304,14 @@ export default function OrderList({
                             href={`/orders/${order.id}/edit`}
                             className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-600"
                             onClick={() => setOpenMenuId(null)}
+                            role="menuitem"
                           >
                             <span>✏️</span> {t('common', 'edit')}
                           </Link>
                           <button
                             onClick={() => { handleDuplicate(order.id, order.order_number); setOpenMenuId(null); }}
                             className="flex items-center gap-2 w-full px-3 py-2 text-sm text-orange-600 dark:text-orange-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                            role="menuitem"
                           >
                             <span>📋</span> {t('common', 'duplicate')}
                           </button>
@@ -285,6 +319,7 @@ export default function OrderList({
                             <button
                               onClick={() => { handleDelete(order.id, order.order_number); setOpenMenuId(null); }}
                               className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                              role="menuitem"
                             >
                               <span>🗑</span> {t('common', 'delete')}
                             </button>
@@ -294,13 +329,14 @@ export default function OrderList({
                     </div>
                   </td>
                 </tr>
-              ))}
+                )
+              })}
             </tbody>
           </table>
         </div>
 
         {/* Mobile View - Cards (visible only on mobile) */}
-        <div className="md:hidden space-y-4">
+        <div className="md:hidden space-y-4" role="region" aria-label="Lista zamówień">
           {/* Select All Checkbox */}
           <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
             <input
@@ -308,6 +344,7 @@ export default function OrderList({
               checked={allSelected}
               onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
               className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+              aria-label={allSelected ? 'Odznacz wszystkie zamówienia' : 'Zaznacz wszystkie zamówienia'}
             />
             <span className="text-sm text-slate-600 dark:text-slate-300 font-medium">
               {allSelected ? t('orders', 'deselectAll') : t('orders', 'selectAll')} ({orders.length})
@@ -315,15 +352,25 @@ export default function OrderList({
           </div>
 
           {/* Order Cards */}
-          {orders.map((order) => (
+          {orders.map((order) => {
+            const pending = isPending(order.id)
+            return (
             <div
               key={order.id}
-              className={`bg-white dark:bg-slate-800 border rounded-lg overflow-hidden transition ${
+              className={`bg-white dark:bg-slate-800 border rounded-lg overflow-hidden transition relative ${
                 selectedOrders.has(order.id)
                   ? 'border-blue-500 dark:border-blue-400 shadow-lg'
                   : 'border-slate-200 dark:border-slate-700'
-              }`}
+              } ${pending ? 'opacity-60 pointer-events-none' : ''}`}
+              role="article"
+              aria-label={`Zamówienie ${order.order_number}`}
             >
+              {/* Pending indicator overlay */}
+              {pending && (
+                <div className="absolute inset-0 flex items-center justify-center z-20 bg-slate-900/20 dark:bg-slate-900/40 rounded-lg">
+                  <div className="animate-spin h-8 w-8 border-3 border-blue-500 border-t-transparent rounded-full" />
+                </div>
+              )}
               {/* Card Header */}
               <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
                 <div className="flex items-center gap-3">
@@ -333,6 +380,8 @@ export default function OrderList({
                     onChange={() => onToggleSelect(order.id)}
                     className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
+                    disabled={pending}
+                    aria-label={`Zaznacz zamówienie ${order.order_number}`}
                   />
                   <Link
                     href={`/orders/${order.id}`}
@@ -346,15 +395,23 @@ export default function OrderList({
                   <button
                     onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
                     className="p-2 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition"
+                    aria-label={`Akcje dla zamówienia ${order.order_number}`}
+                    aria-haspopup="menu"
+                    aria-expanded={openMenuId === order.id}
                   >
                     <span className="text-slate-500 dark:text-slate-400 text-xl">⋮</span>
                   </button>
                   {openMenuId === order.id && (
-                    <div className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1">
+                    <div
+                      className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1"
+                      role="menu"
+                      aria-orientation="vertical"
+                    >
                       <Link
                         href={`/orders/${order.id}`}
                         className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"
                         onClick={() => setOpenMenuId(null)}
+                        role="menuitem"
                       >
                         <span>👁</span> {t('common', 'view')}
                       </Link>
@@ -362,12 +419,14 @@ export default function OrderList({
                         href={`/orders/${order.id}/edit`}
                         className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-600"
                         onClick={() => setOpenMenuId(null)}
+                        role="menuitem"
                       >
                         <span>✏️</span> {t('common', 'edit')}
                       </Link>
                       <button
                         onClick={() => { handleDuplicate(order.id, order.order_number); setOpenMenuId(null); }}
                         className="flex items-center gap-2 w-full px-3 py-2 text-sm text-orange-600 dark:text-orange-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                        role="menuitem"
                       >
                         <span>📋</span> {t('common', 'duplicate')}
                       </button>
@@ -375,6 +434,7 @@ export default function OrderList({
                         <button
                           onClick={() => { handleDelete(order.id, order.order_number); setOpenMenuId(null); }}
                           className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                          role="menuitem"
                         >
                           <span>🗑</span> {t('common', 'delete')}
                         </button>
@@ -490,7 +550,8 @@ export default function OrderList({
                 )}
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
       </>
     )
