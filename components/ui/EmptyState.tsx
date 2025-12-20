@@ -161,3 +161,152 @@ export function ErrorState({ onRetry }: { onRetry?: () => void }) {
     />
   )
 }
+
+export function EmptyProducts() {
+  return (
+    <EmptyState
+      icon="📦"
+      title="Brak towarów w katalogu"
+      description="Dodaj pierwszy produkt do katalogu, aby móc śledzić stany magazynowe."
+      actionLabel="+ Dodaj towar"
+      actionHref="/products/add"
+    />
+  )
+}
+
+export function EmptyInventoryLocations() {
+  return (
+    <EmptyState
+      icon="📊"
+      title="Brak stanów w magazynie"
+      description="Dodaj towary do katalogu i przypisz im lokalizacje w magazynie."
+      actionLabel="Przejdź do Katalogu"
+      actionHref="/products"
+    />
+  )
+}
+
+export function EmptyTimeLogs() {
+  return (
+    <EmptyState
+      icon="⏱️"
+      title="Brak rejestracji czasu"
+      description="Rozpocznij śledzenie czasu pracy przy zamówieniach."
+      actionLabel="Rozpocznij timer"
+      actionHref="/time-tracking/add"
+    />
+  )
+}
+
+export function EmptyUrgentTasks() {
+  return (
+    <EmptyState
+      icon="🎉"
+      title="Wszystko pod kontrolą!"
+      description="Nie masz pilnych zadań. Świetna robota!"
+      variant="compact"
+    />
+  )
+}
+
+export function EmptyNoResults({ query }: { query?: string }) {
+  return (
+    <EmptyState
+      icon="🔍"
+      title="Brak wyników"
+      description={query ? `Nie znaleziono elementów dla "${query}". Spróbuj zmienić kryteria wyszukiwania.` : "Nie znaleziono elementów pasujących do filtrów. Spróbuj zmienić kryteria wyszukiwania."}
+      variant="compact"
+    />
+  )
+}
+
+export function EmptyDocuments() {
+  return (
+    <EmptyState
+      icon="📄"
+      title="Brak dokumentów magazynowych"
+      description="Nie masz jeszcze żadnych dokumentów PW/RW/WZ..."
+      actionLabel="+ Nowy dokument"
+      actionHref="/documents/add"
+    />
+  )
+}
+
+export function EmptyFiles() {
+  return (
+    <EmptyState
+      icon="📁"
+      title="Brak plików"
+      description="Prześlij pierwszy plik używając formularza powyżej."
+      variant="compact"
+    />
+  )
+}
+
+export function EmptyMachines() {
+  return (
+    <EmptyState
+      icon="🏭"
+      title="Brak maszyn"
+      description="Dodaj maszyny CNC do systemu, aby śledzić ich stan i konserwację."
+      actionLabel="+ Dodaj maszynę"
+      actionHref="/machines/add"
+    />
+  )
+}
+
+export function EmptyCustomers() {
+  return (
+    <EmptyState
+      icon="👥"
+      title="Brak kontrahentów"
+      description="Dodaj pierwszego kontrahenta, aby móc tworzyć oferty i zamówienia."
+      actionLabel="+ Dodaj kontrahenta"
+      actionHref="/customers/add"
+    />
+  )
+}
+
+export function EmptyQuotes() {
+  return (
+    <EmptyState
+      icon="💰"
+      title="Brak ofert"
+      description="Nie masz jeszcze żadnych ofert. Utwórz pierwszą ofertę dla klienta."
+      actionLabel="+ Utwórz ofertę"
+      actionHref="/quotes/express"
+    />
+  )
+}
+
+export function EmptyProductionPlans() {
+  return (
+    <EmptyState
+      icon="🔧"
+      title="Brak planów produkcji"
+      description="Nie masz jeszcze planów produkcji. Utwórz plan dla zamówienia."
+      actionLabel="Zobacz zamówienia"
+      actionHref="/orders"
+    />
+  )
+}
+
+// Centralized EMPTY_STATES object for consistent usage
+export const EMPTY_STATES = {
+  orders: EmptyOrders,
+  products: EmptyProducts,
+  inventory: EmptyInventory,
+  inventoryLocations: EmptyInventoryLocations,
+  timeLogs: EmptyTimeLogs,
+  urgentTasks: EmptyUrgentTasks,
+  noResults: EmptyNoResults,
+  search: EmptySearch,
+  documents: EmptyDocuments,
+  files: EmptyFiles,
+  machines: EmptyMachines,
+  customers: EmptyCustomers,
+  quotes: EmptyQuotes,
+  productionPlans: EmptyProductionPlans,
+  noPermission: NoPermission,
+  error: ErrorState,
+} as const

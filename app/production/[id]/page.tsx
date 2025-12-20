@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
 import { formatCost, formatDuration, operationTypeLabels, operationStatusLabels, operationStatusColors, Operation } from '@/types/operations'
+import { ProductionPlanWithRelations, productionPlanStatusLabels, productionPlanStatusColors } from '@/types/production-plans'
 
 export default async function ProductionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -14,12 +15,12 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
     redirect('/login')
   }
 
-  // Fetch production order (order_item) with operations
-  const { data: productionOrder } = await supabase
-    .from('order_items')
+  // Fetch production plan with operations and order info
+  const { data: productionPlan } = await supabase
+    .from('production_plans')
     .select(`
       *,
-      order:orders!order_items_order_id_fkey (
+      order:orders (
         id,
         order_number,
         customer_name,
@@ -39,7 +40,7 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
           full_name
         )
       ),
-      drawing_file:drawing_files (
+      drawing_file:files (
         id,
         file_name,
         file_url
@@ -48,20 +49,21 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
     .eq('id', id)
     .single()
 
-  if (!productionOrder) {
+  if (!productionPlan) {
     redirect('/production')
   }
 
   // Verify company_id
-  const order = Array.isArray(productionOrder.order) ? productionOrder.order[0] : productionOrder.order
-  if (order?.company_id !== user.company_id) {
+  if (productionPlan.company_id !== user.company_id) {
     redirect('/production')
   }
 
-  const operations = productionOrder.operations || []
-  const totalSetupTime = productionOrder.total_setup_time_minutes || 0
-  const totalRunTime = productionOrder.total_run_time_minutes || 0
-  const totalCost = productionOrder.total_cost || 0
+  const typedPlan = productionPlan as ProductionPlanWithRelations
+  const order = Array.isArray(typedPlan.order) ? typedPlan.order[0] : typedPlan.order
+  const operations = typedPlan.operations || []
+  const totalSetupTime = typedPlan.total_setup_time_minutes || 0
+  const totalRunTime = typedPlan.total_run_time_minutes || 0
+  const totalCost = typedPlan.estimated_cost || 0
 
   return (
     <AppLayout>
@@ -71,10 +73,10 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
-              ⚙️ Plan Produkcji
+              ⚙️ Plan Produkcji {typedPlan.plan_number}
             </h1>
             <p className="text-slate-500 dark:text-slate-400">
-              {productionOrder.part_name} • {productionOrder.quantity} szt.
+              {typedPlan.part_name} • {typedPlan.quantity} szt.
             </p>
           </div>
           <div className="flex gap-3">
@@ -132,42 +134,46 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             <div>
               <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Część</p>
-              <p className="text-slate-900 dark:text-white font-semibold">{productionOrder.part_name}</p>
+              <p className="text-slate-900 dark:text-white font-semibold">{typedPlan.part_name}</p>
             </div>
             <div>
               <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Ilość</p>
-              <p className="text-slate-900 dark:text-white font-semibold">{productionOrder.quantity} szt.</p>
+              <p className="text-slate-900 dark:text-white font-semibold">{typedPlan.quantity} szt.</p>
             </div>
-            {productionOrder.material && (
+            {typedPlan.material && (
               <div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Materiał</p>
-                <p className="text-slate-900 dark:text-white font-semibold">{productionOrder.material}</p>
+                <p className="text-slate-900 dark:text-white font-semibold">{typedPlan.material}</p>
               </div>
             )}
-            {productionOrder.complexity && (
+            {(typedPlan.length || typedPlan.width || typedPlan.height) && (
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Złożoność</p>
-                <p className="text-slate-900 dark:text-white font-semibold">{productionOrder.complexity}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Wymiary</p>
+                <p className="text-slate-900 dark:text-white font-semibold">
+                  {typedPlan.length && `${typedPlan.length}mm`}
+                  {typedPlan.width && ` × ${typedPlan.width}mm`}
+                  {typedPlan.height && ` × ${typedPlan.height}mm`}
+                </p>
               </div>
             )}
-            {productionOrder.drawing_file && (
+            {typedPlan.drawing_file && (
               <div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Rysunek</p>
                 <a
-                  href={productionOrder.drawing_file.file_url}
+                  href={typedPlan.drawing_file.file_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:underline font-semibold"
                 >
-                  📐 {productionOrder.drawing_file.file_name}
+                  📐 {typedPlan.drawing_file.file_name}
                 </a>
               </div>
             )}
           </div>
-          {productionOrder.notes && (
+          {typedPlan.technical_notes && (
             <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
               <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Notatki technologiczne</p>
-              <p className="text-slate-900 dark:text-white">{productionOrder.notes}</p>
+              <p className="text-slate-900 dark:text-white">{typedPlan.technical_notes}</p>
             </div>
           )}
         </div>
@@ -206,8 +212,8 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
           ) : (
             <div className="space-y-4">
               {operations
-                .sort((a: Operation, b: Operation) => a.operation_number - b.operation_number)
-                .map((operation: Operation) => {
+                .sort((a: any, b: any) => a.operation_number - b.operation_number)
+                .map((operation: any) => {
                   const machine = Array.isArray(operation.machine) ? operation.machine[0] : operation.machine
                   const operator = Array.isArray(operation.assigned_operator)
                     ? operation.assigned_operator[0]
@@ -230,7 +236,7 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
                                 {operation.operation_name}
                               </h3>
                               <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-sm font-semibold rounded">
-                                {operationTypeLabels[operation.operation_type]}
+                                {operationTypeLabels[operation.operation_type as keyof typeof operationTypeLabels]}
                               </span>
                             </div>
                             {operation.description && (
@@ -238,8 +244,8 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
                             )}
                           </div>
                         </div>
-                        <span className={`px-4 py-2 rounded-full text-sm font-semibold text-white ${operationStatusColors[operation.status]}`}>
-                          {operationStatusLabels[operation.status]}
+                        <span className={`px-4 py-2 rounded-full text-sm font-semibold text-white ${operationStatusColors[operation.status as keyof typeof operationStatusColors]}`}>
+                          {operationStatusLabels[operation.status as keyof typeof operationStatusLabels]}
                         </span>
                       </div>
 
@@ -272,7 +278,7 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
                         <div>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt run</p>
                           <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                            {formatCost((operation.run_time_per_unit_minutes * productionOrder.quantity / 60) * operation.hourly_rate)}
+                            {formatCost((operation.run_time_per_unit_minutes * typedPlan.quantity / 60) * operation.hourly_rate)}
                           </p>
                         </div>
                         <div>

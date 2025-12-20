@@ -101,18 +101,20 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     drawingFile = file
   }
 
-  // Fetch production plans (order_items) for this order
+  // Fetch production plans for this order
   const { data: productionPlans } = await supabase
-    .from('order_items')
+    .from('production_plans')
     .select(`
       id,
+      plan_number,
       part_name,
       quantity,
       material,
+      status,
       total_setup_time_minutes,
       total_run_time_minutes,
-      total_cost,
-      operations!inner (id)
+      estimated_cost,
+      operations!inner (id, status)
     `)
     .eq('order_id', id)
     .order('created_at', { ascending: true })
@@ -353,7 +355,26 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               <div className="space-y-3">
                 {productionPlans.map((plan: any) => {
                   const operationsCount = plan.operations?.length || 0
+                  const completedOps = plan.operations?.filter((op: any) => op.status === 'completed').length || 0
+                  const completion = operationsCount > 0 ? Math.round((completedOps / operationsCount) * 100) : 0
                   const totalTime = (plan.total_setup_time_minutes || 0) + (plan.total_run_time_minutes || 0)
+
+                  // Status colors
+                  const statusColors: Record<string, string> = {
+                    draft: 'bg-slate-600',
+                    active: 'bg-blue-600',
+                    in_progress: 'bg-purple-600',
+                    completed: 'bg-green-600',
+                    cancelled: 'bg-gray-600',
+                  }
+
+                  const statusLabels: Record<string, string> = {
+                    draft: 'Szkic',
+                    active: 'Aktywny',
+                    in_progress: 'W Realizacji',
+                    completed: 'Ukończony',
+                    cancelled: 'Anulowany',
+                  }
 
                   return (
                     <Link
@@ -363,15 +384,38 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
-                            {plan.part_name}
-                          </h3>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                              {plan.part_name}
+                            </h3>
+                            <span className={`px-2 py-0.5 ${statusColors[plan.status] || 'bg-slate-600'} text-white text-xs font-semibold rounded`}>
+                              {statusLabels[plan.status] || plan.status}
+                            </span>
+                          </div>
                           <p className="text-sm text-slate-500 dark:text-slate-400">
-                            {plan.quantity} szt.
+                            📋 {plan.plan_number} • {plan.quantity} szt.
                             {plan.material && ` • ${plan.material}`}
                           </p>
+                          {operationsCount > 0 && (
+                            <div className="mt-2">
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full bg-green-500 transition-all"
+                                    style={{ width: `${completion}%` }}
+                                  />
+                                </div>
+                                <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+                                  {completion}%
+                                </span>
+                              </div>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                {completedOps}/{operationsCount} operacji ukończonych
+                              </p>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-6 ml-6">
                           <div className="text-right">
                             <p className="text-xs text-slate-500 dark:text-slate-400">Operacje</p>
                             <p className="text-lg font-bold text-slate-900 dark:text-white">
@@ -385,9 +429,9 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs text-slate-500 dark:text-slate-400">Koszt</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">Koszt szac.</p>
                             <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                              {(plan.total_cost || 0).toFixed(2)} PLN
+                              {(plan.estimated_cost || 0).toFixed(2)} PLN
                             </p>
                           </div>
                         </div>

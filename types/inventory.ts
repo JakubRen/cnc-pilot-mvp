@@ -1,6 +1,118 @@
 // ============================================
 // types/inventory.ts
-// Inventory entity types and utilities
+// Inventory Location Types (Stany Magazynowe)
+// Po refaktoryzacji: inventory → products + inventory_locations
+// ============================================
+
+// ============================================
+// NOWA STRUKTURA (po refaktoryzacji)
+// ============================================
+
+export interface InventoryLocation {
+  id: string
+  product_id: string
+
+  // Lokalizacja
+  location_code: string
+
+  // Stany
+  quantity: number
+  reserved_quantity: number
+  available_quantity: number  // computed: quantity - reserved_quantity
+
+  // Progi
+  low_stock_threshold: number | null
+  reorder_point: number | null
+
+  // Audyt
+  last_counted_at: string | null
+  last_movement_at: string | null
+
+  notes: string | null
+
+  created_at: string
+  updated_at: string
+}
+
+export interface InventoryLocationWithProduct extends InventoryLocation {
+  product: {
+    id: string
+    sku: string
+    name: string
+    category: string
+    unit: string
+    default_unit_cost: number | null
+  }
+}
+
+export interface InventoryBatch {
+  id: string
+  location_id: string
+
+  batch_number: string | null
+  quantity: number
+  unit_cost: number | null
+
+  supplier: string | null
+  purchase_order_number: string | null
+  received_date: string | null
+  expiry_date: string | null
+
+  created_at: string
+}
+
+export interface InventoryMovement {
+  id: string
+  location_id: string
+  batch_id: string | null
+
+  movement_type: 'in' | 'out' | 'adjustment' | 'transfer'
+  quantity: number
+
+  reference_type: string | null
+  reference_id: string | null
+  reason: string | null
+
+  created_by: number | null
+  created_at: string
+}
+
+// Helper functions dla NOWEJ struktury
+export function isLowStock(location: InventoryLocation): boolean {
+  if (!location.low_stock_threshold) return false
+  return location.available_quantity <= location.low_stock_threshold
+}
+
+export function getStockStatus(location: InventoryLocation): 'ok' | 'low' | 'out' {
+  if (location.available_quantity <= 0) return 'out'
+  if (isLowStock(location)) return 'low'
+  return 'ok'
+}
+
+export function formatLocation(code: string): string {
+  // np. "A1-01-02" → "Regał A1, Półka 01, Pozycja 02"
+  const parts = code.split('-')
+  if (parts.length === 3) {
+    return `Regał ${parts[0]}, Półka ${parts[1]}, Pozycja ${parts[2]}`
+  }
+  return code
+}
+
+export function getStockStatusColor(location: InventoryLocation): string {
+  const status = getStockStatus(location)
+  if (status === 'out') return 'bg-red-600'
+  if (status === 'low') return 'bg-yellow-600'
+  return 'bg-green-600'
+}
+
+export function getStockPercentageByLocation(location: InventoryLocation): number {
+  if (!location.low_stock_threshold || location.low_stock_threshold === 0) return 100
+  return (location.available_quantity / location.low_stock_threshold) * 100
+}
+
+// ============================================
+// STARA STRUKTURA (zachowana dla kompatybilności)
+// @deprecated - używaj ProductWithLocations zamiast InventoryItem
 // ============================================
 
 export type InventoryCategory =
@@ -12,6 +124,10 @@ export type InventoryCategory =
 
 export type InventoryUnit = 'kg' | 'm' | 'szt' | 'l'
 
+/**
+ * @deprecated Użyj Product + InventoryLocation zamiast tego
+ * Ten interfejs jest zachowany tylko dla kompatybilności wstecznej
+ */
 export interface InventoryItem {
   id: string
   company_id: string
@@ -90,34 +206,24 @@ export const unitLabels: Record<InventoryUnit, string> = {
 }
 
 /**
- * Check if inventory item is low on stock
+ * @deprecated - Użyj isLowStock(location: InventoryLocation)
  */
-export function isLowStock(item: InventoryItem): boolean {
+export function isLowStockOld(item: InventoryItem): boolean {
   return item.quantity <= item.low_stock_threshold
 }
 
 /**
- * Calculate stock percentage (current / threshold)
+ * @deprecated - Użyj getStockPercentageByLocation
  */
-export function getStockPercentage(item: InventoryItem): number {
+export function getStockPercentageOld(item: InventoryItem): number {
   if (item.low_stock_threshold === 0) return 100
   return (item.quantity / item.low_stock_threshold) * 100
 }
 
 /**
- * Get stock status color
- */
-export function getStockStatusColor(item: InventoryItem): string {
-  const percentage = getStockPercentage(item)
-  if (percentage <= 50) return 'bg-red-600'
-  if (percentage <= 100) return 'bg-yellow-600'
-  return 'bg-green-600'
-}
-
-/**
  * Check if item is near expiry (within 30 days)
  */
-export function isNearExpiry(item: InventoryItem): boolean {
+export function isNearExpiry(item: InventoryItem | InventoryBatch): boolean {
   if (!item.expiry_date) return false
   const expiryDate = new Date(item.expiry_date)
   const today = new Date()
@@ -128,7 +234,7 @@ export function isNearExpiry(item: InventoryItem): boolean {
 /**
  * Check if item is expired
  */
-export function isExpired(item: InventoryItem): boolean {
+export function isExpired(item: InventoryItem | InventoryBatch): boolean {
   if (!item.expiry_date) return false
   const expiryDate = new Date(item.expiry_date)
   const today = new Date()
@@ -136,7 +242,7 @@ export function isExpired(item: InventoryItem): boolean {
 }
 
 /**
- * Calculate total inventory value
+ * @deprecated - Calculate total inventory value (old structure)
  */
 export function getTotalValue(items: InventoryItem[]): number {
   return items.reduce((sum, item) => {
@@ -146,7 +252,7 @@ export function getTotalValue(items: InventoryItem[]): number {
 }
 
 /**
- * Get inventory statistics by category
+ * @deprecated - Get inventory statistics by category (old structure)
  */
 export function getInventoryStatsByCategory(items: InventoryItem[]): Record<InventoryCategory, {
   count: number
@@ -167,7 +273,7 @@ export function getInventoryStatsByCategory(items: InventoryItem[]): Record<Inve
     stats[category].count++
     stats[category].totalQuantity += item.quantity
     stats[category].totalValue += (item.unit_cost || 0) * item.quantity
-    if (isLowStock(item)) {
+    if (isLowStockOld(item)) {
       stats[category].lowStockCount++
     }
   })

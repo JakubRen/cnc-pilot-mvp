@@ -8,7 +8,7 @@ import type { AppModule } from '@/types/permissions';
 import type { InterfaceMode } from '@/lib/auth';
 import ViewModeToggle from './ViewModeToggle';
 
-type NavKey = 'dashboard' | 'orders' | 'production' | 'customers' | 'quotes' | 'calendar' | 'inventory' | 'documents' | 'timeTracking' | 'qualityControl' | 'cooperation' | 'machines' | 'carbon' | 'costs' | 'reports' | 'users' | 'settings' | 'docs';
+type NavKey = 'dashboard' | 'orders' | 'production' | 'customers' | 'quotes' | 'calendar' | 'products' | 'inventory' | 'documents' | 'timeTracking' | 'qualityControl' | 'cooperation' | 'machines' | 'carbon' | 'costs' | 'reports' | 'users' | 'settings' | 'docs';
 
 interface SidebarLink {
   href: string;
@@ -30,6 +30,7 @@ const linkDefinitions: SidebarLink[] = [
   { href: '/customers', icon: '👥', labelKey: 'customers', module: 'orders' },
   { href: '/quotes', icon: '📋', labelKey: 'quotes', module: 'orders' },
   { href: '/calendar', icon: '📅', labelKey: 'calendar', module: 'calendar' },
+  { href: '/products', icon: '📦', labelKey: 'products', module: 'inventory' },
   { href: '/inventory', icon: '🔩', labelKey: 'inventory', module: 'inventory' },
   { href: '/documents', icon: '📄', labelKey: 'documents', module: 'documents' },
   { href: '/time-tracking', icon: '⏱️', labelKey: 'timeTracking', module: 'time-tracking' },

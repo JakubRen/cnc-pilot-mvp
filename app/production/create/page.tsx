@@ -150,10 +150,18 @@ export default function CreateProductionPlanPage() {
     const loadingToast = toast.loading('Tworzę plan produkcji...')
 
     try {
-      // 1. Create order_item (production plan)
-      const { data: orderItem, error: itemError } = await supabase
-        .from('order_items')
+      // 1. Generate production plan number
+      const { data: planNumberData, error: planNumberError } = await supabase
+        .rpc('generate_production_plan_number', { p_company_id: companyId })
+
+      if (planNumberError) throw planNumberError
+
+      // 2. Create production plan
+      const { data: productionPlan, error: planError } = await supabase
+        .from('production_plans')
         .insert({
+          company_id: companyId,
+          plan_number: planNumberData,
           order_id: orderId,
           part_name: partName,
           quantity: quantity,
@@ -162,17 +170,18 @@ export default function CreateProductionPlanPage() {
           width: width,
           height: height,
           material: material || null,
-          complexity: complexity,
-          notes: notes || null
+          technical_notes: notes || null,
+          status: 'draft',
+          created_by: userId
         })
         .select()
         .single()
 
-      if (itemError) throw itemError
+      if (planError) throw planError
 
-      // 2. Create operations for this production plan
+      // 3. Create operations for this production plan
       const operationsToInsert = operations.map((op, index) => ({
-        order_item_id: orderItem.id,
+        production_plan_id: productionPlan.id,
         operation_number: index + 1,
         operation_type: op.operation_type,
         operation_name: op.operation_name,
@@ -191,8 +200,8 @@ export default function CreateProductionPlanPage() {
       if (operationsError) throw operationsError
 
       toast.dismiss(loadingToast)
-      toast.success('Plan produkcji utworzony!')
-      router.push(`/production/${orderItem.id}`)
+      toast.success(`Plan produkcji ${planNumberData} utworzony!`)
+      router.push(`/production/${productionPlan.id}`)
       router.refresh()
 
     } catch (error) {
@@ -304,10 +313,10 @@ export default function CreateProductionPlanPage() {
                 />
               </div>
 
-              {/* Complexity */}
+              {/* Complexity - używane tylko do auto-estymacji czasów operacji */}
               <div>
                 <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
-                  Złożoność
+                  Złożoność (dla estymacji)
                 </label>
                 <select
                   value={complexity}
@@ -318,6 +327,9 @@ export default function CreateProductionPlanPage() {
                     <option key={value} value={value}>{label}</option>
                   ))}
                 </select>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Pomaga AI w estymacji czasów operacji
+                </p>
               </div>
 
               {/* Dimensions */}

@@ -79,6 +79,7 @@ export const translations = {
     quotesExpress: { pl: 'Express Quote', en: 'Express Quote' },
     quotes: { pl: 'Oferty', en: 'Quotes' },
     calendar: { pl: 'Kalendarz', en: 'Calendar' },
+    products: { pl: 'Towary', en: 'Products' },
     inventory: { pl: 'Magazyn', en: 'Inventory' },
     documents: { pl: 'Dokumenty', en: 'Documents' },
     timeTracking: { pl: 'Czas Pracy', en: 'Time Tracking' },
