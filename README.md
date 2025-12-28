@@ -95,6 +95,15 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 - Complete ARIA labels (role="table", role="menu", role="gridcell", etc.)
 - Future Plan 8: 100% complete (Weeks 3, 4, 5)
 
+**📦 Products Module** - Inventory architecture refactoring
+- New /products module for product catalog management
+- Separated inventory into Products (definitions) + Locations (stock levels)
+- Database migration: 4 new tables (products, inventory_locations, inventory_batches, inventory_movements)
+- ProductCard component for catalog view
+- Enhanced EmptyState with contextual actions and descriptions
+- 11 new loading states for improved UX across all modules
+- Batch tracking and movement history for warehouse management
+
 ### Previous Release: v2.1.0 (2025-12-16)
 
 **🎯 Code Quality & Type Safety** - Achieved 100% code quality standards
