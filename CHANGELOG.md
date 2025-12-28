@@ -9,8 +9,209 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Auto Document Numbering System for all document types
+---
+
+## [2.2.0] - 2025-12-19
+
+### 🎨 UX/UI Improvements & Accessibility (Future Plan 8 Complete)
+
+**Achievement: WCAG 2.1 AA Compliant Application**
+
+#### Week 3: Mobile Component Library
+- **ResponsiveOrderList** component with mobile card view
+  - Automatic switch between table (desktop) and card (mobile) views
+  - Touch-optimized interactions for mobile devices
+  - Consistent UX across all screen sizes
+- **OrderCard** component for card-based layouts
+  - Compact view for mobile screens
+  - All order information accessible in card format
+- **LoadingButton** component
+  - Visual feedback during async operations
+  - Prevents double-clicks during submission
+- **TouchSelect** component
+  - Mobile-friendly dropdown with larger touch targets
+  - Better UX on small screens
+- **Skeleton Loaders** (3 variants)
+  - `CardSkeleton` - For card-based layouts
+  - `TableSkeleton` - For table views
+  - `DashboardSkeleton` - For dashboard metrics
+- **useMediaQuery** hook
+  - Responsive behavior based on screen width
+  - Consistent breakpoints across components
+
+#### Week 4: Optimistic Updates
+- **useOptimisticOrders** hook with rollback support
+  - Instant UI feedback before server response
+  - Automatic rollback on error
+  - Safe state management with pending indicators
+- **Visual pending indicators**
+  - Spinner overlay on pending operations
+  - Opacity-60 for pending rows/cards
+  - Disabled state during updates
+  - Consistent across desktop table and mobile cards
+- **Optimistic operations**
+  - Status updates with instant feedback
+  - Delete operations with rollback
+  - Bulk operations with error handling
+- **Desktop-mobile parity**
+  - Same pending states on desktop table and mobile cards
+  - Consistent spinner animations
+  - Unified UX patterns
+
+#### Week 5: Accessibility (WCAG 2.1 AA)
+- **Skip link for keyboard navigation**
+  - `sr-only` class (hidden by default)
+  - `focus:not-sr-only` (visible on Tab focus)
+  - Jumps to main content, skipping navigation
+  - Improved keyboard-only user experience
+- **LiveRegion system for screen readers**
+  - Context provider for global announcements
+  - `aria-live="polite"` regions for non-intrusive updates
+  - Automatic announcements on:
+    - Order status changes
+    - Delete operations
+    - Bulk updates
+  - Auto-clear after 5 seconds
+- **Comprehensive ARIA labels**
+  - **Tables**: `role="table"`, `role="row"`, `role="columnheader"`, `role="gridcell"`
+  - **Menus**: `role="menu"`, `role="menuitem"`, `aria-haspopup`, `aria-expanded`
+  - **Interactive elements**: `aria-label`, `aria-selected`, `aria-orientation`
+  - Both desktop table and mobile cards fully labeled
+- **Keyboard navigation support**
+  - All interactive elements keyboard-accessible
+  - Proper focus management
+  - Escape key closes dropdowns
+
+#### Metrics Achieved
+- Mobile components: **6 new components** (ResponsiveOrderList, OrderCard, LoadingButton, TouchSelect, 3 skeletons)
+- Optimistic updates: **3 operations** (status, delete, bulk)
+- Accessibility: **WCAG 2.1 AA compliant**
+- Files changed: **14** (+783 insertions, -56 deletions)
+
+#### Impact
+- ✅ Improved mobile UX with responsive components
+- ✅ Instant UI feedback with safe rollback
+- ✅ Full accessibility support for assistive technologies
+- ✅ Consistent UX across desktop and mobile
+- ✅ Screen reader support for all operations
+
+**Commits:**
+- `46972be` - feat: complete Future Plan 8 - UX/UI & Accessibility improvements
+
+---
+
+### 📦 Products Module - Inventory Architecture Refactoring
+
+**Problem Solved:** Single inventory table mixed catalog definitions with stock levels, making it difficult to manage multi-location warehouses and batch tracking.
+
+#### Architecture Change: Inventory Split
+**Old Structure:**
+```
+inventory (id, sku, name, quantity, location, batch_number, ...)
+```
+
+**New Structure:**
+```
+products (id, sku, name, category, specifications)
+├── inventory_locations (id, product_id, location, quantity)
+├── inventory_batches (id, product_id, supplier, unit_cost, expiry_date)
+└── inventory_movements (id, product_id, type, quantity, from/to location)
+```
+
+#### New /products Module
+- **Product catalog management** - Full CRUD for product definitions
+  - `/products` - Product list with filters and search
+  - `/products/add` - Create new product with specifications
+  - `/products/[id]` - Product details and edit
+- **ProductCard** component for catalog view
+  - Card-based layout for product browsing
+  - Quick actions (edit, view details)
+- **Database Migration**: `REFACTOR_INVENTORY_TO_PRODUCTS.sql` (343 lines)
+  - 4 new tables with proper relationships
+  - RLS policies on all new tables
+  - Data migration from old inventory table
+  - Verification queries for data integrity
+
+#### Loading States Consistency
+Added `loading.tsx` skeleton loaders to **11 modules**:
+- `app/calendar/loading.tsx`
+- `app/carbon/loading.tsx`
+- `app/cooperation/loading.tsx`
+- `app/costs/loading.tsx`
+- `app/documents/loading.tsx`
+- `app/files/loading.tsx`
+- `app/machines/loading.tsx`
+- `app/quality-control/loading.tsx`
+- `app/reports/loading.tsx`
+- `app/settings/loading.tsx`
+- `app/users/loading.tsx`
+
+**Impact:** Users see skeletons instead of blank screens during data fetching.
+
+#### Enhanced EmptyState Component
+- **+149 lines** of new functionality
+- **Contextual actions** - Primary and secondary buttons
+- **Customizable content** - Icon, title, description
+- **Products integration** - "Brak produktów" + "Dodaj pierwszy produkt" button
+- **Guided user experience** - Empty states now guide users to next action
+
+#### Extended Type System
+- **types/inventory.ts** - +146 lines of business logic helpers
+  - `isLowStock()` - Check if stock below threshold
+  - `getStockPercentage()` - Calculate stock level percentage
+  - `isNearExpiry()` - Check if product near expiry date
+  - `isExpired()` - Check if product expired
+  - `getCategoryLabel()`, `getUnitLabel()` - Display helpers
+- **types/products.ts** - 113 lines of product helpers
+  - Category labels (raw_material, finished_good, semi_finished, tool, consumable)
+  - Unit labels (kg, m, szt, l)
+  - Validation helpers
+
+#### Database Tables
+1. **products** - Product catalog definitions
+   - SKU, name, category, specifications
+   - Default unit cost, manufacturer info
+   - Company-scoped with RLS
+2. **inventory_locations** - Stock levels by location
+   - Product reference, location, quantity
+   - Reserved quantity, available quantity
+3. **inventory_batches** - Batch tracking
+   - Supplier, purchase date, unit cost
+   - Expiry date, batch number
+4. **inventory_movements** - Transaction history
+   - Movement type (in/out/adjustment/transfer)
+   - Quantity, from/to locations
+   - Audit trail for all stock changes
+
+#### Modified Files (9)
+- `app/inventory/page.tsx` - Products integration
+- `app/orders/[id]/page.tsx` - Updated references
+- `app/production/[id]/page.tsx` - Updated references
+- `app/production/create/page.tsx` - Updated references
+- `app/time-tracking/loading.tsx` - Refactored skeleton
+- `components/layout/Sidebar.tsx` - Added "Produkty" navigation item
+- `components/ui/EmptyState.tsx` - Enhanced component
+- `lib/translations.ts` - Products module translations
+- `types/inventory.ts` - Extended helpers
+
+#### Metrics Achieved
+- New tables: **4** (products, inventory_locations, inventory_batches, inventory_movements)
+- New module: **1** (/products with 3 pages + component)
+- Loading states: **11 modules** now have skeletons
+- Type helpers: **+259 lines** (inventory.ts +146, products.ts +113)
+- Files changed: **28** (+1848 insertions, -138 deletions)
+
+#### Impact
+- ✅ Better separation of concerns (catalog vs. stock)
+- ✅ Batch tracking and movement history
+- ✅ Scalable architecture for multi-location warehouses
+- ✅ Consistent loading states across entire application
+- ✅ Business logic centralized in type files
+- ✅ Contextual empty states guide user actions
+
+**Commits:**
+- `2a8f0d5` - feat: add Products module and refactor inventory architecture
+- `d1e2537` - docs(readme): update with Products Module refactoring
 
 ---
 
@@ -237,7 +438,8 @@ Created separate `/production` module following manufacturing best practices:
 
 ---
 
-[Unreleased]: https://github.com/JakubRen/cnc-pilot-mvp/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/JakubRen/cnc-pilot-mvp/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/JakubRen/cnc-pilot-mvp/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/JakubRen/cnc-pilot-mvp/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/JakubRen/cnc-pilot-mvp/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/JakubRen/cnc-pilot-mvp/releases/tag/v1.0.0
