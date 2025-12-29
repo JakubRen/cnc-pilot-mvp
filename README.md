@@ -199,6 +199,97 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
    Open [http://localhost:3000](http://localhost:3000) in your browser
 
+### Database Migrations
+
+Apply SQL migrations to test or production databases using the migration helper scripts:
+
+```bash
+# Apply migration to TEST database
+npm run migrate:test migrations/my_migration.sql
+
+# Apply migration to PRODUCTION database
+npm run migrate:prod migrations/my_migration.sql
+```
+
+**How it works:**
+1. Script validates the migration file exists
+2. Displays migration details (file size, line count, target database)
+3. Shows full SQL content for manual copy
+4. Provides direct Supabase SQL Editor URL
+5. Shows production warnings if targeting prod database
+
+**Workflow:**
+- Always test migrations on TEST database first (`migrate:test`)
+- Verify migration completed successfully
+- Then apply to PRODUCTION database (`migrate:prod`)
+
+**Required secrets in `.env.local`:**
+```env
+TEST_SUPABASE_URL=https://your-test-project.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://your-prod-project.supabase.co
+```
+
+### Test Database Setup
+
+**Purpose:** Isolated test environment for E2E tests without affecting production data.
+
+**1. Create Test Supabase Project**
+- Go to [Supabase Dashboard](https://app.supabase.com/)
+- Create new project (e.g., `cnc-pilot-test`)
+- Copy credentials:
+  - Project URL: `https://xxx.supabase.co`
+  - Anon key: `eyJhbGci...`
+
+**2. Add Test Credentials to `.env.local`**
+```env
+# TEST (for E2E tests)
+TEST_SUPABASE_URL=https://xxx.supabase.co
+TEST_SUPABASE_ANON_KEY=eyJhbGci...
+```
+
+**3. Initialize Test Database Schema**
+
+Run these migrations in order on Supabase SQL Editor:
+
+```bash
+# 1. Full schema (tables, functions, policies)
+npm run migrate:test migrations/TEST_DATABASE_SETUP.sql
+
+# 2. Triggers (handle_new_user, etc.)
+npm run migrate:test migrations/TEST_FINAL_SETUP.sql
+
+# 3. Create test user
+npm run migrate:test migrations/TEST_CREATE_USER.sql
+```
+
+**4. Verify Setup**
+
+In Supabase SQL Editor, run:
+```sql
+SELECT * FROM users WHERE email = 'test@cnc-pilot.pl';
+```
+
+Should return 1 user with `role = 'owner'`.
+
+**5. Run Dev Server with Test Database**
+
+```bash
+# Development with PRODUCTION database (default)
+npm run dev
+
+# Development with TEST database (for E2E testing)
+npm run dev:test
+```
+
+**6. Run E2E Tests**
+
+```bash
+# E2E tests automatically use TEST database
+npm run test:e2e
+```
+
+Playwright config uses `npm run dev:test` to start server with TEST credentials.
+
 ---
 
 ## 📁 Project Structure

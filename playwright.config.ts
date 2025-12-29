@@ -27,9 +27,9 @@ export default defineConfig({
   ],
   // Start local server for testing (disabled in CI - server started manually in workflow)
   webServer: process.env.CI ? undefined : {
-    command: 'npm run dev',
+    command: 'npm run dev:test',
     url: 'http://localhost:3000',
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 180 * 1000,
   },
 })
