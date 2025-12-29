@@ -24,12 +24,14 @@ test.describe('Production Module - Setup/Run Time', () => {
   test.beforeEach(async ({ page }) => {
     // Login before each test
     await page.goto('/login')
-    await page.fill('input[name="email"]', TEST_USER.email)
-    await page.fill('input[name="password"]', TEST_USER.password)
+    await page.fill('input[type="email"]', TEST_USER.email)
+    await page.fill('input[type="password"]', TEST_USER.password)
     await page.click('button[type="submit"]')
 
-    // Wait for redirect to dashboard
+    // Wait for redirect to dashboard and for content to load (ensures session is established)
     await page.waitForURL('/', { timeout: 10000 })
+    // Wait for dashboard content to confirm session is fully established
+    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 5000 })
   })
 
   test('should display production plans section in order details', async ({ page }) => {
@@ -454,10 +456,12 @@ test.describe('Production Module - Mobile Responsiveness', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/login')
-    await page.fill('input[name="email"]', TEST_USER.email)
-    await page.fill('input[name="password"]', TEST_USER.password)
+    await page.fill('input[type="email"]', TEST_USER.email)
+    await page.fill('input[type="password"]', TEST_USER.password)
     await page.click('button[type="submit"]')
     await page.waitForURL('/')
+    // Wait for dashboard content to confirm session is fully established
+    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 5000 })
   })
 
   test('should display production plans on mobile', async ({ page }) => {
@@ -492,10 +496,12 @@ test.describe('Production Module - Mobile Responsiveness', () => {
 test.describe('Production Module - Performance', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login')
-    await page.fill('input[name="email"]', TEST_USER.email)
-    await page.fill('input[name="password"]', TEST_USER.password)
+    await page.fill('input[type="email"]', TEST_USER.email)
+    await page.fill('input[type="password"]', TEST_USER.password)
     await page.click('button[type="submit"]')
     await page.waitForURL('/')
+    // Wait for dashboard content to confirm session is fully established
+    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 5000 })
   })
 
   test('should load production plan details quickly', async ({ page }) => {
