@@ -16,8 +16,8 @@ import { test, expect } from '@playwright/test'
 
 // Test user credentials (ensure these exist in your test database)
 const TEST_USER = {
-  email: process.env.TEST_USER_EMAIL || 'test@metaltech.pl',
-  password: process.env.TEST_USER_PASSWORD || 'TestPassword123!'
+  email: process.env.TEST_USER_EMAIL || 'test@cnc-pilot.pl',
+  password: process.env.TEST_USER_PASSWORD || 'test123456'
 }
 
 test.describe('Production Module - Setup/Run Time', () => {
