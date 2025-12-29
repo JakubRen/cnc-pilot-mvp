@@ -22,9 +22,10 @@ export default async function UsersPage() {
   const supabase = await createClient()
 
   // Server Component - fetches data
+  // OPTIMIZED: Only fetch columns needed for user list
   const { data: users, error } = await supabase
     .from('users')
-    .select('*')
+    .select('id, email, full_name, role, company_id, hourly_rate, created_at')
 
   if (error) {
     return (

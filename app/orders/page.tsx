@@ -22,10 +22,21 @@ export default async function OrdersPage() {
   const supabase = await createClient()
 
   // Fetch orders filtered by company with assigned operator
+  // OPTIMIZED: Only fetch columns needed for list view (not all 17 columns)
   const { data: orders, error } = await supabase
     .from('orders')
     .select(`
-      *,
+      id,
+      order_number,
+      customer_name,
+      quantity,
+      part_name,
+      material,
+      deadline,
+      status,
+      notes,
+      total_cost,
+      created_at,
       assigned_operator:users!orders_assigned_operator_id_fkey (
         id,
         full_name

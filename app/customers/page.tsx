@@ -13,9 +13,10 @@ export default async function CustomersPage() {
   const supabase = await createClient()
 
   // Fetch customers for this company
+  // OPTIMIZED: Only fetch columns needed for list view
   const { data: customers } = await supabase
     .from('customers')
-    .select('*')
+    .select('id, name, email, phone, nip, city, created_at')
     .eq('company_id', userProfile.company_id)
     .order('name')
 
