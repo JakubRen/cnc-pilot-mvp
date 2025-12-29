@@ -204,11 +204,11 @@ test.describe('Production Module - Setup/Run Time', () => {
     await expect(page.locator('text=#1')).toBeVisible()
 
     // Add second operation
-    await page.click('button:has-text("Dodaj Operację")').first()
+    await page.locator('button:has-text("Dodaj Operację")').first().click()
     await expect(page.locator('text=#2')).toBeVisible()
 
     // Add third operation
-    await page.click('button:has-text("Dodaj Operację")').first()
+    await page.locator('button:has-text("Dodaj Operację")').first().click()
     await expect(page.locator('text=#3')).toBeVisible()
 
     // Fill all operations
@@ -237,7 +237,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     // Add two operations
     await page.click('text=Dodaj Operację')
-    await page.click('button:has-text("Dodaj Operację")').first()
+    await page.locator('button:has-text("Dodaj Operację")').first().click()
 
     // Fill operations
     const operationNames = page.locator('input[placeholder*="Toczenie"]')
@@ -268,7 +268,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     // Add two operations
     await page.click('text=Dodaj Operację')
-    await page.click('button:has-text("Dodaj Operację")').first()
+    await page.locator('button:has-text("Dodaj Operację")').first().click()
 
     // Verify two operations exist
     await expect(page.locator('text=#1')).toBeVisible()
@@ -525,7 +525,7 @@ test.describe('Production Module - Performance', () => {
 
     // Add 10 operations
     for (let i = 0; i < 10; i++) {
-      await page.click('button:has-text("Dodaj Operację")').first()
+      await page.locator('button:has-text("Dodaj Operację")').first().click()
     }
 
     // Should handle 10 operations without freezing
