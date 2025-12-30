@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:test": "cross-env NEXT_PUBLIC_SUPABASE_URL=https://vvetjctdjswgwebhgbpd.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2ZXRqY3RkanN3Z3dlYmhnYnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5NDk1MTIsImV4cCI6MjA4MjUyNTUxMn0.HAmoQihJBrH_sDFsLF_Brzuv5L6YoiHBTJHgdOodfZM next dev",
+    "dev:test": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
