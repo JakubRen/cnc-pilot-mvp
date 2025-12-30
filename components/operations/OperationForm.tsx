@@ -67,7 +67,8 @@ export default function OperationForm({
 
   // Add new operation
   const addOperation = () => {
-    const newOperation: OperationFormData = {
+    const newOperation: OperationFormData & { _id: string } = {
+      _id: `op-${Date.now()}-${Math.random()}`, // Unique ID for React key
       operation_number: operations.length + 1,
       operation_type: 'milling',
       operation_name: '',
@@ -78,7 +79,7 @@ export default function OperationForm({
       hourly_rate: 180 // Default rate
     }
 
-    onChange([...operations, newOperation])
+    onChange([...operations, newOperation] as OperationFormData[])
   }
 
   // Remove operation
@@ -126,17 +127,33 @@ export default function OperationForm({
         p_material: 'steel' // Default, można rozszerzyć
       })
 
-      if (error) throw error
+      if (error) {
+        logger.error('RPC estimate_operation_times error', { error })
+        throw error
+      }
 
-      if (data && data.length > 0) {
+      if (data && data.length > 0 && data[0].setup_time_minutes > 0) {
         const estimate = data[0]
         updateOperation(index, 'setup_time_minutes', estimate.setup_time_minutes)
         updateOperation(index, 'run_time_per_unit_minutes', estimate.run_time_per_unit_minutes)
 
         toast.dismiss(loadingToast)
         toast.success('Czasy oszacowane!')
+      } else {
+        // Fallback: Use default values based on complexity and operation type
+        logger.warn('RPC returned empty or zero data, using fallback values')
+
+        const fallbackSetup = complexity === 'simple' ? 15 : complexity === 'complex' ? 60 : 30
+        const fallbackRun = complexity === 'simple' ? 2 : complexity === 'complex' ? 10 : 5
+
+        updateOperation(index, 'setup_time_minutes', fallbackSetup)
+        updateOperation(index, 'run_time_per_unit_minutes', fallbackRun)
+
+        toast.dismiss(loadingToast)
+        toast.success('Czasy oszacowane (wartości domyślne)')
       }
     } catch (error) {
+      logger.error('Auto-estimate failed', { error })
       toast.dismiss(loadingToast)
       toast.error('Błąd podczas szacowania: ' + (error as Error).message)
     }
@@ -204,7 +221,7 @@ export default function OperationForm({
 
             return (
               <div
-                key={index}
+                key={(operation as any)._id || `op-${index}`}
                 className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border-2 border-slate-200 dark:border-slate-700"
               >
                 {/* Header */}
