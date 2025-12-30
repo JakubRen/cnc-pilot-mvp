@@ -212,7 +212,6 @@ export default function CreateProductionPlanPage() {
 
       // Redirect to production list view (not detail view)
       // This ensures the plan appears in the list and user can see it in context
-      // Note: router.refresh() removed - Next.js automatically revalidates after router.push()
       router.push('/production')
 
     } catch (error) {

@@ -77,6 +77,9 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     // Click first order
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+
+    // CRITICAL FIX: Wait for navigation to order details page before extracting orderId
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const currentUrl = page.url()
     const orderId = currentUrl.split('/').pop()
 
@@ -136,6 +139,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should auto-estimate operation times', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -174,6 +178,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should calculate costs in real-time', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -224,6 +229,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should add multiple operations to production plan', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -265,6 +271,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should reorder operations', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -302,6 +309,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should remove operation', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -337,6 +345,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should validate required fields', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -365,6 +374,7 @@ test.describe('Production Module - Setup/Run Time', () => {
     // First create a production plan
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     await page.goto(`/production/create?order_id=${orderId}`)
@@ -406,6 +416,7 @@ test.describe('Production Module - Setup/Run Time', () => {
     // Create a production plan first
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     await page.goto(`/production/create?order_id=${orderId}`)
@@ -448,6 +459,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should support drawing upload for production plans', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -462,6 +474,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should validate operation times are non-negative', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -492,6 +505,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should link back to order from production plan details', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     await page.goto(`/production/create?order_id=${orderId}`)
@@ -569,6 +583,7 @@ test.describe('Production Module - Mobile Responsiveness', () => {
   test('should allow creating production plans on mobile', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -624,6 +639,7 @@ test.describe('Production Module - Performance', () => {
   test('should handle many operations efficiently', async ({ page }) => {
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
