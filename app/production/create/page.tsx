@@ -151,10 +151,18 @@ export default function CreateProductionPlanPage() {
 
     try {
       // 1. Generate production plan number
-      const { data: planNumberData, error: planNumberError } = await supabase
+      let planNumberData: string
+      const { data: rpcData, error: planNumberError } = await supabase
         .rpc('generate_production_plan_number', { p_company_id: companyId })
 
-      if (planNumberError) throw planNumberError
+      if (planNumberError || !rpcData) {
+        // Fallback: Generate plan number manually if RPC fails
+        logger.warn('RPC generate_production_plan_number failed, using fallback', { error: planNumberError })
+        const timestamp = Date.now().toString().slice(-6)
+        planNumberData = `PP-${timestamp}`
+      } else {
+        planNumberData = rpcData
+      }
 
       // 2. Create production plan
       const { data: productionPlan, error: planError } = await supabase
@@ -204,8 +212,8 @@ export default function CreateProductionPlanPage() {
 
       // Redirect to production list view (not detail view)
       // This ensures the plan appears in the list and user can see it in context
+      // Note: router.refresh() removed - Next.js automatically revalidates after router.push()
       router.push('/production')
-      router.refresh()
 
     } catch (error) {
       toast.dismiss(loadingToast)
