@@ -39,9 +39,12 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.goto('/orders')
 
     // Click on first order (assuming at least one order exists)
-    const firstOrder = page.locator('a[href^="/orders/"]').first()
+    const firstOrder = page.getByRole('link', { name: /ORD-TEST/ }).first()
     await expect(firstOrder).toBeVisible()
     await firstOrder.click()
+
+    // Wait for navigation to order details page
+    await page.waitForURL(/\/orders\/[a-f0-9-]+/)
 
     // Check if production plans section exists (NEW ARCHITECTURE)
     await expect(page.locator('text=Plany Produkcji')).toBeVisible()
@@ -53,7 +56,7 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.goto('/orders')
 
     // Click first order
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
 
     // Click "Create Production Plan" button (NEW)
     await page.click('text=Utwórz Plan Produkcji')
@@ -68,7 +71,7 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.goto('/orders')
 
     // Click first order
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const currentUrl = page.url()
     const orderId = currentUrl.split('/').pop()
 
@@ -87,7 +90,7 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.click('text=Dodaj Operację')
 
     // Wait for operation form to appear
-    await expect(page.locator('text=#1')).toBeVisible()
+    await expect(page.locator('text=#1').first()).toBeVisible()
 
     // Fill operation details
     await page.selectOption('select[value="milling"]', 'milling')
@@ -116,12 +119,12 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     // Verify plan details are shown
     await expect(page.locator('text=Flansza Testowa Ø100')).toBeVisible()
-    await expect(page.locator('text=Plan Produkcji')).toBeVisible()
+    await expect(page.locator('text=Plan Produkcji').first()).toBeVisible()
   })
 
   test('should auto-estimate operation times', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -152,7 +155,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
   test('should calculate costs in real-time', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -191,7 +194,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
   test('should add multiple operations to production plan', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -203,15 +206,15 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     // Add first operation
     await page.click('text=Dodaj Operację')
-    await expect(page.locator('text=#1')).toBeVisible()
+    await expect(page.locator('text=#1').first()).toBeVisible()
 
     // Add second operation
     await page.locator('button:has-text("Dodaj Operację")').first().click()
-    await expect(page.locator('text=#2')).toBeVisible()
+    await expect(page.locator('text=#2').first()).toBeVisible()
 
     // Add third operation
     await page.locator('button:has-text("Dodaj Operację")').first().click()
-    await expect(page.locator('text=#3')).toBeVisible()
+    await expect(page.locator('text=#3').first()).toBeVisible()
 
     // Fill all operations
     const operationNames = page.locator('input[placeholder*="Toczenie"]')
@@ -227,7 +230,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
   test('should reorder operations', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -258,7 +261,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
   test('should remove operation', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -273,21 +276,21 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.locator('button:has-text("Dodaj Operację")').first().click()
 
     // Verify two operations exist
-    await expect(page.locator('text=#1')).toBeVisible()
-    await expect(page.locator('text=#2')).toBeVisible()
+    await expect(page.locator('text=#1').first()).toBeVisible()
+    await expect(page.locator('text=#2').first()).toBeVisible()
 
     // Remove first operation
     const removeButtons = page.locator('button:has-text("Usuń")')
     await removeButtons.first().click()
 
     // Should only have one operation now (renumbered to #1)
-    await expect(page.locator('text=#1')).toBeVisible()
-    await expect(page.locator('text=#2')).not.toBeVisible()
+    await expect(page.locator('text=#1').first()).toBeVisible()
+    await expect(page.locator('text=#2').first()).not.toBeVisible()
   })
 
   test('should validate required fields', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -303,7 +306,7 @@ test.describe('Production Module - Setup/Run Time', () => {
   test('should display production plan in production module list', async ({ page }) => {
     // First create a production plan
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     await page.goto(`/production/create?order_id=${orderId}`)
@@ -334,13 +337,13 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     // Verify plan is displayed in list
     await expect(page.locator('text=List Display Test')).toBeVisible()
-    await expect(page.locator('text=Plan Produkcji')).toBeVisible()
+    await expect(page.locator('text=Plan Produkcji').first()).toBeVisible()
   })
 
   test('should show production plans in order details', async ({ page }) => {
     // Create a production plan first
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     await page.goto(`/production/create?order_id=${orderId}`)
@@ -375,7 +378,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
   test('should support drawing upload for production plans', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -388,7 +391,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
   test('should validate operation times are non-negative', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -413,7 +416,7 @@ test.describe('Production Module - Setup/Run Time', () => {
 
   test('should link back to order from production plan details', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     await page.goto(`/production/create?order_id=${orderId}`)
@@ -466,7 +469,7 @@ test.describe('Production Module - Mobile Responsiveness', () => {
 
   test('should display production plans on mobile', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
 
     // Production plans section should be visible on mobile (NEW)
     await expect(page.locator('text=Plany Produkcji')).toBeVisible()
@@ -474,7 +477,7 @@ test.describe('Production Module - Mobile Responsiveness', () => {
 
   test('should allow creating production plans on mobile', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -489,7 +492,7 @@ test.describe('Production Module - Mobile Responsiveness', () => {
     await page.goto('/production')
 
     // List should be visible and responsive
-    await expect(page.locator('text=Plan Produkcji')).toBeVisible()
+    await expect(page.locator('text=Plan Produkcji').first()).toBeVisible()
   })
 })
 
@@ -510,7 +513,7 @@ test.describe('Production Module - Performance', () => {
     await page.goto('/production')
 
     // Wait for list to load
-    await expect(page.locator('text=Plan Produkcji')).toBeVisible()
+    await expect(page.locator('text=Plan Produkcji').first()).toBeVisible()
 
     const loadTime = Date.now() - startTime
 
@@ -520,7 +523,7 @@ test.describe('Production Module - Performance', () => {
 
   test('should handle many operations efficiently', async ({ page }) => {
     await page.goto('/orders')
-    await page.locator('a[href^="/orders/"]').first().click()
+    await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     const orderId = page.url().split('/').pop()
 
     // NEW PATH
@@ -535,7 +538,7 @@ test.describe('Production Module - Performance', () => {
     }
 
     // Should handle 10 operations without freezing
-    await expect(page.locator('text=#10')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('text=#10').first()).toBeVisible({ timeout: 5000 })
 
     // Form should still be responsive
     await expect(page.locator('button[type="submit"]')).toBeEnabled()
