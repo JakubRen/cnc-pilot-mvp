@@ -11,7 +11,7 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
     await page.goto('/docs')
 
     // Sprawdź czy h1 jest widoczny
-    await expect(page.locator('h1')).toContainText('Portal Wiedzy CNC-Pilot')
+    await expect(page.locator('h1').first()).toContainText('Portal Wiedzy CNC-Pilot')
 
     // Sprawdź główne sekcje (heading, nie sidebar)
     await expect(page.locator('h2:has-text("Szybki start")')).toBeVisible()
@@ -33,7 +33,7 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
     await page.goto('/docs/user-guide/getting-started')
 
     // Sprawdź zawartość
-    await expect(page.locator('h1').first()).toContainText('Pierwsze kroki')
+    await expect(page.locator('h1').first().first()).toContainText('Pierwsze kroki')
 
     // Sprawdź czy jest podstawowa treść
     await expect(page.locator('text=Rejestracja i pierwsze logowanie')).toBeVisible()
@@ -54,7 +54,7 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
 
     for (const section of sections) {
       await page.goto(section.url)
-      await expect(page.locator('h1').first()).toContainText(section.title)
+      await expect(page.locator('h1').first().first()).toContainText(section.title)
     }
   })
 
@@ -68,14 +68,14 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
 
     for (const doc of techDocs) {
       await page.goto(doc.url)
-      await expect(page.locator('h1')).toContainText(doc.keyword)
+      await expect(page.locator('h1').first().first()).toContainText(doc.keyword)
     }
   })
 
   test('FAQ page się ładuje', async ({ page }) => {
     await page.goto('/docs/faq')
 
-    await expect(page.locator('h1')).toContainText('FAQ')
+    await expect(page.locator('h1').first()).toContainText('FAQ')
 
     // Sprawdź kilka sekcji FAQ (headings)
     await expect(page.locator('h2:has-text("Konto i logowanie")')).toBeVisible()
@@ -86,14 +86,14 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
   test('Video Tutorials page się ładuje', async ({ page }) => {
     await page.goto('/docs/video-tutorials')
 
-    await expect(page.locator('h1')).toContainText('Video Tutoriale')
+    await expect(page.locator('h1').first()).toContainText('Video Tutoriale')
     await expect(page.locator('h2:has-text("Pierwsze kroki")')).toBeVisible()
   })
 
   test('Flowcharts page się ładuje', async ({ page }) => {
     await page.goto('/docs/flowcharts')
 
-    await expect(page.locator('h1').first()).toContainText('Diagramy procesów')
+    await expect(page.locator('h1').first().first()).toContainText('Diagramy procesów')
     await expect(page.locator('text=Proces rejestracji')).toBeVisible()
   })
 
