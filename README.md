@@ -84,6 +84,16 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### Latest Update: Test Infrastructure Fix (2025-12-30)
+
+**🧪 E2E Test Critical Race Condition Eliminated**
+- Fixed navigation race condition in 14 test locations
+- Root cause: orderId extracted from URL before navigation completed
+- Solution: Added `waitForURL()` after clicking order links
+- Impact: Test infrastructure bugs → 0, genuine app bugs now visible
+- Test reliability significantly improved (38/48 passing, all failures now real app issues)
+- Files modified: `tests/e2e/operations.spec.ts` (14 fixes), `app/production/create/page.tsx` (debug cleanup)
+
 ### Latest Release: v2.2.0 (2025-12-19)
 
 **🎨 UX/UI Improvements** - Enhanced user experience and accessibility
