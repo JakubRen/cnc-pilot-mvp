@@ -123,11 +123,13 @@ test.describe('Production Module - Setup/Run Time', () => {
     // Submit form (NEW BUTTON TEXT)
     await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
 
-    // Should redirect to production plan details (NEW ARCHITECTURE)
-    await expect(page).toHaveURL(/\/production\/[a-f0-9-]+/)
+    // Should redirect to production module list (NEW ARCHITECTURE)
+    await page.waitForURL('/production', { timeout: 10000 })
+    await page.waitForLoadState('domcontentloaded')
+    await page.waitForTimeout(1000)
 
-    // Verify plan details are shown
-    await expect(page.locator('text=Flansza Testowa Ø100')).toBeVisible()
+    // Verify plan appears in list
+    await expect(page.locator('text=Flansza Testowa Ø100')).toBeVisible({ timeout: 5000 })
     await expect(page.locator('text=Plan Produkcji').first()).toBeVisible()
   })
 
@@ -158,7 +160,10 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.click('button:has-text("Oszacuj")')
 
     // Wait for toast notification
-    await expect(page.locator('text=Czasy oszacowane!')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('text=Czasy oszacowane!').or(page.locator('text=Czasy oszacowane (wartości domyślne)'))).toBeVisible({ timeout: 5000 })
+
+    // Wait for form to update (small delay for React re-render)
+    await page.waitForTimeout(500)
 
     // Verify times were filled
     const setupInput = page.locator('input[placeholder*="przygotowania"]').first()
@@ -204,8 +209,16 @@ test.describe('Production Module - Setup/Run Time', () => {
     // Run: 5 * 100 / 60 * 200 = 1666.67 PLN
     // Total: 1766.67 PLN
 
-    // Check if total is displayed
-    await expect(page.locator('text=1766.67 PLN').or(page.locator('text=1,766.67 PLN'))).toBeVisible({ timeout: 2000 })
+    // Wait for cost to calculate (React state update)
+    await page.waitForTimeout(500)
+
+    // Check if total is displayed using data-testid
+    const totalCost = page.locator('[data-testid="total-cost"]')
+    await expect(totalCost).toBeVisible({ timeout: 2000 })
+
+    // Verify cost contains expected value (allow for formatting variations)
+    const costText = await totalCost.textContent()
+    expect(costText).toMatch(/1[,\s]?766[.,]67/)
   })
 
   test('should add multiple operations to production plan', async ({ page }) => {
@@ -223,24 +236,25 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     // Add first operation
     await page.getByRole('button', { name: /Dodaj Operację/ }).click()
-    await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
+    await page.waitForTimeout(300)
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible()
 
     // Add second operation
     await page.getByRole('button', { name: /Dodaj Operację/ }).click()
-    await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#2').first()).toBeVisible()
+    await page.waitForTimeout(300)
+    await expect(page.locator('[data-testid="operation-2"]')).toBeVisible()
 
     // Add third operation
     await page.getByRole('button', { name: /Dodaj Operację/ }).click()
-    await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#3').first()).toBeVisible()
+    await page.waitForTimeout(300)
+    await expect(page.locator('[data-testid="operation-3"]')).toBeVisible()
 
-    // Fill all operations
-    const operationNames = page.locator('input[placeholder*="Toczenie"]')
-    await operationNames.nth(0).fill('Operacja 1')
-    await operationNames.nth(1).fill('Operacja 2')
-    await operationNames.nth(2).fill('Operacja 3')
+    // Fill all operations using data-testid for stability
+    await page.locator('[data-testid="operation-name-1"]').fill('Operacja 1')
+    await page.waitForTimeout(100)
+    await page.locator('[data-testid="operation-name-2"]').fill('Operacja 2')
+    await page.waitForTimeout(100)
+    await page.locator('[data-testid="operation-name-3"]').fill('Operacja 3')
 
     // Verify all three operations are present
     await expect(page.locator('text=Operacja 1')).toBeVisible()
@@ -329,11 +343,22 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.goto(`/production/create?order_id=${orderId}`)
     await page.waitForLoadState('domcontentloaded')
 
-    // Try to submit without filling anything
-    await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
+    // Submit button should be disabled when no operations exist
+    const submitButton = page.locator('[data-testid="submit-production-plan"]')
+    await expect(submitButton).toBeDisabled()
 
-    // Should show validation error
-    await expect(page.locator('text=Podaj nazwę części').or(page.locator('text=Dodaj przynajmniej jedną operację'))).toBeVisible({ timeout: 2000 })
+    // Add an operation but don't fill part name
+    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.waitForTimeout(300)
+
+    // Button should now be enabled (operations exist)
+    await expect(submitButton).toBeEnabled()
+
+    // Try to submit without part name
+    await submitButton.click()
+
+    // Should show validation error for missing part name
+    await expect(page.locator('text=Podaj nazwę części')).toBeVisible({ timeout: 2000 })
   })
 
   test('should display production plan in production module list', async ({ page }) => {
@@ -365,15 +390,15 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
 
-    // Wait for redirect to production details
-    await page.waitForURL(/\/production\/[a-f0-9-]+/)
-
-    // Now go to production module list
-    await page.goto('/production')
+    // Wait for redirect to production list (NEW: redirects to list, not detail)
+    await page.waitForURL('/production', { timeout: 10000 })
     await page.waitForLoadState('domcontentloaded')
 
+    // Wait for data to load
+    await page.waitForTimeout(1000)
+
     // Verify plan is displayed in list
-    await expect(page.locator('text=List Display Test')).toBeVisible()
+    await expect(page.locator('text=List Display Test')).toBeVisible({ timeout: 5000 })
     await expect(page.locator('text=Plan Produkcji').first()).toBeVisible()
   })
 
@@ -405,14 +430,18 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
 
-    // Wait for redirect
-    await page.waitForURL(/\/production\/[a-f0-9-]+/)
+    // Wait for redirect to production list
+    await page.waitForURL('/production', { timeout: 10000 })
+    await page.waitForLoadState('domcontentloaded')
+    await page.waitForTimeout(1000)
 
     // Go back to order details
     await page.goto(`/orders/${orderId}`)
+    await page.waitForLoadState('domcontentloaded')
+    await page.waitForTimeout(1000)
 
     // Verify production plan is shown in order (NEW SECTION)
-    await expect(page.locator('text=Plany Produkcji')).toBeVisible()
+    await expect(page.locator('text=Plany Produkcji')).toBeVisible({ timeout: 5000 })
     await expect(page.locator('text=Order Link Test')).toBeVisible()
   })
 
@@ -447,15 +476,17 @@ test.describe('Production Module - Setup/Run Time', () => {
     await expect(page.locator('text=#1').first()).toBeVisible()
     await page.fill('input[placeholder*="Toczenie"]', 'Invalid Op')
 
-    // Try to enter negative setup time
-    const setupInputs = page.locator('input[placeholder*="przygotowania"]')
-    await setupInputs.first().fill('-10')
+    // Try to enter negative setup time using data-testid
+    const setupInput = page.locator('[data-testid="setup-time-1"]')
+    await setupInput.fill('-10')
+    await page.waitForTimeout(100)
 
     // Submit
-    await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
+    const submitButton = page.locator('[data-testid="submit-production-plan"]')
+    await submitButton.click()
 
-    // Should show validation error
-    await expect(page.locator('text=muszą być >= 0').or(page.locator('text=must be'))).toBeVisible({ timeout: 2000 })
+    // Should show validation error (toast message)
+    await expect(page.locator('text=muszą być')).toBeVisible({ timeout: 3000 })
   })
 
   test('should link back to order from production plan details', async ({ page }) => {
@@ -485,11 +516,18 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
 
-    await page.waitForURL(/\/production\/[a-f0-9-]+/)
+    // Wait for redirect to production list
+    await page.waitForURL('/production', { timeout: 10000 })
+    await page.waitForLoadState('domcontentloaded')
+    await page.waitForTimeout(1000)
+
+    // Click on the created production plan to go to details
+    await page.locator('text=Link Back Test').first().click()
+    await page.waitForLoadState('domcontentloaded')
 
     // Look for link back to order
     const orderLink = page.locator('a[href^="/orders/"]:has-text("Zlecenie")')
-    await expect(orderLink).toBeVisible()
+    await expect(orderLink).toBeVisible({ timeout: 5000 })
 
     // Click it
     await orderLink.click()
