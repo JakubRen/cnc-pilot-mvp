@@ -201,7 +201,10 @@ export default function CreateProductionPlanPage() {
 
       toast.dismiss(loadingToast)
       toast.success(`Plan produkcji ${planNumberData} utworzony!`)
-      router.push(`/production/${productionPlan.id}`)
+
+      // Redirect to production list view (not detail view)
+      // This ensures the plan appears in the list and user can see it in context
+      router.push('/production')
       router.refresh()
 
     } catch (error) {
@@ -278,6 +281,7 @@ export default function CreateProductionPlanPage() {
                   value={partName}
                   onChange={(e) => setPartName(e.target.value)}
                   placeholder="np. Flansza Ø100, Wałek Ø50x300"
+                  data-testid="part-name-input"
                   className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                   required
                 />
@@ -294,6 +298,7 @@ export default function CreateProductionPlanPage() {
                   step="1"
                   value={quantity}
                   onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                  data-testid="quantity-input"
                   className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                   required
                 />
@@ -404,7 +409,7 @@ export default function CreateProductionPlanPage() {
 
           {/* Summary Card */}
           {operations.length > 0 && (
-            <div className="bg-gradient-to-r from-green-900/30 to-blue-900/30 border-2 border-green-500/50 rounded-lg p-8">
+            <div className="bg-gradient-to-r from-green-900/30 to-blue-900/30 border-2 border-green-500/50 rounded-lg p-8" data-testid="production-summary">
               <h3 className="text-2xl font-bold text-white mb-6 text-center">
                 💰 Podsumowanie planu produkcji
               </h3>
@@ -423,7 +428,7 @@ export default function CreateProductionPlanPage() {
                 </div>
                 <div className="text-center">
                   <p className="text-sm text-green-300 mb-2">Koszt całkowity</p>
-                  <p className="text-3xl font-bold text-green-400">{formatCost(totalCost)}</p>
+                  <p className="text-3xl font-bold text-green-400" data-testid="total-cost">{formatCost(totalCost)}</p>
                 </div>
               </div>
             </div>
@@ -434,6 +439,7 @@ export default function CreateProductionPlanPage() {
             <button
               type="submit"
               disabled={isSubmitting || operations.length === 0}
+              data-testid="submit-production-plan"
               className="flex-1 px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition shadow-lg text-lg"
             >
               {isSubmitting ? 'Zapisuję...' : '✓ Utwórz Plan Produkcji'}

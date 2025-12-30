@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
@@ -39,6 +39,7 @@ export default function OperationForm({
 }: OperationFormProps) {
   const [machines, setMachines] = useState<Machine[]>([])
   const [isLoadingMachines, setIsLoadingMachines] = useState(true)
+  const [estimatingIndex, setEstimatingIndex] = useState<number | null>(null)
 
   // Load machines
   useEffect(() => {
@@ -65,8 +66,8 @@ export default function OperationForm({
     loadMachines()
   }, [companyId])
 
-  // Add new operation
-  const addOperation = () => {
+  // Add new operation (memoized for stability)
+  const addOperation = useCallback(() => {
     const newOperation: OperationFormData & { _id: string } = {
       _id: `op-${Date.now()}-${Math.random()}`, // Unique ID for React key
       operation_number: operations.length + 1,
@@ -80,10 +81,10 @@ export default function OperationForm({
     }
 
     onChange([...operations, newOperation] as OperationFormData[])
-  }
+  }, [operations, onChange])
 
-  // Remove operation
-  const removeOperation = (index: number) => {
+  // Remove operation (memoized for stability)
+  const removeOperation = useCallback((index: number) => {
     const updated = operations.filter((_, i) => i !== index)
     // Renumber operations
     const renumbered = updated.map((op, i) => ({
@@ -91,10 +92,10 @@ export default function OperationForm({
       operation_number: i + 1
     }))
     onChange(renumbered)
-  }
+  }, [operations, onChange])
 
-  // Update operation field
-  const updateOperation = (index: number, field: keyof OperationFormData, value: any) => {
+  // Update operation field (memoized for stability)
+  const updateOperation = useCallback((index: number, field: keyof OperationFormData, value: any) => {
     const updated = [...operations]
     updated[index] = { ...updated[index], [field]: value }
 
@@ -107,7 +108,7 @@ export default function OperationForm({
     }
 
     onChange(updated)
-  }
+  }, [operations, machines, onChange])
 
   // Auto-estimate times based on operation type and complexity
   const autoEstimate = async (index: number) => {
@@ -118,6 +119,7 @@ export default function OperationForm({
       return
     }
 
+    setEstimatingIndex(index)
     const loadingToast = toast.loading('Szacuję czasy operacji...')
 
     try {
@@ -156,11 +158,13 @@ export default function OperationForm({
       logger.error('Auto-estimate failed', { error })
       toast.dismiss(loadingToast)
       toast.error('Błąd podczas szacowania: ' + (error as Error).message)
+    } finally {
+      setEstimatingIndex(null)
     }
   }
 
-  // Move operation up/down
-  const moveOperation = (index: number, direction: 'up' | 'down') => {
+  // Move operation up/down (memoized for stability)
+  const moveOperation = useCallback((index: number, direction: 'up' | 'down') => {
     if (direction === 'up' && index === 0) return
     if (direction === 'down' && index === operations.length - 1) return
 
@@ -179,7 +183,7 @@ export default function OperationForm({
     }))
 
     onChange(renumbered)
-  }
+  }, [operations, onChange])
 
   return (
     <div className="space-y-4">
@@ -190,6 +194,7 @@ export default function OperationForm({
         <button
           type="button"
           onClick={addOperation}
+          data-testid="add-operation-button"
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
         >
           + Dodaj Operację
@@ -222,6 +227,7 @@ export default function OperationForm({
             return (
               <div
                 key={(operation as any)._id || `op-${index}`}
+                data-testid={`operation-${index + 1}`}
                 className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border-2 border-slate-200 dark:border-slate-700"
               >
                 {/* Header */}
@@ -270,6 +276,7 @@ export default function OperationForm({
                     <select
                       value={operation.operation_type}
                       onChange={(e) => updateOperation(index, 'operation_type', e.target.value as OperationType)}
+                      data-testid={`operation-type-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     >
                       {Object.entries(operationTypeLabels).map(([value, label]) => (
@@ -288,6 +295,7 @@ export default function OperationForm({
                       value={operation.operation_name}
                       onChange={(e) => updateOperation(index, 'operation_name', e.target.value)}
                       placeholder="np. Toczenie zgrubne"
+                      data-testid={`operation-name-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     />
                   </div>
@@ -338,6 +346,7 @@ export default function OperationForm({
                       min="0"
                       value={operation.setup_time_minutes}
                       onChange={(e) => updateOperation(index, 'setup_time_minutes', parseInt(e.target.value) || 0)}
+                      data-testid={`setup-time-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                       placeholder="Czas przygotowania (jednorazowy)"
                     />
@@ -357,6 +366,7 @@ export default function OperationForm({
                       min="0"
                       value={operation.run_time_per_unit_minutes}
                       onChange={(e) => updateOperation(index, 'run_time_per_unit_minutes', parseFloat(e.target.value) || 0)}
+                      data-testid={`run-time-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                       placeholder="Czas obróbki 1 sztuki"
                     />
@@ -391,9 +401,11 @@ export default function OperationForm({
                   <button
                     type="button"
                     onClick={() => autoEstimate(index)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold"
+                    disabled={estimatingIndex === index}
+                    data-testid={`auto-estimate-${index + 1}`}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    🤖 Oszacuj
+                    {estimatingIndex === index ? '⏳ Szacuję...' : '🤖 Oszacuj'}
                   </button>
                 </div>
 
