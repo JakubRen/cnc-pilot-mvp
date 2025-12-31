@@ -84,7 +84,19 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
-### Latest Update: Test Infrastructure Fix (2025-12-30)
+### Latest Update: E2E Test Compilation Fixes & CI/CD Pipeline (2025-12-31)
+
+**🔧 TypeScript Compilation & Pipeline Fixes**
+- Fixed 32 TypeScript syntax errors in E2E tests (extra parentheses in `page.fill()` calls)
+- Fixed 2 TypeScript type errors (missing `hourly_rate` property in Machine interface)
+- Fixed undefined variable reference (`operationNames`)
+- Removed legacy scaffolding script causing 3 ESLint errors
+- Enabled E2E tests in CI/CD pipeline (temporary for verification)
+- Files modified: `tests/e2e/operations.spec.ts`, `components/operations/OperationForm.tsx`, `.github/workflows/ci.yml`
+- Commits: 8b731a0, ce09cb6, a8b54da
+- **Status:** All compilation errors eliminated ✅, CI/CD pipeline running
+
+### Previous Update: Test Infrastructure Fix (2025-12-30)
 
 **🧪 E2E Test Critical Race Condition Eliminated**
 - Fixed navigation race condition in 14 test locations
