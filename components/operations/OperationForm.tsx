@@ -21,6 +21,7 @@ interface Machine {
   code: string | null
   model: string | null
   status: string
+  hourly_rate: number
 }
 
 interface OperationFormProps {
@@ -49,7 +50,7 @@ export default function OperationForm({
       try {
         const { data, error } = await supabase
           .from('machines')
-          .select('id, name, code, model, status')
+          .select('id, name, code, model, status, hourly_rate')
           .eq('company_id', companyId)
           .eq('status', 'active')
           .order('name', { ascending: true })

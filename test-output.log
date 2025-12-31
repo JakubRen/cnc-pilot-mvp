@@ -1,0 +1,770 @@
+
+> cnc-pilot-mvp@0.1.0 test:e2e
+> playwright test
+
+
+Running 48 tests using 6 workers
+
+  ok  1 [chromium] › tests\e2e\auth.spec.ts:4:7 › Authentication › should display login page correctly (2.8s)
+  ok  3 [chromium] › tests\e2e\auth.spec.ts:39:7 › Authentication › should show error for short password (3.2s)
+  ok  4 [chromium] › tests\e2e\auth.spec.ts:14:7 › Authentication › should show validation errors for empty form (3.2s)
+  ok  5 [chromium] › tests\e2e\auth.spec.ts:61:7 › Authentication › should have link to forgot password page (3.2s)
+  ok  2 [chromium] › tests\e2e\auth.spec.ts:27:7 › Authentication › should show error for invalid email format (3.6s)
+  ok  6 [chromium] › tests\e2e\auth.spec.ts:51:7 › Authentication › should have link to register page (6.3s)
+  ok  9 [chromium] › tests\e2e\auth.spec.ts:91:7 › Register Page › should have link to login page (3.8s)
+  ok  8 [chromium] › tests\e2e\auth.spec.ts:83:7 › Register Page › should display register page correctly (3.9s)
+  ok  7 [chromium] › tests\e2e\auth.spec.ts:70:7 › Authentication › should login successfully with valid credentials (8.8s)
+  ok 11 [chromium] › tests\e2e\docs.spec.ts:22:7 › Portal Wiedzy - Smoke Tests › sidebar navigation jest widoczna (9.7s)
+  ok 10 [chromium] › tests\e2e\docs.spec.ts:10:7 › Portal Wiedzy - Smoke Tests › homepage docs się ładuje (9.9s)
+  ok 12 [chromium] › tests\e2e\docs.spec.ts:32:7 › Portal Wiedzy - Smoke Tests › User Guide page się ładuje (6.9s)
+  ok 18 [chromium] › tests\e2e\docs.spec.ts:100:7 › Portal Wiedzy - Smoke Tests › link powrotu do głównej aplikacji działa (1.1s)
+  ok 17 [chromium] › tests\e2e\docs.spec.ts:93:7 › Portal Wiedzy - Smoke Tests › Flowcharts page się ładuje (5.0s)
+  ok 16 [chromium] › tests\e2e\docs.spec.ts:86:7 › Portal Wiedzy - Smoke Tests › Video Tutorials page się ładuje (5.0s)
+  ok 19 [chromium] › tests\e2e\docs.spec.ts:109:7 › Portal Wiedzy - Smoke Tests › aktywna strona jest podświetlona w sidebar (4.2s)
+  ok 15 [chromium] › tests\e2e\docs.spec.ts:75:7 › Portal Wiedzy - Smoke Tests › FAQ page się ładuje (7.0s)
+  ok 20 [chromium] › tests\e2e\docs.spec.ts:117:7 › Portal Wiedzy - Smoke Tests › responsive - sidebar widoczna na desktop (2.6s)
+  ok 23 [chromium] › tests\e2e\docs.spec.ts:144:7 › Portal Wiedzy - Smoke Tests › wszystkie linki sidebar są obecne (2.2s)
+  ok 21 [chromium] › tests\e2e\docs.spec.ts:125:7 › Portal Wiedzy - Smoke Tests › markdown rendering - code blocks (2.7s)
+  ok 22 [chromium] › tests\e2e\docs.spec.ts:133:7 › Portal Wiedzy - Smoke Tests › markdown rendering - links i formatowanie (2.9s)
+  ok 14 [chromium] › tests\e2e\docs.spec.ts:61:7 › Portal Wiedzy - Smoke Tests › Technical Docs są dostępne (26.0s)
+  ok 13 [chromium] › tests\e2e\docs.spec.ts:46:7 › Portal Wiedzy - Smoke Tests › wszystkie główne sekcje są dostępne (29.9s)
+  ok 24 [chromium] › tests\e2e\operations.spec.ts:42:7 › Production Module - Setup/Run Time › should display production plans section in order details (25.2s)
+  ok 25 [chromium] › tests\e2e\operations.spec.ts:59:7 › Production Module - Setup/Run Time › should navigate to create production plan page (26.5s)
+  x  28 [chromium] › tests\e2e\operations.spec.ts:178:7 › Production Module - Setup/Run Time › should calculate costs in real-time (14.4s)
+  x  27 [chromium] › tests\e2e\operations.spec.ts:139:7 › Production Module - Setup/Run Time › should auto-estimate operation times (26.0s)
+  x  26 [chromium] › tests\e2e\operations.spec.ts:74:7 › Production Module - Setup/Run Time › should create production plan with operations (31.1s)
+  ok 30 [chromium] › tests\e2e\operations.spec.ts:271:7 › Production Module - Setup/Run Time › should reorder operations (13.1s)
+  x  29 [chromium] › tests\e2e\operations.spec.ts:229:7 › Production Module - Setup/Run Time › should add multiple operations to production plan (21.5s)
+  x  32 [chromium] › tests\e2e\operations.spec.ts:178:7 › Production Module - Setup/Run Time › should calculate costs in real-time (retry #1) (18.0s)
+  x  31 [chromium] › tests\e2e\operations.spec.ts:309:7 › Production Module - Setup/Run Time › should remove operation (21.3s)
+  x  33 [chromium] › tests\e2e\operations.spec.ts:139:7 › Production Module - Setup/Run Time › should auto-estimate operation times (retry #1) (18.4s)
+  x  35 [chromium] › tests\e2e\operations.spec.ts:345:7 › Production Module - Setup/Run Time › should validate required fields (18.2s)
+  x  34 [chromium] › tests\e2e\operations.spec.ts:74:7 › Production Module - Setup/Run Time › should create production plan with operations (retry #1) (23.1s)
+  x  36 [chromium] › tests\e2e\operations.spec.ts:229:7 › Production Module - Setup/Run Time › should add multiple operations to production plan (retry #1) (25.4s)
+  ok 37 [chromium] › tests\e2e\operations.spec.ts:373:7 › Production Module - Setup/Run Time › should display production plan in production module list (26.4s)
+  ok 41 [chromium] › tests\e2e\operations.spec.ts:459:7 › Production Module - Setup/Run Time › should support drawing upload for production plans (16.4s)
+  x  39 [chromium] › tests\e2e\operations.spec.ts:415:7 › Production Module - Setup/Run Time › should show production plans in order details (28.1s)
+  x  38 [chromium] › tests\e2e\operations.spec.ts:309:7 › Production Module - Setup/Run Time › should remove operation (retry #1) (27.3s)
+  x  40 [chromium] › tests\e2e\operations.spec.ts:345:7 › Production Module - Setup/Run Time › should validate required fields (retry #1) (20.9s)
+  x  42 [chromium] › tests\e2e\operations.spec.ts:474:7 › Production Module - Setup/Run Time › should validate operation times are non-negative (14.2s)
+  x  44 [chromium] › tests\e2e\operations.spec.ts:575:7 › Production Module - Mobile Responsiveness › should display production plans on mobile (12.1s)
+  ok 47 [chromium] › tests\e2e\operations.spec.ts:598:7 › Production Module - Mobile Responsiveness › should display production module list on mobile (11.9s)
+  ok 46 [chromium] › tests\e2e\operations.spec.ts:583:7 › Production Module - Mobile Responsiveness › should allow creating production plans on mobile (14.0s)
+  x  43 [chromium] › tests\e2e\operations.spec.ts:505:7 › Production Module - Setup/Run Time › should link back to order from production plan details (24.8s)
+  x  50 [chromium] › tests\e2e\operations.spec.ts:624:7 › Production Module - Performance › should load production plan details quickly (16.3s)
+  x  45 [chromium] › tests\e2e\operations.spec.ts:415:7 › Production Module - Setup/Run Time › should show production plans in order details (retry #1) (27.7s)
+  x  48 [chromium] › tests\e2e\operations.spec.ts:474:7 › Production Module - Setup/Run Time › should validate operation times are non-negative (retry #1) (26.6s)
+  x  49 [chromium] › tests\e2e\operations.spec.ts:575:7 › Production Module - Mobile Responsiveness › should display production plans on mobile (retry #1) (21.9s)
+  ok 51 [chromium] › tests\e2e\operations.spec.ts:639:7 › Production Module - Performance › should handle many operations efficiently (21.9s)
+  ok 56 [chromium] › tests\e2e\smoke.spec.ts:4:7 › Smoke Tests › app should load without errors (4.6s)
+  ok 57 [chromium] › tests\e2e\smoke.spec.ts:31:7 › Smoke Tests › login page should be responsive (4.1s)
+  ok 58 [chromium] › tests\e2e\smoke.spec.ts:58:7 › Smoke Tests › API health endpoint should respond (708ms)
+  ok 59 [chromium] › tests\e2e\smoke.spec.ts:70:7 › Performance › login page should load within 3 seconds (2.2s)
+  x  53 [chromium] › tests\e2e\operations.spec.ts:624:7 › Production Module - Performance › should load production plan details quickly (retry #1) (10.3s)
+  ok 54 [chromium] › tests\e2e\operations.spec.ts:666:7 › Production Module - Performance › should navigate between production and orders quickly (11.8s)
+  ok 55 [chromium] › tests\e2e\smoke.spec.ts:46:7 › Smoke Tests › should redirect unauthenticated users from protected routes (9.5s)
+  x  52 [chromium] › tests\e2e\operations.spec.ts:505:7 › Production Module - Setup/Run Time › should link back to order from production plan details (retry #1) (23.5s)
+
+
+  1) [chromium] › tests\e2e\operations.spec.ts:74:7 › Production Module - Setup/Run Time › should create production plan with operations 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Flansza Testowa Ø100')
+    Expected: visible
+    Error: strict mode violation: locator('text=Flansza Testowa Ø100') resolved to 4 elements:
+        1) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 50 szt. Szkic Ważny 📋 PP-2025-0007 📦 ORD-TEST-001 👤' })
+        2) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 50 szt. Szkic Ważny 📋 PP-2025-0004 📦 ORD-TEST-001 👤' })
+        3) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 25 szt.' })
+        4) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 50 szt. Szkic Ważny 📋 PP-2025-0001 📦 ORD-TEST-001 👤' })
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Flansza Testowa Ø100')[22m
+
+
+      133 |
+      134 |     // Verify plan appears in list
+    > 135 |     await expect(page.locator('text=Flansza Testowa Ø100')).toBeVisible({ timeout: 5000 })
+          |                                                             ^
+      136 |     await expect(page.locator('text=Plan Produkcji').first()).toBeVisible()
+      137 |   })
+      138 |
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:135:61
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-0648c-uction-plan-with-operations-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-0648c-uction-plan-with-operations-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Flansza Testowa Ø100')
+    Expected: visible
+    Error: strict mode violation: locator('text=Flansza Testowa Ø100') resolved to 5 elements:
+        1) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 50 szt. Szkic Ważny 📋 PP-2025-0008 📦 ORD-TEST-001 👤' })
+        2) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 50 szt. Szkic Ważny 📋 PP-2025-0007 📦 ORD-TEST-001 👤' })
+        3) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 50 szt. Szkic Ważny 📋 PP-2025-0004 📦 ORD-TEST-001 👤' })
+        4) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 25 szt.' })
+        5) <h3 class="text-xl font-bold text-slate-900 dark:text-white">Flansza Testowa Ø100</h3> aka getByRole('link', { name: 'Flansza Testowa Ø100 50 szt. Szkic Ważny 📋 PP-2025-0001 📦 ORD-TEST-001 👤' })
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Flansza Testowa Ø100')[22m
+
+
+      133 |
+      134 |     // Verify plan appears in list
+    > 135 |     await expect(page.locator('text=Flansza Testowa Ø100')).toBeVisible({ timeout: 5000 })
+          |                                                             ^
+      136 |     await expect(page.locator('text=Plan Produkcji').first()).toBeVisible()
+      137 |   })
+      138 |
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:135:61
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-0648c-uction-plan-with-operations-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-0648c-uction-plan-with-operations-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-0648c-uction-plan-with-operations-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-0648c-uction-plan-with-operations-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests\e2e\operations.spec.ts:139:7 › Production Module - Setup/Run Time › should auto-estimate operation times 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      173 |     const setupInput = page.locator('input[placeholder*="przygotowania"]').first()
+      174 |     const setupValue = await setupInput.inputValue()
+    > 175 |     expect(parseInt(setupValue)).toBeGreaterThan(0)
+          |                                  ^
+      176 |   })
+      177 |
+      178 |   test('should calculate costs in real-time', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:175:34
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-8dc53-to-estimate-operation-times-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-8dc53-to-estimate-operation-times-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      173 |     const setupInput = page.locator('input[placeholder*="przygotowania"]').first()
+      174 |     const setupValue = await setupInput.inputValue()
+    > 175 |     expect(parseInt(setupValue)).toBeGreaterThan(0)
+          |                                  ^
+      176 |   })
+      177 |
+      178 |   test('should calculate costs in real-time', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:175:34
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-8dc53-to-estimate-operation-times-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-8dc53-to-estimate-operation-times-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-8dc53-to-estimate-operation-times-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-8dc53-to-estimate-operation-times-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests\e2e\operations.spec.ts:178:7 › Production Module - Setup/Run Time › should calculate costs in real-time 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoMatch[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected pattern: [32m/1[,\s]?766[.,]67/[39m
+    Received string:  [31m"60090.00 PLN"[39m
+
+      224 |     // Verify cost contains expected value (allow for formatting variations)
+      225 |     const costText = await totalCost.textContent()
+    > 226 |     expect(costText).toMatch(/1[,\s]?766[.,]67/)
+          |                      ^
+      227 |   })
+      228 |
+      229 |   test('should add multiple operations to production plan', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:226:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-1ff4a-alculate-costs-in-real-time-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-1ff4a-alculate-costs-in-real-time-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoMatch[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected pattern: [32m/1[,\s]?766[.,]67/[39m
+    Received string:  [31m"60090.00 PLN"[39m
+
+      224 |     // Verify cost contains expected value (allow for formatting variations)
+      225 |     const costText = await totalCost.textContent()
+    > 226 |     expect(costText).toMatch(/1[,\s]?766[.,]67/)
+          |                      ^
+      227 |   })
+      228 |
+      229 |   test('should add multiple operations to production plan', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:226:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-1ff4a-alculate-costs-in-real-time-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-1ff4a-alculate-costs-in-real-time-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-1ff4a-alculate-costs-in-real-time-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-1ff4a-alculate-costs-in-real-time-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › tests\e2e\operations.spec.ts:229:7 › Production Module - Setup/Run Time › should add multiple operations to production plan 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Operacja 1')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Operacja 1')[22m
+
+
+      264 |
+      265 |     // Verify all three operations are present
+    > 266 |     await expect(page.locator('text=Operacja 1')).toBeVisible()
+          |                                                   ^
+      267 |     await expect(page.locator('text=Operacja 2')).toBeVisible()
+      268 |     await expect(page.locator('text=Operacja 3')).toBeVisible()
+      269 |   })
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:266:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-661c9-erations-to-production-plan-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-661c9-erations-to-production-plan-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Operacja 1')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Operacja 1')[22m
+
+
+      264 |
+      265 |     // Verify all three operations are present
+    > 266 |     await expect(page.locator('text=Operacja 1')).toBeVisible()
+          |                                                   ^
+      267 |     await expect(page.locator('text=Operacja 2')).toBeVisible()
+      268 |     await expect(page.locator('text=Operacja 3')).toBeVisible()
+      269 |   })
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:266:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-661c9-erations-to-production-plan-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-661c9-erations-to-production-plan-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-661c9-erations-to-production-plan-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-661c9-erations-to-production-plan-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › tests\e2e\operations.spec.ts:309:7 › Production Module - Setup/Run Time › should remove operation 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).not.[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  locator('text=#2').first()
+    Expected: not visible
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "not toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=#2').first()[22m
+    [2m    9 × locator resolved to <li>Kolejność operacji (#1, #2, #3...) określa routin…</li>[22m
+    [2m      - unexpected value "visible"[22m
+
+
+      340 |     // Should only have one operation now (renumbered to #1)
+      341 |     await expect(page.locator('text=#1').first()).toBeVisible()
+    > 342 |     await expect(page.locator('text=#2').first()).not.toBeVisible()
+          |                                                       ^
+      343 |   })
+      344 |
+      345 |   test('should validate required fields', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:342:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-e0883-ime-should-remove-operation-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-e0883-ime-should-remove-operation-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).not.[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  locator('text=#2').first()
+    Expected: not visible
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "not toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=#2').first()[22m
+    [2m    9 × locator resolved to <li>Kolejność operacji (#1, #2, #3...) określa routin…</li>[22m
+    [2m      - unexpected value "visible"[22m
+
+
+      340 |     // Should only have one operation now (renumbered to #1)
+      341 |     await expect(page.locator('text=#1').first()).toBeVisible()
+    > 342 |     await expect(page.locator('text=#2').first()).not.toBeVisible()
+          |                                                       ^
+      343 |   })
+      344 |
+      345 |   test('should validate required fields', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:342:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-e0883-ime-should-remove-operation-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-e0883-ime-should-remove-operation-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-e0883-ime-should-remove-operation-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-e0883-ime-should-remove-operation-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium] › tests\e2e\operations.spec.ts:345:7 › Production Module - Setup/Run Time › should validate required fields 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Podaj nazwę części')
+    Expected: visible
+    Timeout: 2000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 2000ms[22m
+    [2m  - waiting for locator('text=Podaj nazwę części')[22m
+
+
+      368 |
+      369 |     // Should show validation error for missing part name
+    > 370 |     await expect(page.locator('text=Podaj nazwę części')).toBeVisible({ timeout: 2000 })
+          |                                                           ^
+      371 |   })
+      372 |
+      373 |   test('should display production plan in production module list', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:370:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-99e4b-ld-validate-required-fields-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-99e4b-ld-validate-required-fields-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Podaj nazwę części')
+    Expected: visible
+    Timeout: 2000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 2000ms[22m
+    [2m  - waiting for locator('text=Podaj nazwę części')[22m
+
+
+      368 |
+      369 |     // Should show validation error for missing part name
+    > 370 |     await expect(page.locator('text=Podaj nazwę części')).toBeVisible({ timeout: 2000 })
+          |                                                           ^
+      371 |   })
+      372 |
+      373 |   test('should display production plan in production module list', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:370:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-99e4b-ld-validate-required-fields-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-99e4b-ld-validate-required-fields-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-99e4b-ld-validate-required-fields-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-99e4b-ld-validate-required-fields-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [chromium] › tests\e2e\operations.spec.ts:415:7 › Production Module - Setup/Run Time › should show production plans in order details 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Order Link Test')
+    Expected: visible
+    Error: strict mode violation: locator('text=Order Link Test') resolved to 2 elements:
+        1) <h3 class="text-lg font-bold text-slate-900 dark:text-white">Order Link Test</h3> aka getByRole('link', { name: 'Order Link Test Szkic 📋 PP-2025-0003 • 10 szt. 0% 0/1 operacji ukończonych' })
+        2) <h3 class="text-lg font-bold text-slate-900 dark:text-white">Order Link Test</h3> aka getByRole('link', { name: 'Order Link Test Szkic 📋 PP-2025-0009 • 10 szt. • Stal nierdzewna 0% 0/1' })
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Order Link Test')[22m
+
+
+      454 |     // Verify production plan is shown in order (NEW SECTION)
+      455 |     await expect(page.locator('text=Plany Produkcji')).toBeVisible({ timeout: 5000 })
+    > 456 |     await expect(page.locator('text=Order Link Test')).toBeVisible()
+          |                                                        ^
+      457 |   })
+      458 |
+      459 |   test('should support drawing upload for production plans', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:456:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-7d1ee-tion-plans-in-order-details-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-7d1ee-tion-plans-in-order-details-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "/production" until "load"
+    ============================================================
+
+      443 |
+      444 |     // Wait for redirect to production list
+    > 445 |     await page.waitForURL('/production', { timeout: 10000 })
+          |                ^
+      446 |     await page.waitForLoadState('domcontentloaded')
+      447 |     await page.waitForTimeout(1000)
+      448 |
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:445:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-7d1ee-tion-plans-in-order-details-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-7d1ee-tion-plans-in-order-details-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-7d1ee-tion-plans-in-order-details-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-7d1ee-tion-plans-in-order-details-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [chromium] › tests\e2e\operations.spec.ts:474:7 › Production Module - Setup/Run Time › should validate operation times are non-negative 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=muszą być')
+    Expected: visible
+    Timeout: 3000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 3000ms[22m
+    [2m  - waiting for locator('text=muszą być')[22m
+
+
+      500 |
+      501 |     // Should show validation error (toast message)
+    > 502 |     await expect(page.locator('text=muszą być')).toBeVisible({ timeout: 3000 })
+          |                                                  ^
+      503 |   })
+      504 |
+      505 |   test('should link back to order from production plan details', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:502:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-eccdb-tion-times-are-non-negative-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-eccdb-tion-times-are-non-negative-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=muszą być')
+    Expected: visible
+    Timeout: 3000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 3000ms[22m
+    [2m  - waiting for locator('text=muszą być')[22m
+
+
+      500 |
+      501 |     // Should show validation error (toast message)
+    > 502 |     await expect(page.locator('text=muszą być')).toBeVisible({ timeout: 3000 })
+          |                                                  ^
+      503 |   })
+      504 |
+      505 |   test('should link back to order from production plan details', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:502:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-eccdb-tion-times-are-non-negative-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-eccdb-tion-times-are-non-negative-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-eccdb-tion-times-are-non-negative-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-eccdb-tion-times-are-non-negative-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [chromium] › tests\e2e\operations.spec.ts:505:7 › Production Module - Setup/Run Time › should link back to order from production plan details 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('a[href^="/orders/"]:has-text("Zlecenie")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('a[href^="/orders/"]:has-text("Zlecenie")')[22m
+
+
+      542 |     // Look for link back to order
+      543 |     const orderLink = page.locator('a[href^="/orders/"]:has-text("Zlecenie")')
+    > 544 |     await expect(orderLink).toBeVisible({ timeout: 5000 })
+          |                             ^
+      545 |
+      546 |     // Click it
+      547 |     await orderLink.click()
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:544:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-a12e9-rom-production-plan-details-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-a12e9-rom-production-plan-details-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('a[href^="/orders/"]:has-text("Zlecenie")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('a[href^="/orders/"]:has-text("Zlecenie")')[22m
+
+
+      542 |     // Look for link back to order
+      543 |     const orderLink = page.locator('a[href^="/orders/"]:has-text("Zlecenie")')
+    > 544 |     await expect(orderLink).toBeVisible({ timeout: 5000 })
+          |                             ^
+      545 |
+      546 |     // Click it
+      547 |     await orderLink.click()
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:544:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-a12e9-rom-production-plan-details-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-a12e9-rom-production-plan-details-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-a12e9-rom-production-plan-details-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-a12e9-rom-production-plan-details-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [chromium] › tests\e2e\operations.spec.ts:575:7 › Production Module - Mobile Responsiveness › should display production plans on mobile 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Plany Produkcji')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Plany Produkcji')[22m
+
+
+      578 |
+      579 |     // Production plans section should be visible on mobile (NEW)
+    > 580 |     await expect(page.locator('text=Plany Produkcji')).toBeVisible()
+          |                                                        ^
+      581 |   })
+      582 |
+      583 |   test('should allow creating production plans on mobile', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:580:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-17e3e--production-plans-on-mobile-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-17e3e--production-plans-on-mobile-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Plany Produkcji')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Plany Produkcji')[22m
+
+
+      578 |
+      579 |     // Production plans section should be visible on mobile (NEW)
+    > 580 |     await expect(page.locator('text=Plany Produkcji')).toBeVisible()
+          |                                                        ^
+      581 |   })
+      582 |
+      583 |   test('should allow creating production plans on mobile', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:580:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-17e3e--production-plans-on-mobile-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-17e3e--production-plans-on-mobile-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-17e3e--production-plans-on-mobile-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-17e3e--production-plans-on-mobile-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [chromium] › tests\e2e\operations.spec.ts:624:7 › Production Module - Performance › should load production plan details quickly 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: < [32m5000[39m
+    Received:   [31m5134[39m
+
+      634 |
+      635 |     // Should load in under 5 seconds (increased for CI/slow environments)
+    > 636 |     expect(loadTime).toBeLessThan(5000)
+          |                      ^
+      637 |   })
+      638 |
+      639 |   test('should handle many operations efficiently', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:636:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-a4fc4-uction-plan-details-quickly-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-a4fc4-uction-plan-details-quickly-chromium\error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: < [32m5000[39m
+    Received:   [31m6801[39m
+
+      634 |
+      635 |     // Should load in under 5 seconds (increased for CI/slow environments)
+    > 636 |     expect(loadTime).toBeLessThan(5000)
+          |                      ^
+      637 |   })
+      638 |
+      639 |   test('should handle many operations efficiently', async ({ page }) => {
+        at C:\Users\jakub\Desktop\APP\cnc-pilot-mvp\tests\e2e\operations.spec.ts:636:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-a4fc4-uction-plan-details-quickly-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\operations-Production-Modu-a4fc4-uction-plan-details-quickly-chromium-retry1\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\operations-Production-Modu-a4fc4-uction-plan-details-quickly-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\operations-Production-Modu-a4fc4-uction-plan-details-quickly-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11 failed
+    [chromium] › tests\e2e\operations.spec.ts:74:7 › Production Module - Setup/Run Time › should create production plan with operations 
+    [chromium] › tests\e2e\operations.spec.ts:139:7 › Production Module - Setup/Run Time › should auto-estimate operation times 
+    [chromium] › tests\e2e\operations.spec.ts:178:7 › Production Module - Setup/Run Time › should calculate costs in real-time 
+    [chromium] › tests\e2e\operations.spec.ts:229:7 › Production Module - Setup/Run Time › should add multiple operations to production plan 
+    [chromium] › tests\e2e\operations.spec.ts:309:7 › Production Module - Setup/Run Time › should remove operation 
+    [chromium] › tests\e2e\operations.spec.ts:345:7 › Production Module - Setup/Run Time › should validate required fields 
+    [chromium] › tests\e2e\operations.spec.ts:415:7 › Production Module - Setup/Run Time › should show production plans in order details 
+    [chromium] › tests\e2e\operations.spec.ts:474:7 › Production Module - Setup/Run Time › should validate operation times are non-negative 
+    [chromium] › tests\e2e\operations.spec.ts:505:7 › Production Module - Setup/Run Time › should link back to order from production plan details 
+    [chromium] › tests\e2e\operations.spec.ts:575:7 › Production Module - Mobile Responsiveness › should display production plans on mobile 
+    [chromium] › tests\e2e\operations.spec.ts:624:7 › Production Module - Performance › should load production plan details quickly 
+  37 passed (2.6m)

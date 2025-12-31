@@ -291,8 +291,7 @@ test.describe('Production Module - Setup/Run Time', () => {
     await upButtons.nth(1).click()
 
     // Verify order changed
-    const firstOpNumber = page.locator('span:has-text("#1")').first()
-    const firstOpName = await operationNames.first().inputValue()
+    const firstOpName = await page.locator('[data-testid="operation-name-1"]').inputValue()
     expect(firstOpName).toBe('Second Operation')
   })
 
@@ -378,11 +377,11 @@ test.describe('Production Module - Setup/Run Time', () => {
     await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
     await page.fill('[data-testid="operation-name-1"]', 'Test Operation Display')
 
-    await page.fill('[data-testid="setup-time-1"]',('15')
+    await page.fill('[data-testid="setup-time-1"]','15')
 
-    await page.fill('[data-testid="run-time-1"]',('4')
+    await page.fill('[data-testid="run-time-1"]','4')
 
-    await page.fill('[data-testid="hourly-rate-1"]',('150')
+    await page.fill('[data-testid="hourly-rate-1"]','150')
 
     await page.click('[data-testid="submit-production-plan"]')
 
@@ -416,11 +415,11 @@ test.describe('Production Module - Setup/Run Time', () => {
     await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
     await page.fill('[data-testid="operation-name-1"]', 'Test Op')
 
-    await page.fill('[data-testid="setup-time-1"]',('10')
+    await page.fill('[data-testid="setup-time-1"]','10')
 
-    await page.fill('[data-testid="run-time-1"]',('3')
+    await page.fill('[data-testid="run-time-1"]','3')
 
-    await page.fill('[data-testid="hourly-rate-1"]',('180')
+    await page.fill('[data-testid="hourly-rate-1"]','180')
 
     await page.click('[data-testid="submit-production-plan"]')
 
@@ -502,11 +501,11 @@ test.describe('Production Module - Setup/Run Time', () => {
     await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
     await page.fill('[data-testid="operation-name-1"]', 'Test Op')
 
-    await page.fill('[data-testid="setup-time-1"]',('10')
+    await page.fill('[data-testid="setup-time-1"]','10')
 
-    await page.fill('[data-testid="run-time-1"]',('2')
+    await page.fill('[data-testid="run-time-1"]','2')
 
-    await page.fill('[data-testid="hourly-rate-1"]',('150')
+    await page.fill('[data-testid="hourly-rate-1"]','150')
 
     await page.click('[data-testid="submit-production-plan"]')
 
