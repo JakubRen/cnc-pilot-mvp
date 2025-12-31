@@ -83,6 +83,7 @@ CREATE TABLE machines (
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'maintenance', 'broken')),
   notes TEXT,
   specifications JSONB,
+  hourly_rate NUMERIC(10,2) DEFAULT 180.00,
   created_by BIGINT REFERENCES users(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()

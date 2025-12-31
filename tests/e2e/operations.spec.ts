@@ -88,43 +88,38 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForLoadState('domcontentloaded')
 
     // Fill basic info
-    await page.fill('input[placeholder*="Flansza"]', 'Flansza Testowa Ø100')
-    await page.fill('input[type="number"][min="1"]', '50')
-    await page.fill('input[placeholder*="Stal"]', 'Stal nierdzewna')
+    await page.fill('[data-testid="part-name-input"]', 'Flansza Testowa Ø100')
+    await page.fill('[data-testid="quantity-input"]', '50')
+    await page.fill('[data-testid="material-input"]', 'Stal nierdzewna')
 
     // Select complexity
-    await page.selectOption('select', 'medium')
+    await page.selectOption('[data-testid="complexity-select"]', 'medium')
 
     // Add first operation
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
 
     // Wait for operation form to appear
-    await expect(page.locator('text=#1').first()).toBeVisible()
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
 
     // Fill operation details
-    // Find operation type select (first select after "Typ operacji" label)
-    const operationTypeSelect = page.locator('select').nth(1) // nth(0) is complexity, nth(1) is operation type
-    await operationTypeSelect.selectOption('milling')
-    await page.fill('input[placeholder*="Toczenie"]', 'Toczenie zgrubne')
+    await page.selectOption('[data-testid="operation-type-1"]', 'milling')
+    await page.fill('[data-testid="operation-name-1"]', 'Toczenie zgrubne')
 
     // Fill Setup Time
-    const setupInputs = page.locator('input[placeholder*="przygotowania"]')
-    await setupInputs.first().fill('20')
+    await page.fill('[data-testid="setup-time-1"]', '20')
 
     // Fill Run Time
-    const runInputs = page.locator('input[placeholder*="obróbki"]')
-    await runInputs.first().fill('6')
+    await page.fill('[data-testid="run-time-1"]', '6')
 
     // Fill hourly rate
-    const rateInputs = page.locator('input[type="number"][step="0.01"]')
-    await rateInputs.last().fill('180')
+    await page.fill('[data-testid="hourly-rate-1"]', '180')
 
-    // Check if cost is calculated (there are multiple "Koszt całkowity" labels, check the first one)
-    await expect(page.locator('text=Koszt całkowity').first()).toBeVisible()
+    // Check if cost is calculated
+    await expect(page.locator('[data-testid="total-cost"]')).toBeVisible()
 
-    // Submit form (NEW BUTTON TEXT)
-    await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
+    // Submit form
+    await page.click('[data-testid="submit-production-plan"]')
 
     // Should redirect to production module list (NEW ARCHITECTURE)
     await page.waitForURL('/production', { timeout: 10000 })
@@ -147,31 +142,30 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForLoadState('domcontentloaded')
 
     // Fill basic info
-    await page.fill('input[placeholder*="Flansza"]', 'Test Part')
-    await page.fill('input[type="number"][min="1"]', '10')
+    await page.fill('[data-testid="part-name-input"]', 'Test Part')
+    await page.fill('[data-testid="quantity-input"]', '10')
 
     // Add operation
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
 
     // Select operation type
-    const operationTypeSelect = page.locator('select').nth(1) // nth(0) is complexity, nth(1) is operation type
-    await operationTypeSelect.selectOption('turning')
-    await page.fill('input[placeholder*="Toczenie"]', 'Toczenie')
+    await page.selectOption('[data-testid="operation-type-1"]', 'turning')
+    await page.fill('[data-testid="operation-name-1"]', 'Toczenie')
 
     // Click auto-estimate button
-    await page.click('button:has-text("Oszacuj")')
+    await page.click('[data-testid="auto-estimate-1"]')
 
     // Wait for toast notification
     await expect(page.locator('text=Czasy oszacowane!').or(page.locator('text=Czasy oszacowane (wartości domyślne)'))).toBeVisible({ timeout: 5000 })
 
-    // Wait for form to update (small delay for React re-render)
-    await page.waitForTimeout(500)
+    // Wait for setup time input to have a value (better than arbitrary timeout)
+    await expect(page.locator('[data-testid="setup-time-1"]')).not.toHaveValue('')
+    await expect(page.locator('[data-testid="setup-time-1"]')).not.toHaveValue('0')
 
     // Verify times were filled
-    const setupInput = page.locator('input[placeholder*="przygotowania"]').first()
-    const setupValue = await setupInput.inputValue()
+    const setupValue = await page.locator('[data-testid="setup-time-1"]').inputValue()
     expect(parseInt(setupValue)).toBeGreaterThan(0)
   })
 
@@ -186,40 +180,37 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForLoadState('domcontentloaded')
 
     // Fill basic info
-    await page.fill('input[placeholder*="Flansza"]', 'Cost Test Part')
-    await page.fill('input[type="number"][min="1"]', '100')
+    await page.fill('[data-testid="part-name-input"]', 'Cost Test Part')
+    await page.fill('[data-testid="quantity-input"]', '100')
 
     // Add operation
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
 
     // Fill operation with specific values
-    await page.fill('input[placeholder*="Toczenie"]', 'Test Operation')
+    await page.fill('[data-testid="operation-name-1"]', 'Test Operation')
 
     // Setup: 30 min
-    const setupInputs = page.locator('input[placeholder*="przygotowania"]')
-    await setupInputs.first().fill('30')
+    await page.fill('[data-testid="setup-time-1"]', '30')
 
     // Run: 5 min/unit
-    const runInputs = page.locator('input[placeholder*="obróbki"]')
-    await runInputs.first().fill('5')
+    await page.fill('[data-testid="run-time-1"]', '5')
 
     // Rate: 200 PLN/h
-    const rateInputs = page.locator('input[type="number"][step="0.01"]')
-    await rateInputs.last().fill('200')
+    await page.fill('[data-testid="hourly-rate-1"]', '200')
 
     // Expected cost calculation:
     // Setup: 30/60 * 200 = 100 PLN
     // Run: 5 * 100 / 60 * 200 = 1666.67 PLN
     // Total: 1766.67 PLN
 
-    // Wait for cost to calculate (React state update)
-    await page.waitForTimeout(500)
-
-    // Check if total is displayed using data-testid
+    // Wait for total cost to be visible and updated
     const totalCost = page.locator('[data-testid="total-cost"]')
     await expect(totalCost).toBeVisible({ timeout: 2000 })
+
+    // Wait for cost calculation to complete (check that value changed from 0)
+    await expect(totalCost).not.toContainText('0.00 PLN')
 
     // Verify cost contains expected value (allow for formatting variations)
     const costText = await totalCost.textContent()
@@ -237,21 +228,21 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForLoadState('domcontentloaded')
 
     // Fill basic info
-    await page.fill('input[placeholder*="Flansza"]', 'Multi-Op Part')
-    await page.fill('input[type="number"][min="1"]', '20')
+    await page.fill('[data-testid="part-name-input"]', 'Multi-Op Part')
+    await page.fill('[data-testid="quantity-input"]', '20')
 
     // Add first operation
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForTimeout(300)
-    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible()
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
 
     // Add second operation
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForTimeout(300)
     await expect(page.locator('[data-testid="operation-2"]')).toBeVisible()
 
     // Add third operation
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForTimeout(300)
     await expect(page.locator('[data-testid="operation-3"]')).toBeVisible()
 
@@ -279,22 +270,21 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForLoadState('domcontentloaded')
 
     // Fill basic info
-    await page.fill('input[placeholder*="Flansza"]', 'Reorder Test')
-    await page.fill('input[type="number"][min="1"]', '5')
+    await page.fill('[data-testid="part-name-input"]', 'Reorder Test')
+    await page.fill('[data-testid="quantity-input"]', '5')
 
     // Add two operations
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
 
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
     await expect(page.locator('text=#2').first()).toBeVisible()
 
     // Fill operations
-    const operationNames = page.locator('input[placeholder*="Toczenie"]')
-    await operationNames.nth(0).fill('First Operation')
-    await operationNames.nth(1).fill('Second Operation')
+    await page.fill('[data-testid="operation-name-1"]', 'First Operation')
+    await page.fill('[data-testid="operation-name-2"]', 'Second Operation')
 
     // Move second operation up (should become first)
     const upButtons = page.locator('button[title*="górę"]')
@@ -317,29 +307,28 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForLoadState('domcontentloaded')
 
     // Fill basic info
-    await page.fill('input[placeholder*="Flansza"]', 'Remove Test')
-    await page.fill('input[type="number"][min="1"]', '5')
+    await page.fill('[data-testid="part-name-input"]', 'Remove Test')
+    await page.fill('[data-testid="quantity-input"]', '5')
 
     // Add two operations
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
 
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
     await expect(page.locator('text=#2').first()).toBeVisible()
 
     // Verify two operations exist
-    await expect(page.locator('text=#1').first()).toBeVisible()
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
     await expect(page.locator('text=#2').first()).toBeVisible()
 
     // Remove first operation
-    const removeButtons = page.locator('button:has-text("Usuń")')
-    await removeButtons.first().click()
+    await page.click('[data-testid="remove-operation-1"]')
 
     // Should only have one operation now (renumbered to #1)
-    await expect(page.locator('text=#1').first()).toBeVisible()
-    await expect(page.locator('text=#2').first()).not.toBeVisible()
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[data-testid="operation-2"]')).not.toBeVisible()
   })
 
   test('should validate required fields', async ({ page }) => {
@@ -357,7 +346,7 @@ test.describe('Production Module - Setup/Run Time', () => {
     await expect(submitButton).toBeDisabled()
 
     // Add an operation but don't fill part name
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForTimeout(300)
 
     // Button should now be enabled (operations exist)
@@ -381,24 +370,21 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForLoadState('domcontentloaded')
 
     // Fill and submit
-    await page.fill('input[placeholder*="Flansza"]', 'List Display Test')
-    await page.fill('input[type="number"][min="1"]', '25')
+    await page.fill('[data-testid="part-name-input"]', 'List Display Test')
+    await page.fill('[data-testid="quantity-input"]', '25')
 
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
-    await page.fill('input[placeholder*="Toczenie"]', 'Test Operation Display')
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
+    await page.fill('[data-testid="operation-name-1"]', 'Test Operation Display')
 
-    const setupInputs = page.locator('input[placeholder*="przygotowania"]')
-    await setupInputs.first().fill('15')
+    await page.fill('[data-testid="setup-time-1"]',('15')
 
-    const runInputs = page.locator('input[placeholder*="obróbki"]')
-    await runInputs.first().fill('4')
+    await page.fill('[data-testid="run-time-1"]',('4')
 
-    const rateInputs = page.locator('input[type="number"][step="0.01"]')
-    await rateInputs.last().fill('150')
+    await page.fill('[data-testid="hourly-rate-1"]',('150')
 
-    await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
+    await page.click('[data-testid="submit-production-plan"]')
 
     // Wait for redirect to production list (NEW: redirects to list, not detail)
     await page.waitForURL('/production', { timeout: 10000 })
@@ -422,24 +408,21 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.goto(`/production/create?order_id=${orderId}`)
     await page.waitForLoadState('domcontentloaded')
 
-    await page.fill('input[placeholder*="Flansza"]', 'Order Link Test')
-    await page.fill('input[type="number"][min="1"]', '10')
+    await page.fill('[data-testid="part-name-input"]', 'Order Link Test')
+    await page.fill('[data-testid="quantity-input"]', '10')
 
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
-    await page.fill('input[placeholder*="Toczenie"]', 'Test Op')
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
+    await page.fill('[data-testid="operation-name-1"]', 'Test Op')
 
-    const setupInputs = page.locator('input[placeholder*="przygotowania"]')
-    await setupInputs.first().fill('10')
+    await page.fill('[data-testid="setup-time-1"]',('10')
 
-    const runInputs = page.locator('input[placeholder*="obróbki"]')
-    await runInputs.first().fill('3')
+    await page.fill('[data-testid="run-time-1"]',('3')
 
-    const rateInputs = page.locator('input[type="number"][step="0.01"]')
-    await rateInputs.last().fill('180')
+    await page.fill('[data-testid="hourly-rate-1"]',('180')
 
-    await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
+    await page.click('[data-testid="submit-production-plan"]')
 
     // Wait for redirect to production list
     await page.waitForURL('/production', { timeout: 10000 })
@@ -481,13 +464,13 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.goto(`/production/create?order_id=${orderId}`)
     await page.waitForLoadState('domcontentloaded')
 
-    await page.fill('input[placeholder*="Flansza"]', 'Negative Time Test')
-    await page.fill('input[type="number"][min="1"]', '10')
+    await page.fill('[data-testid="part-name-input"]', 'Negative Time Test')
+    await page.fill('[data-testid="quantity-input"]', '10')
 
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
-    await page.fill('input[placeholder*="Toczenie"]', 'Invalid Op')
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
+    await page.fill('[data-testid="operation-name-1"]', 'Invalid Op')
 
     // Try to enter negative setup time using data-testid
     const setupInput = page.locator('[data-testid="setup-time-1"]')
@@ -511,24 +494,21 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.goto(`/production/create?order_id=${orderId}`)
     await page.waitForLoadState('domcontentloaded')
 
-    await page.fill('input[placeholder*="Flansza"]', 'Link Back Test')
-    await page.fill('input[type="number"][min="1"]', '5')
+    await page.fill('[data-testid="part-name-input"]', 'Link Back Test')
+    await page.fill('[data-testid="quantity-input"]', '5')
 
-    await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+    await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
-    await expect(page.locator('text=#1').first()).toBeVisible()
-    await page.fill('input[placeholder*="Toczenie"]', 'Test Op')
+    await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
+    await page.fill('[data-testid="operation-name-1"]', 'Test Op')
 
-    const setupInputs = page.locator('input[placeholder*="przygotowania"]')
-    await setupInputs.first().fill('10')
+    await page.fill('[data-testid="setup-time-1"]',('10')
 
-    const runInputs = page.locator('input[placeholder*="obróbki"]')
-    await runInputs.first().fill('2')
+    await page.fill('[data-testid="run-time-1"]',('2')
 
-    const rateInputs = page.locator('input[type="number"][step="0.01"]')
-    await rateInputs.last().fill('150')
+    await page.fill('[data-testid="hourly-rate-1"]',('150')
 
-    await page.click('button[type="submit"]:has-text("Utwórz Plan Produkcji")')
+    await page.click('[data-testid="submit-production-plan"]')
 
     // Wait for redirect to production list
     await page.waitForURL('/production', { timeout: 10000 })
@@ -646,12 +626,12 @@ test.describe('Production Module - Performance', () => {
     await page.goto(`/production/create?order_id=${orderId}`)
     await page.waitForLoadState('domcontentloaded')
 
-    await page.fill('input[placeholder*="Flansza"]', 'Many Ops Test')
-    await page.fill('input[type="number"][min="1"]', '10')
+    await page.fill('[data-testid="part-name-input"]', 'Many Ops Test')
+    await page.fill('[data-testid="quantity-input"]', '10')
 
     // Add 10 operations
     for (let i = 0; i < 10; i++) {
-      await page.getByRole('button', { name: /Dodaj Operację/ }).click()
+      await page.click('[data-testid="add-operation-button"]')
       await page.waitForTimeout(100) // Small delay to let React render
       await expect(page.locator(`text=#${i + 1}`).first()).toBeVisible({ timeout: 3000 })
     }

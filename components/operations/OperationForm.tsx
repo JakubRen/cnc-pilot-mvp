@@ -18,8 +18,9 @@ import {
 interface Machine {
   id: string
   name: string
-  machine_type: string
-  hourly_rate: number
+  code: string | null
+  model: string | null
+  status: string
 }
 
 interface OperationFormProps {
@@ -48,9 +49,9 @@ export default function OperationForm({
       try {
         const { data, error } = await supabase
           .from('machines')
-          .select('id, name, machine_type, hourly_rate')
+          .select('id, name, code, model, status')
           .eq('company_id', companyId)
-          .eq('is_active', true)
+          .eq('status', 'active')
           .order('name', { ascending: true })
 
         if (error) throw error
@@ -260,6 +261,7 @@ export default function OperationForm({
                   <button
                     type="button"
                     onClick={() => removeOperation(index)}
+                    data-testid={`remove-operation-${index + 1}`}
                     className="text-red-400 hover:text-red-300 text-sm font-medium"
                   >
                     ✕ Usuń
@@ -308,6 +310,7 @@ export default function OperationForm({
                     <select
                       value={operation.machine_id || ''}
                       onChange={(e) => updateOperation(index, 'machine_id', e.target.value || undefined)}
+                      data-testid={`machine-select-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                       disabled={isLoadingMachines}
                     >
@@ -331,6 +334,7 @@ export default function OperationForm({
                       min="0"
                       value={operation.hourly_rate}
                       onChange={(e) => updateOperation(index, 'hourly_rate', parseFloat(e.target.value) || 0)}
+                      data-testid={`hourly-rate-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                     />
                   </div>

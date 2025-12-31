@@ -321,6 +321,7 @@ export default function CreateProductionPlanPage() {
                   value={material}
                   onChange={(e) => setMaterial(e.target.value)}
                   placeholder="np. Stal nierdzewna, Aluminium"
+                  data-testid="material-input"
                   className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                 />
               </div>
@@ -333,6 +334,7 @@ export default function CreateProductionPlanPage() {
                 <select
                   value={complexity}
                   onChange={(e) => setComplexity(e.target.value as Complexity)}
+                  data-testid="complexity-select"
                   className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                 >
                   {Object.entries(complexityLabels).map(([value, label]) => (

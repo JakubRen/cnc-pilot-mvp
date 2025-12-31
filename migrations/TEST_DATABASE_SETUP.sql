@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS machines (
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'maintenance', 'broken')),
   notes TEXT,
   specifications JSONB,
+  hourly_rate NUMERIC(10,2) DEFAULT 180.00,
   created_by BIGINT REFERENCES users(id),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -414,6 +415,39 @@ INSERT INTO inventory (
   (SELECT id FROM users WHERE email = 'test@cnc_pilot.pl')
 )
 ON CONFLICT (company_id, sku) DO NOTHING;
+
+-- Insert sample machines with hourly rates
+INSERT INTO machines (
+  id,
+  company_id,
+  name,
+  code,
+  model,
+  status,
+  hourly_rate,
+  created_by
+) VALUES
+(
+  'd0000000-0000-0000-0000-000000000001',
+  'a0000000-0000-0000-0000-000000000001',
+  'Frezarka CNC Haas VF-2',
+  'HAAS-001',
+  'VF-2',
+  'active',
+  180.00,
+  (SELECT id FROM users WHERE email = 'test@cnc_pilot.pl')
+),
+(
+  'd0000000-0000-0000-0000-000000000002',
+  'a0000000-0000-0000-0000-000000000001',
+  'Tokarka CNC DMG CTX',
+  'DMG-001',
+  'CTX 310',
+  'active',
+  200.00,
+  (SELECT id FROM users WHERE email = 'test@cnc_pilot.pl')
+)
+ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
 -- 5. VERIFICATION QUERIES
