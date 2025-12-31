@@ -80,6 +80,29 @@ CREATE TABLE IF NOT EXISTS time_logs (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Machines table
+CREATE TABLE IF NOT EXISTS machines (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  code TEXT,
+  serial_number TEXT,
+  manufacturer TEXT,
+  model TEXT,
+  location TEXT,
+  purchase_date DATE,
+  warranty_until DATE,
+  last_maintenance_date DATE,
+  next_maintenance_date DATE,
+  maintenance_interval_days INTEGER DEFAULT 90,
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'maintenance', 'broken')),
+  notes TEXT,
+  specifications JSONB,
+  created_by BIGINT REFERENCES users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Production plans table
 CREATE TABLE IF NOT EXISTS production_plans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -96,15 +119,22 @@ CREATE TABLE IF NOT EXISTS production_plans (
 -- Operations table
 CREATE TABLE IF NOT EXISTS operations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  production_plan_id UUID REFERENCES production_plans(id) ON DELETE CASCADE,
+  production_plan_id UUID NOT NULL REFERENCES production_plans(id) ON DELETE CASCADE,
   operation_number INTEGER NOT NULL,
+  operation_type TEXT NOT NULL,
   operation_name TEXT NOT NULL,
-  machine TEXT,
-  setup_time_minutes NUMERIC DEFAULT 0,
-  run_time_minutes NUMERIC DEFAULT 0,
-  cost_per_hour NUMERIC DEFAULT 100.00,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'in_progress', 'completed')),
+  description TEXT,
+  machine_id UUID REFERENCES machines(id),
+  setup_time_minutes INTEGER NOT NULL DEFAULT 0 CHECK (setup_time_minutes >= 0),
+  run_time_per_unit_minutes NUMERIC(10,2) NOT NULL DEFAULT 0 CHECK (run_time_per_unit_minutes >= 0),
+  hourly_rate NUMERIC(10,2) NOT NULL DEFAULT 0,
+  total_setup_cost NUMERIC(10,2) GENERATED ALWAYS AS ((setup_time_minutes / 60.0) * hourly_rate) STORED,
+  total_run_cost NUMERIC(10,2),
+  total_operation_cost NUMERIC(10,2) DEFAULT 0,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'in_progress', 'completed', 'quality_check', 'failed')),
+  assigned_operator_id BIGINT REFERENCES users(id),
+  started_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -134,6 +164,7 @@ ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE time_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE machines ENABLE ROW LEVEL SECURITY;
 ALTER TABLE production_plans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE operations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
@@ -212,6 +243,22 @@ CREATE POLICY "Users can update time logs"
   ON time_logs FOR UPDATE
   USING (company_id IN (SELECT company_id FROM users WHERE auth_id = auth.uid()));
 
+-- Machines policies
+DROP POLICY IF EXISTS "Users can view company machines" ON machines;
+CREATE POLICY "Users can view company machines"
+  ON machines FOR SELECT
+  USING (company_id IN (SELECT company_id FROM users WHERE auth_id = auth.uid()));
+
+DROP POLICY IF EXISTS "Users can create machines" ON machines;
+CREATE POLICY "Users can create machines"
+  ON machines FOR INSERT
+  WITH CHECK (company_id IN (SELECT company_id FROM users WHERE auth_id = auth.uid()));
+
+DROP POLICY IF EXISTS "Users can update machines" ON machines;
+CREATE POLICY "Users can update machines"
+  ON machines FOR UPDATE
+  USING (company_id IN (SELECT company_id FROM users WHERE auth_id = auth.uid()));
+
 -- Production plans policies
 DROP POLICY IF EXISTS "Users can view company production plans" ON production_plans;
 CREATE POLICY "Users can view company production plans"
@@ -227,17 +274,29 @@ CREATE POLICY "Users can create production plans"
 DROP POLICY IF EXISTS "Users can view company operations" ON operations;
 CREATE POLICY "Users can view company operations"
   ON operations FOR SELECT
-  USING (company_id IN (SELECT company_id FROM users WHERE auth_id = auth.uid()));
+  USING (production_plan_id IN (
+    SELECT id FROM production_plans WHERE company_id IN (
+      SELECT company_id FROM users WHERE auth_id = auth.uid()
+    )
+  ));
 
 DROP POLICY IF EXISTS "Users can create operations" ON operations;
 CREATE POLICY "Users can create operations"
   ON operations FOR INSERT
-  WITH CHECK (company_id IN (SELECT company_id FROM users WHERE auth_id = auth.uid()));
+  WITH CHECK (production_plan_id IN (
+    SELECT id FROM production_plans WHERE company_id IN (
+      SELECT company_id FROM users WHERE auth_id = auth.uid()
+    )
+  ));
 
 DROP POLICY IF EXISTS "Users can update operations" ON operations;
 CREATE POLICY "Users can update operations"
   ON operations FOR UPDATE
-  USING (company_id IN (SELECT company_id FROM users WHERE auth_id = auth.uid()));
+  USING (production_plan_id IN (
+    SELECT id FROM production_plans WHERE company_id IN (
+      SELECT company_id FROM users WHERE auth_id = auth.uid()
+    )
+  ));
 
 -- Products policies
 DROP POLICY IF EXISTS "Users can view company products" ON products;
