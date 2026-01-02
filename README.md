@@ -84,7 +84,29 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
-### Latest Update: E2E Test Compilation Fixes & CI/CD Pipeline (2025-12-31)
+### Latest Update: E2E Test Reliability Improvements - Phase 3 (2026-01-02)
+
+**🧪 Advanced Error Handling & Test Stability**
+- **Achievement:** 40/48 tests passing (83.3%) - up from 38/48
+- Added error toast detection before assuming success (production plan creation)
+- Flexible auto-estimate validation (handles TEST DB without RPC function)
+- Fixed multiple operations verification (text search → toHaveValue on data-testid)
+- Enhanced form validation testing (disabled HTML5, test React validation)
+- Fixed strict mode violations (added .first() to multiple selectors)
+- Increased timeouts for React state updates (1s → 2s for data fetch)
+- Better error diagnostics (captures and throws descriptive errors)
+- Files modified: `tests/e2e/operations.spec.ts` (+679 lines of improvements)
+- Commit: c28f5df
+- **Status:** 83% pass rate ✅, 7 failing tests identified, 1 flaky (performance threshold)
+
+**Remaining Issues:**
+- 2x validation messages not appearing (form validation logic needs fix)
+- 1x auto-estimate returns 0 (TEST DB missing generate_operation_times RPC)
+- 2x strict mode violations (need .first() added)
+- 1x link back navigation timeout
+- 1x performance threshold exceeded (flaky - 9.1s vs 8s)
+
+### Previous Update: E2E Test Compilation Fixes & CI/CD Pipeline (2025-12-31)
 
 **🔧 TypeScript Compilation & Pipeline Fixes**
 - Fixed 32 TypeScript syntax errors in E2E tests (extra parentheses in `page.fill()` calls)
