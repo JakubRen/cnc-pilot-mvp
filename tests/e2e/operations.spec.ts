@@ -121,15 +121,16 @@ test.describe('Production Module - Setup/Run Time', () => {
     // Submit form
     await page.click('[data-testid="submit-production-plan"]')
 
-    // Wait for either success (redirect) or error toast
-    await page.waitForTimeout(1000) // Give React time to process
+    // Wait a moment for form processing
+    await page.waitForTimeout(2000)
 
-    // Check if there's an error toast
-    const hasErrorToast = await page.locator('[role="alert"]:has-text("Błąd")').isVisible().catch(() => false)
+    // Check if there's an error toast (look for error-specific keywords, not just any toast)
+    const errorToast = page.locator('[role="alert"]:has-text("Błąd"), [role="alert"]:has-text("muszą"), [role="alert"]:has-text("Podaj"), [role="alert"]:has-text("Brak")').first()
+    const hasErrorToast = await errorToast.isVisible().catch(() => false)
 
     if (hasErrorToast) {
-      const errorText = await page.locator('[role="alert"]:has-text("Błąd")').textContent()
-      throw new Error(`Production plan creation failed: ${errorText}`)
+      const errorText = await errorToast.textContent()
+      throw new Error(`Form validation/submission failed: ${errorText}`)
     }
 
     // Should redirect to production module list (NEW ARCHITECTURE)
@@ -378,8 +379,8 @@ test.describe('Production Module - Setup/Run Time', () => {
     // Try to submit without part name
     await submitButton.click()
 
-    // Should show validation error for missing part name
-    await expect(page.locator('text=Podaj nazwę części')).toBeVisible({ timeout: 3000 })
+    // Should show validation error toast for missing part name
+    await expect(page.locator('[role="alert"]:has-text("Podaj nazwę części")')).toBeVisible({ timeout: 3000 })
   })
 
   test('should display production plan in production module list', async ({ page }) => {
@@ -409,15 +410,16 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     await page.click('[data-testid="submit-production-plan"]')
 
-    // Wait for either success (redirect) or error toast
-    await page.waitForTimeout(1000) // Give React time to process
+    // Wait a moment for form processing
+    await page.waitForTimeout(2000)
 
-    // Check if there's an error toast
-    const hasErrorToast = await page.locator('[role="alert"]:has-text("Błąd")').isVisible().catch(() => false)
+    // Check if there's an error toast (look for error-specific keywords, not just any toast)
+    const errorToast = page.locator('[role="alert"]:has-text("Błąd"), [role="alert"]:has-text("muszą"), [role="alert"]:has-text("Podaj"), [role="alert"]:has-text("Brak")').first()
+    const hasErrorToast = await errorToast.isVisible().catch(() => false)
 
     if (hasErrorToast) {
-      const errorText = await page.locator('[role="alert"]:has-text("Błąd")').textContent()
-      throw new Error(`Production plan creation failed: ${errorText}`)
+      const errorText = await errorToast.textContent()
+      throw new Error(`Form validation/submission failed: ${errorText}`)
     }
 
     // Wait for redirect to production list (NEW: redirects to list, not detail)
@@ -525,13 +527,8 @@ test.describe('Production Module - Setup/Run Time', () => {
     await submitButton.click()
     await page.waitForTimeout(500)
 
-    // Should show validation error (toast message) - full text: "Czasy dla operacji #1 muszą być >= 0"
-    // Toast may appear quickly then dismiss, so use shorter timeout and check for error state
-    const hasValidationToast = await page.locator('text=muszą być').isVisible().catch(() => false)
-    const hasAnyErrorToast = await page.locator('[role="alert"]').isVisible().catch(() => false)
-
-    // Either saw the specific validation message OR any error toast (validation prevents submit)
-    expect(hasValidationToast || hasAnyErrorToast).toBeTruthy()
+    // Should show validation error toast - "Czasy dla operacji #1 muszą być >= 0"
+    await expect(page.locator('[role="alert"]:has-text("muszą być")')).toBeVisible({ timeout: 3000 })
   })
 
   test('should link back to order from production plan details', async ({ page }) => {
