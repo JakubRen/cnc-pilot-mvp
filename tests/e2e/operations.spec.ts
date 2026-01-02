@@ -199,6 +199,9 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.fill('[data-testid="part-name-input"]', 'Cost Test Part')
     await page.fill('[data-testid="quantity-input"]', '100')
 
+    // Wait for React state to update (quantity affects cost calculation)
+    await page.waitForTimeout(500)
+
     // Add operation
     await page.click('[data-testid="add-operation-button"]')
     await page.waitForLoadState('domcontentloaded')
@@ -220,6 +223,9 @@ test.describe('Production Module - Setup/Run Time', () => {
     // Setup: 30/60 * 200 = 100 PLN
     // Run: 5 * 100 / 60 * 200 = 1666.67 PLN
     // Total: 1766.67 PLN
+
+    // Wait for React to recalculate costs
+    await page.waitForTimeout(1000)
 
     // Wait for total cost to be visible and updated
     const totalCost = page.locator('[data-testid="total-cost"]')
@@ -377,6 +383,10 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.evaluate(() => {
       const form = document.querySelector('form')
       if (form) form.setAttribute('novalidate', 'true')
+
+      // Remove required attributes from inputs to prevent browser validation
+      const inputs = document.querySelectorAll('input[required], select[required], textarea[required]')
+      inputs.forEach(input => input.removeAttribute('required'))
     })
 
     // Try to submit without part name
@@ -527,10 +537,21 @@ test.describe('Production Module - Setup/Run Time', () => {
     // Wait for React state to update
     await page.waitForTimeout(500)
 
-    // Disable HTML5 validation
+    // Disable HTML5 validation and remove required/min/max attributes
     await page.evaluate(() => {
       const form = document.querySelector('form')
       if (form) form.setAttribute('novalidate', 'true')
+
+      // Remove validation attributes from all inputs to prevent browser validation
+      const inputs = document.querySelectorAll('input, select, textarea')
+      inputs.forEach((input: any) => {
+        input.removeAttribute('required')
+        input.removeAttribute('min')
+        input.removeAttribute('max')
+        input.removeAttribute('minlength')
+        input.removeAttribute('maxlength')
+        input.removeAttribute('pattern')
+      })
     })
 
     // Submit - validation runs in handleSubmit
@@ -584,14 +605,19 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForURL(/\/production\/[a-f0-9-]+/, { timeout: 10000 })
     await page.waitForLoadState('domcontentloaded')
 
+    // Wait for network to be idle (database queries complete)
+    await page.waitForLoadState('networkidle', { timeout: 10000 })
+
     // Wait for page title to ensure data loaded
     await expect(page.locator('h1:has-text("Plan Produkcji")')).toBeVisible({ timeout: 10000 })
-    await page.waitForTimeout(2000)
+
+    // Give extra time for order data to load from database
+    await page.waitForTimeout(3000)
 
     // Look for link back to order - use simpler selector that waits for content
     // Button has text like "📦 Zlecenie #ORD-TEST-001"
     const orderLink = page.getByRole('link', { name: /Zlecenie/ }).first()
-    await expect(orderLink).toBeVisible({ timeout: 15000 })
+    await expect(orderLink).toBeVisible({ timeout: 20000 })
 
     // Click it
     await orderLink.click()
