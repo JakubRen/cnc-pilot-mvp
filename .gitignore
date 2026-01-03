@@ -68,6 +68,7 @@ nul
 /migrations/*CHANGELOG*.md
 /migrations/START_HERE.md
 /migrations/V*_COMPARISON.md
+CLAUDE.md
 
 # Screenshots and PDFs (root only)
 /*.png
