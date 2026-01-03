@@ -151,7 +151,7 @@ export default function CreateProductionPlanPage() {
 
     try {
       // Log order_id for debugging
-      console.log('[Production Create] Submitting with order_id:', orderId)
+      console.error('[Production Create] Submitting with order_id:', orderId)
 
       // 1. Generate production plan number
       let planNumberData: string
@@ -184,7 +184,7 @@ export default function CreateProductionPlanPage() {
         created_by: userId
       }
 
-      console.log('[Production Create] Inserting production plan:', planData)
+      console.error('[Production Create] Inserting production plan:', planData)
 
       const { data: productionPlan, error: planError } = await supabase
         .from('production_plans')
@@ -197,7 +197,7 @@ export default function CreateProductionPlanPage() {
         throw planError
       }
 
-      console.log('[Production Create] Created production plan:', productionPlan)
+      console.error('[Production Create] Created production plan:', productionPlan)
 
       // 3. Create operations for this production plan
       const operationsToInsert = operations.map((op, index) => ({
