@@ -150,6 +150,9 @@ export default function CreateProductionPlanPage() {
     const loadingToast = toast.loading('Tworzę plan produkcji...')
 
     try {
+      // Log order_id for debugging
+      console.log('[Production Create] Submitting with order_id:', orderId)
+
       // 1. Generate production plan number
       let planNumberData: string
       const { data: rpcData, error: planNumberError } = await supabase
@@ -165,27 +168,36 @@ export default function CreateProductionPlanPage() {
       }
 
       // 2. Create production plan
+      const planData = {
+        company_id: companyId,
+        plan_number: planNumberData,
+        order_id: orderId,
+        part_name: partName,
+        quantity: quantity,
+        drawing_file_id: drawingFileId,
+        length: length,
+        width: width,
+        height: height,
+        material: material || null,
+        technical_notes: notes || null,
+        status: 'draft',
+        created_by: userId
+      }
+
+      console.log('[Production Create] Inserting production plan:', planData)
+
       const { data: productionPlan, error: planError } = await supabase
         .from('production_plans')
-        .insert({
-          company_id: companyId,
-          plan_number: planNumberData,
-          order_id: orderId,
-          part_name: partName,
-          quantity: quantity,
-          drawing_file_id: drawingFileId,
-          length: length,
-          width: width,
-          height: height,
-          material: material || null,
-          technical_notes: notes || null,
-          status: 'draft',
-          created_by: userId
-        })
+        .insert(planData)
         .select()
         .single()
 
-      if (planError) throw planError
+      if (planError) {
+        console.error('[Production Create] Error inserting production plan:', planError)
+        throw planError
+      }
+
+      console.log('[Production Create] Created production plan:', productionPlan)
 
       // 3. Create operations for this production plan
       const operationsToInsert = operations.map((op, index) => ({

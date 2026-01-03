@@ -348,8 +348,12 @@ export default function OperationForm({
                     <input
                       type="number"
                       step="1"
+                      min="0"
                       value={operation.setup_time_minutes}
-                      onChange={(e) => updateOperation(index, 'setup_time_minutes', parseInt(e.target.value) || 0)}
+                      onChange={(e) => {
+                        const value = e.target.value === '' ? 0 : parseInt(e.target.value)
+                        updateOperation(index, 'setup_time_minutes', isNaN(value) ? 0 : value)
+                      }}
                       data-testid={`setup-time-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                       placeholder="Czas przygotowania (jednorazowy)"
@@ -367,8 +371,12 @@ export default function OperationForm({
                     <input
                       type="number"
                       step="0.01"
+                      min="0"
                       value={operation.run_time_per_unit_minutes}
-                      onChange={(e) => updateOperation(index, 'run_time_per_unit_minutes', parseFloat(e.target.value) || 0)}
+                      onChange={(e) => {
+                        const value = e.target.value === '' ? 0 : parseFloat(e.target.value)
+                        updateOperation(index, 'run_time_per_unit_minutes', isNaN(value) ? 0 : value)
+                      }}
                       data-testid={`run-time-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                       placeholder="Czas obróbki 1 sztuki"

@@ -65,6 +65,9 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
   const totalRunTime = typedPlan.total_run_time_minutes || 0
   const totalCost = typedPlan.estimated_cost || 0
 
+  // Log for debugging E2E test failures
+  console.log('[Production Details] order:', order ? 'exists' : 'null', 'order_id:', typedPlan.order_id)
+
   return (
     <AppLayout>
       <div className="p-8">
@@ -80,21 +83,15 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
             </p>
           </div>
           <div className="flex gap-3">
-            {order ? (
+            {/* Always show link to order if order_id exists */}
+            {(order?.id || typedPlan.order_id) && (
               <Link
-                href={`/orders/${order.id}`}
+                href={`/orders/${order?.id || typedPlan.order_id}`}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
-                📦 Zlecenie #{order.order_number}
+                📦 Zlecenie {order?.order_number ? `#${order.order_number}` : ''}
               </Link>
-            ) : typedPlan.order_id ? (
-              <Link
-                href={`/orders/${typedPlan.order_id}`}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                📦 Zlecenie
-              </Link>
-            ) : null}
+            )}
             <Link
               href="/production"
               className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
