@@ -197,10 +197,11 @@ test.describe('Production Module - Setup/Run Time', () => {
 
     // Fill basic info
     await page.fill('[data-testid="part-name-input"]', 'Cost Test Part')
+    await page.waitForTimeout(300) // Allow React state to update after part name
     await page.fill('[data-testid="quantity-input"]', '100')
 
-    // Wait for React state to update (quantity affects cost calculation)
-    await page.waitForTimeout(500)
+    // CRITICAL: Wait longer for React state to update (quantity affects ALL cost calculations)
+    await page.waitForTimeout(1500)
 
     // Add operation
     await page.click('[data-testid="add-operation-button"]')

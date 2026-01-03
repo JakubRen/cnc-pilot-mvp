@@ -80,12 +80,14 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
             </p>
           </div>
           <div className="flex gap-3">
-            <Link
-              href={`/orders/${order?.id}`}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            >
-              📦 Zlecenie #{order?.order_number}
-            </Link>
+            {order && (
+              <Link
+                href={`/orders/${order.id}`}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                📦 Zlecenie #{order.order_number}
+              </Link>
+            )}
             <Link
               href="/production"
               className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
