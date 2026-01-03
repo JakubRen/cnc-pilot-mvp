@@ -84,7 +84,26 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
-### Latest Update: E2E Test Reliability - Phase 4: Advanced Strategies (2026-01-02)
+### Latest Update: TEST/PROD Database Workflow & Permissions Sync (2026-01-03)
+
+**🗄️ Database Workflow Standardization**
+- **Achievement:** Established and documented proper TEST/PROD workflow
+- **Problem Solved:** Localhost missing 6 modules (Quality Control, Cooperation, Machines, Carbon, Costs, Calendar)
+- **Root Cause:** TEST database had incomplete permissions (9 modules vs 15 on PROD)
+- **Solution:** Synchronized 24 permissions for 6 modules from PROD to TEST
+  - Added UNIQUE constraints to permission tables
+  - Ran `migrations/add_missing_permissions.sql` on TEST database
+  - Verified all modules now visible on localhost
+- **Documentation Added:**
+  - TEST/PROD workflow diagram in CLAUDE.md (local)
+  - Database sync procedure in PROMPT_CTOnew.md
+  - Key rules: Always code on TEST → tests pass → push to PROD
+- **Git Changes:**
+  - Removed CLAUDE.md from git tracking (now local-only)
+  - Added CLAUDE.md to .gitignore for project-specific workflow
+- **Commits:** 6f9c4e9 (docs: remove CLAUDE.md from git tracking)
+
+### E2E Test Reliability - Phase 4: Advanced Strategies (2026-01-02)
 
 **🎯 Revolutionary Testing Approach - Behavior Over UI**
 - **Achievement:** 38/48 stable tests (79.2%) + 6 flaky = 41/48 total attempts (85.4%)
