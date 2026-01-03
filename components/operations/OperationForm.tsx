@@ -348,7 +348,6 @@ export default function OperationForm({
                     <input
                       type="number"
                       step="1"
-                      min="0"
                       value={operation.setup_time_minutes}
                       onChange={(e) => updateOperation(index, 'setup_time_minutes', parseInt(e.target.value) || 0)}
                       data-testid={`setup-time-${index + 1}`}
@@ -368,7 +367,6 @@ export default function OperationForm({
                     <input
                       type="number"
                       step="0.01"
-                      min="0"
                       value={operation.run_time_per_unit_minutes}
                       onChange={(e) => updateOperation(index, 'run_time_per_unit_minutes', parseFloat(e.target.value) || 0)}
                       data-testid={`run-time-${index + 1}`}
