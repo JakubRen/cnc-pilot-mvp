@@ -351,8 +351,15 @@ export default function OperationForm({
                       min="0"
                       value={operation.setup_time_minutes}
                       onChange={(e) => {
-                        const value = e.target.value === '' ? 0 : parseInt(e.target.value)
-                        updateOperation(index, 'setup_time_minutes', isNaN(value) ? 0 : value)
+                        const rawValue = e.target.value
+                        const parsedValue = rawValue === '' ? 0 : parseInt(rawValue)
+                        const finalValue = isNaN(parsedValue) ? 0 : parsedValue
+                        console.error(`[OperationForm] Setup Time onChange - Operation ${index + 1}:`, {
+                          raw: rawValue,
+                          parsed: parsedValue,
+                          final: finalValue
+                        })
+                        updateOperation(index, 'setup_time_minutes', finalValue)
                       }}
                       data-testid={`setup-time-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
@@ -374,8 +381,15 @@ export default function OperationForm({
                       min="0"
                       value={operation.run_time_per_unit_minutes}
                       onChange={(e) => {
-                        const value = e.target.value === '' ? 0 : parseFloat(e.target.value)
-                        updateOperation(index, 'run_time_per_unit_minutes', isNaN(value) ? 0 : value)
+                        const rawValue = e.target.value
+                        const parsedValue = rawValue === '' ? 0 : parseFloat(rawValue)
+                        const finalValue = isNaN(parsedValue) ? 0 : parsedValue
+                        console.error(`[OperationForm] Run Time onChange - Operation ${index + 1}:`, {
+                          raw: rawValue,
+                          parsed: parsedValue,
+                          final: finalValue
+                        })
+                        updateOperation(index, 'run_time_per_unit_minutes', finalValue)
                       }}
                       data-testid={`run-time-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"

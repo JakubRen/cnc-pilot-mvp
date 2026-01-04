@@ -101,42 +101,65 @@ export default function CreateProductionPlanPage() {
 
   // Validation
   const validate = (): boolean => {
+    console.error('[Validation] Starting validation...')
+    console.error('[Validation] Operations state:', JSON.stringify(operations.map(op => ({
+      name: op.operation_name,
+      setup_time: op.setup_time_minutes,
+      run_time: op.run_time_per_unit_minutes,
+      hourly_rate: op.hourly_rate
+    }))))
+
     if (!orderId) {
       toast.error('Brak ID zlecenia')
+      console.error('[Validation] FAILED - No order ID')
       return false
     }
 
     if (!partName.trim()) {
       toast.error('Podaj nazwę części')
+      console.error('[Validation] FAILED - No part name')
       return false
     }
 
     if (quantity <= 0) {
       toast.error('Ilość musi być większa od 0')
+      console.error('[Validation] FAILED - Invalid quantity')
       return false
     }
 
     if (operations.length === 0) {
       toast.error('Dodaj przynajmniej jedną operację')
+      console.error('[Validation] FAILED - No operations')
       return false
     }
 
     for (let i = 0; i < operations.length; i++) {
       const op = operations[i]
+      console.error(`[Validation] Checking operation ${i + 1}:`, {
+        name: op.operation_name,
+        setup_time: op.setup_time_minutes,
+        run_time: op.run_time_per_unit_minutes,
+        hourly_rate: op.hourly_rate
+      })
+
       if (!op.operation_name.trim()) {
         toast.error(`Podaj nazwę dla operacji #${i + 1}`)
+        console.error(`[Validation] FAILED - Operation ${i + 1} has no name`)
         return false
       }
       if (op.setup_time_minutes < 0 || op.run_time_per_unit_minutes < 0) {
         toast.error(`Czasy dla operacji #${i + 1} muszą być >= 0`)
+        console.error(`[Validation] FAILED - Operation ${i + 1} has negative times: setup=${op.setup_time_minutes}, run=${op.run_time_per_unit_minutes}`)
         return false
       }
       if (op.hourly_rate <= 0) {
         toast.error(`Stawka dla operacji #${i + 1} musi być > 0`)
+        console.error(`[Validation] FAILED - Operation ${i + 1} has invalid rate: ${op.hourly_rate}`)
         return false
       }
     }
 
+    console.error('[Validation] PASSED - All checks OK')
     return true
   }
 
