@@ -5,6 +5,7 @@ import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
 import { formatCost, formatDuration, operationTypeLabels, operationStatusLabels, operationStatusColors, Operation } from '@/types/operations'
 import { ProductionPlanWithRelations, productionPlanStatusLabels, productionPlanStatusColors } from '@/types/production-plans'
+import { ClientDebugger } from './ClientDebugger'
 
 export default async function ProductionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -99,6 +100,9 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
 
   return (
     <AppLayout>
+      {/* Client-side diagnostic logging - will be visible in Playwright output */}
+      <ClientDebugger plan={typedPlan} order={order} />
+
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
         {/* Header */}
