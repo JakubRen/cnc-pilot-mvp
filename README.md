@@ -84,7 +84,39 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
-### Latest Update: TEST/PROD Database Workflow & Permissions Sync (2026-01-03)
+### Latest Update: E2E Test Reliability - Phase 5: Validation Fix & Logging Discovery (2026-01-04)
+
+**🎯 Breakthrough: 97.9% Test Success Rate - Highest Yet!**
+- **Achievement:** 47/48 tests passing (97.9%) - only 1 remaining failure!
+- **VALIDATION TEST FIXED!** ✅ (commit f854126)
+  - **Problem:** Test used `.evaluate()` to set input value, which bypassed React's synthetic event system
+  - **Solution:** Changed to `.fill()` which properly triggers React onChange events
+  - **Result:** Validation logic now executes correctly, test passes consistently
+  - **Technical Detail:** React forms need synthetic events, not direct DOM manipulation
+- **Debug Logging Infrastructure Added** (commit 1720448)
+  - **Test-side logging:** 15+ console.log statements tracking form interactions
+  - **Server-side logging:** console.error in production pages (list & details)
+  - **Goal:** Diagnose why "Zlecenie" link doesn't render in remaining failing test
+- **CRITICAL DISCOVERY: Server-Side Log Capture Issue** 🔍
+  - **Finding:** `page.on('console')` only captures CLIENT-side browser logs
+  - **Impact:** Server Component logs (`app/production/page.tsx`, `app/production/[id]/page.tsx`) NOT visible in CI
+  - **Missing Data:** Cannot see if order data loads via JOIN, or why link fails to render
+  - **Next Step:** Need alternative approach (check CI terminal logs, client component wrapper, or direct DOM inspection)
+- **Remaining Test:** 1 failing - "should link back to order from production plan details"
+  - Production plan created successfully ✅
+  - Navigation to /production works ✅
+  - Navigation to /production/[id] works ✅
+  - Page title renders ✅
+  - "Zlecenie" link NOT visible ❌ - investigation needed
+- **Progress from Phase 4:** 38/48 stable (79.2%) → **47/48 (97.9%)** = +18.7% improvement
+- **Commits:** f854126 (validation fix), 1720448 (debug logging), 3734195, f6e78aa, 3b30f9c
+- **Learnings:**
+  - React synthetic events are critical for form testing
+  - `.fill()` > `.evaluate()` for input field interactions
+  - Server Component logs require different capture strategy than browser console
+- **Next Phase:** Server-side investigation to diagnose link rendering logic
+
+### TEST/PROD Database Workflow & Permissions Sync (2026-01-03)
 
 **🗄️ Database Workflow Standardization**
 - **Achievement:** Established and documented proper TEST/PROD workflow
