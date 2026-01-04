@@ -529,6 +529,14 @@ test.describe('Production Module - Setup/Run Time', () => {
   })
 
   test('should validate operation times are non-negative', async ({ page }) => {
+    // CAPTURE CONSOLE LOGS FROM BROWSER
+    const consoleLogs: string[] = []
+    page.on('console', msg => {
+      const text = msg.text()
+      consoleLogs.push(text)
+      console.log(`[BROWSER ${msg.type().toUpperCase()}]:`, text)
+    })
+
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
@@ -596,6 +604,14 @@ test.describe('Production Module - Setup/Run Time', () => {
   })
 
   test('should link back to order from production plan details', async ({ page }) => {
+    // CAPTURE CONSOLE LOGS FROM BROWSER
+    const consoleLogs: string[] = []
+    page.on('console', msg => {
+      const text = msg.text()
+      consoleLogs.push(text)
+      console.log(`[BROWSER ${msg.type().toUpperCase()}]:`, text)
+    })
+
     await page.goto('/orders')
     await page.getByRole('link', { name: /ORD-TEST/ }).first().click()
     await page.waitForURL(/\/orders\/[a-f0-9-]+/, { timeout: 10000 })
