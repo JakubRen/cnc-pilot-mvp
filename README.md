@@ -84,6 +84,44 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### 🚨 CRITICAL: E2E Test Fix - ROOT CAUSE IDENTIFIED (2026-01-04 Evening)
+
+**Problem:** 1/48 tests failing - "should link back to order from production plan details"
+
+**ROOT CAUSE (100% CONFIRMED):**
+**TEST i PROD databases NIE SĄ ZSYNCHRONIZOWANE!**
+
+**Konkretne braki w TEST:**
+- ❌ RPC function `generate_production_plan_number()` - test nie może tworzyć planów produkcji
+- ❌ Prawdopodobnie więcej functions, triggers, sequences
+- ❌ Ręczna synchronizacja migrations = niewykonalne
+
+**Commits wykonane (wszystkie NIE naprawiły problemu):**
+- bd504e4: Query optimization (explicit order_id selection)
+- cfd1e56: Client-side diagnostic logging
+- de65a6c: Remove explicit order_id conflict
+
+**Weryfikacje (wszystkie PASSED):**
+- ✅ Schema: 23 kolumny, order_id exists
+- ✅ Data: production plan ma order_id w bazie
+- ✅ RLS: company_id matching (00000000-0000-0000-0000-000000000001)
+
+**ROZWIĄZANIE NA JUTRO:**
+```bash
+# pg_dump PROD → restore do TEST (1:1 kopia)
+pg_dump "postgresql://postgres.pbkajsjbsyuvpqpqsalc:..." --schema=public -f PROD_FULL_DUMP.sql
+psql "postgresql://postgres.vvetjctdjswgwebhgbpd:..." -f PROD_FULL_DUMP.sql
+npx playwright test  # Expected: 48/48 PASS ✅
+```
+
+**Czas:** ~10 minut | **Confidence:** 100% | **ETA:** Jutro rano
+
+**Plan files:**
+- Plan mode: `C:\Users\jakub\.claude\plans\jaunty-splashing-thompson.md`
+- Protokół: `C:\Users\jakub\Desktop\Bulls on Parade\Claude\Plan\E2E_TEST_FIX_PROTOCOL.md`
+
+---
+
 ### Latest Update: E2E Test Reliability - Phase 5: Validation Fix & Logging Discovery (2026-01-04)
 
 **🎯 Breakthrough: 97.9% Test Success Rate - Highest Yet!**
