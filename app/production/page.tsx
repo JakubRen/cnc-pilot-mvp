@@ -34,6 +34,18 @@ export default async function ProductionPage() {
     .eq('company_id', user.company_id)
     .order('created_at', { ascending: false })
 
+  // DEBUG: Log production plans for E2E test troubleshooting
+  console.error('[Production List] Fetched plans:', {
+    count: productionPlans?.length || 0,
+    plans: productionPlans?.map(p => ({
+      id: p.id,
+      part_name: p.part_name,
+      plan_number: p.plan_number,
+      order_id: p.order_id,
+      has_order_data: !!p.order
+    }))
+  })
+
   return (
     <AppLayout>
       <div className="p-8">

@@ -633,23 +633,41 @@ test.describe('Production Module - Setup/Run Time', () => {
     await page.waitForLoadState('domcontentloaded')
     await page.waitForTimeout(1500)
 
+    // DEBUG: Check if production plan appears in list
+    console.log('[TEST] Checking for production plan "Link Back Test" in list...')
+    const allLinks = await page.getByRole('link').allTextContents()
+    console.log('[TEST] All links on page:', allLinks)
+
     // Click on the created production plan card to go to details
     // Look for a link containing "Link Back Test" (production plan cards are links)
     const planLink = page.getByRole('link', { name: /Link Back Test/ }).first()
+    const isPlanVisible = await planLink.isVisible().catch(() => false)
+    console.log('[TEST] Is "Link Back Test" plan visible?', isPlanVisible)
+
     await expect(planLink).toBeVisible({ timeout: 5000 })
+    console.log('[TEST] Clicking on production plan link...')
     await planLink.click()
 
     // Wait for production detail page to load
     await page.waitForURL(/\/production\/[a-f0-9-]+/, { timeout: 10000 })
+    console.log('[TEST] Redirected to production details:', page.url())
     await page.waitForLoadState('domcontentloaded')
 
     // Wait for page title to ensure page rendered
     await expect(page.locator('h1:has-text("Plan Produkcji")')).toBeVisible({ timeout: 10000 })
+    console.log('[TEST] Page title rendered, checking for order link...')
+
+    // DEBUG: Check what links exist on details page
+    const detailsLinks = await page.getByRole('link').allTextContents()
+    console.log('[TEST] All links on details page:', detailsLinks)
 
     // Wait directly for the order link to appear (skip networkidle - page may have active connections)
     // Button has text like "📦 Zlecenie #ORD-TEST-001"
     // This link appears when order data loads from database
     const orderLink = page.getByRole('link', { name: /Zlecenie/ }).first()
+    const isOrderLinkVisible = await orderLink.isVisible().catch(() => false)
+    console.log('[TEST] Is "Zlecenie" link visible?', isOrderLinkVisible)
+
     await expect(orderLink).toBeVisible({ timeout: 30000 }) // Increased timeout for slow DB queries
 
     // Click it
