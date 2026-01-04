@@ -20,6 +20,7 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
     .from('production_plans')
     .select(`
       *,
+      order_id,
       order:orders (
         id,
         order_number,
@@ -65,6 +66,8 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
     plan_id: productionPlan.id,
     plan_number: productionPlan.plan_number,
     order_id: productionPlan.order_id,
+    order_id_type: typeof productionPlan.order_id,
+    order_id_truthy: !!productionPlan.order_id,
     raw_order_field: productionPlan.order,
     is_order_array: Array.isArray(productionPlan.order),
     is_order_null: productionPlan.order === null,
@@ -82,10 +85,16 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
   console.error('[Production Details] PROCESSED order data:', {
     plan_id: typedPlan.id,
     plan_number: typedPlan.plan_number,
-    order_id: typedPlan.order_id,
+    typed_order_id: typedPlan.order_id,
+    typed_order_id_type: typeof typedPlan.order_id,
     order_exists: !!order,
+    order_id_from_order: order?.id,
     order_data: order ? { id: order.id, order_number: order.order_number } : 'NULL',
-    will_render_link: !!(order?.id || typedPlan.order_id)
+    will_render_link: !!(order?.id || typedPlan.order_id),
+    conditional_breakdown: {
+      order_dot_id: order?.id || 'FALSY',
+      typed_plan_order_id: typedPlan.order_id || 'FALSY'
+    }
   })
 
   return (
@@ -103,11 +112,11 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
             </p>
           </div>
           <div className="flex gap-3">
-            {/* Always show link to order if order_id exists */}
-            {(order?.id || typedPlan.order_id) && (
+            {/* ALWAYS show link if order_id exists - even if JOIN failed */}
+            {(typedPlan.order_id || order?.id) && (
               <Link
-                href={`/orders/${order?.id || typedPlan.order_id}`}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                href={`/orders/${typedPlan.order_id || order?.id}`}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 📦 Zlecenie {order?.order_number ? `#${order.order_number}` : ''}
               </Link>
