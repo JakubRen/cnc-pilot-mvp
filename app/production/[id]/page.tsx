@@ -66,7 +66,13 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
   const totalCost = typedPlan.estimated_cost || 0
 
   // Log for debugging E2E test failures
-  console.error('[Production Details] order:', order ? 'exists' : 'null', 'order_id:', typedPlan.order_id)
+  console.error('[Production Details] Loaded plan:', {
+    plan_id: typedPlan.id,
+    plan_number: typedPlan.plan_number,
+    order_id: typedPlan.order_id,
+    order_exists: !!order,
+    order_data: order ? { id: order.id, order_number: order.order_number } : 'NULL'
+  })
 
   return (
     <AppLayout>

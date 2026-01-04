@@ -554,34 +554,26 @@ test.describe('Production Module - Setup/Run Time', () => {
     await expect(page.locator('[data-testid="operation-1"]')).toBeVisible({ timeout: 5000 })
     await page.fill('[data-testid="operation-name-1"]', 'Invalid Op')
 
-    // Try to enter negative setup time using data-testid
-    // Note: HTML5 validation (min="0") prevents -10, so we use JS to bypass
-    const setupInput = page.locator('[data-testid="setup-time-1"]')
-    await setupInput.evaluate((el: HTMLInputElement) => {
-      el.value = '-10'
-      // Trigger React onChange event
-      el.dispatchEvent(new Event('input', { bubbles: true }))
-      el.dispatchEvent(new Event('change', { bubbles: true }))
+    // CRITICAL FIX: Remove min attribute FIRST, then use .fill() to trigger React onChange
+    // Previous approach with .evaluate() didn't trigger React's synthetic event system
+    await page.evaluate(() => {
+      const setupInput = document.querySelector('[data-testid="setup-time-1"]') as HTMLInputElement
+      if (setupInput) {
+        setupInput.removeAttribute('min')
+        setupInput.removeAttribute('max')
+      }
     })
+
+    // Now use .fill() which triggers real events that React recognizes
+    await page.fill('[data-testid="setup-time-1"]', '-10')
 
     // Wait for React state to update
     await page.waitForTimeout(500)
 
-    // Disable HTML5 validation and remove required/min/max attributes
+    // Disable HTML5 form validation to ensure our JS validation is tested
     await page.evaluate(() => {
       const form = document.querySelector('form')
       if (form) form.setAttribute('novalidate', 'true')
-
-      // Remove validation attributes from all inputs to prevent browser validation
-      const inputs = document.querySelectorAll('input, select, textarea')
-      inputs.forEach((input: any) => {
-        input.removeAttribute('required')
-        input.removeAttribute('min')
-        input.removeAttribute('max')
-        input.removeAttribute('minlength')
-        input.removeAttribute('maxlength')
-        input.removeAttribute('pattern')
-      })
     })
 
     // Submit - validation runs in handleSubmit
