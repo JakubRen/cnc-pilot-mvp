@@ -17,11 +17,11 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
   }
 
   // Fetch production plan with operations and order info
+  // NOTE: Don't explicitly select order_id - it's already included in *
   const { data: productionPlan } = await supabase
     .from('production_plans')
     .select(`
       *,
-      order_id,
       order:orders (
         id,
         order_number,
