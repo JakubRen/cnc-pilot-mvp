@@ -260,7 +260,7 @@ function calculateNextSendTime(report: ScheduledReport): string {
   const now = new Date()
   const [hour, minute] = report.timeOfDay.split(':').map(Number)
 
-  let next = new Date(now)
+  const next = new Date(now)
   next.setHours(hour, minute, 0, 0)
 
   switch (report.frequency) {

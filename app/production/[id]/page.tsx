@@ -5,7 +5,6 @@ import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
 import { formatCost, formatDuration, operationTypeLabels, operationStatusLabels, operationStatusColors, Operation } from '@/types/operations'
 import { ProductionPlanWithRelations, productionPlanStatusLabels, productionPlanStatusColors } from '@/types/production-plans'
-import { ClientDebugger } from './ClientDebugger'
 
 export default async function ProductionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -62,47 +61,14 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
 
   const typedPlan = productionPlan as ProductionPlanWithRelations
 
-  // DEBUG: Log RAW order data BEFORE type casting
-  console.error('[Production Details] RAW plan data:', {
-    plan_id: productionPlan.id,
-    plan_number: productionPlan.plan_number,
-    order_id: productionPlan.order_id,
-    order_id_type: typeof productionPlan.order_id,
-    order_id_truthy: !!productionPlan.order_id,
-    raw_order_field: productionPlan.order,
-    is_order_array: Array.isArray(productionPlan.order),
-    is_order_null: productionPlan.order === null,
-    is_order_undefined: productionPlan.order === undefined,
-    order_type: typeof productionPlan.order
-  })
-
   const order = Array.isArray(typedPlan.order) ? typedPlan.order[0] : typedPlan.order
   const operations = typedPlan.operations || []
   const totalSetupTime = typedPlan.total_setup_time_minutes || 0
   const totalRunTime = typedPlan.total_run_time_minutes || 0
   const totalCost = typedPlan.estimated_cost || 0
 
-  // DEBUG: Log processed order data AFTER type casting
-  console.error('[Production Details] PROCESSED order data:', {
-    plan_id: typedPlan.id,
-    plan_number: typedPlan.plan_number,
-    typed_order_id: typedPlan.order_id,
-    typed_order_id_type: typeof typedPlan.order_id,
-    order_exists: !!order,
-    order_id_from_order: order?.id,
-    order_data: order ? { id: order.id, order_number: order.order_number } : 'NULL',
-    will_render_link: !!(order?.id || typedPlan.order_id),
-    conditional_breakdown: {
-      order_dot_id: order?.id || 'FALSY',
-      typed_plan_order_id: typedPlan.order_id || 'FALSY'
-    }
-  })
-
   return (
     <AppLayout>
-      {/* Client-side diagnostic logging - will be visible in Playwright output */}
-      <ClientDebugger plan={typedPlan} order={order} />
-
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
         {/* Header */}

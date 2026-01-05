@@ -9,32 +9,24 @@ interface MetricCardProps {
   link?: string;
 }
 
-export default function MetricCard({
-  title,
-  value,
-  icon,
-  subtitle,
-  color = 'blue',
-  link,
-}: MetricCardProps) {
-  
-  const colorStyles = {
-    blue:   'border-blue-200 dark:border-cyan-500/20 text-blue-600 dark:text-cyan-400 group-hover:border-blue-400 dark:group-hover:border-cyan-400/50 dark:group-hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]',
-    green:  'border-green-200 dark:border-emerald-500/20 text-green-600 dark:text-emerald-400 group-hover:border-green-400 dark:group-hover:border-emerald-400/50 dark:group-hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]',
-    red:    'border-red-200 dark:border-rose-500/20 text-red-600 dark:text-rose-400 group-hover:border-red-400 dark:group-hover:border-rose-400/50 dark:group-hover:shadow-[0_0_20px_rgba(244,63,94,0.1)]',
-    yellow: 'border-yellow-200 dark:border-amber-500/20 text-yellow-600 dark:text-amber-400 group-hover:border-yellow-400 dark:group-hover:border-amber-400/50 dark:group-hover:shadow-[0_0_20px_rgba(245,158,11,0.1)]',
-    purple: 'border-purple-200 dark:border-violet-500/20 text-purple-600 dark:text-violet-400 group-hover:border-purple-400 dark:group-hover:border-violet-400/50 dark:group-hover:shadow-[0_0_20px_rgba(139,92,246,0.1)]',
-  };
+const colorStyles = {
+  blue:   'border-blue-200 dark:border-cyan-500/20 text-blue-600 dark:text-cyan-400 group-hover:border-blue-400 dark:group-hover:border-cyan-400/50 dark:group-hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]',
+  green:  'border-green-200 dark:border-emerald-500/20 text-green-600 dark:text-emerald-400 group-hover:border-green-400 dark:group-hover:border-emerald-400/50 dark:group-hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]',
+  red:    'border-red-200 dark:border-rose-500/20 text-red-600 dark:text-rose-400 group-hover:border-red-400 dark:group-hover:border-rose-400/50 dark:group-hover:shadow-[0_0_20px_rgba(244,63,94,0.1)]',
+  yellow: 'border-yellow-200 dark:border-amber-500/20 text-yellow-600 dark:text-amber-400 group-hover:border-yellow-400 dark:group-hover:border-amber-400/50 dark:group-hover:shadow-[0_0_20px_rgba(245,158,11,0.1)]',
+  purple: 'border-purple-200 dark:border-violet-500/20 text-purple-600 dark:text-violet-400 group-hover:border-purple-400 dark:group-hover:border-violet-400/50 dark:group-hover:shadow-[0_0_20px_rgba(139,92,246,0.1)]',
+};
 
-  const bgGradients = {
-    blue:   'from-blue-50 to-white dark:from-cyan-500/5 dark:to-transparent',
-    green:  'from-green-50 to-white dark:from-emerald-500/5 dark:to-transparent',
-    red:    'from-red-50 to-white dark:from-rose-500/5 dark:to-transparent',
-    yellow: 'from-yellow-50 to-white dark:from-amber-500/5 dark:to-transparent',
-    purple: 'from-purple-50 to-white dark:from-violet-500/5 dark:to-transparent',
-  };
+const bgGradients = {
+  blue:   'from-blue-50 to-white dark:from-cyan-500/5 dark:to-transparent',
+  green:  'from-green-50 to-white dark:from-emerald-500/5 dark:to-transparent',
+  red:    'from-red-50 to-white dark:from-rose-500/5 dark:to-transparent',
+  yellow: 'from-yellow-50 to-white dark:from-amber-500/5 dark:to-transparent',
+  purple: 'from-purple-50 to-white dark:from-violet-500/5 dark:to-transparent',
+};
 
-  const CardContent = () => (
+function CardContent({ title, value, icon, subtitle, color, link }: MetricCardProps) {
+  return (
     <div
       className={`glass-panel group relative overflow-hidden rounded-xl p-6 border transition-all duration-300 ${colorStyles[color]} ${link ? 'cursor-pointer hover:-translate-y-1 hover:shadow-md' : 'shadow-sm'} bg-gradient-to-br ${bgGradients[color]}`}
     >
@@ -67,14 +59,16 @@ export default function MetricCard({
       )}
     </div>
   );
+}
 
-  if (link) {
+export default function MetricCard(props: MetricCardProps) {
+  if (props.link) {
     return (
-      <Link href={link}>
-        <CardContent />
+      <Link href={props.link}>
+        <CardContent {...props} />
       </Link>
     );
   }
 
-  return <CardContent />;
+  return <CardContent {...props} />;
 }

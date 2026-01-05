@@ -16,6 +16,12 @@ const eslintConfig = defineConfig([
     "scripts/**",
     "tests/**",
     "proxy.ts",
+    // Ignore Playwright reports and public assets
+    "playwright-report/**",
+    "test-results/**",
+    "public/**",
+    // Ignore node_modules
+    "node_modules/**",
   ]),
   // Rule overrides - convert strict rules to warnings for gradual migration
   {
