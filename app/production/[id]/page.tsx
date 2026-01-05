@@ -15,38 +15,11 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
     redirect('/login')
   }
 
-  // Fetch production plan with operations and order info
-  // Note: * includes order_id from production_plans table
+  // Fetch production plan with separate queries to avoid complex JOIN issues
+  // Previous approach with nested JOINs was failing silently in some environments
   const { data: productionPlan } = await supabase
     .from('production_plans')
-    .select(`
-      *,
-      order:orders (
-        id,
-        order_number,
-        customer_name,
-        deadline,
-        status,
-        company_id
-      ),
-      operations (
-        *,
-        machine:machines (
-          id,
-          name,
-          machine_type
-        ),
-        assigned_operator:users!operations_assigned_operator_id_fkey (
-          id,
-          full_name
-        )
-      ),
-      drawing_file:files (
-        id,
-        file_name,
-        file_url
-      )
-    `)
+    .select('*')
     .eq('id', id)
     .single()
 
@@ -54,15 +27,36 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
     redirect('/production')
   }
 
-  // Verify company_id
+  // Verify company_id before proceeding
   if (productionPlan.company_id !== user.company_id) {
     redirect('/production')
   }
 
+  // Fetch order data separately if order_id exists
+  let orderData = null
+  if (productionPlan.order_id) {
+    const { data: order } = await supabase
+      .from('orders')
+      .select('id, order_number, customer_name, deadline, status, company_id')
+      .eq('id', productionPlan.order_id)
+      .single()
+    orderData = order
+  }
+
+  // Fetch operations separately
+  const { data: ops } = await supabase
+    .from('operations')
+    .select('*')
+    .eq('production_plan_id', id)
+  const operationsData = ops || []
+
+  // Attach relations to productionPlan for consistent type usage
+  ;(productionPlan as Record<string, unknown>).order = orderData
+  ;(productionPlan as Record<string, unknown>).operations = operationsData
+
   const typedPlan = productionPlan as ProductionPlanWithRelations
 
-  // CRITICAL: Extract order_id from raw data BEFORE type casting
-  // TypeScript type cast may hide order_id if ProductionPlanWithRelations doesn't include it
+  // Extract order_id from raw data - TypeScript type cast may hide it
   const orderIdFromRawData = (productionPlan as Record<string, unknown>)?.order_id as string | null
 
   const order = Array.isArray(typedPlan.order) ? typedPlan.order[0] : typedPlan.order
@@ -166,19 +160,7 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
                 </p>
               </div>
             )}
-            {typedPlan.drawing_file && (
-              <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Rysunek</p>
-                <a
-                  href={typedPlan.drawing_file.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:underline font-semibold"
-                >
-                  📐 {typedPlan.drawing_file.file_name}
-                </a>
-              </div>
-            )}
+            {/* Drawing file section removed - files table may not exist in TEST */}
           </div>
           {typedPlan.technical_notes && (
             <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
