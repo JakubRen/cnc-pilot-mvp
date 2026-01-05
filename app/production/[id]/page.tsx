@@ -16,12 +16,11 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
   }
 
   // Fetch production plan with operations and order info
-  // EXPLICIT: Select order_id separately to avoid conflict with order:orders alias
+  // Note: * includes order_id from production_plans table
   const { data: productionPlan } = await supabase
     .from('production_plans')
     .select(`
       *,
-      order_id,
       order:orders (
         id,
         order_number,
@@ -62,6 +61,10 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
 
   const typedPlan = productionPlan as ProductionPlanWithRelations
 
+  // CRITICAL: Extract order_id from raw data BEFORE type casting
+  // TypeScript type cast may hide order_id if ProductionPlanWithRelations doesn't include it
+  const orderIdFromRawData = (productionPlan as Record<string, unknown>)?.order_id as string | null
+
   const order = Array.isArray(typedPlan.order) ? typedPlan.order[0] : typedPlan.order
   const operations = typedPlan.operations || []
   const totalSetupTime = typedPlan.total_setup_time_minutes || 0
@@ -84,9 +87,10 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
           </div>
           <div className="flex gap-3">
             {/* ALWAYS show link if order_id exists - even if JOIN failed */}
-            {(typedPlan.order_id || order?.id) && (
+            {/* Use orderIdFromRawData to bypass TypeScript type hiding */}
+            {(orderIdFromRawData || order?.id) && (
               <Link
-                href={`/orders/${typedPlan.order_id || order?.id}`}
+                href={`/orders/${orderIdFromRawData || order?.id}`}
                 className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 📦 Zlecenie {order?.order_number ? `#${order.order_number}` : ''}
