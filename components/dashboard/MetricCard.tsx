@@ -25,7 +25,7 @@ const bgGradients = {
   purple: 'from-purple-50 to-white dark:from-violet-500/5 dark:to-transparent',
 };
 
-function CardContent({ title, value, icon, subtitle, color, link }: MetricCardProps) {
+function CardContent({ title, value, icon, subtitle, color = 'blue', link }: MetricCardProps) {
   return (
     <div
       className={`glass-panel group relative overflow-hidden rounded-xl p-6 border transition-all duration-300 ${colorStyles[color]} ${link ? 'cursor-pointer hover:-translate-y-1 hover:shadow-md' : 'shadow-sm'} bg-gradient-to-br ${bgGradients[color]}`}
