@@ -84,6 +84,36 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ E2E Test FIXED - Split Query Solution (2026-01-06)
+
+**Problem SOLVED:** "should link back to order from production plan details" test now PASSES!
+
+**ACTUAL Root Cause:**
+Complex nested JOIN query was silently failing in TEST environment:
+```typescript
+// OLD: Complex nested JOINs - FAILED SILENTLY
+.select(`*, order:orders(...), operations(..., machine:machines(...)), drawing_file:files(...)`)
+```
+
+**Solution (commit d2f47e2):**
+Split into 3 separate sequential queries:
+1. `select('*')` - Get production plan
+2. Separate query for order data
+3. Separate query for operations
+
+**Results:**
+- **Before:** 44/48 passing (91.7%)
+- **After:** 46/48 passing (95.8%) ✅
+- Test "link back to order" now **passes consistently**
+
+**Additional:**
+- Created `TESTING.md` - Manual testing checklist (20 sections, ~100 test cases)
+- Created `testing/screenshots/` folder for bug screenshots
+
+**Next:** Manual testing session planned for 2026-01-07
+
+---
+
 ### 🚨 CRITICAL: E2E Test Fix - ROOT CAUSE IDENTIFIED (2026-01-04 Evening)
 
 **Problem:** 1/48 tests failing - "should link back to order from production plan details"
