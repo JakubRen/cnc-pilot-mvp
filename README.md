@@ -84,6 +84,27 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Filter Drawer for Products (2026-01-07)
+
+**Feature:** Advanced filtering system for /products page with slide-in drawer.
+
+**New Components:**
+- `FilterDrawer.tsx` - Reusable slide-in drawer from right side (ESC closes, backdrop click closes)
+- `ProductFilters.tsx` - Filter content with search, category, unit, and sorting options
+
+**Functionality:**
+- 🔍 Search by name/SKU
+- 📁 Category filter (dropdown)
+- 📏 Unit filter (dropdown)
+- ↕️ Sort: Name A-Z/Z-A, Stock ascending/descending
+- 🏷️ Active filter badges (click to remove)
+- 🧹 "Wyczyść wszystkie" (clear all) button
+- Polish locale support for sorting (localeCompare 'pl')
+
+**Commit:** `b7868a7` - feat(products): add Filter Drawer with advanced filtering system
+
+---
+
 ### ✅ Manual Testing Session - Products Table Fixed (2026-01-07)
 
 **Session Goal:** Full flow test: Kontrahent → Produkt → Zamówienie → Plan Produkcji
