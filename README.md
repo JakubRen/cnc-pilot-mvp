@@ -84,6 +84,33 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Inventory Table Enhancement + Documents Fix (2026-01-07)
+
+**Feature:** Full Filter Drawer + column config for /inventory, plus Documents module fix.
+
+**Documents Module:**
+- PW (Przyjęcie) now selects from `products` catalog (not inventory)
+- RW/WZ still select from `inventory` (existing stock)
+- New `ProductAutocomplete.tsx` component for PW documents
+- Fallback document number generation when RPC fails
+- Fixed broken JOIN to users table in documents list
+
+**Inventory Module:**
+- `InventoryTable.tsx` with Filter Drawer (search, category, status, sort)
+- Column config with drag-to-reorder on table headers
+- Active filter badges with click-to-remove
+- Uses `productCategoryLabels` for consistent naming (Półprodukt, Materiał Surowy, etc.)
+- Drop zone to hide columns (drag header up)
+
+**Database Migrations:**
+- `FIX_WAREHOUSE_DOCUMENTS_RLS.sql` - RLS policies with auth.uid()
+- `FIX_WAREHOUSE_COMPLETE.sql` - Complete RLS fix
+- `FIX_GENERATE_DOCUMENT_NUMBER.sql` - Document number RPC fix
+
+**Commit:** `cc4f09a` - feat(inventory): add Filter Drawer + column config + PW document flow
+
+---
+
 ### ✅ Filter Drawer for Products (2026-01-07)
 
 **Feature:** Advanced filtering system for /products page with slide-in drawer.
