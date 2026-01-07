@@ -1,8 +1,15 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useMemo } from 'react'
 import { useTableColumns } from '@/hooks/useTableColumns'
 import TableColumnConfig from '@/components/table/TableColumnConfig'
+import FilterDrawer from '@/components/ui/FilterDrawer'
+import ProductFilters, {
+  ProductFilterState,
+  DEFAULT_PRODUCT_FILTERS,
+  countActiveFilters,
+  getActiveFilterLabels,
+} from '@/components/products/ProductFilters'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/badge'
 import { productCategoryLabels, productUnitLabels } from '@/types/products'
@@ -50,6 +57,73 @@ export default function ProductsTable({ products }: ProductsTableProps) {
     defaultColumns: DEFAULT_COLUMNS,
   })
 
+  // Filter Drawer state
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [filters, setFilters] = useState<ProductFilterState>(DEFAULT_PRODUCT_FILTERS)
+
+  // Calculate total stock for a product
+  const getTotalStock = (product: Product): number => {
+    return product.locations?.reduce(
+      (sum, loc) => sum + (loc.available_quantity || 0),
+      0
+    ) || 0
+  }
+
+  // Filtered and sorted products (memoized for performance)
+  const filteredProducts = useMemo(() => {
+    let result = [...products]
+
+    // 1. Search filter
+    if (filters.search) {
+      const query = filters.search.toLowerCase()
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(query) ||
+        p.sku.toLowerCase().includes(query)
+      )
+    }
+
+    // 2. Category filter
+    if (filters.category !== 'all') {
+      result = result.filter(p => p.category === filters.category)
+    }
+
+    // 3. Unit filter
+    if (filters.unit !== 'all') {
+      result = result.filter(p => p.unit === filters.unit)
+    }
+
+    // 4. Sort
+    result.sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'name_asc':
+          return a.name.localeCompare(b.name, 'pl')
+        case 'name_desc':
+          return b.name.localeCompare(a.name, 'pl')
+        case 'stock_asc':
+          return getTotalStock(a) - getTotalStock(b)
+        case 'stock_desc':
+          return getTotalStock(b) - getTotalStock(a)
+        default:
+          return 0
+      }
+    })
+
+    return result
+  }, [products, filters])
+
+  // Remove single filter
+  const removeFilter = (key: keyof ProductFilterState) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: DEFAULT_PRODUCT_FILTERS[key],
+    }))
+  }
+
+  // Reset all filters
+  const resetFilters = () => {
+    setFilters(DEFAULT_PRODUCT_FILTERS)
+  }
+
   // Track dragging state for header drag
   const [draggingHeader, setDraggingHeader] = useState<string | null>(null)
   const [dragOverHeader, setDragOverHeader] = useState<string | null>(null)
@@ -82,7 +156,6 @@ export default function ProductsTable({ products }: ProductsTableProps) {
   const handleHeaderDrop = useCallback((e: React.DragEvent, targetColumnId: string) => {
     e.preventDefault()
     if (draggingHeader && draggingHeader !== targetColumnId) {
-      // Find indices in visibleColumns
       const fromIndex = visibleColumns.findIndex(c => c.id === draggingHeader)
       const toIndex = visibleColumns.findIndex(c => c.id === targetColumnId)
       if (fromIndex !== -1 && toIndex !== -1) {
@@ -111,14 +184,6 @@ export default function ProductsTable({ products }: ProductsTableProps) {
     setDragOverHeader(null)
     setShowDropZone(false)
   }, [draggingHeader, toggleColumn])
-
-  // Calculate total stock for a product
-  const getTotalStock = (product: Product): number => {
-    return product.locations?.reduce(
-      (sum, loc) => sum + (loc.available_quantity || 0),
-      0
-    ) || 0
-  }
 
   // Render cell content based on column id
   const renderCell = (product: Product, columnId: string) => {
@@ -182,20 +247,93 @@ export default function ProductsTable({ products }: ProductsTableProps) {
     }
   }
 
+  const activeFilterCount = countActiveFilters(filters)
+  const activeFilterLabels = getActiveFilterLabels(filters)
+
   return (
     <div ref={tableRef}>
-      {/* Header with buttons */}
-      <div className="flex justify-end items-center gap-3 mb-4">
-        <TableColumnConfig
-          columns={columns}
-          onToggle={toggleColumn}
-          onReorder={reorderColumns}
-          onReset={resetColumns}
-        />
-        <Button href="/products/add" variant="primary">
-          + Dodaj Towar
-        </Button>
+      {/* Header with Filter Button */}
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-3">
+          {/* Filter Button */}
+          <button
+            onClick={() => setIsFilterOpen(true)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
+              activeFilterCount > 0
+                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
+            }`}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filtry
+            {activeFilterCount > 0 && (
+              <span className="ml-1 px-2 py-0.5 text-xs bg-white/20 rounded-full">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+
+          {/* Results count */}
+          <span className="text-sm text-slate-500 dark:text-slate-400">
+            {filteredProducts.length === products.length
+              ? `${products.length} towarów`
+              : `${filteredProducts.length} z ${products.length} towarów`}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <TableColumnConfig
+            columns={columns}
+            onToggle={toggleColumn}
+            onReorder={reorderColumns}
+            onReset={resetColumns}
+          />
+          <Button href="/products/add" variant="primary">
+            + Dodaj Towar
+          </Button>
+        </div>
       </div>
+
+      {/* Active Filter Badges */}
+      {activeFilterLabels.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {activeFilterLabels.map(({ key, label }) => (
+            <span
+              key={key}
+              className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm"
+            >
+              {label}
+              <button
+                onClick={() => removeFilter(key)}
+                className="ml-1 hover:text-blue-900 dark:hover:text-blue-100"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </span>
+          ))}
+          <button
+            onClick={resetFilters}
+            className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+          >
+            Wyczyść wszystkie
+          </button>
+        </div>
+      )}
+
+      {/* Filter Drawer */}
+      <FilterDrawer
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        title="Filtry towarów"
+        onReset={resetFilters}
+        onApply={() => {}} // Filters apply instantly, this just closes
+      >
+        <ProductFilters filters={filters} onFiltersChange={setFilters} />
+      </FilterDrawer>
 
       {/* Drop zone to hide columns */}
       {showDropZone && (
@@ -245,18 +383,40 @@ export default function ProductsTable({ products }: ProductsTableProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-            {products.map((product) => (
-              <tr key={product.id} className="hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
-                {visibleColumns.map((column) => (
-                  <td
-                    key={column.id}
-                    className="px-6 py-4 whitespace-nowrap text-sm"
-                  >
-                    {renderCell(product, column.id)}
-                  </td>
-                ))}
+            {filteredProducts.length === 0 ? (
+              <tr>
+                <td colSpan={visibleColumns.length} className="px-6 py-12 text-center">
+                  <div className="text-slate-400 dark:text-slate-500">
+                    <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <p className="text-lg font-medium">Brak wyników</p>
+                    <p className="text-sm mt-1">Zmień kryteria filtrowania</p>
+                    {activeFilterCount > 0 && (
+                      <button
+                        onClick={resetFilters}
+                        className="mt-3 text-blue-500 hover:text-blue-400 text-sm font-medium"
+                      >
+                        Wyczyść filtry
+                      </button>
+                    )}
+                  </div>
+                </td>
               </tr>
-            ))}
+            ) : (
+              filteredProducts.map((product) => (
+                <tr key={product.id} className="hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                  {visibleColumns.map((column) => (
+                    <td
+                      key={column.id}
+                      className="px-6 py-4 whitespace-nowrap text-sm"
+                    >
+                      {renderCell(product, column.id)}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
