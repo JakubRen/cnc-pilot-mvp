@@ -23,7 +23,7 @@ export default async function AddDocumentPage() {
     redirect('/login')
   }
 
-  // Fetch inventory items dla dropdown
+  // Fetch inventory items dla dropdown (RW/WZ - wydania z magazynu)
   const { data: inventoryItems, error } = await supabase
     .from('inventory')
     .select('id, sku, name, quantity, unit')
@@ -32,6 +32,18 @@ export default async function AddDocumentPage() {
 
   if (error) {
     logger.error('Error fetching inventory', { error })
+  }
+
+  // Fetch products dla dropdown (PW - przyjęcia na magazyn)
+  const { data: products, error: productsError } = await supabase
+    .from('products')
+    .select('id, sku, name, category, unit')
+    .eq('company_id', user.company_id)
+    .eq('is_active', true)
+    .order('name', { ascending: true })
+
+  if (productsError) {
+    logger.error('Error fetching products', { error: productsError })
   }
 
   // Fetch customers dla dropdown kontrahentów
@@ -52,6 +64,7 @@ export default async function AddDocumentPage() {
           <h1 className="text-3xl font-bold text-white mb-8">Nowy Dokument Magazynowy</h1>
           <AddDocumentForm
             inventoryItems={inventoryItems || []}
+            products={products || []}
             customers={customers || []}
             userId={user.id}
             companyId={user.company_id}

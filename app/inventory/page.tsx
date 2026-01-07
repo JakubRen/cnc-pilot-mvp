@@ -4,6 +4,7 @@ import { canAccessModule } from '@/lib/permissions-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
+import InventoryTable from '@/components/inventory/InventoryTable'
 import { productUnitLabels } from '@/types/products'
 import { isLowStock, getStockStatus } from '@/types/inventory'
 import { logger } from '@/lib/logger'
@@ -48,6 +49,17 @@ export default async function InventoryPage() {
     loc.product?.company_id === user.company_id
   ) || []
 
+  // Fetch OLD inventory table (stany z dokumentów PW/RW/WZ)
+  const { data: legacyInventory, error: legacyError } = await supabase
+    .from('inventory')
+    .select('*')
+    .eq('company_id', user.company_id)
+    .order('updated_at', { ascending: false })
+
+  if (legacyError) {
+    logger.error('Error fetching legacy inventory', { error: legacyError })
+  }
+
   return (
     <AppLayout>
       <div className="p-8">
@@ -71,24 +83,29 @@ export default async function InventoryPage() {
             </div>
           </div>
 
-          {/* Inventory Table */}
-          {filteredLocations.length === 0 ? (
+          {/* Legacy Inventory (stany z dokumentów PW/RW/WZ) */}
+          {legacyInventory && legacyInventory.length > 0 && (
+            <InventoryTable items={legacyInventory} />
+          )}
+
+          {/* Inventory Locations Table (nowa struktura) */}
+          {filteredLocations.length === 0 && (!legacyInventory || legacyInventory.length === 0) ? (
             <div className="bg-white dark:bg-slate-800 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-700 p-12 text-center">
               <div className="text-6xl mb-4">📊</div>
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                 Brak stanów w magazynie
               </h2>
               <p className="text-slate-500 dark:text-slate-400 mb-6">
-                Dodaj towary do katalogu i przypisz im lokalizacje
+                Dodaj towary przez dokumenty PW lub katalog produktów
               </p>
               <Link
-                href="/products"
-                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                href="/documents/add"
+                className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
               >
-                📦 Przejdź do Katalogu
+                + Nowy Dokument PW
               </Link>
             </div>
-          ) : (
+          ) : filteredLocations.length > 0 && (
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
               <table className="w-full">
                 <thead className="bg-slate-100 dark:bg-slate-700">

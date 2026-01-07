@@ -7,6 +7,7 @@ import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
 import { sanitizeText } from '@/lib/sanitization'
 import InventoryAutocomplete from '@/components/form/InventoryAutocomplete'
+import ProductAutocomplete from '@/components/form/ProductAutocomplete'
 import CustomerAutocomplete from '@/components/form/CustomerAutocomplete'
 
 interface InventoryItem {
@@ -17,6 +18,14 @@ interface InventoryItem {
   unit: string
 }
 
+interface Product {
+  id: string
+  sku: string
+  name: string
+  category: string | null
+  unit: string | null
+}
+
 interface Customer {
   id: string
   name: string
@@ -24,20 +33,49 @@ interface Customer {
 }
 
 interface DocumentItem {
-  inventory_id: string
+  inventory_id: string  // For RW/WZ
+  product_id: string    // For PW
   quantity: number
   notes: string
 }
 
 interface Props {
   inventoryItems: InventoryItem[]
+  products: Product[]
   customers: Customer[]
   userId: number
   companyId: string
 }
 
-export default function AddDocumentForm({ inventoryItems, customers, userId, companyId }: Props) {
+export default function AddDocumentForm({ inventoryItems, products, customers, userId, companyId }: Props) {
   const router = useRouter()
+
+  // Helper: Generate fallback document number if RPC fails
+  const generateFallbackDocNumber = (type: 'PW' | 'RW' | 'WZ'): string => {
+    const year = new Date().getFullYear()
+    const timestamp = Date.now().toString().slice(-6) // Last 6 digits of timestamp
+    return `${type}/${timestamp}/${year}`
+  }
+
+  // Helper: Get document number (with fallback)
+  const getDocumentNumber = async (type: 'PW' | 'RW' | 'WZ'): Promise<string> => {
+    try {
+      const { data: docNumber, error } = await supabase.rpc('generate_document_number', {
+        p_company_id: companyId,
+        p_document_type: type
+      })
+
+      if (error || !docNumber) {
+        logger.error('RPC generate_document_number failed, using fallback', { error })
+        return generateFallbackDocNumber(type)
+      }
+
+      return docNumber
+    } catch (err) {
+      logger.error('Exception calling generate_document_number', { error: err })
+      return generateFallbackDocNumber(type)
+    }
+  }
 
   // Form state
   const [documentType, setDocumentType] = useState<'PW' | 'RW' | 'WZ'>('PW')
@@ -46,14 +84,14 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
 
   // Items state - dynamiczna lista pozycji
   const [items, setItems] = useState<DocumentItem[]>([
-    { inventory_id: '', quantity: 0, notes: '' }
+    { inventory_id: '', product_id: '', quantity: 0, notes: '' }
   ])
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Dodaj nową pozycję
   const addItem = () => {
-    setItems([...items, { inventory_id: '', quantity: 0, notes: '' }])
+    setItems([...items, { inventory_id: '', product_id: '', quantity: 0, notes: '' }])
   }
 
   // Usuń pozycję
@@ -80,16 +118,25 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
     }
 
     for (let i = 0; i < items.length; i++) {
-      if (!items[i].inventory_id) {
-        toast.error(`Wybierz komponent dla pozycji ${i + 1}`)
-        return false
+      // Dla PW sprawdzamy product_id, dla RW/WZ sprawdzamy inventory_id
+      if (documentType === 'PW') {
+        if (!items[i].product_id) {
+          toast.error(`Wybierz produkt dla pozycji ${i + 1}`)
+          return false
+        }
+      } else {
+        if (!items[i].inventory_id) {
+          toast.error(`Wybierz komponent dla pozycji ${i + 1}`)
+          return false
+        }
       }
+
       if (items[i].quantity <= 0) {
         toast.error(`Podaj ilość dla pozycji ${i + 1}`)
         return false
       }
 
-      // Sprawdź czy wystarczy towaru (dla RW/WZ)
+      // Sprawdź czy wystarczy towaru (tylko dla RW/WZ)
       if (documentType === 'RW' || documentType === 'WZ') {
         const inventoryItem = inventoryItems.find(item => item.id === items[i].inventory_id)
         if (inventoryItem && items[i].quantity > inventoryItem.quantity) {
@@ -102,6 +149,43 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
     return true
   }
 
+  // Helper: Dla PW - znajdź lub utwórz pozycję w inventory dla produktu
+  const getOrCreateInventoryForProduct = async (productId: string): Promise<string> => {
+    const product = products.find(p => p.id === productId)
+    if (!product) throw new Error('Produkt nie znaleziony')
+
+    // Sprawdź czy istnieje już pozycja w inventory z tym SKU
+    const { data: existingItem } = await supabase
+      .from('inventory')
+      .select('id')
+      .eq('company_id', companyId)
+      .eq('sku', product.sku)
+      .single()
+
+    if (existingItem) {
+      return existingItem.id
+    }
+
+    // Utwórz nową pozycję w inventory
+    const { data: newItem, error } = await supabase
+      .from('inventory')
+      .insert({
+        company_id: companyId,
+        sku: product.sku,
+        name: product.name,
+        category: product.category || 'part',
+        unit: product.unit || 'szt',
+        quantity: 0, // Początkowa ilość 0, PW ją zwiększy
+        low_stock_threshold: 0,
+        created_by: userId
+      })
+      .select('id')
+      .single()
+
+    if (error) throw error
+    return newItem.id
+  }
+
   // Submit - Zapisz jako szkic
   const handleSaveDraft = async () => {
     if (!validate()) return
@@ -110,11 +194,8 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
     const loadingToast = toast.loading('Zapisuję szkic...')
 
     try {
-      // Generuj numer dokumentu
-      const { data: docNumber } = await supabase.rpc('generate_document_number', {
-        p_company_id: companyId,
-        p_document_type: documentType
-      })
+      // Generuj numer dokumentu (z fallbackiem)
+      const docNumber = await getDocumentNumber(documentType)
 
       // Sanitize user inputs to prevent XSS attacks
       const sanitizedContractor = sanitizeText(contractor)
@@ -137,15 +218,33 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
 
       if (docError) throw docError
 
+      // Dla PW w szkicu: też znajdź/utwórz inventory entries
+      let documentItems: { inventory_id: string; quantity: number; notes: string | null }[] = []
+
+      if (documentType === 'PW') {
+        for (const item of items) {
+          const inventoryId = await getOrCreateInventoryForProduct(item.product_id)
+          documentItems.push({
+            inventory_id: inventoryId,
+            quantity: item.quantity,
+            notes: item.notes ? sanitizeText(item.notes) : null
+          })
+        }
+      } else {
+        documentItems = items.map(item => ({
+          inventory_id: item.inventory_id,
+          quantity: item.quantity,
+          notes: item.notes ? sanitizeText(item.notes) : null
+        }))
+      }
+
       // Wstaw pozycje
       const { error: itemsError } = await supabase
         .from('warehouse_document_items')
         .insert(
-          items.map(item => ({
+          documentItems.map(item => ({
             document_id: doc.id,
-            inventory_id: item.inventory_id,
-            quantity: item.quantity,
-            notes: item.notes ? sanitizeText(item.notes) : null
+            ...item
           }))
         )
 
@@ -158,8 +257,10 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
 
     } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error('Błąd zapisu: ' + (error as Error).message)
-      logger.error('Document operation error', { error })
+      const errorMessage = (error as Error).message || 'Nieznany błąd'
+      toast.error('Błąd zapisu: ' + errorMessage, { duration: 10000 })
+      logger.error('Document draft save error', { error, errorMessage })
+      console.error('[AddDocumentForm] Draft save error:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -181,15 +282,34 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
     const loadingToast = toast.loading('Tworzę i zatwierdzam dokument...')
 
     try {
-      // Generuj numer dokumentu
-      const { data: docNumber } = await supabase.rpc('generate_document_number', {
-        p_company_id: companyId,
-        p_document_type: documentType
-      })
+      // Generuj numer dokumentu (z fallbackiem)
+      const docNumber = await getDocumentNumber(documentType)
 
       // Sanitize user inputs to prevent XSS attacks
       const sanitizedContractor = sanitizeText(contractor)
       const sanitizedDescription = description ? sanitizeText(description) : null
+
+      // Dla PW: Najpierw znajdź/utwórz pozycje w inventory
+      let documentItems: { inventory_id: string; quantity: number; notes: string | null }[] = []
+
+      if (documentType === 'PW') {
+        // Dla każdego produktu znajdź lub utwórz inventory entry
+        for (const item of items) {
+          const inventoryId = await getOrCreateInventoryForProduct(item.product_id)
+          documentItems.push({
+            inventory_id: inventoryId,
+            quantity: item.quantity,
+            notes: item.notes ? sanitizeText(item.notes) : null
+          })
+        }
+      } else {
+        // Dla RW/WZ używamy bezpośrednio inventory_id
+        documentItems = items.map(item => ({
+          inventory_id: item.inventory_id,
+          quantity: item.quantity,
+          notes: item.notes ? sanitizeText(item.notes) : null
+        }))
+      }
 
       // Wstaw dokument jako confirmed
       const { data: doc, error: docError } = await supabase
@@ -212,11 +332,9 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
       const { error: itemsError } = await supabase
         .from('warehouse_document_items')
         .insert(
-          items.map(item => ({
+          documentItems.map(item => ({
             document_id: doc.id,
-            inventory_id: item.inventory_id,
-            quantity: item.quantity,
-            notes: item.notes ? sanitizeText(item.notes) : null
+            ...item
           }))
         )
 
@@ -229,8 +347,10 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
 
     } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error('Błąd zapisu: ' + (error as Error).message)
-      logger.error('Document operation error', { error })
+      const errorMessage = (error as Error).message || 'Nieznany błąd'
+      toast.error('Błąd zapisu: ' + errorMessage, { duration: 10000 })
+      logger.error('Document confirm error', { error, errorMessage })
+      console.error('[AddDocumentForm] Confirm error:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -310,7 +430,14 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
 
         <div className="space-y-4">
           {items.map((item, index) => {
-            const selectedItem = inventoryItems.find(inv => inv.id === item.inventory_id)
+            // Dla PW szukamy w products, dla RW/WZ w inventory
+            const selectedProduct = documentType === 'PW'
+              ? products.find(p => p.id === item.product_id)
+              : null
+            const selectedInventoryItem = documentType !== 'PW'
+              ? inventoryItems.find(inv => inv.id === item.inventory_id)
+              : null
+            const selectedUnit = selectedProduct?.unit || selectedInventoryItem?.unit || 'szt'
 
             return (
               <div key={index} className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
@@ -328,21 +455,32 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Komponent */}
+                  {/* Produkt (PW) lub Komponent magazynowy (RW/WZ) */}
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">Komponent *</label>
-                    <InventoryAutocomplete
-                      value={item.inventory_id}
-                      onChange={(value) => updateItem(index, 'inventory_id', value)}
-                      items={inventoryItems}
-                      placeholder="Wyszukaj komponent..."
-                    />
+                    <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
+                      {documentType === 'PW' ? 'Produkt *' : 'Komponent *'}
+                    </label>
+                    {documentType === 'PW' ? (
+                      <ProductAutocomplete
+                        value={item.product_id}
+                        onChange={(value) => updateItem(index, 'product_id', value)}
+                        products={products}
+                        placeholder="Wyszukaj produkt do przyjęcia..."
+                      />
+                    ) : (
+                      <InventoryAutocomplete
+                        value={item.inventory_id}
+                        onChange={(value) => updateItem(index, 'inventory_id', value)}
+                        items={inventoryItems}
+                        placeholder="Wyszukaj komponent..."
+                      />
+                    )}
                   </div>
 
                   {/* Ilość */}
                   <div>
                     <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
-                      Ilość * {selectedItem && `(${selectedItem.unit})`}
+                      Ilość * ({selectedUnit})
                     </label>
                     <input
                       type="number"
@@ -353,9 +491,9 @@ export default function AddDocumentForm({ inventoryItems, customers, userId, com
                       className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
                       placeholder="0"
                     />
-                    {selectedItem && (
+                    {selectedInventoryItem && (
                       <p className="text-slate-500 text-xs mt-1">
-                        Dostępne: {selectedItem.quantity} {selectedItem.unit}
+                        Dostępne: {selectedInventoryItem.quantity} {selectedInventoryItem.unit}
                       </p>
                     )}
                   </div>

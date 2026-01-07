@@ -32,16 +32,10 @@ export default async function DocumentsPage() {
     redirect('/no-access')
   }
 
-  // Fetch warehouse documents z relacjami
+  // Fetch warehouse documents (bez relacji - FK do users może nie istnieć w TEST)
   const { data: documents, error } = await supabase
     .from('warehouse_documents')
-    .select(`
-      *,
-      creator:users!created_by (
-        id,
-        full_name
-      )
-    `)
+    .select('*')
     .eq('company_id', user.company_id)
     .order('created_at', { ascending: false })
 
@@ -123,12 +117,7 @@ export default async function DocumentsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                    {documents.map((doc) => {
-                      const creatorName = Array.isArray(doc.creator)
-                        ? doc.creator[0]?.full_name
-                        : doc.creator?.full_name
-
-                      return (
+                    {documents.map((doc) => (
                         <tr key={doc.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                           <td className="px-6 py-4 whitespace-nowrap">
                             {getDocTypeBadge(doc.document_type)}
@@ -146,7 +135,7 @@ export default async function DocumentsPage() {
                             {new Date(doc.created_at).toLocaleDateString('pl-PL')}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                            {creatorName || '-'}
+                            -
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                             <Button href={`/documents/${doc.id}`} variant="ghost" size="sm">
@@ -159,20 +148,14 @@ export default async function DocumentsPage() {
                             )}
                           </td>
                         </tr>
-                      )
-                    })}
+                    ))}
                   </tbody>
                 </table>
               </div>
 
               {/* Mobile View - Cards (visible only on mobile) */}
               <div className="md:hidden space-y-4">
-                {documents.map((doc) => {
-                  const creatorName = Array.isArray(doc.creator)
-                    ? doc.creator[0]?.full_name
-                    : doc.creator?.full_name
-
-                  return (
+                {documents.map((doc) => (
                     <div
                       key={doc.id}
                       className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
@@ -200,24 +183,14 @@ export default async function DocumentsPage() {
                           </p>
                         </div>
 
-                        {/* Date + Creator */}
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
-                              Data
-                            </p>
-                            <p className="text-sm text-slate-900 dark:text-white">
-                              {new Date(doc.created_at).toLocaleDateString('pl-PL')}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
-                              Utworzył
-                            </p>
-                            <p className="text-sm text-slate-900 dark:text-white">
-                              {creatorName || '-'}
-                            </p>
-                          </div>
+                        {/* Date */}
+                        <div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                            Data
+                          </p>
+                          <p className="text-sm text-slate-900 dark:text-white">
+                            {new Date(doc.created_at).toLocaleDateString('pl-PL')}
+                          </p>
                         </div>
 
                         {/* Actions */}
@@ -243,8 +216,7 @@ export default async function DocumentsPage() {
                         </div>
                       </div>
                     </div>
-                  )
-                })}
+                ))}
               </div>
             </>
           )}
