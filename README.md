@@ -84,6 +84,28 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Manual Testing Session - Products Table Fixed (2026-01-07)
+
+**Session Goal:** Full flow test: Kontrahent → Produkt → Zamówienie → Plan Produkcji
+
+**Fixes Implemented:**
+
+1. **Customers RLS Policies** - Added missing SELECT, UPDATE, DELETE policies
+2. **Products Table Schema** - Added columns: description, manufacturer_sku, unit, is_active
+3. **Products RLS Policies** - Added INSERT, UPDATE, DELETE policies
+4. **Products FK Constraint** - inventory_locations.product_id → products.id (required for JOINs)
+5. **Products UI Overhaul:**
+   - Created `ProductsTable.tsx` Client Component
+   - Integrated `useTableColumns` + `TableColumnConfig`
+   - Added drag-to-reorder on table headers (not just config panel)
+   - Visual feedback: blue highlight when dragging over column
+
+**Key Learning:** "Nie chcę żebyś kiedykolwiek cokolwiek usuwał bez mojej zgody" - Never remove existing functionality without user permission.
+
+**Next:** Continue with Orders → Production Plans flow testing.
+
+---
+
 ### ✅ E2E Test FIXED - Split Query Solution (2026-01-06)
 
 **Problem SOLVED:** "should link back to order from production plan details" test now PASSES!
