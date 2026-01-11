@@ -84,6 +84,27 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ UX Polish Batch 3 - ConfirmationDialog, Breadcrumbs, SearchInput (2026-01-11)
+
+**Feature:** Professional confirmation dialogs, navigation breadcrumbs, and enhanced search UX.
+
+**New Components:**
+- `ConfirmationDialog.tsx` - HeadlessUI-based modal with `useConfirmation` hook for async confirmations
+- `SearchInput.tsx` - Search input with clear button (X) and search icon
+- Variants: danger (red), warning (yellow), info (blue)
+
+**Improvements:**
+- Replaced 13 `window.confirm()` calls with styled ConfirmationDialog across the app
+- Added Breadcrumbs navigation to 5 detail pages (Orders, Inventory, Customers, Documents, Products)
+- Enhanced OrderFilters with SearchInput component for better search UX
+- Added @headlessui/react dependency for accessible dialog implementation
+
+**Files Modified:** 24 files (+1096 / -94 lines)
+
+**Commit:** `56b302e` - feat(ux): add ConfirmationDialog, Breadcrumbs, and SearchInput components
+
+---
+
 ### ✅ Inventory Table Enhancement + Documents Fix (2026-01-07)
 
 **Feature:** Full Filter Drawer + column config for /inventory, plus Documents module fix.
