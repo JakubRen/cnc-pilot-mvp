@@ -49,7 +49,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
     staleTimers.length;
 
   // DUAL THEME CONTAINER
-  const containerClass = "glass-panel rounded-xl p-6 shadow-sm border border-slate-200 dark:border-border h-full";
+  const containerClass = "glass-panel rounded-xl p-6 shadow-sm border border-slate-200 dark:border-border h-full min-h-[320px]";
   const headerTextClass = "text-xl font-bold text-slate-900 dark:text-foreground";
 
   if (totalTasks === 0) {
@@ -76,7 +76,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
         </h2>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 stagger-fade-in">
         {/* Overdue Orders */}
         {overdueOrders.length > 0 && (
           <div>

@@ -20,11 +20,16 @@ interface UseFileUploadOptions {
 export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFileUploadOptions) => {
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({})
+  const [currentFile, setCurrentFile] = useState<string | null>(null)
+  const [totalFiles, setTotalFiles] = useState(0)
+  const [completedFiles, setCompletedFiles] = useState(0)
 
   const uploadFiles = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return
 
     setUploading(true)
+    setTotalFiles(acceptedFiles.length)
+    setCompletedFiles(0)
     const uploadedFiles: UploadedFile[] = []
 
     try {
@@ -49,10 +54,17 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
       }
 
       // Upload each file
-      for (const file of acceptedFiles) {
+      for (let i = 0; i < acceptedFiles.length; i++) {
+        const file = acceptedFiles[i]
+        setCurrentFile(file.name)
+        setUploadProgress(prev => ({ ...prev, [file.name]: 0 }))
+
         const fileExt = file.name.split('.').pop()
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
         const filePath = `${userProfile.company_id}/${fileName}`
+
+        // Simulate progress start
+        setUploadProgress(prev => ({ ...prev, [file.name]: 30 }))
 
         // Upload to Supabase Storage
         const { error: uploadError } = await supabase.storage
@@ -65,8 +77,12 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
         if (uploadError) {
           logger.error('Upload error', { error: uploadError, filename: file.name })
           toast.error(`Błąd przesyłania: ${file.name}`)
+          setUploadProgress(prev => ({ ...prev, [file.name]: -1 })) // -1 indicates error
           continue
         }
+
+        // Update progress - upload complete
+        setUploadProgress(prev => ({ ...prev, [file.name]: 70 }))
 
         // Get public URL
         const {
@@ -106,6 +122,9 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
           type: file.type,
         })
 
+        // Mark as complete
+        setUploadProgress(prev => ({ ...prev, [file.name]: 100 }))
+        setCompletedFiles(prev => prev + 1)
         toast.success(`Przesłano: ${file.name}`)
       }
 
@@ -117,13 +136,23 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
       toast.error('Wystąpił błąd podczas przesyłania plików')
     } finally {
       setUploading(false)
-      setUploadProgress({})
+      setCurrentFile(null)
+      // Keep progress for a moment so user can see completion
+      setTimeout(() => {
+        setUploadProgress({})
+        setTotalFiles(0)
+        setCompletedFiles(0)
+      }, 1500)
     }
   }, [entityType, entityId, onUploadComplete])
 
   return {
     uploading,
     uploadProgress,
-    uploadFiles
+    uploadFiles,
+    currentFile,
+    totalFiles,
+    completedFiles,
+    overallProgress: totalFiles > 0 ? Math.round((completedFiles / totalFiles) * 100) : 0
   }
 }

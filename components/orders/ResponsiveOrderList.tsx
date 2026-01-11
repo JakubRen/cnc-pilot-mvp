@@ -66,7 +66,7 @@ export function ResponsiveOrderList({
         )}
 
         {/* Card grid */}
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-4 stagger-fade-in">
           {orders.map((order) => {
             const pending = isPending(order.id)
             return (

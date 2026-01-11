@@ -11,6 +11,7 @@ import { useOrderFiltering } from '@/hooks/useOrderFiltering'
 import { useOrderSelection } from '@/hooks/useOrderSelection'
 import { useOptimisticOrders } from '@/hooks/useOptimisticOrders'
 import { logger } from '@/lib/logger'
+import PageTransition from '@/components/ui/PageTransition'
 
 interface OrderWithTags {
   id: string
@@ -90,7 +91,7 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole }:
   }
 
   return (
-    <div className="space-y-4">
+    <PageTransition className="space-y-4">
       {/* FILTERS ROW */}
       <OrderFilters onFilterChange={setFilters} />
 
@@ -177,6 +178,6 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole }:
           isPending={isPending}
         />
       )}
-    </div>
+    </PageTransition>
   )
 }

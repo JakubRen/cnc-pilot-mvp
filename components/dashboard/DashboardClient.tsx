@@ -14,6 +14,7 @@ import RevenueChart from './RevenueChart'
 import TopCustomersChart from './TopCustomersChart'
 import ProductivityChart from './ProductivityChart'
 import ProfitabilityWidget from './ProfitabilityWidget'
+import PageTransition from '@/components/ui/PageTransition'
 
 interface DashboardData {
   metrics: {
@@ -87,7 +88,7 @@ export default function DashboardClient({
   }
 
   return (
-    <div className="p-6">
+    <PageTransition className="p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -248,6 +249,6 @@ export default function DashboardClient({
         userId={userId}
         onSave={handleSavePreferences}
       />
-    </div>
+    </PageTransition>
   )
 }

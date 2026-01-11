@@ -23,7 +23,7 @@ const MetricCards = memo(function MetricCards({ metrics }: MetricCardsProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 stagger-fade-in">
       {/* Total Orders */}
       <MetricCard
         title={t('dashboard', 'allOrders')}

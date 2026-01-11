@@ -28,7 +28,7 @@ const bgGradients = {
 function CardContent({ title, value, icon, subtitle, color = 'blue', link }: MetricCardProps) {
   return (
     <div
-      className={`glass-panel group relative overflow-hidden rounded-xl p-6 border transition-all duration-300 ${colorStyles[color]} ${link ? 'cursor-pointer hover:-translate-y-1 hover:shadow-md' : 'shadow-sm'} bg-gradient-to-br ${bgGradients[color]}`}
+      className={`glass-panel group relative overflow-hidden rounded-xl p-6 border transition-all duration-300 min-h-[160px] ${colorStyles[color]} ${link ? 'cursor-pointer hover:-translate-y-1 hover:shadow-md' : 'shadow-sm'} bg-gradient-to-br ${bgGradients[color]}`}
     >
       <div className="absolute top-0 right-0 p-2 opacity-50 hidden dark:block">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -46,7 +46,7 @@ function CardContent({ title, value, icon, subtitle, color = 'blue', link }: Met
       </div>
 
       <div className="mb-2 relative z-10">
-        <p className="text-4xl font-bold tracking-tight text-slate-900 dark:text-foreground font-mono">
+        <p className="text-4xl font-bold tracking-tight text-slate-900 dark:text-foreground font-mono tabular-nums">
           {value}
         </p>
       </div>

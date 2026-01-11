@@ -24,7 +24,7 @@ interface ProductionPlanProps {
 export default function ProductionPlan({ productionPlan }: ProductionPlanProps) {
   const { t } = useTranslation();
   // DUAL THEME STYLES
-  const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border";
+  const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border min-h-[200px]";
   const headerTextClass = "text-xl font-bold text-slate-900 dark:text-foreground";
 
   if (productionPlan.length === 0) {
@@ -58,7 +58,7 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
       </div>
 
       {/* Production Plan List */}
-      <div className="space-y-3">
+      <div className="space-y-3 stagger-fade-in">
         {productionPlan.map((order) => {
           const priority = getOrderPriorityColor(order.deadline, order.status);
           const statusBadge = getStatusBadgeColor(order.status);

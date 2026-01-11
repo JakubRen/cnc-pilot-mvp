@@ -17,7 +17,7 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
   const maxRevenue = customers[0]?.revenue || 1;
 
   // DUAL THEME STYLES
-  const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border";
+  const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border min-h-[200px]";
   const headerTextClass = "text-xl font-semibold text-slate-900 dark:text-foreground";
 
   if (customers.length === 0) {
@@ -44,7 +44,7 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
         <span>👥</span> Top 5 Klientów
       </h2>
 
-      <div className="space-y-4">
+      <div className="space-y-4 stagger-fade-in">
         {customers.map((customer, index) => (
           <div key={customer.name} className="space-y-2">
             <div className="flex justify-between items-center">
