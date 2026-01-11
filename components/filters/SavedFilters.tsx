@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { logger } from '@/lib/logger'
+import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 interface SavedFilter {
   id: string
@@ -28,6 +29,7 @@ export default function SavedFilters({
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [filterName, setFilterName] = useState('')
   const [loading, setLoading] = useState(true)
+  const { confirm, ConfirmDialog } = useConfirmation()
 
   useEffect(() => {
     fetchSavedFilters()
@@ -116,7 +118,14 @@ export default function SavedFilters({
   }
 
   const handleDeleteFilter = async (filterId: string) => {
-    if (!confirm('Czy na pewno chcesz usunąć ten filtr?')) return
+    const confirmed = await confirm({
+      title: 'Usunąć filtr?',
+      description: 'Czy na pewno chcesz usunąć ten zapisany filtr?',
+      confirmText: 'Usuń',
+      cancelText: 'Anuluj',
+      variant: 'danger',
+    })
+    if (!confirmed) return
 
     const loadingToast = toast.loading('Usuwanie...')
 
@@ -151,6 +160,7 @@ export default function SavedFilters({
 
   return (
     <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+      <ConfirmDialog />
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Zapisane Filtry</h3>

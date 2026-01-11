@@ -14,6 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { usePermissions } from '@/hooks/usePermissions';
 import { PriceDisplay } from '@/components/permissions';
 import { logger } from '@/lib/logger';
+import toast from 'react-hot-toast';
+import { useConfirmation } from '@/components/ui/ConfirmationDialog';
 
 interface TimeLog {
   id: string;
@@ -45,12 +47,21 @@ interface Props {
 export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
   const router = useRouter();
   const { canViewPrices } = usePermissions();
+  const { confirm, ConfirmDialog } = useConfirmation();
   const showPrices = canViewPrices('time-tracking');
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Czy na pewno chcesz usunąć ten wpis czasu?')) {
-      return;
-    }
+    const confirmed = await confirm({
+      title: 'Usunąć wpis czasu?',
+      description: 'Czy na pewno chcesz usunąć ten wpis czasu pracy? Tej akcji nie można cofnąć.',
+      confirmText: 'Usuń',
+      cancelText: 'Anuluj',
+      variant: 'danger',
+    });
+
+    if (!confirmed) return;
+
+    const loadingToast = toast.loading('Usuwanie...');
 
     try {
       const { error } = await supabase
@@ -60,10 +71,13 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
 
       if (error) throw error;
 
+      toast.dismiss(loadingToast);
+      toast.success('Wpis usunięty!');
       router.refresh();
     } catch (error) {
+      toast.dismiss(loadingToast);
       logger.error('Error deleting time log', { error });
-      alert('Nie udało się usunąć wpisu.');
+      toast.error('Nie udało się usunąć wpisu.');
     }
   };
 
@@ -104,6 +118,7 @@ export default function TimeLogList({ timeLogs, currentUserRole }: Props) {
 
   return (
     <>
+      <ConfirmDialog />
       {/* Desktop View - Table (hidden on mobile) */}
       <div className="hidden md:block bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">

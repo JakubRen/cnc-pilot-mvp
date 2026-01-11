@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/badge'
+import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 type User = {
   id: string
@@ -22,11 +23,16 @@ type UserListProps = {
 export default function UserList({ users: initialUsers, currentUserRole }: UserListProps) {
   const [showDetails, setShowDetails] = useState(true)
   const [users, setUsers] = useState(initialUsers)
+  const { confirm, ConfirmDialog } = useConfirmation()
 
   const handleDelete = async (userId: string, userName: string) => {
-    const confirmed = window.confirm(
-      `Czy na pewno chcesz usunąć użytkownika "${userName}"?\n\nTej akcji nie można cofnąć.`
-    )
+    const confirmed = await confirm({
+      title: 'Usunąć użytkownika?',
+      description: `Czy na pewno chcesz usunąć użytkownika "${userName}"? Tej akcji nie można cofnąć.`,
+      confirmText: 'Usuń',
+      cancelText: 'Anuluj',
+      variant: 'danger',
+    })
 
     if (!confirmed) return
 
@@ -60,6 +66,7 @@ export default function UserList({ users: initialUsers, currentUserRole }: UserL
 
   return (
     <div>
+      <ConfirmDialog />
       {/* Toggle Button */}
       <div className="mb-6">
         <Button

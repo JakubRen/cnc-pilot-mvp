@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { logger } from '@/lib/logger'
 import { sanitizeText } from '@/lib/sanitization'
+import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 interface InventoryItem {
   id: string
@@ -48,6 +49,7 @@ interface Props {
 
 export default function EditDocumentForm({ documentId, document, items: existingItems, inventoryItems, companyId }: Props) {
   const router = useRouter()
+  const { confirm, ConfirmDialog } = useConfirmation()
 
   // Form state
   const [documentType, setDocumentType] = useState<'PW' | 'RW' | 'WZ'>(document.document_type)
@@ -189,11 +191,13 @@ export default function EditDocumentForm({ documentId, document, items: existing
   const handleConfirm = async () => {
     if (!validate()) return
 
-    const confirmed = confirm(
-      `Czy na pewno chcesz zatwierdzić dokument ${documentType}?\n\n` +
-      `Spowoduje to automatyczną aktualizację stanów magazynowych!\n` +
-      `Pozycji: ${items.length}`
-    )
+    const confirmed = await confirm({
+      title: 'Zatwierdzić dokument?',
+      description: `Czy na pewno chcesz zatwierdzić dokument ${documentType}? Spowoduje to automatyczną aktualizację stanów magazynowych! Pozycji: ${items.length}`,
+      confirmText: 'Zatwierdź',
+      cancelText: 'Anuluj',
+      variant: 'warning',
+    })
 
     if (!confirmed) return
 
@@ -257,8 +261,10 @@ export default function EditDocumentForm({ documentId, document, items: existing
   }
 
   return (
-    <form className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700 space-y-6">
-      {/* Typ dokumentu */}
+    <>
+      <ConfirmDialog />
+      <form className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700 space-y-6">
+        {/* Typ dokumentu */}
       <div>
         <label htmlFor="document_type" className="block text-slate-700 dark:text-slate-300 mb-3 font-medium">
           Typ Dokumentu *
@@ -433,16 +439,17 @@ export default function EditDocumentForm({ documentId, document, items: existing
         </button>
       </div>
 
-      {/* Info */}
-      <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4 text-sm text-blue-200">
-        <p className="font-semibold mb-2">ℹ️ Informacja:</p>
-        <ul className="list-disc list-inside space-y-1 text-blue-300">
-          <li><strong>Zapisz jako Szkic:</strong> Dokument pozostanie szkicem (możesz edytować dalej)</li>
-          <li><strong>Zatwierdź i Zapisz:</strong> Automatycznie zaktualizuje stany magazynowe (nieodwracalne)</li>
-          <li><strong>PW:</strong> Dodaje do magazynu (+)</li>
-          <li><strong>RW/WZ:</strong> Odejmuje z magazynu (-)</li>
-        </ul>
-      </div>
-    </form>
+        {/* Info */}
+        <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4 text-sm text-blue-200">
+          <p className="font-semibold mb-2">ℹ️ Informacja:</p>
+          <ul className="list-disc list-inside space-y-1 text-blue-300">
+            <li><strong>Zapisz jako Szkic:</strong> Dokument pozostanie szkicem (możesz edytować dalej)</li>
+            <li><strong>Zatwierdź i Zapisz:</strong> Automatycznie zaktualizuje stany magazynowe (nieodwracalne)</li>
+            <li><strong>PW:</strong> Dodaje do magazynu (+)</li>
+            <li><strong>RW/WZ:</strong> Odejmuje z magazynu (-)</li>
+          </ul>
+        </div>
+      </form>
+    </>
   )
 }

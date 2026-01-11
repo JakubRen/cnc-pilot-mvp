@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { logger } from '@/lib/logger'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 interface Tag {
   id: string
@@ -40,6 +41,7 @@ export default function TagManager() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTag, setEditingTag] = useState<Tag | null>(null)
   const [formData, setFormData] = useState({ name: '', color: PRESET_COLORS[0] })
+  const { confirm, ConfirmDialog } = useConfirmation()
 
   useEffect(() => {
     fetchTags()
@@ -139,7 +141,14 @@ export default function TagManager() {
   }
 
   const handleDelete = async (tagId: string) => {
-    if (!confirm(t('tagsSection', 'deleteConfirm'))) return
+    const confirmed = await confirm({
+      title: t('tagsSection', 'delete'),
+      description: t('tagsSection', 'deleteConfirm'),
+      confirmText: t('common', 'delete'),
+      cancelText: t('common', 'cancel'),
+      variant: 'danger',
+    })
+    if (!confirmed) return
 
     const loadingToast = toast.loading(t('common', 'loading'))
 
@@ -177,6 +186,7 @@ export default function TagManager() {
 
   return (
     <div>
+      <ConfirmDialog />
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

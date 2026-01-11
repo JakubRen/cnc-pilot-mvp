@@ -9,6 +9,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
 import DeleteButton from './DeleteButton'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export default async function DocumentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -72,6 +73,16 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
     <AppLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
         <div className="max-w-4xl mx-auto">
+          {/* Breadcrumbs */}
+          <Breadcrumbs
+            items={[
+              { label: 'Dashboard', href: '/' },
+              { label: 'Dokumenty', href: '/documents' },
+              { label: document.document_number },
+            ]}
+            className="mb-6"
+          />
+
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
             <div>

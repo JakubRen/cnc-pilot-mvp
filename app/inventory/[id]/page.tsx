@@ -6,6 +6,7 @@ import Link from 'next/link'
 import InventoryHistory from '@/components/inventory/InventoryHistory'
 import TagSelect from '@/components/tags/TagSelect'
 import { PermissionGuard, PriceDisplay } from '@/components/permissions'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export default async function InventoryDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -89,6 +90,16 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: 'Dashboard', href: '/' },
+            { label: 'Magazyn', href: '/inventory' },
+            { label: item.name },
+          ]}
+          className="mb-6"
+        />
+
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>

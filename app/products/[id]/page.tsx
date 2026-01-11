@@ -5,6 +5,7 @@ import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
 import { productCategoryLabels, productUnitLabels } from '@/types/products'
 import { getStockStatus, formatLocation } from '@/types/inventory'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -51,6 +52,16 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
     <AppLayout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
+          {/* Breadcrumbs */}
+          <Breadcrumbs
+            items={[
+              { label: 'Dashboard', href: '/' },
+              { label: 'Produkty', href: '/products' },
+              { label: product.name },
+            ]}
+            className="mb-6"
+          />
+
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>

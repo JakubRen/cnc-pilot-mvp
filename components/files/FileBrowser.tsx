@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import Image from 'next/image'
 import { logger } from '@/lib/logger'
+import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 export interface FileBrowserFile {
   id: string
@@ -28,6 +29,7 @@ export default function FileBrowser({ files, onFileDeleted }: FileBrowserProps) 
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [previewFile, setPreviewFile] = useState<FileBrowserFile | null>(null)
   const [filterType, setFilterType] = useState<string>('all')
+  const { confirm, ConfirmDialog } = useConfirmation()
 
   // Filter files by type
   const filteredFiles = files.filter((file) => {
@@ -67,7 +69,14 @@ export default function FileBrowser({ files, onFileDeleted }: FileBrowserProps) 
 
   // Delete file
   const handleDelete = async (file: FileBrowserFile) => {
-    if (!confirm(`Czy na pewno chcesz usunąć plik: ${file.original_filename}?`)) return
+    const confirmed = await confirm({
+      title: 'Usunąć plik?',
+      description: `Czy na pewno chcesz usunąć plik: ${file.original_filename}?`,
+      confirmText: 'Usuń',
+      cancelText: 'Anuluj',
+      variant: 'danger',
+    })
+    if (!confirmed) return
 
     const loadingToast = toast.loading('Usuwanie...')
 
@@ -128,6 +137,7 @@ export default function FileBrowser({ files, onFileDeleted }: FileBrowserProps) 
 
   return (
     <div>
+      <ConfirmDialog />
       {/* Header with filters and view toggle */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">

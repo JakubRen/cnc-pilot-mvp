@@ -12,6 +12,7 @@ import { useOrderSelection } from '@/hooks/useOrderSelection'
 import { useOptimisticOrders } from '@/hooks/useOptimisticOrders'
 import { logger } from '@/lib/logger'
 import PageTransition from '@/components/ui/PageTransition'
+import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 interface OrderWithTags {
   id: string
@@ -35,6 +36,7 @@ interface OrdersClientProps {
 }
 
 export default function OrdersClient({ orders: initialOrders, currentUserRole }: OrdersClientProps) {
+  const { confirm, ConfirmDialog } = useConfirmation()
   const [filters, setFilters] = useState<FilterState>({
     status: 'all',
     deadline: 'all',
@@ -80,9 +82,13 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole }:
   const handleBulkStatusChange = async (newStatus: string) => {
     if (selectedOrders.size === 0) return
 
-    const confirmed = confirm(
-      `Czy na pewno chcesz zmienić status ${selectedOrders.size} zamówień na "${newStatus}"?`
-    )
+    const confirmed = await confirm({
+      title: 'Zmienić status zamówień?',
+      description: `Czy na pewno chcesz zmienić status ${selectedOrders.size} zamówień na "${newStatus}"?`,
+      confirmText: 'Zmień',
+      cancelText: 'Anuluj',
+      variant: 'warning',
+    })
     if (!confirmed) return
 
     // Use optimistic hook - no loading toast needed, UI updates instantly
@@ -92,6 +98,7 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole }:
 
   return (
     <PageTransition className="space-y-4">
+      <ConfirmDialog />
       {/* FILTERS ROW */}
       <OrderFilters onFilterChange={setFilters} />
 

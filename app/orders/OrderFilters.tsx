@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useTranslation } from '@/hooks/useTranslation'
-import { Input } from '@/components/ui/Input'
+import { SearchInput } from '@/components/ui/SearchInput'
 import { Select } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 
@@ -78,10 +78,10 @@ export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
       {/* Single Row - All filters in one line */}
       <div className="flex gap-3 items-center flex-wrap">
         {/* Search - Smaller */}
-        <Input
-          type="text"
+        <SearchInput
           value={filters.search}
           onChange={(e) => handleChange('search', e.target.value)}
+          onClear={() => handleChange('search', '')}
           placeholder={t('common', 'search')}
           className="flex-1 min-w-[150px]"
         />

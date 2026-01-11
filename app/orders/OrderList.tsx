@@ -11,6 +11,7 @@ import { useTranslation } from '@/hooks/useTranslation'
 import { usePermissions } from '@/hooks/usePermissions'
 import { PriceDisplay } from '@/components/permissions'
 import { duplicateOrder } from '@/app/orders/actions'
+import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 interface Order {
   id: string
@@ -47,6 +48,7 @@ export default function OrderList({
   const router = useRouter()
   const { t } = useTranslation()
   const { canViewPrices } = usePermissions()
+  const { confirm, ConfirmDialog } = useConfirmation()
   const showPrices = canViewPrices('orders')
   const allSelected = orders.length > 0 && orders.every(order => selectedOrders.has(order.id))
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
@@ -72,9 +74,13 @@ export default function OrderList({
   }
 
     const handleDelete = async (orderId: string, orderNumber: string) => {
-      const confirmed = confirm(
-        `${t('orders', 'deleteConfirm')} #${orderNumber}?\n\n${t('common', 'undoOperation')}`
-      )
+      const confirmed = await confirm({
+        title: t('orders', 'deleteConfirm'),
+        description: `${t('orders', 'order')} #${orderNumber} - ${t('common', 'undoOperation')}`,
+        confirmText: t('common', 'delete'),
+        cancelText: t('common', 'cancel'),
+        variant: 'danger',
+      })
 
       if (!confirmed) return
 
@@ -97,9 +103,13 @@ export default function OrderList({
     }
 
     const handleDuplicate = async (orderId: string, orderNumber: string) => {
-      const confirmed = confirm(
-        `${t('orders', 'duplicateConfirm')} #${orderNumber}?`
-      )
+      const confirmed = await confirm({
+        title: t('orders', 'duplicateConfirm'),
+        description: `${t('orders', 'order')} #${orderNumber}`,
+        confirmText: t('common', 'duplicate'),
+        cancelText: t('common', 'cancel'),
+        variant: 'info',
+      })
       if (!confirmed) return
 
       const loadingToast = toast.loading(t('orders', 'duplicating'))
@@ -145,6 +155,7 @@ export default function OrderList({
 
     return (
       <>
+        <ConfirmDialog />
         {/* Desktop View - Table (hidden on mobile) */}
         <div
           className="hidden md:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"

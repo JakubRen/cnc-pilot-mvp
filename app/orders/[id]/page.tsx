@@ -7,6 +7,7 @@ import OrderTimeTracking from './OrderTimeTracking'
 import TagSelect from '@/components/tags/TagSelect'
 import GenerateClientLink from '@/components/client-portal/GenerateClientLink'
 import OrderCostAnalysis from '@/components/orders/OrderCostAnalysis'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -157,6 +158,16 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
       <div className="max-w-4xl mx-auto">
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: 'Dashboard', href: '/' },
+            { label: 'Zamówienia', href: '/orders' },
+            { label: `#${order.order_number}` },
+          ]}
+          className="mb-6"
+        />
+
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>

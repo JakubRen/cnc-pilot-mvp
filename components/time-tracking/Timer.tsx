@@ -8,6 +8,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
+import { useConfirmation } from '@/components/ui/ConfirmationDialog';
 
 interface TimerProps {
   orderId: string;
@@ -23,6 +24,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
   const [currentLogId, setCurrentLogId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { confirm, ConfirmDialog } = useConfirmation();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -132,9 +134,13 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
       if (existingTimer) {
         const orders = existingTimer.orders as { order_number: string } | { order_number: string }[] | null;
         const orderNum = Array.isArray(orders) ? orders[0]?.order_number : orders?.order_number;
-        const shouldStop = confirm(
-          `You have an active timer on Order #${orderNum || 'Unknown'}. Stop it and start new timer?`
-        );
+        const shouldStop = await confirm({
+          title: 'Aktywny timer',
+          description: `Masz aktywny timer na Zleceniu #${orderNum || 'Unknown'}. Zatrzymać go i rozpocząć nowy?`,
+          confirmText: 'Zatrzymaj i rozpocznij',
+          cancelText: 'Anuluj',
+          variant: 'warning',
+        });
 
         if (!shouldStop) {
           setLoading(false);
@@ -271,8 +277,10 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
   const currentCost = (elapsedSeconds / 3600) * hourlyRate;
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
-      <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+    <>
+      <ConfirmDialog />
+      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
         Time Tracking: Order #{orderNumber}
       </h3>
 
@@ -341,15 +349,16 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
         )}
       </div>
 
-      <div className="mt-4 text-center">
-        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium text-white ${
-          status === 'running' ? 'bg-green-600' :
-          status === 'paused' ? 'bg-yellow-600' :
-          'bg-slate-400 dark:bg-slate-600'
-        }`}>
-          {status.toUpperCase()}
-        </span>
+        <div className="mt-4 text-center">
+          <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium text-white ${
+            status === 'running' ? 'bg-green-600' :
+            status === 'paused' ? 'bg-yellow-600' :
+            'bg-slate-400 dark:bg-slate-600'
+          }`}>
+            {status.toUpperCase()}
+          </span>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

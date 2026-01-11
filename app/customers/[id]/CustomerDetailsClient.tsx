@@ -10,6 +10,8 @@ import type { Customer, ContractorType } from '@/types/customers'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
+import { useConfirmation } from '@/components/ui/ConfirmationDialog'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 interface CustomerDetailsClientProps {
   customer: Customer
@@ -32,14 +34,20 @@ export default function CustomerDetailsClient({
 }: CustomerDetailsClientProps) {
   const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
+  const { confirm, ConfirmDialog } = useConfirmation()
 
   const canEdit = ['owner', 'admin', 'manager'].includes(currentUserRole)
   const canDelete = currentUserRole === 'owner'
 
   const handleDelete = async () => {
-    if (!confirm(`Czy na pewno chcesz usunąć kontrahenta "${customer.name}"? Ta operacja jest nieodwracalna.`)) {
-      return
-    }
+    const confirmed = await confirm({
+      title: 'Usunąć kontrahenta?',
+      description: `Czy na pewno chcesz usunąć kontrahenta "${customer.name}"? Ta operacja jest nieodwracalna.`,
+      confirmText: 'Usuń',
+      cancelText: 'Anuluj',
+      variant: 'danger',
+    })
+    if (!confirmed) return
 
     setIsDeleting(true)
     const loadingToast = toast.loading('Usuwanie kontrahenta...')
@@ -73,19 +81,22 @@ export default function CustomerDetailsClient({
 
   return (
     <AppLayout>
+      <ConfirmDialog />
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
         <div className="max-w-7xl mx-auto">
+          {/* Breadcrumbs */}
+          <Breadcrumbs
+            items={[
+              { label: 'Dashboard', href: '/' },
+              { label: 'Kontrahenci', href: '/customers' },
+              { label: customer.name },
+            ]}
+            className="mb-6"
+          />
+
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Link
-                  href="/customers"
-                  className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-                >
-                  ← Powrót do listy
-                </Link>
-              </div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
                   {customer.name}
