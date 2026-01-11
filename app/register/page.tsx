@@ -8,6 +8,8 @@ import { supabase } from '@/lib/supabase'
 import { validateEmailForRegistration } from '@/lib/email-utils'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
+import { Button } from '@/components/ui/Button'
+import { useFormErrorScroll } from '@/hooks/useFormErrorScroll'
 
 const registerSchema = z.object({
   email: z.string().email('Nieprawidłowy format adresu email'),
@@ -27,6 +29,8 @@ export default function RegisterPage() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   })
+
+  useFormErrorScroll(errors)
 
   const onSubmit = async (data: RegisterFormData) => {
     const loadingToast = toast.loading('Sprawdzanie domeny email...')
@@ -137,13 +141,14 @@ export default function RegisterPage() {
             </div>
 
             {/* Submit */}
-            <button
+            <Button
               type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold transition"
+              isLoading={isSubmitting}
+              loadingText="Creating account..."
+              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition"
             >
-              {isSubmitting ? 'Creating account...' : 'Create Account'}
-            </button>
+              Create Account
+            </Button>
           </form>
 
           {/* Login Link */}

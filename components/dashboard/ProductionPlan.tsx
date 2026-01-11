@@ -67,7 +67,7 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
             <Link
               key={order.id}
               href={`/orders/${order.id}`}
-              className="block bg-slate-50 dark:bg-slate-700/50 rounded-md p-4 hover:bg-slate-100 dark:hover:bg-slate-700 transition border-l-4"
+              className="block bg-slate-50 dark:bg-slate-700/50 rounded-md p-4 hover:bg-slate-100 dark:hover:bg-slate-700 transition border-l-4 hover-lift"
               style={{
                 borderLeftColor:
                   priority.color === 'red'

@@ -214,8 +214,8 @@ export default function AddUserPage() {
 
             {/* Submit */}
             <div className="flex gap-4">
-              <Button type="submit" disabled={isSubmitting} variant="primary" className="flex-1">
-                {isSubmitting ? 'Tworzenie...' : 'Utwórz Użytkownika'}
+              <Button type="submit" isLoading={isSubmitting} loadingText="Tworzenie..." variant="primary" className="flex-1">
+                Utwórz Użytkownika
               </Button>
               <Button
                 type="button"

@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/Button'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useOperators } from '@/hooks/useOperators'
 import { sanitizeText } from '@/lib/sanitization'
+import { useFormErrorScroll } from '@/hooks/useFormErrorScroll'
 
 export default function AddOrderPage() {
   const router = useRouter()
@@ -86,6 +87,9 @@ export default function AddOrderPage() {
       drawing_file_id: null,
     },
   })
+
+  // Scroll to first error on validation failure
+  useFormErrorScroll(errors)
 
   // Watch fields for Local Intelligence
   const partName = watch('part_name') || ''
@@ -594,10 +598,11 @@ export default function AddOrderPage() {
                 <div className="flex gap-4">
                   <Button
                     type="submit"
-                    disabled={isSubmitting}
+                    isLoading={isSubmitting}
+                    loadingText={t('orders', 'savingOrder')}
                     className="flex-1 bg-green-600 hover:bg-green-700 border-0"
                   >
-                    {isSubmitting ? t('orders', 'savingOrder') : t('orders', 'createOrderBtn')}
+                    {t('orders', 'createOrderBtn')}
                   </Button>
                   <Button
                     type="button"

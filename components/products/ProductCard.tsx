@@ -22,7 +22,7 @@ export function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <div className={`bg-white dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700 ${isLowStock ? 'border-l-4 border-l-orange-500' : ''}`}>
+    <div className={`bg-white dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700 hover-lift cursor-pointer ${isLowStock ? 'border-l-4 border-l-orange-500' : ''}`}>
       {/* Header with name, SKU, and category badge */}
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1 min-w-0 mr-2">

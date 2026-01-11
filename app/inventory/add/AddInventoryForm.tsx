@@ -8,7 +8,9 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useTranslation } from '@/hooks/useTranslation'
 import { usePermissions } from '@/hooks/usePermissions'
+import { useFormErrorScroll } from '@/hooks/useFormErrorScroll'
 import { sanitizeText } from '@/lib/sanitization'
+import { Button } from '@/components/ui/Button'
 
 type InventoryFormData = {
   sku: string
@@ -61,6 +63,8 @@ export default function AddInventoryForm() {
       category: 'raw_material',
     }
   })
+
+  useFormErrorScroll(errors)
 
   const onSubmit = async (data: InventoryFormData) => {
     const loadingToast = toast.loading(t('inventory', 'creatingItem'))
@@ -314,20 +318,22 @@ export default function AddInventoryForm() {
 
       {/* Submit */}
       <div className="flex gap-4 pt-4">
-        <button
+        <Button
           type="submit"
-          disabled={isSubmitting}
-          className="flex-1 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold transition"
+          isLoading={isSubmitting}
+          loadingText={t('inventory', 'creatingItem')}
+          className="flex-1 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition"
         >
-          {isSubmitting ? t('inventory', 'creatingItem') : t('inventory', 'createItem')}
-        </button>
-        <button
+          {t('inventory', 'createItem')}
+        </Button>
+        <Button
           type="button"
+          variant="secondary"
           onClick={() => router.push('/inventory')}
           className="px-8 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition"
         >
           {t('common', 'cancel')}
-        </button>
+        </Button>
       </div>
     </form>
   )

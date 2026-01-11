@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import Link from 'next/link'
 import CountryAutocomplete from '@/components/form/CountryAutocomplete'
 import CityAutocomplete from '@/components/form/CityAutocomplete'
+import { useFormErrorScroll } from '@/hooks/useFormErrorScroll'
 
 const customerSchema = z.object({
   type: z.enum(['client', 'supplier', 'cooperator'], {
@@ -78,6 +79,8 @@ export default function AddCustomerForm({ companyId, userId }: AddCustomerFormPr
       country: 'Polska',
     },
   })
+
+  useFormErrorScroll(errors)
 
   const selectedCountry = watch('country') || 'Polska'
 
@@ -364,10 +367,11 @@ export default function AddCustomerForm({ companyId, userId }: AddCustomerFormPr
           <div className="flex gap-4 pt-6 border-t border-slate-200 dark:border-slate-700">
             <Button
               type="submit"
-              disabled={isSubmitting}
+              isLoading={isSubmitting}
+              loadingText="Dodawanie..."
               className="flex-1 bg-green-600 hover:bg-green-700"
             >
-              {isSubmitting ? 'Dodawanie...' : '✓ Dodaj kontrahenta'}
+              Dodaj kontrahenta
             </Button>
             <Link href="/customers" className="flex-1">
               <Button

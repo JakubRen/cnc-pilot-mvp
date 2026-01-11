@@ -9,10 +9,9 @@ import { z } from 'zod'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { Select } from '@/components/ui/Select'
 import { supabase } from '@/lib/supabase'
-import { useMaterials, useParts } from '@/hooks/useInventoryItems'
-import { MATERIAL_OPTIONS } from '@/lib/pricing-calculator'
+import InventoryAutocomplete from '@/components/inventory/InventoryAutocomplete'
+import DatePicker from '@/components/ui/DatePicker'
 import type { UnifiedPricingResult } from '@/types/quotes'
 import type { Customer } from '@/types/customers'
 import { logger } from '@/lib/logger'
@@ -43,10 +42,6 @@ export default function ExpressQuotePage() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false)
   const [pendingCustomerName, setPendingCustomerName] = useState('')
-
-  // Inventory hooks for autocomplete
-  const { items: materialItems } = useMaterials()
-  const { items: partItems } = useParts()
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<ExpressQuoteFormData>({
     resolver: zodResolver(expressQuoteSchema),
@@ -231,44 +226,32 @@ export default function ExpressQuotePage() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Part Name */}
+                  {/* Part Name - Autocomplete from inventory */}
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2">
-                      Nazwa części *
-                    </label>
-                    <Input
-                      {...register('part_name')}
-                      placeholder="Flansza, Tuleja, Wałek..."
-                      list="parts-list"
+                    <InventoryAutocomplete
+                      label="Nazwa części"
+                      value={formData.part_name}
+                      onChange={(value) => setValue('part_name', value, { shouldValidate: true })}
+                      categoryFilter={['part', 'finished_good']}
+                      placeholder="Wpisz nazwę części..."
+                      error={errors.part_name?.message}
+                      required
+                      allowCustom={true}
                     />
-                    {errors.part_name && (
-                      <p className="text-red-400 text-sm mt-1">{errors.part_name.message}</p>
-                    )}
-                    {/* Datalist for autocomplete from inventory */}
-                    <datalist id="parts-list">
-                      {partItems.map(item => (
-                        <option key={item.id} value={item.name} />
-                      ))}
-                    </datalist>
                   </div>
 
-                  {/* Material */}
+                  {/* Material - Autocomplete from inventory (only raw_material category) */}
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2">
-                      Materiał *
-                    </label>
-                    <select
-                      {...register('material')}
-                      className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
-                    >
-                      <option value="">Wybierz materiał...</option>
-                      {MATERIAL_OPTIONS.map(mat => (
-                        <option key={mat.value} value={mat.value}>{mat.label}</option>
-                      ))}
-                    </select>
-                    {errors.material && (
-                      <p className="text-red-400 text-sm mt-1">{errors.material.message}</p>
-                    )}
+                    <InventoryAutocomplete
+                      label="Materiał"
+                      value={formData.material}
+                      onChange={(value) => setValue('material', value, { shouldValidate: true })}
+                      categoryFilter="raw_material"
+                      placeholder="Wpisz materiał..."
+                      error={errors.material?.message}
+                      required
+                      allowCustom={true}
+                    />
                   </div>
 
                   {/* Complexity */}
@@ -306,14 +289,14 @@ export default function ExpressQuotePage() {
                     )}
                   </div>
 
-                  {/* Deadline */}
+                  {/* Deadline - Dynamic Calendar */}
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2">
-                      Termin realizacji
-                    </label>
-                    <Input
-                      {...register('deadline')}
-                      type="date"
+                    <DatePicker
+                      label="Termin realizacji"
+                      value={formData.deadline || ''}
+                      onChange={(value) => setValue('deadline', value)}
+                      placeholder="Wybierz termin..."
+                      minDate={new Date()}
                     />
                   </div>
                 </div>

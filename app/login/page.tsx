@@ -11,6 +11,8 @@ import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { Starfield } from '@/components/ui/Starfield'
 import QuoteWidget from '@/components/auth/QuoteWidget'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/Button'
+import { useFormErrorScroll } from '@/hooks/useFormErrorScroll'
 
 export default function LoginPage() {
   const { t } = useTranslation()
@@ -29,6 +31,8 @@ export default function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   })
+
+  useFormErrorScroll(errors)
 
   const onSubmit = async (data: LoginFormData) => {
     const loadingToast = toast.loading(t('auth', 'loggingIn'))
@@ -145,24 +149,18 @@ export default function LoginPage() {
             </div>
 
             {/* Submit */}
-            <button
+            <Button
               type="submit"
-              disabled={isSubmitting}
+              isLoading={isSubmitting}
+              loadingText={t('auth', 'loggingIn')}
               className={cn(
                 "w-full py-3.5 mt-2 rounded-xl font-medium tracking-wide transition-all duration-300",
                 "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]",
-                "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none border border-blue-500/50"
+                "border border-blue-500/50"
               )}
             >
-              {isSubmitting ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  {t('auth', 'loggingIn')}
-                </span>
-              ) : (
-                t('auth', 'loginBtn')
-              )}
-            </button>
+              {t('auth', 'loginBtn')}
+            </Button>
           </form>
 
           {/* Register Link */}

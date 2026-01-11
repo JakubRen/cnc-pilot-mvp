@@ -38,7 +38,7 @@ export function OrderCard({ order }: OrderCardProps) {
   }
 
   return (
-    <div className={`bg-white dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700 ${isOverdue ? 'border-l-4 border-l-red-500' : ''}`}>
+    <div className={`bg-white dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700 hover-lift cursor-pointer ${isOverdue ? 'border-l-4 border-l-red-500' : ''}`}>
       {/* Header */}
       <div className="flex justify-between items-start mb-3">
         <div>

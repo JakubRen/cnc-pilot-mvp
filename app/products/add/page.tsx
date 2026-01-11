@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import AppLayout from '@/components/layout/AppLayout'
 import { ProductFormData, productCategoryLabels, productUnitLabels } from '@/types/products'
+import { Button } from '@/components/ui/Button'
 
 const productSchema = z.object({
   sku: z.string().min(1, 'SKU wymagane'),
@@ -188,20 +189,22 @@ export default function AddProductPage() {
 
             {/* Submit */}
             <div className="flex gap-4 pt-4">
-              <button
+              <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="flex-1 px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition shadow-lg text-lg"
+                isLoading={isSubmitting}
+                loadingText="Zapisuję..."
+                className="flex-1 px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition shadow-lg text-lg"
               >
-                {isSubmitting ? 'Zapisuję...' : '✓ Dodaj Towar'}
-              </button>
-              <button
+                Dodaj Towar
+              </Button>
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={() => router.back()}
                 className="px-8 py-4 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 font-semibold transition"
               >
                 Anuluj
-              </button>
+              </Button>
             </div>
           </form>
         </div>
