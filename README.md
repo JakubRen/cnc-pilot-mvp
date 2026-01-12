@@ -84,6 +84,31 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Unified Quote Form + Document Workflow Fixes (2026-01-12)
+
+**Feature:** Merged Express Quote into single multi-item "Nowa Oferta" form with quick pricing.
+
+**Quote System:**
+- Unified quote form at `/quotes/add` with multi-item support
+- `ProductsAutocomplete.tsx` for finished goods (wyroby gotowe) search
+- `?customer_id=` URL param for customer pre-selection
+- Individual pricing calculation per item (rule-based + historical hybrid)
+- Quote detail page displays multiple items in table format
+
+**Document Workflow Fixes:**
+- Fixed warehouse trigger timing: draft → items → confirm (trigger now fires with items present)
+- Fixed `useInventoryItems` hook to query `inventory` table with stock > 0
+- Fixed DatePicker CSS for react-day-picker v9
+
+**Database:**
+- `FIX_WAREHOUSE_RLS.sql` - RLS policies using auth.uid()
+
+**Files Modified:** 13 files (+1163 / -544 lines)
+
+**Commit:** `31c6f1b` - feat(quotes): unify quote forms and fix document workflow
+
+---
+
 ### ✅ UX Polish Batch 3 - ConfirmationDialog, Breadcrumbs, SearchInput (2026-01-11)
 
 **Feature:** Professional confirmation dialogs, navigation breadcrumbs, and enhanced search UX.
