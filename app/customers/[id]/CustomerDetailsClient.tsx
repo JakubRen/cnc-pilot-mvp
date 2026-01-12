@@ -253,7 +253,7 @@ export default function CustomerDetailsClient({
                     <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
                       Oferty ({quotes.length})
                     </h2>
-                    <Link href={`/quotes/express?customer_id=${customer.id}`}>
+                    <Link href={`/quotes/add?customer_id=${customer.id}`}>
                       <Button className="bg-green-600 hover:bg-green-700">
                         + Nowa oferta
                       </Button>

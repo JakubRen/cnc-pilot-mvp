@@ -274,7 +274,7 @@ export function EmptyQuotes() {
       title="Brak ofert"
       description="Nie masz jeszcze żadnych ofert. Utwórz pierwszą ofertę dla klienta."
       actionLabel="+ Utwórz ofertę"
-      actionHref="/quotes/express"
+      actionHref="/quotes/add"
     />
   )
 }

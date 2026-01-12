@@ -8,12 +8,12 @@ export interface InventoryItem {
   id: string
   name: string
   sku: string
-  category: 'raw_material' | 'part' | 'tool' | 'consumable' | 'finished_good'
+  category: 'raw_material' | 'part' | 'tool' | 'consumable' | 'finished_good' | 'semi_finished'
   quantity: number
   unit: string
 }
 
-type CategoryFilter = 'raw_material' | 'part' | 'finished_good' | 'all'
+type CategoryFilter = 'raw_material' | 'part' | 'finished_good' | 'semi_finished' | 'all'
 
 export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilter[]) {
   const [items, setItems] = useState<InventoryItem[]>([])
@@ -65,11 +65,12 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
           return
         }
 
-        // Build query
+        // Query inventory table (this is where PW documents add stock)
         let query = supabase
           .from('inventory')
           .select('id, name, sku, category, quantity, unit')
           .eq('company_id', userProfile.company_id)
+          .gt('quantity', 0) // Only items with stock
           .order('name')
 
         // Apply category filter
@@ -88,11 +89,11 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
           throw queryError
         }
 
-        logger.debug(`[useInventoryItems] Found ${data?.length || 0} items for filter: ${filterKey}`)
+        logger.debug(`[useInventoryItems] Found ${data?.length || 0} items with stock for filter: ${filterKey}`)
         setItems(data || [])
       } catch (err) {
         logger.error('[useInventoryItems] Error', { error: err })
-        setError(err instanceof Error ? err.message : 'Failed to load inventory')
+        setError(err instanceof Error ? err.message : 'Failed to load products')
         setItems([])
       } finally {
         setLoading(false)

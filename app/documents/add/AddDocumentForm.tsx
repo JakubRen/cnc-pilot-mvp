@@ -315,7 +315,7 @@ export default function AddDocumentForm({ inventoryItems, products, customers, u
         }))
       }
 
-      // Wstaw dokument jako confirmed
+      // KROK 1: Wstaw dokument jako DRAFT (pozycje jeszcze nie istnieją)
       const { data: doc, error: docError } = await supabase
         .from('warehouse_documents')
         .insert({
@@ -324,7 +324,7 @@ export default function AddDocumentForm({ inventoryItems, products, customers, u
           document_number: docNumber,
           contractor: sanitizedContractor,
           description: sanitizedDescription,
-          status: 'confirmed', // Natychmiast zatwierdzony → trigger zaktualizuje stany
+          status: 'draft', // Najpierw draft
           created_by: userId
         })
         .select()
@@ -332,7 +332,7 @@ export default function AddDocumentForm({ inventoryItems, products, customers, u
 
       if (docError) throw docError
 
-      // Wstaw pozycje
+      // KROK 2: Wstaw pozycje dokumentu
       const { error: itemsError } = await supabase
         .from('warehouse_document_items')
         .insert(
@@ -343,6 +343,14 @@ export default function AddDocumentForm({ inventoryItems, products, customers, u
         )
 
       if (itemsError) throw itemsError
+
+      // KROK 3: Zmień status na CONFIRMED → trigger zaktualizuje stany magazynowe
+      const { error: confirmError } = await supabase
+        .from('warehouse_documents')
+        .update({ status: 'confirmed' })
+        .eq('id', doc.id)
+
+      if (confirmError) throw confirmError
 
       toast.dismiss(loadingToast)
       toast.success('Dokument zatwierdzony! Stany magazynowe zaktualizowane.')
@@ -421,17 +429,10 @@ export default function AddDocumentForm({ inventoryItems, products, customers, u
 
       {/* Pozycje dokumentu */}
       <div>
-        <div className="flex justify-between items-center mb-4">
+        <div className="mb-4">
           <label className="block text-slate-700 dark:text-slate-300 font-medium">
             Pozycje Dokumentu *
           </label>
-          <button
-            type="button"
-            onClick={addItem}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
-          >
-            + Dodaj Pozycję
-          </button>
         </div>
 
         <div className="space-y-4">
@@ -520,6 +521,15 @@ export default function AddDocumentForm({ inventoryItems, products, customers, u
             )
           })}
         </div>
+
+        {/* Przycisk dodaj pozycję - na dole listy */}
+        <button
+          type="button"
+          onClick={addItem}
+          className="w-full mt-4 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm border-2 border-dashed border-blue-400 hover:border-blue-500"
+        >
+          + Dodaj kolejną pozycję
+        </button>
       </div>
 
       {/* Buttons */}

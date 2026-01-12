@@ -7,12 +7,24 @@ import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import AppLayout from '@/components/layout/AppLayout'
 
+interface QuoteItem {
+  id: string
+  part_name: string
+  material: string
+  quantity: number
+  unit_price: number
+  total_price: number
+  complexity: string
+  notes: string | null
+}
+
 interface QuoteDetailsClientProps {
   quote: any
+  quoteItems: QuoteItem[]
   userProfile: any
 }
 
-export default function QuoteDetailsClient({ quote, userProfile }: QuoteDetailsClientProps) {
+export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: QuoteDetailsClientProps) {
   const router = useRouter()
   const [isCopying, setIsCopying] = useState(false)
 
@@ -130,34 +142,74 @@ export default function QuoteDetailsClient({ quote, userProfile }: QuoteDetailsC
               {/* Product Details */}
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                  Szczegóły zlecenia
+                  {quoteItems.length > 0 ? `Pozycje oferty (${quoteItems.length})` : 'Szczegóły zlecenia'}
                 </h2>
-                <div className="grid grid-cols-2 gap-4">
-                  {quote.part_name && (
-                    <div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">Nazwa części</p>
-                      <p className="text-slate-900 dark:text-white font-medium">{quote.part_name}</p>
-                    </div>
-                  )}
-                  {quote.material && (
-                    <div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">Materiał</p>
-                      <p className="text-slate-900 dark:text-white font-medium">{quote.material}</p>
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Ilość</p>
-                    <p className="text-slate-900 dark:text-white font-medium">{quote.quantity} szt.</p>
+
+                {/* Multi-item view */}
+                {quoteItems.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Nazwa</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Materiał</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Ilość</th>
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Cena/szt.</th>
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Suma</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                        {quoteItems.map((item) => (
+                          <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td className="px-4 py-3 text-slate-900 dark:text-white font-medium">{item.part_name}</td>
+                            <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{item.material || '-'}</td>
+                            <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{item.quantity} szt.</td>
+                            <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{item.unit_price?.toFixed(2)} PLN</td>
+                            <td className="px-4 py-3 text-right text-slate-900 dark:text-white font-semibold">{item.total_price?.toFixed(2)} PLN</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  {quote.deadline && (
+                ) : (
+                  /* Single item view (Express Quote) */
+                  <div className="grid grid-cols-2 gap-4">
+                    {quote.part_name && (
+                      <div>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Nazwa części</p>
+                        <p className="text-slate-900 dark:text-white font-medium">{quote.part_name}</p>
+                      </div>
+                    )}
+                    {quote.material && (
+                      <div>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Materiał</p>
+                        <p className="text-slate-900 dark:text-white font-medium">{quote.material}</p>
+                      </div>
+                    )}
                     <div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">Termin realizacji</p>
-                      <p className="text-slate-900 dark:text-white font-medium">
-                        {new Date(quote.deadline).toLocaleDateString('pl-PL')}
-                      </p>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm">Ilość</p>
+                      <p className="text-slate-900 dark:text-white font-medium">{quote.quantity} szt.</p>
                     </div>
-                  )}
-                </div>
+                    {quote.deadline && (
+                      <div>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Termin realizacji</p>
+                        <p className="text-slate-900 dark:text-white font-medium">
+                          {new Date(quote.deadline).toLocaleDateString('pl-PL')}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Deadline (if multi-item and has deadline) */}
+                {quoteItems.length > 0 && quote.deadline && (
+                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Termin realizacji</p>
+                    <p className="text-slate-900 dark:text-white font-medium">
+                      {new Date(quote.deadline).toLocaleDateString('pl-PL')}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Pricing */}

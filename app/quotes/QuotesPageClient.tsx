@@ -91,9 +91,9 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
               <h1 className="text-4xl font-bold text-white mb-2">📋 Oferty</h1>
               <p className="text-slate-400">Zarządzaj ofertami cenowymi</p>
             </div>
-            <Link href="/quotes/express">
+            <Link href="/quotes/add">
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                ⚡ Nowa Express Quote
+                + Nowa Oferta
               </Button>
             </Link>
           </div>
@@ -169,13 +169,13 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
               <h2 className="text-2xl font-bold text-white mb-2">Brak ofert</h2>
               <p className="text-slate-400 mb-6">
                 {quotes.length === 0
-                  ? 'Nie masz jeszcze żadnych ofert. Utwórz pierwszą ofertę używając Express Quote!'
+                  ? 'Nie masz jeszcze żadnych ofert. Utwórz pierwszą!'
                   : 'Brak ofert spełniających kryteria filtrowania.'}
               </p>
               {quotes.length === 0 && (
-                <Link href="/quotes/express">
+                <Link href="/quotes/add">
                   <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                    ⚡ Utwórz pierwszą ofertę
+                    + Utwórz pierwszą ofertę
                   </Button>
                 </Link>
               )}

@@ -20,16 +20,10 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
     redirect('/login')
   }
 
-  // Fetch document z relacjami
+  // Fetch document (without problematic JOINs)
   const { data: document, error } = await supabase
     .from('warehouse_documents')
-    .select(`
-      *,
-      creator:users!created_by (
-        id,
-        full_name
-      )
-    `)
+    .select('*')
     .eq('id', id)
     .eq('company_id', user.company_id)
     .single()
@@ -38,24 +32,33 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
     notFound()
   }
 
+  // Fetch creator name separately
+  let creatorName = '-'
+  if (document.created_by) {
+    const { data: creator } = await supabase
+      .from('users')
+      .select('full_name')
+      .eq('id', document.created_by)
+      .single()
+    creatorName = creator?.full_name || '-'
+  }
+
   // Fetch items dokumentu
-  const { data: items } = await supabase
+  const { data: rawItems } = await supabase
     .from('warehouse_document_items')
-    .select(`
-      *,
-      inventory (
-        id,
-        sku,
-        name,
-        unit
-      )
-    `)
+    .select('*')
     .eq('document_id', id)
     .order('created_at', { ascending: true })
 
-  const creatorName = Array.isArray(document.creator)
-    ? document.creator[0]?.full_name
-    : document.creator?.full_name
+  // Fetch inventory details for each item
+  const items = await Promise.all((rawItems || []).map(async (item) => {
+    const { data: inv } = await supabase
+      .from('inventory')
+      .select('id, sku, name, unit')
+      .eq('id', item.inventory_id)
+      .single()
+    return { ...item, inventory: inv }
+  }))
 
   // Kolory dla typów
   const docTypeColors: Record<string, string> = {
@@ -194,9 +197,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
                   </thead>
                   <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                     {items.map((item, index) => {
-                      const inventory = Array.isArray(item.inventory)
-                        ? item.inventory[0]
-                        : item.inventory
+                      const inventory = item.inventory
 
                       return (
                         <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">

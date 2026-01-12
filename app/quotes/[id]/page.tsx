@@ -27,5 +27,12 @@ export default async function QuoteDetailsPage({ params }: { params: Promise<{ i
     return notFound()
   }
 
-  return <QuoteDetailsClient quote={quote} userProfile={userProfile} />
+  // Fetch quote items for multi-item quotes
+  const { data: quoteItems } = await supabase
+    .from('quote_items')
+    .select('*')
+    .eq('quote_id', id)
+    .order('created_at', { ascending: true })
+
+  return <QuoteDetailsClient quote={quote} quoteItems={quoteItems || []} userProfile={userProfile} />
 }
