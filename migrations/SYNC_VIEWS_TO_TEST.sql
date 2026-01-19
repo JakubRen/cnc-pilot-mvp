@@ -12,19 +12,23 @@
 
 CREATE OR REPLACE VIEW audit_logs_with_users AS
 SELECT
-    al.id,
-    al.table_name,
-    al.record_id,
-    al.action,
-    al.old_values,
-    al.new_values,
-    al.changed_at,
-    al.company_id,
-    al.user_id,
+    a.id,
+    a.table_name,
+    a.record_id,
+    a.action,
+    a.old_data,
+    a.new_data,
+    a.changed_fields,
+    a.description,
+    a.ip_address,
+    a.user_agent,
+    a.user_id,
     u.full_name AS user_name,
-    u.email AS user_email
-FROM audit_logs al
-LEFT JOIN users u ON al.user_id = u.id;
+    u.email AS user_email,
+    a.company_id,
+    a.created_at
+FROM audit_logs a
+LEFT JOIN users u ON a.user_id = u.id;
 
 -- =====================================================
 -- 2. email_statistics - Statystyki emaili (grupowanie po dniu)
