@@ -3,11 +3,12 @@
 -- Dodanie brakujących kolumn do bazy TEST
 -- =====================================================
 -- Data: 2026-01-19
--- Cel: Wyrównanie schematów TEST i PROD dla CNC-Pilot
+-- Cel: Dodanie przydatnych kolumn do TEST (source of truth)
+-- UWAGA: NIE zmieniamy architektury operations (TEST uzywa production_plan_id)
 -- =====================================================
 
 -- =====================================================
--- 1. TABELA: companies (7 kolumn do dodania)
+-- 1. TABELA: companies (7 kolumn)
 -- =====================================================
 
 ALTER TABLE companies ADD COLUMN IF NOT EXISTS owner_id UUID;
@@ -18,12 +19,8 @@ ALTER TABLE companies ADD COLUMN IF NOT EXISTS address TEXT;
 ALTER TABLE companies ADD COLUMN IF NOT EXISTS phone TEXT;
 ALTER TABLE companies ADD COLUMN IF NOT EXISTS timezone TEXT DEFAULT 'Europe/Warsaw';
 
--- Opcjonalnie: FK dla owner_id do users (jeśli users.id jest UUID)
--- ALTER TABLE companies ADD CONSTRAINT companies_owner_id_fkey
---   FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE SET NULL;
-
 -- =====================================================
--- 2. TABELA: users (4 kolumny do dodania)
+-- 2. TABELA: users (4 kolumny)
 -- =====================================================
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash TEXT;
@@ -32,7 +29,7 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS notification_preferences JSONB;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS language TEXT DEFAULT 'pl';
 
 -- =====================================================
--- 3. TABELA: inventory (5 kolumn do dodania)
+-- 3. TABELA: inventory (5 kolumn)
 -- =====================================================
 
 ALTER TABLE inventory ADD COLUMN IF NOT EXISTS description TEXT;
@@ -42,7 +39,7 @@ ALTER TABLE inventory ADD COLUMN IF NOT EXISTS expiry_date DATE;
 ALTER TABLE inventory ADD COLUMN IF NOT EXISTS notes TEXT;
 
 -- =====================================================
--- 4. TABELA: time_logs (4 kolumny do dodania)
+-- 4. TABELA: time_logs (4 kolumny)
 -- =====================================================
 
 ALTER TABLE time_logs ADD COLUMN IF NOT EXISTS duration_seconds INTEGER;
@@ -51,72 +48,83 @@ ALTER TABLE time_logs ADD COLUMN IF NOT EXISTS notes TEXT;
 ALTER TABLE time_logs ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW();
 
 -- =====================================================
--- 5. TABELA: production_plans (1 kolumna do dodania)
+-- 5. NAPRAWA: order_items - brakujacy PRIMARY KEY
+-- =====================================================
+-- Tabela order_items powinna miec PK na id (standardowa praktyka)
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE table_name = 'order_items'
+      AND constraint_type = 'PRIMARY KEY'
+  ) THEN
+    ALTER TABLE order_items ADD PRIMARY KEY (id);
+    RAISE NOTICE 'Added PRIMARY KEY to order_items.id';
+  ELSE
+    RAISE NOTICE 'PRIMARY KEY already exists on order_items';
+  END IF;
+END $$;
+
+-- =====================================================
+-- 6. TABELA: production_plans (1 kolumna)
 -- =====================================================
 
 ALTER TABLE production_plans ADD COLUMN IF NOT EXISTS order_item_id UUID;
 
--- UWAGA: FK do order_items pominiete - tabela order_items w TEST
--- nie ma poprawnego PRIMARY KEY. FK mozna dodac pozniej po naprawie.
+-- FK do order_items
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE constraint_name = 'production_plans_order_item_id_fkey'
+      AND table_name = 'production_plans'
+  ) THEN
+    ALTER TABLE production_plans
+      ADD CONSTRAINT production_plans_order_item_id_fkey
+      FOREIGN KEY (order_item_id) REFERENCES order_items(id) ON DELETE SET NULL;
+  END IF;
+END $$;
 
 -- =====================================================
--- 6. TABELA: operations (1 kolumna do dodania)
+-- UWAGA: operations.order_item_id NIE DODAJEMY
 -- =====================================================
--- TEST ma tylko production_plan_id, PROD ma tez order_item_id
-
-ALTER TABLE operations ADD COLUMN IF NOT EXISTS order_item_id UUID;
-
--- UWAGA: FK do order_items pominiete - j.w.
-
-CREATE INDEX IF NOT EXISTS idx_operations_order_item ON operations(order_item_id);
+-- TEST uzywa architektury: operations -> production_plans -> order
+-- PROD uzywa: operations -> order_items (inna architektura)
+-- Zachowujemy architekture TEST jako source of truth
 
 -- =====================================================
 -- VERIFICATION
 -- =====================================================
 
--- Sprawdź kolumny w companies
-SELECT column_name, data_type, column_default
+SELECT 'companies' as table_name, column_name, data_type
 FROM information_schema.columns
 WHERE table_name = 'companies'
   AND column_name IN ('owner_id', 'plan_type', 'max_operators', 'logo_url', 'address', 'phone', 'timezone')
-ORDER BY column_name;
-
--- Sprawdź kolumny w users
-SELECT column_name, data_type, column_default
+UNION ALL
+SELECT 'users', column_name, data_type
 FROM information_schema.columns
 WHERE table_name = 'users'
   AND column_name IN ('password_hash', 'dashboard_preferences', 'notification_preferences', 'language')
-ORDER BY column_name;
-
--- Sprawdź kolumny w inventory
-SELECT column_name, data_type, column_default
+UNION ALL
+SELECT 'inventory', column_name, data_type
 FROM information_schema.columns
 WHERE table_name = 'inventory'
   AND column_name IN ('description', 'supplier', 'unit_cost', 'expiry_date', 'notes')
-ORDER BY column_name;
-
--- Sprawdź kolumny w time_logs
-SELECT column_name, data_type, column_default
+UNION ALL
+SELECT 'time_logs', column_name, data_type
 FROM information_schema.columns
 WHERE table_name = 'time_logs'
   AND column_name IN ('duration_seconds', 'total_cost', 'notes', 'updated_at')
-ORDER BY column_name;
-
--- Sprawdź kolumnę w production_plans
-SELECT column_name, data_type
+UNION ALL
+SELECT 'production_plans', column_name, data_type
 FROM information_schema.columns
-WHERE table_name = 'production_plans' AND column_name = 'order_item_id';
+WHERE table_name = 'production_plans' AND column_name = 'order_item_id'
+ORDER BY table_name, column_name;
 
--- Sprawdź kolumnę w operations
-SELECT column_name, data_type
-FROM information_schema.columns
-WHERE table_name = 'operations' AND column_name = 'order_item_id';
-
--- Oczekiwany wynik:
--- companies: 7 nowych kolumn
--- users: 4 nowe kolumny
--- inventory: 5 nowych kolumn
--- time_logs: 4 nowe kolumny
--- production_plans: 1 nowa kolumna (order_item_id)
--- operations: 1 nowa kolumna (order_item_id)
--- RAZEM: 22 nowe kolumny
+-- Oczekiwany wynik: 21 kolumn
+-- companies: 7
+-- users: 4
+-- inventory: 5
+-- time_logs: 4
+-- production_plans: 1
