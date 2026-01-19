@@ -73,6 +73,31 @@ BEGIN
 END $$;
 
 -- =====================================================
+-- 6. TABELA: operations (1 kolumna do dodania)
+-- =====================================================
+-- TEST ma tylko production_plan_id, PROD ma tez order_item_id
+
+ALTER TABLE operations ADD COLUMN IF NOT EXISTS order_item_id UUID;
+
+-- FK do order_items
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'order_items') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints
+      WHERE constraint_name = 'operations_order_item_id_fkey'
+      AND table_name = 'operations'
+    ) THEN
+      ALTER TABLE operations
+        ADD CONSTRAINT operations_order_item_id_fkey
+        FOREIGN KEY (order_item_id) REFERENCES order_items(id) ON DELETE SET NULL;
+    END IF;
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_operations_order_item ON operations(order_item_id);
+
+-- =====================================================
 -- VERIFICATION
 -- =====================================================
 
@@ -109,10 +134,16 @@ SELECT column_name, data_type
 FROM information_schema.columns
 WHERE table_name = 'production_plans' AND column_name = 'order_item_id';
 
+-- Sprawdź kolumnę w operations
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'operations' AND column_name = 'order_item_id';
+
 -- Oczekiwany wynik:
 -- companies: 7 nowych kolumn
 -- users: 4 nowe kolumny
 -- inventory: 5 nowych kolumn
 -- time_logs: 4 nowe kolumny
--- production_plans: 1 nowa kolumna
--- RAZEM: 21 nowych kolumn
+-- production_plans: 1 nowa kolumna (order_item_id)
+-- operations: 1 nowa kolumna (order_item_id)
+-- RAZEM: 22 nowe kolumny

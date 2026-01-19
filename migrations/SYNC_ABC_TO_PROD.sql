@@ -4,7 +4,8 @@
 -- =====================================================
 -- Data: 2026-01-19
 -- Cel: Wyrównanie schematów TEST i PROD dla CNC-Pilot
--- Zawiera: 4 tabele ABC + kolumny + operations.production_plan_id
+-- Zawiera: 4 tabele ABC + kolumny machines/products
+-- UWAGA: operations.production_plan_id juz istnieje w PROD (zweryfikowano)
 -- =====================================================
 
 -- =====================================================
@@ -174,29 +175,10 @@ ALTER TABLE products ADD COLUMN IF NOT EXISTS material_markup_percent NUMERIC(5,
 ALTER TABLE products ADD COLUMN IF NOT EXISTS material_weight_kg NUMERIC(8,4);
 
 -- =====================================================
--- 7. ALTER TABLE operations - production_plan_id
--- (TEST ma poprawną strukturę, PROD potrzebuje tej kolumny)
+-- 7. operations.production_plan_id - JUZ ISTNIEJE W PROD
 -- =====================================================
-
-ALTER TABLE operations ADD COLUMN IF NOT EXISTS production_plan_id UUID;
-
--- Dodaj FK jeśli tabela production_plans istnieje
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'production_plans') THEN
-    IF NOT EXISTS (
-      SELECT 1 FROM information_schema.table_constraints
-      WHERE constraint_name = 'operations_production_plan_id_fkey'
-      AND table_name = 'operations'
-    ) THEN
-      ALTER TABLE operations
-        ADD CONSTRAINT operations_production_plan_id_fkey
-        FOREIGN KEY (production_plan_id) REFERENCES production_plans(id) ON DELETE SET NULL;
-    END IF;
-  END IF;
-END $$;
-
-CREATE INDEX IF NOT EXISTS idx_operations_production_plan ON operations(production_plan_id);
+-- Zweryfikowano 2026-01-19: PROD juz ma kolumne production_plan_id
+-- Nie trzeba dodawac - pomijamy ten krok
 
 -- =====================================================
 -- 8. RLS POLICIES
@@ -364,13 +346,7 @@ WHERE table_name = 'products'
                       'material_weight_kg')
 ORDER BY column_name;
 
--- Sprawdź production_plan_id w operations
-SELECT column_name, data_type
-FROM information_schema.columns
-WHERE table_name = 'operations' AND column_name = 'production_plan_id';
-
 -- Oczekiwany wynik:
 -- 4 tabele ABC z RLS włączonym
 -- machines.hourly_rate
 -- 7 kolumn ABC w products
--- operations.production_plan_id
