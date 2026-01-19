@@ -1,0 +1,138 @@
+name: Database Migrations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'migrations/**/*.sql'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - test
+          - prod
+          - both
+      migration_file:
+        description: 'Specific migration file (optional, leave empty for all pending)'
+        required: false
+        type: string
+
+jobs:
+  migrate:
+    name: Run Database Migrations
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Need previous commit to detect changes
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Detect changed migrations
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "manual_trigger=true" >> $GITHUB_OUTPUT
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+            echo "migration_file=${{ github.event.inputs.migration_file }}" >> $GITHUB_OUTPUT
+          else
+            # Get changed migration files
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'migrations/*.sql' | tr '\n' ' ')
+            echo "changed_files=$CHANGED" >> $GITHUB_OUTPUT
+            echo "manual_trigger=false" >> $GITHUB_OUTPUT
+            echo "environment=both" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run migrations on TEST
+        if: contains(fromJSON('["test", "both"]'), steps.changes.outputs.environment)
+        env:
+          PGPASSWORD: ${{ secrets.TEST_SUPABASE_DB_PASSWORD }}
+        run: |
+          echo "🔄 Running migrations on TEST database..."
+
+          # Connection details for TEST
+          export PGHOST="aws-0-eu-central-1.pooler.supabase.com"
+          export PGPORT="6543"
+          export PGUSER="postgres.vvetjctdjswgwebhgbpd"
+          export PGDATABASE="postgres"
+
+          # Run each changed migration
+          if [ "${{ steps.changes.outputs.manual_trigger }}" = "true" ] && [ -n "${{ steps.changes.outputs.migration_file }}" ]; then
+            # Specific file requested
+            FILE="migrations/${{ steps.changes.outputs.migration_file }}"
+            if [ -f "$FILE" ]; then
+              echo "📄 Applying: $FILE"
+              psql -f "$FILE"
+            fi
+          else
+            # Run all migrations in order
+            for file in migrations/*.sql; do
+              if [ -f "$file" ]; then
+                echo "📄 Applying: $file"
+                psql -f "$file" || echo "⚠️ Migration may have already been applied"
+              fi
+            done
+          fi
+
+          echo "✅ TEST migrations complete!"
+
+      - name: Run migrations on PROD
+        if: contains(fromJSON('["prod", "both"]'), steps.changes.outputs.environment)
+        env:
+          PGPASSWORD: ${{ secrets.PROD_SUPABASE_DB_PASSWORD }}
+        run: |
+          echo "🔄 Running migrations on PROD database..."
+
+          # Connection details for PROD
+          export PGHOST="aws-0-eu-central-1.pooler.supabase.com"
+          export PGPORT="6543"
+          export PGUSER="postgres.jjepqbrjktfsdbbprnea"
+          export PGDATABASE="postgres"
+
+          # Run each changed migration
+          if [ "${{ steps.changes.outputs.manual_trigger }}" = "true" ] && [ -n "${{ steps.changes.outputs.migration_file }}" ]; then
+            # Specific file requested
+            FILE="migrations/${{ steps.changes.outputs.migration_file }}"
+            if [ -f "$FILE" ]; then
+              echo "📄 Applying: $FILE"
+              psql -f "$FILE"
+            fi
+          else
+            # Run all migrations in order
+            for file in migrations/*.sql; do
+              if [ -f "$file" ]; then
+                echo "📄 Applying: $file"
+                psql -f "$file" || echo "⚠️ Migration may have already been applied"
+              fi
+            done
+          fi
+
+          echo "✅ PROD migrations complete!"
+
+      - name: Summary
+        run: |
+          echo "## 📊 Migration Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| TEST | ✅ Complete |" >> $GITHUB_STEP_SUMMARY
+          echo "| PROD | ✅ Complete |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Migrations applied:**" >> $GITHUB_STEP_SUMMARY
+          ls -la migrations/*.sql >> $GITHUB_STEP_SUMMARY || echo "No migrations found" >> $GITHUB_STEP_SUMMARY

@@ -15,8 +15,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
-    "migrate:test": "node scripts/migrate.js test",
-    "migrate:prod": "node scripts/migrate.js prod"
+    "migrate:test": "node scripts/db-migrate.js test",
+    "migrate:prod": "node scripts/db-migrate.js prod",
+    "migrate:both": "node scripts/db-migrate.js both",
+    "db:sync": "bash scripts/db-sync-from-prod.sh"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.19",
