@@ -154,6 +154,64 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
         </div>
       )}
 
+      {/* ABC Pricing Settings */}
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Wycena ABC (Activity-Based Costing)</h2>
+        <p className="text-slate-700 dark:text-slate-400 mb-4">
+          Konfiguruj koszty maszyn, marże i usługi kooperacyjne dla dokładnych wycen produkcji.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <a
+            href="/settings/machines"
+            className="p-4 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition group"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">🏭</span>
+              <div>
+                <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                  Koszty maszyn
+                </h3>
+                <p className="text-sm text-slate-700 dark:text-slate-400">
+                  Stawki godzinowe, OEE, energia
+                </p>
+              </div>
+            </div>
+          </a>
+          <a
+            href="/settings/pricing"
+            className="p-4 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition group"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">💰</span>
+              <div>
+                <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                  Konfiguracja wyceny
+                </h3>
+                <p className="text-sm text-slate-700 dark:text-slate-400">
+                  Marże, rabaty ilościowe
+                </p>
+              </div>
+            </div>
+          </a>
+          <a
+            href="/settings/services"
+            className="p-4 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition group"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">🔗</span>
+              <div>
+                <h3 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                  Usługi kooperacyjne
+                </h3>
+                <p className="text-sm text-slate-700 dark:text-slate-400">
+                  Anodowanie, hartowanie, malowanie
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
       {/* Company Information Form */}
       <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Informacje o firmie</h2>

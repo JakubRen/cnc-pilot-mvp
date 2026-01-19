@@ -27,6 +27,7 @@ interface QuoteDetailsClientProps {
 export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: QuoteDetailsClientProps) {
   const router = useRouter()
   const [isCopying, setIsCopying] = useState(false)
+  const [isConverting, setIsConverting] = useState(false)
 
   // Generate portal URL
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
@@ -55,6 +56,43 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
       toast.error('Nie udało się skopiować linku')
     } finally {
       setIsCopying(false)
+    }
+  }
+
+  // Convert quote to order
+  const handleConvertToOrder = async () => {
+    if (quote.converted_order_id) {
+      toast.error('Ta oferta została już przekonwertowana na zamówienie')
+      return
+    }
+
+    setIsConverting(true)
+    const loadingToast = toast.loading('Tworzenie zamówienia...')
+
+    try {
+      const response = await fetch('/api/quotes/convert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quote_id: quote.id })
+      })
+
+      const result = await response.json()
+
+      toast.dismiss(loadingToast)
+
+      if (!response.ok) {
+        toast.error(result.error || 'Nie udało się utworzyć zamówienia')
+        return
+      }
+
+      toast.success(`Zamówienie ${result.order.order_number} utworzone!`)
+      router.push(`/orders/${result.order.id}`)
+      router.refresh()
+    } catch (error) {
+      toast.dismiss(loadingToast)
+      toast.error('Błąd połączenia z serwerem')
+    } finally {
+      setIsConverting(false)
     }
   }
 
@@ -284,6 +322,38 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
 
             {/* Right Column - Actions */}
             <div className="space-y-6">
+              {/* Convert to Order */}
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+                  📦 Zamówienie
+                </h2>
+                {quote.converted_order_id ? (
+                  <div>
+                    <p className="text-sm text-green-600 dark:text-green-400 mb-4">
+                      ✅ Zamówienie zostało utworzone
+                    </p>
+                    <Link href={`/orders/${quote.converted_order_id}`}>
+                      <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                        Zobacz zamówienie →
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                      Utwórz zamówienie na podstawie tej oferty.
+                    </p>
+                    <Button
+                      onClick={handleConvertToOrder}
+                      disabled={isConverting}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      {isConverting ? 'Tworzenie...' : '➕ Utwórz zamówienie'}
+                    </Button>
+                  </div>
+                )}
+              </div>
+
               {/* Portal Link */}
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">

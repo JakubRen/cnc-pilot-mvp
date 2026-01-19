@@ -42,6 +42,16 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
     .order('created_at', { ascending: false })
     .limit(20)
 
+  // Fetch machine costs for ABC pricing
+  const { data: machineCosts } = await supabase
+    .from('machine_costs')
+    .select('id, replacement_value, oee_percentage')
+    .eq('machine_id', id)
+    .eq('company_id', user.company_id)
+    .single()
+
+  const hasCostsConfigured = machineCosts && machineCosts.replacement_value !== null
+
   const getStatusBadge = (status: string) => {
     const config: Record<string, { bg: string; label: string }> = {
       active: { bg: 'bg-green-600', label: 'Aktywna' },
@@ -122,6 +132,30 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
               <p className="text-red-400 font-semibold flex items-center gap-2">
                 <span>⚠️</span> Przegląd zaległy o {Math.abs(daysUntilMaintenance || 0)} dni!
               </p>
+            </div>
+          )}
+
+          {/* ABC Costs Warning */}
+          {!hasCostsConfigured && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <span className="text-red-500 text-xl">⚠️</span>
+                <div>
+                  <p className="text-red-700 dark:text-red-400 font-semibold">
+                    Brak skonfigurowanych kosztów operacyjnych
+                  </p>
+                  <p className="text-red-600 dark:text-red-400/80 text-sm mt-1">
+                    Wycena części produkowanych na tej maszynie będzie nieprecyzyjna.
+                    Skonfiguruj koszty (wartość odtworzeniowa, OEE, stawki operatora) aby uzyskać dokładne kalkulacje ABC.
+                  </p>
+                  <Link
+                    href="/settings/machines"
+                    className="inline-block mt-2 text-sm text-red-700 dark:text-red-400 underline hover:no-underline"
+                  >
+                    → Skonfiguruj koszty maszyny
+                  </Link>
+                </div>
+              </div>
             </div>
           )}
 

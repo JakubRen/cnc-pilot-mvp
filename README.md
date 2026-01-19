@@ -84,6 +84,35 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### 🔧 ABC Pricing Schema - IN PROGRESS (2026-01-13)
+
+**Feature:** Activity-Based Costing (ABC) infrastructure for precise part pricing.
+
+**Database Schema:**
+- `machine_costs` table - Machine operating costs (replacement value, OEE, energy)
+- `external_services` table - Cooperation services (anodizing, hardening, etc.)
+- `pricing_config` table - Global pricing settings (electricity, margins)
+- `quote_services` table - Quote-service linking
+- Extended `products` table with cycle_time, setup_time, efficiency_factor
+
+**New Files:**
+- `lib/pricing/abc-engine.ts` - Complete ABC calculation engine
+- `types/abc-pricing.ts` - TypeScript types (~450 lines)
+- `app/settings/machines/` - Machine costs configuration
+- `app/settings/pricing/` - Pricing settings
+- `app/settings/services/` - External services CRUD
+
+**UI Improvements:**
+- Warning banner on machine detail page when costs not configured
+- ABC fields in product form (for finished goods)
+
+**Status:** Schema implemented, awaiting UX simplification decision.
+User feedback suggests reducing ~15 fields to 3-4 core fields (RBH maszyny, RBH operatora).
+
+**Migration:** `migrations/ABC_PRICING_SCHEMA.sql`
+
+---
+
 ### ✅ Unified Quote Form + Document Workflow Fixes (2026-01-12)
 
 **Feature:** Merged Express Quote into single multi-item "Nowa Oferta" form with quick pricing.
