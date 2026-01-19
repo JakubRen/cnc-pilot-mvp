@@ -56,21 +56,8 @@ ALTER TABLE time_logs ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW(
 
 ALTER TABLE production_plans ADD COLUMN IF NOT EXISTS order_item_id UUID;
 
--- Opcjonalnie: FK do order_items (jeśli tabela istnieje)
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'order_items') THEN
-    IF NOT EXISTS (
-      SELECT 1 FROM information_schema.table_constraints
-      WHERE constraint_name = 'production_plans_order_item_id_fkey'
-      AND table_name = 'production_plans'
-    ) THEN
-      ALTER TABLE production_plans
-        ADD CONSTRAINT production_plans_order_item_id_fkey
-        FOREIGN KEY (order_item_id) REFERENCES order_items(id) ON DELETE SET NULL;
-    END IF;
-  END IF;
-END $$;
+-- UWAGA: FK do order_items pominiete - tabela order_items w TEST
+-- nie ma poprawnego PRIMARY KEY. FK mozna dodac pozniej po naprawie.
 
 -- =====================================================
 -- 6. TABELA: operations (1 kolumna do dodania)
@@ -79,21 +66,7 @@ END $$;
 
 ALTER TABLE operations ADD COLUMN IF NOT EXISTS order_item_id UUID;
 
--- FK do order_items
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'order_items') THEN
-    IF NOT EXISTS (
-      SELECT 1 FROM information_schema.table_constraints
-      WHERE constraint_name = 'operations_order_item_id_fkey'
-      AND table_name = 'operations'
-    ) THEN
-      ALTER TABLE operations
-        ADD CONSTRAINT operations_order_item_id_fkey
-        FOREIGN KEY (order_item_id) REFERENCES order_items(id) ON DELETE SET NULL;
-    END IF;
-  END IF;
-END $$;
+-- UWAGA: FK do order_items pominiete - j.w.
 
 CREATE INDEX IF NOT EXISTS idx_operations_order_item ON operations(order_item_id);
 
