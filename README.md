@@ -84,6 +84,52 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Smart Migration System (2026-01-27)
+
+**Feature:** Zero-memory database migration tracking system.
+
+**Problem Solved:**
+- Developers couldn't remember which migrations were applied
+- TEST and PROD databases drifted out of sync
+- No systematic way to track schema changes
+
+**Solution:**
+- `schema_migrations` table auto-tracks applied migrations
+- Smart check scripts show exactly what's applied vs pending
+- Compare TEST vs PROD with one command
+- Auto-tracking built into all new migrations
+
+**New Files:**
+- `SMART_MIGRATIONS.md` - Full tutorial
+- `MIGRATION_WORKFLOW.md` - Detailed workflow
+- `MIGRATION_SETUP_COMPLETE.md` - Quick reference
+- `MIGRATION_DOCS_SUMMARY.md` - Documentation map
+- `scripts/migration-check.js` - Status check script
+- `scripts/migration-helper.js` - Updated with auto-tracking
+- `supabase/migrations/00000000_create_schema_migrations.sql` - Tracking table
+
+**New Commands:**
+```bash
+npm run migrate:status       # Check what's applied/pending
+npm run migrate:diff         # Compare TEST vs PROD
+npm run migration:new <name> # Create migration (with auto-tracking)
+npm run migration:show <name> # Display SQL to copy
+```
+
+**Documentation Updated:**
+- `README.md` - Database Migrations section
+- `CLAUDE.md` (CTO & Project) - Migration protocol added
+
+**Impact:**
+- Zero manual tracking required
+- Instant visibility into migration status
+- Prevents database drift between environments
+- Team-ready (anyone can see status)
+
+**Commit:** [pending] - feat(db): add smart migration tracking system
+
+---
+
 ### 🔧 ABC Pricing Schema - IN PROGRESS (2026-01-13)
 
 **Feature:** Activity-Based Costing (ABC) infrastructure for precise part pricing.
@@ -529,15 +575,34 @@ npx playwright test  # Expected: 48/48 PASS ✅
 
 ### Database Migrations
 
-Apply SQL migrations to test or production databases using the migration helper scripts:
+**📚 Full documentation:** See [SMART_MIGRATIONS.md](./SMART_MIGRATIONS.md) for complete migration workflow.
 
+**Quick commands:**
 ```bash
-# Apply migration to TEST database
-npm run migrate:test migrations/my_migration.sql
+# Check migration status (what's applied, what's pending)
+npm run migrate:status
 
-# Apply migration to PRODUCTION database
-npm run migrate:prod migrations/my_migration.sql
+# Compare TEST vs PROD
+npm run migrate:diff
+
+# Create new migration
+npm run migration:new add_feature_name
+
+# Display migration SQL
+npm run migration:show feature_name
 ```
+
+**One-time setup:**
+```bash
+npm run migration:show 00000000_create_schema_migrations
+# → Copy SQL → Supabase SQL Editor → RUN (both TEST and PROD)
+```
+
+**Features:**
+- ✨ Auto-tracking system - no need to remember what was applied
+- 🔍 Status check shows exactly what's missing
+- 🔄 Compare TEST vs PROD with one command
+- 📝 All migrations tracked in git history
 
 **How it works:**
 1. Script validates the migration file exists

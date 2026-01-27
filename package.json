@@ -18,7 +18,16 @@
     "migrate:test": "node scripts/db-migrate.js test",
     "migrate:prod": "node scripts/db-migrate.js prod",
     "migrate:both": "node scripts/db-migrate.js both",
-    "db:sync": "bash scripts/db-sync-from-prod.sh"
+    "db:sync": "bash scripts/db-sync-from-prod.sh",
+    "migration:new": "node scripts/migration-helper.js new",
+    "migration:show": "node scripts/migration-helper.js show",
+    "migration:list": "node scripts/migration-helper.js list",
+    "migration:latest": "node scripts/migration-helper.js latest",
+    "migration:help": "node scripts/migration-helper.js help",
+    "migrate:check:test": "node scripts/migration-check.js test",
+    "migrate:check:prod": "node scripts/migration-check.js prod",
+    "migrate:diff": "node scripts/migration-check.js diff",
+    "migrate:status": "node scripts/migration-check.js test"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.19",
@@ -79,9 +88,11 @@
     "@vitejs/plugin-react": "^5.1.1",
     "clipboardy": "^5.0.2",
     "cross-env": "^10.1.0",
+    "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "jsdom": "^27.2.0",
+    "supabase": "^2.72.8",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.0.14"

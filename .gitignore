@@ -76,3 +76,7 @@ CLAUDE.md
 /*.jpeg
 /*.pdf
 /*.gif
+
+# Supabase
+.supabase/
+.applied-migrations.json
