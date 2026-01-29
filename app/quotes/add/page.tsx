@@ -14,7 +14,7 @@ import AppLayout from '@/components/layout/AppLayout'
 import CustomerSelect from '@/components/customers/CustomerSelect'
 import QuickAddCustomerModal from '@/components/customers/QuickAddCustomerModal'
 import InventoryAutocomplete from '@/components/inventory/InventoryAutocomplete'
-import ProductsAutocomplete from '@/components/products/ProductsAutocomplete'
+import AIImportDialog from '@/components/quotes/AIImportDialog'
 
 // Typ dla pozycji oferty
 interface QuoteItem {
@@ -27,6 +27,8 @@ interface QuoteItem {
   total_price: number | null
   pricing_result: UnifiedPricingResult | null
   isCalculating: boolean
+  productLinked: boolean     // true = part_name wybrano z bazy Inventory
+  materialLinked: boolean    // true = material wybrano z bazy Inventory
 }
 
 // Generuj unikalne ID
@@ -43,6 +45,8 @@ const createEmptyItem = (): QuoteItem => ({
   total_price: null,
   pricing_result: null,
   isCalculating: false,
+  productLinked: false,
+  materialLinked: false,
 })
 
 export default function AddQuotePage() {
@@ -65,6 +69,9 @@ export default function AddQuotePage() {
 
   // Items state
   const [items, setItems] = useState<QuoteItem[]>([createEmptyItem()])
+
+  // AI Import state
+  const [isAIImportOpen, setIsAIImportOpen] = useState(false)
 
   // Submit state
   const [isCreating, setIsCreating] = useState(false)
@@ -109,6 +116,32 @@ export default function AddQuotePage() {
 
     fetchCustomerFromUrl()
   }, [urlCustomerId])
+
+  // Handle AI import result
+  const handleAIImport = (data: { items: Array<{ part_name: string; material: string | null; quantity: number; complexity: 'simple' | 'medium' | 'complex' | null; dimensions: string | null; notes: string | null }>; deadline: string | null }) => {
+    const newItems: QuoteItem[] = data.items.map(parsed => ({
+      id: generateId(),
+      part_name: parsed.part_name,
+      material: parsed.material || '',
+      quantity: parsed.quantity,
+      complexity: parsed.complexity || 'medium',
+      unit_price: null,
+      total_price: null,
+      pricing_result: null,
+      isCalculating: false,
+      productLinked: false,   // AI text - needs manual linking
+      materialLinked: false,  // AI text - needs manual linking
+    }))
+
+    // Replace empty default item or append
+    const hasOnlyEmptyDefault = items.length === 1 && !items[0].part_name && !items[0].material
+    setItems(hasOnlyEmptyDefault ? newItems : [...items, ...newItems])
+
+    // Set deadline if AI found one and we don't have it yet
+    if (data.deadline && !deadline) {
+      setDeadline(data.deadline)
+    }
+  }
 
   // Add new item
   const addItem = () => {
@@ -196,6 +229,22 @@ export default function AddQuotePage() {
     return items.every(item => item.total_price !== null && item.total_price > 0)
   }
 
+  // Check if all items are properly linked (or marked as custom)
+  const allItemsLinked = () => {
+    return items.every(item => item.productLinked && item.materialLinked)
+  }
+
+  // Get validation error for a specific item field
+  const getItemValidationError = (item: QuoteItem, field: 'product' | 'material'): string | undefined => {
+    if (field === 'product' && item.part_name && !item.productLinked) {
+      return 'Wybierz produkt z magazynu'
+    }
+    if (field === 'material' && item.material && !item.materialLinked) {
+      return 'Wybierz materiał z magazynu'
+    }
+    return undefined
+  }
+
   // Customer handlers
   const handleCustomerChange = (id: string | null) => {
     setCustomerId(id || '')
@@ -217,6 +266,11 @@ export default function AddQuotePage() {
   const handleCreateQuote = async () => {
     if (!customerId) {
       toast.error('Wybierz klienta')
+      return
+    }
+
+    if (!allItemsLinked()) {
+      toast.error('Wybierz produkt i materiał z magazynu dla wszystkich pozycji')
       return
     }
 
@@ -393,12 +447,19 @@ export default function AddQuotePage() {
                       <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
                         Nazwa części *
                       </label>
-                      <ProductsAutocomplete
+                      <InventoryAutocomplete
                         value={item.part_name}
-                        onChange={(value) => updateItem(item.id, 'part_name', value)}
+                        onChange={(value, inventoryItem) => {
+                          setItems(prev => prev.map(i =>
+                            i.id === item.id
+                              ? { ...i, part_name: value, productLinked: !!inventoryItem }
+                              : i
+                          ))
+                        }}
                         categoryFilter="finished_good"
-                        placeholder="Wybierz wyrób gotowy..."
+                        placeholder="Wybierz z magazynu..."
                         allowCustom={true}
+                        error={getItemValidationError(item, 'product')}
                       />
                     </div>
 
@@ -409,10 +470,17 @@ export default function AddQuotePage() {
                       </label>
                       <InventoryAutocomplete
                         value={item.material}
-                        onChange={(value) => updateItem(item.id, 'material', value)}
+                        onChange={(value, inventoryItem) => {
+                          setItems(prev => prev.map(i =>
+                            i.id === item.id
+                              ? { ...i, material: value, materialLinked: !!inventoryItem }
+                              : i
+                          ))
+                        }}
                         categoryFilter="raw_material"
                         placeholder="Wybierz materiał..."
                         allowCustom={true}
+                        error={getItemValidationError(item, 'material')}
                       />
                     </div>
 
@@ -486,14 +554,23 @@ export default function AddQuotePage() {
               ))}
             </div>
 
-            {/* Add Item Button */}
-            <button
-              type="button"
-              onClick={addItem}
-              className="w-full mt-4 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm border-2 border-dashed border-blue-400 hover:border-blue-500"
-            >
-              + Dodaj kolejną pozycję
-            </button>
+            {/* Add Item Buttons */}
+            <div className="flex gap-3 mt-4">
+              <button
+                type="button"
+                onClick={() => setIsAIImportOpen(true)}
+                className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold text-sm border-2 border-dashed border-purple-400 hover:border-purple-500"
+              >
+                ✨ Importuj z AI
+              </button>
+              <button
+                type="button"
+                onClick={addItem}
+                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm border-2 border-dashed border-blue-400 hover:border-blue-500"
+              >
+                + Dodaj kolejną pozycję
+              </button>
+            </div>
           </div>
 
           {/* Notes */}
@@ -532,7 +609,7 @@ export default function AddQuotePage() {
             <Button
               type="button"
               onClick={handleCreateQuote}
-              disabled={isCreating || !allItemsHavePricing() || !customerId}
+              disabled={isCreating || !allItemsHavePricing() || !customerId || !allItemsLinked()}
               className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-4 text-lg"
             >
               {isCreating ? (
@@ -545,12 +622,24 @@ export default function AddQuotePage() {
               )}
             </Button>
 
-            {!allItemsHavePricing() && items.some(i => i.part_name && i.material) && (
+            {!allItemsLinked() && (
+              <p className="text-center text-red-500 dark:text-red-400 mt-2 text-sm">
+                Wybierz produkt i materiał z magazynu dla wszystkich pozycji
+              </p>
+            )}
+            {allItemsLinked() && !allItemsHavePricing() && items.some(i => i.part_name && i.material) && (
               <p className="text-center text-amber-600 dark:text-amber-400 mt-2 text-sm">
                 Oblicz cenę dla wszystkich pozycji przed utworzeniem oferty
               </p>
             )}
           </div>
+
+          {/* AI Import Dialog */}
+          <AIImportDialog
+            isOpen={isAIImportOpen}
+            onClose={() => setIsAIImportOpen(false)}
+            onImport={handleAIImport}
+          />
 
           {/* Quick Add Customer Modal */}
           <QuickAddCustomerModal
