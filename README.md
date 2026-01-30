@@ -111,7 +111,16 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 - Fixed `default_machine_id` empty string failing UUID validation
 - Fixed `useKeyboardShortcut` crash when `event.key` is undefined
 
-**Commit:** `8601c09` - feat(quotes): add AI-powered email parsing and inventory-linked validation
+**Error Handling:**
+- `handleAIError()` catches 429/quota/rate limit with Polish error messages
+- Markdown code fence stripping from AI JSON responses
+- Safe text extraction with try/catch
+
+**Commits:**
+- `8601c09` - feat(quotes): add AI-powered email parsing and inventory-linked validation
+- `a944d17` - feat(ai): upgrade parse-quote to Gemini Function Calling with inventory search
+- `f034a7e` - fix(products): fix zodResolver type mismatch from z.preprocess
+- `11b574a` - fix(ai): handle rate limit (429) and invalid JSON errors gracefully
 
 ---
 
