@@ -170,6 +170,45 @@ After searching, return JSON matching this schema:
 }`
 
 // =====================================================
+// Error Handler for AI API errors (429, quota, etc.)
+// =====================================================
+
+function handleAIError(error: unknown): NextResponse {
+  const errorMessage = error instanceof Error ? error.message : String(error)
+  const errorStatus = (error as { status?: number })?.status
+
+  console.error('[parse-quote] AI API error:', { message: errorMessage, status: errorStatus })
+
+  // Rate limit / quota exceeded
+  if (
+    errorStatus === 429 ||
+    errorMessage.includes('quota') ||
+    errorMessage.includes('429') ||
+    errorMessage.includes('RESOURCE_EXHAUSTED') ||
+    errorMessage.includes('rate')
+  ) {
+    return NextResponse.json(
+      { error: 'System AI jest przeciążony. Odczekaj chwilę i spróbuj ponownie.' },
+      { status: 429 }
+    )
+  }
+
+  // Model not found
+  if (errorStatus === 404 || errorMessage.includes('not found')) {
+    return NextResponse.json(
+      { error: 'Model AI jest niedostępny. Skontaktuj się z administratorem.' },
+      { status: 503 }
+    )
+  }
+
+  // Generic AI error
+  return NextResponse.json(
+    { error: 'Błąd komunikacji z AI. Spróbuj ponownie.' },
+    { status: 502 }
+  )
+}
+
+// =====================================================
 // POST Handler
 // =====================================================
 
@@ -236,10 +275,15 @@ export async function POST(request: NextRequest) {
     })
 
     // Step 1: Send email text to model
-    let response = await chat.sendMessage([
-      SYSTEM_PROMPT,
-      `\n\n--- EMAIL TEXT ---\n${emailText}\n--- END ---`,
-    ])
+    let response
+    try {
+      response = await chat.sendMessage([
+        SYSTEM_PROMPT,
+        `\n\n--- EMAIL TEXT ---\n${emailText}\n--- END ---`,
+      ])
+    } catch (aiError: unknown) {
+      return handleAIError(aiError)
+    }
 
     // Step 2: Agent loop - handle function calls (max 10 rounds to prevent infinite loops)
     const MAX_ROUNDS = 10
@@ -289,19 +333,37 @@ export async function POST(request: NextRequest) {
       )
 
       // Send results back to model
-      response = await chat.sendMessage(functionResponses)
+      try {
+        response = await chat.sendMessage(functionResponses)
+      } catch (aiError: unknown) {
+        return handleAIError(aiError)
+      }
     }
 
     // Step 3: Extract final JSON from model response
-    const responseText = response.response.text()
+    let responseText: string
+    try {
+      responseText = response.response.text()
+    } catch (textError: unknown) {
+      console.error('[parse-quote] Failed to extract text from response:', textError)
+      return NextResponse.json(
+        { error: 'Błąd przetwarzania danych z AI. Spróbuj ponownie.' },
+        { status: 502 }
+      )
+    }
 
     let parsed: ParseQuoteResponse
     try {
-      parsed = JSON.parse(responseText)
+      // Strip markdown code fences if present
+      let jsonText = responseText.trim()
+      if (jsonText.startsWith('```')) {
+        jsonText = jsonText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '')
+      }
+      parsed = JSON.parse(jsonText)
     } catch {
       console.error('[parse-quote] Gemini returned invalid JSON:', responseText.slice(0, 500))
       return NextResponse.json(
-        { error: 'AI returned invalid response. Try again.' },
+        { error: 'Błąd przetwarzania danych z AI. Spróbuj ponownie.' },
         { status: 502 }
       )
     }
