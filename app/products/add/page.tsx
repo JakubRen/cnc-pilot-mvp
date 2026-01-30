@@ -77,7 +77,7 @@ export default function AddProductPage() {
   const [machines, setMachines] = useState<Machine[]>([])
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<ExtendedProductFormData>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(productSchema) as never,
     defaultValues: {
       category: 'raw_material',
       unit: 'szt',
