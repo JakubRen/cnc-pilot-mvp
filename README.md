@@ -84,6 +84,37 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ AI Quote Parsing with Function Calling + Form Fixes (2026-01-30)
+
+**Feature:** AI-powered email parsing agent with Gemini Function Calling for real inventory search, plus product form validation fixes.
+
+**AI Quote Parsing (Protocol #12 + #13):**
+- `app/api/agents/parse-quote/route.ts` - Gemini 2.5 Flash endpoint with Function Calling
+- `searchInventory()` tool queries real `products` + `inventory_locations` tables
+- Agent loop (max 10 rounds) - AI calls `search_inventory` for every part/material mentioned
+- Returns `product_id`, `product_name`, `available_quantity`, `inventory_status` per item
+- Installed `@google/generative-ai` SDK
+
+**Frontend AIImportDialog:**
+- `components/quotes/AIImportDialog.tsx` - Modal for pasting email text
+- Preview table with inventory status badges (in_stock/out_of_stock/not_found)
+- Integrated into `/quotes/add` with purple "Importuj z AI" button
+
+**Inventory Validation:**
+- All products/materials in quotes must come from inventory database
+- `productLinked`/`materialLinked` tracking on each quote item
+- `InventoryAutocomplete` replaced `ProductsAutocomplete` for part_name field
+
+**Product Form Fixes:**
+- Fixed Zod validation blocking submit on empty optional number fields
+- `z.preprocess()` wrappers convert `NaN`/empty to `null`/`undefined`
+- Fixed `default_machine_id` empty string failing UUID validation
+- Fixed `useKeyboardShortcut` crash when `event.key` is undefined
+
+**Commit:** `8601c09` - feat(quotes): add AI-powered email parsing and inventory-linked validation
+
+---
+
 ### ✅ Smart Migration System (2026-01-27)
 
 **Feature:** Zero-memory database migration tracking system.

@@ -36,6 +36,7 @@ export function useKeyboardShortcut(
         event.metaKey === metaKey
 
       // Check if the key matches (case-insensitive)
+      if (!event.key) return
       const keyMatches = event.key.toLowerCase() === key.toLowerCase()
 
       if (modifiersMatch && keyMatches) {

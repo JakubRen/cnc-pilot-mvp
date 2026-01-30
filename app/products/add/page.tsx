@@ -12,23 +12,47 @@ import { ProductFormData, productCategoryLabels, productUnitLabels } from '@/typ
 import { Button } from '@/components/ui/Button'
 import { ABC_DEFAULTS, MATERIAL_RISK_FACTORS } from '@/types/abc-pricing'
 
+// Helper: convert NaN/empty to null for optional number fields
+const optionalNumber = (min?: number, max?: number) => {
+  let schema = z.number()
+  if (min !== undefined) schema = schema.min(min)
+  if (max !== undefined) schema = schema.max(max)
+  return z.preprocess(
+    (v) => (v === '' || v === undefined || v === null || Number.isNaN(v) ? undefined : Number(v)),
+    schema.optional()
+  )
+}
+
+const optionalNumberNullable = (min?: number, max?: number) => {
+  let schema = z.number()
+  if (min !== undefined) schema = schema.min(min)
+  if (max !== undefined) schema = schema.max(max)
+  return z.preprocess(
+    (v) => (v === '' || v === undefined || v === null || Number.isNaN(v) ? null : Number(v)),
+    schema.nullable().optional()
+  )
+}
+
 const productSchema = z.object({
   sku: z.string().min(1, 'SKU wymagane'),
   name: z.string().min(2, 'Nazwa musi mieć min. 2 znaki'),
   category: z.enum(['raw_material', 'finished_good', 'semi_finished', 'tool', 'consumable']),
   unit: z.enum(['kg', 'm', 'szt', 'l']),
   description: z.string().optional(),
-  default_unit_cost: z.number().min(0).optional(),
+  default_unit_cost: optionalNumber(0),
   manufacturer: z.string().optional(),
   manufacturer_sku: z.string().optional(),
   // ABC Pricing fields
-  cycle_time_minutes: z.number().min(0).optional().nullable(),
-  setup_time_minutes: z.number().min(0).optional().nullable(),
-  efficiency_factor: z.number().min(1).max(2).optional(),
-  default_machine_id: z.string().uuid().optional().nullable(),
-  scrap_risk_factor: z.number().min(1).max(2).optional(),
-  material_markup_percent: z.number().min(0).max(100).optional(),
-  material_weight_kg: z.number().min(0).optional().nullable(),
+  cycle_time_minutes: optionalNumberNullable(0),
+  setup_time_minutes: optionalNumberNullable(0),
+  efficiency_factor: optionalNumber(1, 2),
+  default_machine_id: z.preprocess(
+    (v) => (v === '' || v === undefined || v === null ? null : v),
+    z.string().uuid().nullable().optional()
+  ),
+  scrap_risk_factor: optionalNumber(1, 2),
+  material_markup_percent: optionalNumber(0, 100),
+  material_weight_kg: optionalNumberNullable(0),
 })
 
 interface Machine {
@@ -55,6 +79,8 @@ export default function AddProductPage() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<ExtendedProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
+      category: 'raw_material',
+      unit: 'szt',
       efficiency_factor: ABC_DEFAULTS.efficiency_factor,
       scrap_risk_factor: ABC_DEFAULTS.scrap_risk_factor,
       material_markup_percent: ABC_DEFAULTS.material_markup_percent,
