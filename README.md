@@ -84,6 +84,35 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Production Execution Flow + Ready to Ship Status (2026-01-30)
+
+**Feature:** Interactive production execution with per-operation Start/Stop timers, operation completion dialogs, and new `ready_to_ship` order status.
+
+**Production Execution (`/production/[id]`):**
+- `ProductionExecutionClient.tsx` - Interactive client component replacing static operations listing
+- Per-operation Start/Stop buttons with inline real-time timer (HH:MM:SS + cost)
+- On Stop: confirmation dialog "Czy operacja zakonczona?" (uses existing `useConfirmation` hook)
+- On completing last operation: dialog "Zakonczyc produkcje?" → auto-sets plan to `completed` and order to `ready_to_ship`
+- "Zakoncz produkcje" button: disabled (grayed out) until ALL operations are `completed`
+- Time logs saved to `time_logs` table with duration and cost
+
+**Server Actions (`lib/production-actions.ts`):**
+- `updateOperationStatus()` - Updates operation status + timestamps, auto-promotes plan to `in_progress`
+- `completeProductionPlan()` - Guard: checks all ops completed, sets plan `completed`, order `ready_to_ship`
+
+**New Order Status: `ready_to_ship` ("Do wysylki"):**
+- Added to `types/orders.ts` (OrderStatus, labels, colors)
+- Added to `lib/status-utils.ts` (ORDER_STATUS_CONFIG with indigo-600 color)
+- Added to `StatusDropdown.tsx` (option + color)
+- Added to `app/orders/[id]/page.tsx` (getStatusColor + label)
+- Added to `app/production/[id]/page.tsx` (order status badge)
+
+**Flow:** Production completed → Order = `ready_to_ship` → manually change to `completed` after shipping
+
+**Commit:** `4163159` - feat(production): add interactive production execution with timer and ready_to_ship status
+
+---
+
 ### ✅ AI Quote Parsing with Function Calling + Form Fixes (2026-01-30)
 
 **Feature:** AI-powered email parsing agent with Gemini Function Calling for real inventory search, plus product form validation fixes.
