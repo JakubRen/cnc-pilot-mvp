@@ -12,6 +12,10 @@ interface ParsedItem {
   dimensions: string | null
   complexity: 'simple' | 'medium' | 'complex' | null
   notes: string | null
+  product_id: string | null
+  product_name: string | null
+  available_quantity: number | null
+  inventory_status: 'in_stock' | 'out_of_stock' | 'not_found'
 }
 
 interface ParseQuoteResult {
@@ -26,6 +30,21 @@ interface AIImportDialogProps {
   isOpen: boolean
   onClose: () => void
   onImport: (data: ParseQuoteResult) => void
+}
+
+const STATUS_BADGE: Record<string, { label: string; className: string }> = {
+  in_stock: {
+    label: 'Na stanie',
+    className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+  },
+  out_of_stock: {
+    label: 'Brak na stanie',
+    className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  },
+  not_found: {
+    label: 'Nie znaleziono w bazie',
+    className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+  },
 }
 
 export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDialogProps) {
@@ -63,7 +82,14 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
       }
 
       setPreview(result.data)
-      toast.success(`Znaleziono ${result.data.items.length} pozycji`)
+
+      const inStock = result.data.items.filter((i: ParsedItem) => i.inventory_status === 'in_stock').length
+      const total = result.data.items.length
+      if (inStock === total) {
+        toast.success(`Znaleziono ${total} pozycji - wszystkie w magazynie`)
+      } else {
+        toast(`Znaleziono ${total} pozycji (${inStock} w magazynie, ${total - inStock} wymaga uwagi)`, { icon: '⚠️' })
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Błąd połączenia z AI')
     } finally {
@@ -85,13 +111,15 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
     onClose()
   }
 
+  const hasIssues = preview?.items.some(i => i.inventory_status !== 'in_stock')
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
 
       {/* Dialog */}
-      <div className="relative bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
           <div>
@@ -99,7 +127,7 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
               AI Import z maila
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Wklej treść maila - AI wyciągnie pozycje ofertowe
+              Wklej treść maila - AI wyciągnie pozycje i sprawdzi magazyn
             </p>
           </div>
           <button
@@ -141,7 +169,7 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
               {isAnalyzing ? (
                 <>
                   <span className="animate-spin mr-2">⏳</span>
-                  Analizuję z AI...
+                  Analizuję i sprawdzam magazyn...
                 </>
               ) : (
                 '🔍 Analizuj treść'
@@ -174,22 +202,59 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
                       <th className="text-left p-3 text-slate-600 dark:text-slate-300">Nazwa</th>
                       <th className="text-left p-3 text-slate-600 dark:text-slate-300">Materiał</th>
                       <th className="text-right p-3 text-slate-600 dark:text-slate-300">Ilość</th>
-                      <th className="text-left p-3 text-slate-600 dark:text-slate-300">Wymiary</th>
+                      <th className="text-left p-3 text-slate-600 dark:text-slate-300">Magazyn</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {preview.items.map((item, i) => (
-                      <tr key={i} className="border-t border-slate-200 dark:border-slate-700">
-                        <td className="p-3 text-slate-400">{i + 1}</td>
-                        <td className="p-3 text-slate-900 dark:text-white font-medium">{item.part_name}</td>
-                        <td className="p-3 text-slate-600 dark:text-slate-400">{item.material || '—'}</td>
-                        <td className="p-3 text-right text-slate-900 dark:text-white">{item.quantity}</td>
-                        <td className="p-3 text-slate-600 dark:text-slate-400">{item.dimensions || '—'}</td>
-                      </tr>
-                    ))}
+                    {preview.items.map((item, i) => {
+                      const badge = STATUS_BADGE[item.inventory_status] || STATUS_BADGE.not_found
+                      return (
+                        <tr key={i} className="border-t border-slate-200 dark:border-slate-700">
+                          <td className="p-3 text-slate-400">{i + 1}</td>
+                          <td className="p-3">
+                            <div className="font-medium text-slate-900 dark:text-white">
+                              {item.product_name || item.part_name}
+                            </div>
+                            {item.product_name && item.product_name !== item.part_name && (
+                              <div className="text-xs text-slate-400 line-through">
+                                {item.part_name}
+                              </div>
+                            )}
+                            {item.dimensions && (
+                              <div className="text-xs text-slate-500">{item.dimensions}</div>
+                            )}
+                          </td>
+                          <td className="p-3 text-slate-600 dark:text-slate-400">
+                            {item.material || '—'}
+                          </td>
+                          <td className="p-3 text-right text-slate-900 dark:text-white">
+                            {item.quantity}
+                          </td>
+                          <td className="p-3">
+                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${badge.className}`}>
+                              {badge.label}
+                            </span>
+                            {item.inventory_status === 'in_stock' && item.available_quantity != null && (
+                              <div className="text-xs text-slate-400 mt-1">
+                                Dostępne: {item.available_quantity}
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>
+
+              {/* Warning if issues */}
+              {hasIssues && (
+                <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <p className="text-sm text-amber-800 dark:text-amber-300 font-medium">
+                    Niektóre pozycje nie zostały znalezione w magazynie. Po imporcie musisz ręcznie powiązać je z produktami z bazy.
+                  </p>
+                </div>
+              )}
 
               {/* Actions */}
               <div className="flex gap-3">

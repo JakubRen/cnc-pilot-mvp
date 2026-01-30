@@ -118,20 +118,23 @@ export default function AddQuotePage() {
   }, [urlCustomerId])
 
   // Handle AI import result
-  const handleAIImport = (data: { items: Array<{ part_name: string; material: string | null; quantity: number; complexity: 'simple' | 'medium' | 'complex' | null; dimensions: string | null; notes: string | null }>; deadline: string | null }) => {
-    const newItems: QuoteItem[] = data.items.map(parsed => ({
-      id: generateId(),
-      part_name: parsed.part_name,
-      material: parsed.material || '',
-      quantity: parsed.quantity,
-      complexity: parsed.complexity || 'medium',
-      unit_price: null,
-      total_price: null,
-      pricing_result: null,
-      isCalculating: false,
-      productLinked: false,   // AI text - needs manual linking
-      materialLinked: false,  // AI text - needs manual linking
-    }))
+  const handleAIImport = (data: { items: Array<{ part_name: string; material: string | null; quantity: number; complexity: 'simple' | 'medium' | 'complex' | null; dimensions: string | null; notes: string | null; product_id?: string | null; product_name?: string | null; inventory_status?: string }>; deadline: string | null }) => {
+    const newItems: QuoteItem[] = data.items.map(parsed => {
+      const isLinked = parsed.inventory_status === 'in_stock'
+      return {
+        id: generateId(),
+        part_name: parsed.product_name || parsed.part_name,
+        material: parsed.material || '',
+        quantity: parsed.quantity,
+        complexity: parsed.complexity || 'medium',
+        unit_price: null,
+        total_price: null,
+        pricing_result: null,
+        isCalculating: false,
+        productLinked: isLinked,   // true if AI found in inventory
+        materialLinked: isLinked,  // true if AI found in inventory
+      }
+    })
 
     // Replace empty default item or append
     const hasOnlyEmptyDefault = items.length === 1 && !items[0].part_name && !items[0].material
