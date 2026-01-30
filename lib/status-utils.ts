@@ -37,6 +37,13 @@ export const ORDER_STATUS_CONFIG = {
     textColor: 'text-gray-100',
     icon: '❌',
   },
+  ready_to_ship: {
+    label: 'Do wysyłki',
+    labelEn: 'Ready to Ship',
+    color: 'bg-indigo-600',
+    textColor: 'text-indigo-100',
+    icon: '📦',
+  },
 } as const
 
 export type OrderStatus = keyof typeof ORDER_STATUS_CONFIG

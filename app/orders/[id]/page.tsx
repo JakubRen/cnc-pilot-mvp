@@ -145,6 +145,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
       completed: 'bg-green-600',
       delayed: 'bg-red-600',
       cancelled: 'bg-gray-600',
+      ready_to_ship: 'bg-indigo-600',
     }
     return colors[status as keyof typeof colors] || 'bg-gray-600'
   }
@@ -174,7 +175,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Zamówienie #{order.order_number}</h1>
             <div className="flex gap-3 items-center">
               <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white uppercase ${getStatusColor(order.status)}`}>
-                {order.status === 'pending' ? 'Oczekujące' : order.status === 'in_progress' ? 'W realizacji' : order.status === 'completed' ? 'Ukończone' : order.status === 'delayed' ? 'Opóźnione' : order.status === 'cancelled' ? 'Anulowane' : order.status}
+                {order.status === 'pending' ? 'Oczekujące' : order.status === 'in_progress' ? 'W realizacji' : order.status === 'completed' ? 'Ukończone' : order.status === 'delayed' ? 'Opóźnione' : order.status === 'cancelled' ? 'Anulowane' : order.status === 'ready_to_ship' ? 'Do wysyłki' : order.status}
               </span>
               {isOverdue && (
                 <span className="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-red-700 animate-pulse">
@@ -537,12 +538,22 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <span>✅</span> Kontrola Jakości
               </h2>
-              <Link
-                href="/quality-control"
-                className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
-              >
-                Otwórz moduł QC
-              </Link>
+              <div className="flex gap-2">
+                {['in_progress', 'completed'].includes(order.status) && (
+                  <Link
+                    href={`/reports/quality-control/plans/add?order_id=${id}`}
+                    className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+                  >
+                    + Dodaj pomiar
+                  </Link>
+                )}
+                <Link
+                  href="/reports/quality-control"
+                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
+                >
+                  Zobacz raport QC
+                </Link>
+              </div>
             </div>
 
             {!qcMeasurements || qcMeasurements.length === 0 ? (
@@ -657,6 +668,25 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               </div>
             )}
           </div>
+          {/* Carbon Footprint Section (Full Width) */}
+          {order.status === 'completed' && (
+            <div className="col-span-2 bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>🌿</span> Ślad Węglowy
+                </h2>
+                <Link
+                  href={`/reports/carbon?order_id=${id}`}
+                  className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+                >
+                  Oblicz emisje CO2
+                </Link>
+              </div>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">
+                Oblicz ślad węglowy dla tego zamówienia w module raportów CO₂.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -42,7 +42,8 @@ export default function StatusDropdown({ orderId, currentStatus }: StatusDropdow
       in_progress: 'W realizacji',
       completed: 'Ukończone',
       delayed: 'Opóźnione',
-      cancelled: 'Anulowane'
+      cancelled: 'Anulowane',
+      ready_to_ship: 'Do wysyłki',
     }
     toast.success(`Status zmieniony na: ${statusLabels[newStatus] || newStatus}`)
     router.refresh()
@@ -55,6 +56,7 @@ export default function StatusDropdown({ orderId, currentStatus }: StatusDropdow
       completed: 'bg-green-600 hover:bg-green-700',
       delayed: 'bg-red-600 hover:bg-red-700',
       cancelled: 'bg-gray-600 hover:bg-gray-700',
+      ready_to_ship: 'bg-indigo-600 hover:bg-indigo-700',
     }
     return colors[status as keyof typeof colors] || 'bg-gray-600 hover:bg-gray-700'
   }
@@ -72,6 +74,7 @@ export default function StatusDropdown({ orderId, currentStatus }: StatusDropdow
         <option value="completed" className="bg-white dark:bg-slate-800 text-slate-900">Ukończone</option>
         <option value="delayed" className="bg-white dark:bg-slate-800 text-slate-900">Opóźnione</option>
         <option value="cancelled" className="bg-white dark:bg-slate-800 text-slate-900">Anulowane</option>
+        <option value="ready_to_ship" className="bg-white dark:bg-slate-800 text-slate-900">Do wysyłki</option>
       </select>
       {isUpdating && (
         <div className="mt-2 flex items-center gap-2">

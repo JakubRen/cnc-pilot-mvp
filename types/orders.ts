@@ -10,6 +10,7 @@ export type OrderStatus =
   | 'completed'
   | 'delayed'
   | 'cancelled'
+  | 'ready_to_ship'
 
 export interface Order {
   id: string
@@ -62,6 +63,7 @@ export const orderStatusLabels: Record<OrderStatus, string> = {
   completed: 'Ukończone',
   delayed: 'Opóźnione',
   cancelled: 'Anulowane',
+  ready_to_ship: 'Do wysyłki',
 }
 
 export const orderStatusColors: Record<OrderStatus, string> = {
@@ -71,6 +73,7 @@ export const orderStatusColors: Record<OrderStatus, string> = {
   completed: 'bg-green-600',
   delayed: 'bg-red-600',
   cancelled: 'bg-gray-600',
+  ready_to_ship: 'bg-indigo-600',
 }
 
 export const orderStatusTextColors: Record<OrderStatus, string> = {
@@ -80,6 +83,7 @@ export const orderStatusTextColors: Record<OrderStatus, string> = {
   completed: 'text-green-100',
   delayed: 'text-red-100',
   cancelled: 'text-gray-100',
+  ready_to_ship: 'text-indigo-100',
 }
 
 /**
