@@ -84,6 +84,17 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Order Dimensions with Tolerances + Auto QC Plan (2026-01-30)
+
+**Feature:** L×W×H dimensions with tolerances saved to orders, auto-generated QC control plans from order dimensions.
+
+- Migration: `length`, `width`, `height`, `tolerance_length`, `tolerance_width`, `tolerance_height` columns added to `orders` table
+- Add order form: Dedicated "Wymiary detalu" section with dimension + tolerance inputs (moved from pricing calculator)
+- Edit order form: New dimensions section with tolerance fields
+- QC page: Auto-fills plan name (`Kontrola: {partName}`), part name, and generates dimension items (Długość/Szerokość/Wysokość) with tolerances from order data
+- Users can edit/delete auto-generated items and add custom dimensions before saving
+- Commit: `3e0a842`
+
 ### ✅ Production Execution Flow + Ready to Ship Status (2026-01-30)
 
 **Feature:** Interactive production execution with per-operation Start/Stop timers, operation completion dialogs, and new `ready_to_ship` order status.
