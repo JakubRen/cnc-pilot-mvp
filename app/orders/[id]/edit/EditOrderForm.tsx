@@ -23,6 +23,13 @@ const orderSchema = z.object({
   deadline: z.string().min(1, 'Termin wymagany'),
   status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
   notes: z.string().optional(),
+  // Dimensions with tolerances
+  length: z.union([z.number(), z.nan()]).optional().nullable(),
+  width: z.union([z.number(), z.nan()]).optional().nullable(),
+  height: z.union([z.number(), z.nan()]).optional().nullable(),
+  tolerance_length: z.union([z.number(), z.nan()]).optional().nullable(),
+  tolerance_width: z.union([z.number(), z.nan()]).optional().nullable(),
+  tolerance_height: z.union([z.number(), z.nan()]).optional().nullable(),
   // DAY 12: Cost tracking fields
   material_cost: z.number().min(0, 'Koszt materiału musi być dodatni'),
   labor_cost: z.number().min(0, 'Koszt pracy musi być dodatni'),
@@ -47,6 +54,12 @@ interface OrderData {
   deadline: string
   status: 'pending' | 'in_progress' | 'completed' | 'delayed' | 'cancelled'
   notes: string | null
+  length: number | null
+  width: number | null
+  height: number | null
+  tolerance_length: number | null
+  tolerance_width: number | null
+  tolerance_height: number | null
   material_cost: number | null
   labor_cost: number | null
   overhead_cost: number | null
@@ -120,10 +133,19 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
     setValue('linked_inventory_item_id', order.linked_inventory_item_id || null)
     setValue('material_quantity_needed', order.material_quantity_needed || null)
     setValue('assigned_operator_id', order.assigned_operator_id || null)
+    setValue('length', order.length ?? null)
+    setValue('width', order.width ?? null)
+    setValue('height', order.height ?? null)
+    setValue('tolerance_length', order.tolerance_length ?? null)
+    setValue('tolerance_width', order.tolerance_width ?? null)
+    setValue('tolerance_height', order.tolerance_height ?? null)
   }, [order, setValue])
 
   const onSubmit = async (data: OrderFormData) => {
     const loadingToast = toast.loading('Aktualizowanie zamówienia...')
+
+    // Clean NaN values from dimensions
+    const cleanNum = (v: number | null | undefined) => (v != null && !isNaN(v)) ? v : null
 
     // Sanitize user inputs to prevent XSS attacks
     const finalOrderData = {
@@ -136,6 +158,12 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
       linked_inventory_item_id: data.linked_inventory_item_id,
       material_quantity_needed: data.material_quantity_needed,
       assigned_operator_id: data.assigned_operator_id,
+      length: cleanNum(data.length),
+      width: cleanNum(data.width),
+      height: cleanNum(data.height),
+      tolerance_length: cleanNum(data.tolerance_length),
+      tolerance_width: cleanNum(data.tolerance_width),
+      tolerance_height: cleanNum(data.tolerance_height),
     };
 
     const { error } = await supabase
@@ -290,6 +318,39 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
             className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             placeholder="Flange 50mm"
           />
+        </div>
+
+        {/* Dimensions with tolerances */}
+        <div className="col-span-2 bg-slate-50 dark:bg-slate-900 border border-blue-200 dark:border-blue-500/30 rounded-lg p-4">
+          <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Wymiary detalu (L x W x H)</h4>
+          <div className="grid grid-cols-3 gap-4 mb-2">
+            <div>
+              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Długość (mm)</label>
+              <Input type="number" step="0.01" placeholder="np. 100" {...register('length', { valueAsNumber: true })} />
+            </div>
+            <div>
+              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Szerokość (mm)</label>
+              <Input type="number" step="0.01" placeholder="np. 50" {...register('width', { valueAsNumber: true })} />
+            </div>
+            <div>
+              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Wysokość (mm)</label>
+              <Input type="number" step="0.01" placeholder="np. 20" {...register('height', { valueAsNumber: true })} />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja ± (mm)</label>
+              <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_length', { valueAsNumber: true })} />
+            </div>
+            <div>
+              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja ± (mm)</label>
+              <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_width', { valueAsNumber: true })} />
+            </div>
+            <div>
+              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja ± (mm)</label>
+              <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_height', { valueAsNumber: true })} />
+            </div>
+          </div>
         </div>
 
         {/* Notes - Full Width */}

@@ -47,10 +47,14 @@ export default function AddOrderPage() {
     notes: z.string().optional(),
     // Technical drawing
     drawing_file_id: z.string().uuid().optional().nullable(),
-    // DAY 14-15: Pricing calculator fields
+    // Dimensions with tolerances
     length: z.union([z.number(), z.nan()]).optional().nullable(),
     width: z.union([z.number(), z.nan()]).optional().nullable(),
     height: z.union([z.number(), z.nan()]).optional().nullable(),
+    tolerance_length: z.union([z.number(), z.nan()]).optional().nullable(),
+    tolerance_width: z.union([z.number(), z.nan()]).optional().nullable(),
+    tolerance_height: z.union([z.number(), z.nan()]).optional().nullable(),
+    // Pricing calculator
     complexity: z.enum(['simple', 'medium', 'complex']).optional().nullable(),
     // DAY 12: Cost tracking fields
     material_cost: z.number().min(0, t('orders', 'materialCostPositive')),
@@ -273,9 +277,9 @@ export default function AddOrderPage() {
       return
     }
 
-    // Exclude pricing calculator fields (not in database)
+    // Exclude pricing-only fields (not in database)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { length, width, height, complexity, ...orderData } = data
+    const { complexity, ...orderData } = data
 
     // Validate that order number was generated
     if (!generatedOrderNumber || isGeneratingNumber) {
@@ -285,6 +289,9 @@ export default function AddOrderPage() {
     }
 
     // Sanitize user inputs to prevent XSS attacks
+    // Clean NaN values from dimensions
+    const cleanNum = (v: number | null | undefined) => (v != null && !isNaN(v)) ? v : null
+
     const finalOrderData = {
       ...orderData,
       customer_id: orderData.customer_id,
@@ -296,6 +303,12 @@ export default function AddOrderPage() {
       material_quantity_needed: data.material_quantity_needed,
       assigned_operator_id: data.assigned_operator_id,
       drawing_file_id: data.drawing_file_id,
+      length: cleanNum(orderData.length),
+      width: cleanNum(orderData.width),
+      height: cleanNum(orderData.height),
+      tolerance_length: cleanNum(orderData.tolerance_length),
+      tolerance_width: cleanNum(orderData.tolerance_width),
+      tolerance_height: cleanNum(orderData.tolerance_height),
     };
 
     const { error } = await supabase
@@ -494,37 +507,42 @@ export default function AddOrderPage() {
                   </div>
                 </div>
 
-                {/* Unified Pricing Calculator */}
-                <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-purple-200 dark:border-purple-500/30">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">🧮 Kalkulator wyceny</h3>
-
-                  {/* Dimensions */}
-                  <div className="grid grid-cols-3 gap-4 mb-4">
+                {/* Dimensions with tolerances */}
+                <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-blue-200 dark:border-blue-500/30">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Wymiary detalu (L x W x H)</h3>
+                  <div className="grid grid-cols-3 gap-4 mb-2">
                     <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'length')} ({t('common', 'milimeters')})</label>
-                      <Input
-                        type="number"
-                        placeholder="np. 100"
-                        {...register('length', { valueAsNumber: true })}
-                      />
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'length')} (mm)</label>
+                      <Input type="number" step="0.01" placeholder="np. 100" {...register('length', { valueAsNumber: true })} />
                     </div>
                     <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'width')} ({t('common', 'milimeters')})</label>
-                      <Input
-                        type="number"
-                        placeholder="np. 50"
-                        {...register('width', { valueAsNumber: true })}
-                      />
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'width')} (mm)</label>
+                      <Input type="number" step="0.01" placeholder="np. 50" {...register('width', { valueAsNumber: true })} />
                     </div>
                     <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'height')} ({t('common', 'milimeters')})</label>
-                      <Input
-                        type="number"
-                        placeholder="np. 20"
-                        {...register('height', { valueAsNumber: true })}
-                      />
+                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'height')} (mm)</label>
+                      <Input type="number" step="0.01" placeholder="np. 20" {...register('height', { valueAsNumber: true })} />
                     </div>
                   </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-slate-500 dark:text-slate-400 mb-1 text-xs">Tolerancja ± (mm)</label>
+                      <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_length', { valueAsNumber: true })} />
+                    </div>
+                    <div>
+                      <label className="block text-slate-500 dark:text-slate-400 mb-1 text-xs">Tolerancja ± (mm)</label>
+                      <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_width', { valueAsNumber: true })} />
+                    </div>
+                    <div>
+                      <label className="block text-slate-500 dark:text-slate-400 mb-1 text-xs">Tolerancja ± (mm)</label>
+                      <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_height', { valueAsNumber: true })} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Unified Pricing Calculator */}
+                <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-purple-200 dark:border-purple-500/30">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Kalkulator wyceny</h3>
 
                   {/* Complexity */}
                   <div className="mb-4">
