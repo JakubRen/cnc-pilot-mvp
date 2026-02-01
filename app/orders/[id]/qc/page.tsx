@@ -28,7 +28,7 @@ export default async function OrderQCPage({ params }: { params: Promise<{ id: st
   }
 
   // Fetch QC plans for this company
-  const { data: plans } = await supabase
+  const { data: plans, error: plansError } = await supabase
     .from('quality_control_plans')
     .select(`
       id,
@@ -49,6 +49,8 @@ export default async function OrderQCPage({ params }: { params: Promise<{ id: st
     .eq('company_id', user.company_id)
     .eq('is_active', true)
     .order('created_at', { ascending: false })
+
+  console.log('[QC DEBUG] user.company_id:', user.company_id, 'plans:', plans?.length, 'error:', plansError)
 
   // Fetch measurements for this order
   const { data: measurements } = await supabase

@@ -1,9 +1,6 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useEffect, useState } from 'react'
@@ -16,6 +13,7 @@ import InventorySelect from '@/components/inventory/InventorySelect'
 import CustomerSelect from '@/components/customers/CustomerSelect'
 import QuickAddCustomerModal from '@/components/customers/QuickAddCustomerModal'
 import DrawingUpload from '@/components/orders/DrawingUpload'
+import DatePicker from '@/components/ui/DatePicker'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { Card, CardContent } from '@/components/ui/card'
@@ -23,223 +21,198 @@ import { Button } from '@/components/ui/Button'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useOperators } from '@/hooks/useOperators'
 import { sanitizeText } from '@/lib/sanitization'
-import { useFormErrorScroll } from '@/hooks/useFormErrorScroll'
+
+// --- Multi-item types ---
+interface OrderItemEntry {
+  tempId: string
+  part_name: string
+  material: string
+  linked_inventory_item_id: string | null
+  material_quantity_needed: number | null
+  quantity: number
+  length: number | null
+  width: number | null
+  height: number | null
+  tolerance_length: number | null
+  tolerance_width: number | null
+  tolerance_height: number | null
+  complexity: 'simple' | 'medium' | 'complex'
+  drawing_file_id: string | null
+  notes: string
+}
+
+const generateTempId = () => Math.random().toString(36).substr(2, 9)
+
+const createEmptyItem = (): OrderItemEntry => ({
+  tempId: generateTempId(),
+  part_name: '',
+  material: '',
+  linked_inventory_item_id: null,
+  material_quantity_needed: null,
+  quantity: 1,
+  length: null,
+  width: null,
+  height: null,
+  tolerance_length: null,
+  tolerance_width: null,
+  tolerance_height: null,
+  complexity: 'medium',
+  drawing_file_id: null,
+  notes: '',
+})
 
 export default function AddOrderPage() {
   const router = useRouter()
-  const { t } = useTranslation() // Initialize useTranslation, removing lang as it's handled internally
-  const [pricingResult, setPricingResult] = useState<UnifiedPricingResult | null>(null)
-  const [isCalculating, setIsCalculating] = useState(false)
-  const [companyId, setCompanyId] = useState<string>('')
+  const { t } = useTranslation()
+
+  // --- Header (order-level) state ---
+  const [customerId, setCustomerId] = useState('')
+  const [customerName, setCustomerName] = useState('')
+  const [customerError, setCustomerError] = useState('')
+  const [deadline, setDeadline] = useState('')
+  const [status, setStatus] = useState<'pending' | 'in_progress' | 'completed' | 'delayed' | 'cancelled'>('pending')
+  const [assignedOperatorId, setAssignedOperatorId] = useState<number | null>(null)
+  const [orderNotes, setOrderNotes] = useState('')
+  const [materialCost, setMaterialCost] = useState(0)
+  const [laborCost, setLaborCost] = useState(0)
+  const [overheadCost, setOverheadCost] = useState(0)
+
+  // --- Items state ---
+  const [items, setItems] = useState<OrderItemEntry[]>([createEmptyItem()])
+
+  // --- Other state ---
+  const [companyId, setCompanyId] = useState('')
   const [userId, setUserId] = useState<number>(0)
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false)
   const [pendingCustomerName, setPendingCustomerName] = useState('')
-  const [generatedOrderNumber, setGeneratedOrderNumber] = useState<string>('')
+  const [generatedOrderNumber, setGeneratedOrderNumber] = useState('')
   const [isGeneratingNumber, setIsGeneratingNumber] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const orderSchema = z.object({
-    customer_id: z.string().min(1, 'Wybierz klienta z listy lub dodaj nowego'),
-    quantity: z.number().min(1, t('orders', 'quantityRequired')),
-    part_name: z.string().optional(),
-    material: z.string().optional(),
-    deadline: z.string().min(1, t('orders', 'deadlineRequired')),
-    status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
-    notes: z.string().optional(),
-    // Technical drawing
-    drawing_file_id: z.string().uuid().optional().nullable(),
-    // Dimensions with tolerances
-    length: z.union([z.number(), z.nan()]).optional().nullable(),
-    width: z.union([z.number(), z.nan()]).optional().nullable(),
-    height: z.union([z.number(), z.nan()]).optional().nullable(),
-    tolerance_length: z.union([z.number(), z.nan()]).optional().nullable(),
-    tolerance_width: z.union([z.number(), z.nan()]).optional().nullable(),
-    tolerance_height: z.union([z.number(), z.nan()]).optional().nullable(),
-    // Pricing calculator
-    complexity: z.enum(['simple', 'medium', 'complex']).optional().nullable(),
-    // DAY 12: Cost tracking fields
-    material_cost: z.number().min(0, t('orders', 'materialCostPositive')),
-    labor_cost: z.number().min(0, t('orders', 'laborCostPositive')),
-    overhead_cost: z.number().min(0, t('orders', 'overheadCostPositive')),
-    total_cost: z.number().min(0, t('orders', 'totalCostPositive')),
-    // Auto-Deduct fields
-    linked_inventory_item_id: z.string().uuid().optional().nullable(),
-    material_quantity_needed: z.number().min(0, 'Ilość materiału na jednostkę musi być większa lub równa 0').optional().nullable(),
-    // Operator assignment
-    assigned_operator_id: z.number().optional().nullable(),
-  })
+  // Pricing
+  const [pricingResult, setPricingResult] = useState<UnifiedPricingResult | null>(null)
+  const [isCalculating, setIsCalculating] = useState(false)
+  const [pricingItemIndex, setPricingItemIndex] = useState<number>(0)
 
-  type OrderFormData = z.infer<typeof orderSchema>
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<OrderFormData>({
-    resolver: zodResolver(orderSchema),
-    defaultValues: {
-      status: 'pending',
-      complexity: 'medium',
-      material_cost: 0,
-      labor_cost: 0,
-      overhead_cost: 0,
-      total_cost: 0,
-      linked_inventory_item_id: null,
-      material_quantity_needed: null,
-      assigned_operator_id: null,
-      drawing_file_id: null,
-    },
-  })
-
-  // Scroll to first error on validation failure
-  useFormErrorScroll(errors)
-
-  // Watch fields for Local Intelligence
-  const partName = watch('part_name') || ''
-  const materialString = watch('material') || '' // Changed to avoid conflict with `material` object
-  const linkedInventoryItemId = watch('linked_inventory_item_id')
-  const quantity = watch('quantity') || 1
-  
-  // Watch cost fields for auto-calculation
-  const materialCost = watch('material_cost') || 0
-  const laborCost = watch('labor_cost') || 0
-  const overheadCost = watch('overhead_cost') || 0
-
-  // Inventory hooks for Material and Part Name dropdowns
+  // Inventory hooks
   const { items: materialItems, loading: materialsLoading } = useMaterials()
   const { items: partItems, loading: partsLoading } = useParts()
-
-  // Operators hook for assignment dropdown
   const { operators, loading: operatorsLoading } = useOperators()
 
-  // Get current selected material object for display in InventorySelect
-  const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
-  const currentMaterialNameForDisplay = currentMaterialItem?.name || ''
+  const totalCost = materialCost + laborCost + overheadCost
 
   // Get user and company info
   useEffect(() => {
     async function fetchUserInfo() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
-
       const { data: userProfile } = await supabase
         .from('users')
         .select('id, company_id')
         .eq('auth_id', user.id)
         .single()
-
       if (userProfile) {
         setCompanyId(userProfile.company_id)
         setUserId(userProfile.id)
       }
     }
-
     fetchUserInfo()
   }, [])
 
-  // Auto-generate order number when company_id is available
+  // Auto-generate order number
   useEffect(() => {
     async function generateOrderNumber() {
       if (!companyId) return
-
       setIsGeneratingNumber(true)
-
       try {
-        const { data, error } = await supabase
-          .rpc('generate_order_number', { p_company_id: companyId })
-
+        const { data, error } = await supabase.rpc('generate_order_number', { p_company_id: companyId })
         if (error) {
           logger.error('Failed to generate order number', { error })
-          toast.error('Nie udało się wygenerować numeru zamówienia')
-          setGeneratedOrderNumber('ORD-TEMP-0001') // Fallback
+          toast.error('Nie udalo sie wygenerowac numeru zamowienia')
+          setGeneratedOrderNumber('ORD-TEMP-0001')
         } else {
           setGeneratedOrderNumber(data)
         }
       } catch (error) {
         logger.error('Error generating order number', { error })
-        toast.error('Błąd generowania numeru')
-        setGeneratedOrderNumber('ORD-TEMP-0001') // Fallback
+        setGeneratedOrderNumber('ORD-TEMP-0001')
       } finally {
         setIsGeneratingNumber(false)
       }
     }
-
-    if (companyId) {
-      generateOrderNumber()
-    }
+    if (companyId) generateOrderNumber()
   }, [companyId])
 
-  useEffect(() => {
-    const total = materialCost + laborCost + overheadCost
-    setValue('total_cost', total)
-  }, [materialCost, laborCost, overheadCost, setValue])
+  // --- Item manipulation ---
+  const updateItem = (index: number, updates: Partial<OrderItemEntry>) => {
+    setItems(prev => prev.map((item, i) => i === index ? { ...item, ...updates } : item))
+  }
 
-  // Unified Pricing Calculator
-  const handleCalculatePricing = async () => {
-    const currentMaterial = watch('material')
-    const currentQuantity = watch('quantity')
-    const currentComplexity = watch('complexity')
+  const addItem = () => {
+    setItems(prev => [...prev, createEmptyItem()])
+  }
 
-    if (!currentMaterial || !currentQuantity) {
+  const removeItem = (index: number) => {
+    if (items.length <= 1) return
+    setItems(prev => prev.filter((_, i) => i !== index))
+  }
+
+  // --- Pricing ---
+  const handleCalculatePricing = async (itemIndex: number) => {
+    const item = items[itemIndex]
+    if (!item.material || !item.quantity) {
       toast.error(t('orders', 'fillMaterialQuantity'))
       return
     }
-
     setIsCalculating(true)
-    const loadingToast = toast.loading('Obliczam najlepszą cenę...')
-
+    setPricingItemIndex(itemIndex)
+    const loadingToast = toast.loading('Obliczam najlepsza cene...')
     try {
       const response = await fetch('/api/quotes/pricing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          material: currentMaterial,
-          quantity: currentQuantity,
-          partName: watch('part_name') || undefined,
-          length: watch('length') || undefined,
-          width: watch('width') || undefined,
-          height: watch('height') || undefined,
-          complexity: currentComplexity || 'medium',
+          material: item.material,
+          quantity: item.quantity,
+          partName: item.part_name || undefined,
+          length: item.length || undefined,
+          width: item.width || undefined,
+          height: item.height || undefined,
+          complexity: item.complexity || 'medium',
         }),
       })
-
       toast.dismiss(loadingToast)
-
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Nie udało się obliczyć wyceny')
+        throw new Error(error.error || 'Nie udalo sie obliczyc wyceny')
       }
-
       const data: UnifiedPricingResult = await response.json()
       setPricingResult(data)
-      toast.success('Wycena gotowa! 💰')
+      toast.success('Wycena gotowa!')
     } catch (error) {
       toast.dismiss(loadingToast)
-      toast.error(error instanceof Error ? error.message : 'Błąd kalkulacji')
+      toast.error(error instanceof Error ? error.message : 'Blad kalkulacji')
       logger.error('Pricing calculation error', { error })
     } finally {
       setIsCalculating(false)
     }
   }
 
-  // Apply Unified Pricing to form
   const handleApplyPricing = (finalPrice: number) => {
     if (!pricingResult) return
-
     const breakdown = pricingResult.recommended.breakdown
-    setValue('material_cost', Math.round(breakdown.materialCost * 100) / 100)
-    setValue('labor_cost', Math.round(breakdown.laborCost * 100) / 100)
-    setValue('overhead_cost', Math.round(breakdown.setupCost * 100) / 100)
-    setValue('total_cost', Math.round(finalPrice * 100) / 100)
-
-    setPricingResult(null) // Close the pricing modal
+    setMaterialCost(Math.round(breakdown.materialCost * 100) / 100)
+    setLaborCost(Math.round(breakdown.laborCost * 100) / 100)
+    setOverheadCost(Math.round(breakdown.setupCost * 100) / 100)
+    setPricingResult(null)
     toast.success('Wycena zastosowana!')
   }
 
-  // Customer selection handlers
-  const handleCustomerChange = (customerId: string | null, customerName: string) => {
-    setValue('customer_id', customerId || '', { shouldValidate: true })
+  // --- Customer handlers ---
+  const handleCustomerChange = (cId: string | null, name: string) => {
+    setCustomerId(cId || '')
+    setCustomerName(name || '')
+    setCustomerError('')
   }
 
   const handleCreateNewCustomer = (name: string) => {
@@ -248,87 +221,152 @@ export default function AddOrderPage() {
   }
 
   const handleCustomerCreated = (customer: Customer) => {
-    setValue('customer_id', customer.id, { shouldValidate: true })
+    setCustomerId(customer.id)
+    setCustomerName(customer.name)
     setIsQuickAddOpen(false)
-    toast.success(`Klient "${customer.name}" został dodany!`)
+    toast.success(`Klient "${customer.name}" zostal dodany!`)
   }
 
-  const onSubmit = async (data: OrderFormData) => {
+  // --- Submit ---
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Validate
+    if (!customerId) {
+      setCustomerError('Wybierz klienta z listy lub dodaj nowego')
+      return
+    }
+    if (!deadline) {
+      toast.error(t('orders', 'deadlineRequired'))
+      return
+    }
+    if (!generatedOrderNumber || isGeneratingNumber) {
+      toast.error('Poczekaj na wygenerowanie numeru zamowienia')
+      return
+    }
+
+    // Validate items
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].quantity < 1) {
+        toast.error(`Pozycja ${i + 1}: ilosc musi byc minimum 1`)
+        return
+      }
+    }
+
+    setIsSubmitting(true)
     const loadingToast = toast.loading(t('orders', 'savingOrder'))
 
-    // Get current user and company
-    const { data: { user } } = await supabase.auth.getUser()
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        toast.dismiss(loadingToast)
+        toast.error(t('orders', 'notLoggedIn'))
+        return
+      }
 
-    if (!user) {
-      toast.dismiss(loadingToast)
-      toast.error(t('orders', 'notLoggedIn'))
-      return
-    }
+      const { data: userProfile } = await supabase
+        .from('users')
+        .select('id, company_id')
+        .eq('auth_id', user.id)
+        .single()
 
-    const { data: userProfile } = await supabase
-      .from('users')
-      .select('id, company_id')
-      .eq('auth_id', user.id)
-      .single()
+      if (!userProfile?.company_id) {
+        toast.dismiss(loadingToast)
+        toast.error(t('orders', 'noCompanyAssigned'))
+        return
+      }
 
-    if (!userProfile?.company_id) {
-      toast.dismiss(loadingToast)
-      toast.error(t('orders', 'noCompanyAssigned'))
-      return
-    }
+      const cleanNum = (v: number | null | undefined) => (v != null && !isNaN(v)) ? v : null
 
-    // Exclude pricing-only fields (not in database)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { complexity, ...orderData } = data
+      // Summary fields for backwards compatibility
+      const summaryPartName = items.length === 1
+        ? (items[0].part_name || null)
+        : `${items.length} pozycji`
+      const summaryMaterial = items.length === 1
+        ? (items[0].material || null)
+        : 'Rozne'
+      const summaryQuantity = items.reduce((sum, item) => sum + (item.quantity || 0), 0)
 
-    // Validate that order number was generated
-    if (!generatedOrderNumber || isGeneratingNumber) {
-      toast.dismiss(loadingToast)
-      toast.error('Poczekaj na wygenerowanie numeru zamówienia')
-      return
-    }
+      // For single item, keep linked_inventory_item_id and material_quantity_needed on order level
+      const singleItem = items.length === 1 ? items[0] : null
 
-    // Sanitize user inputs to prevent XSS attacks
-    // Clean NaN values from dimensions
-    const cleanNum = (v: number | null | undefined) => (v != null && !isNaN(v)) ? v : null
-
-    const finalOrderData = {
-      ...orderData,
-      customer_id: orderData.customer_id,
-      order_number: generatedOrderNumber, // Use auto-generated number
-      part_name: orderData.part_name ? sanitizeText(orderData.part_name) : null,
-      material: materialString ? sanitizeText(materialString) : null,
-      notes: orderData.notes ? sanitizeText(orderData.notes) : null,
-      linked_inventory_item_id: data.linked_inventory_item_id,
-      material_quantity_needed: data.material_quantity_needed,
-      assigned_operator_id: data.assigned_operator_id,
-      drawing_file_id: data.drawing_file_id,
-      length: cleanNum(orderData.length),
-      width: cleanNum(orderData.width),
-      height: cleanNum(orderData.height),
-      tolerance_length: cleanNum(orderData.tolerance_length),
-      tolerance_width: cleanNum(orderData.tolerance_width),
-      tolerance_height: cleanNum(orderData.tolerance_height),
-    };
-
-    const { error } = await supabase
-      .from('orders')
-      .insert({
-        ...finalOrderData,
+      const orderPayload = {
+        order_number: generatedOrderNumber,
+        customer_id: customerId,
+        customer_name: sanitizeText(customerName),
+        part_name: summaryPartName ? sanitizeText(summaryPartName) : null,
+        material: summaryMaterial ? sanitizeText(summaryMaterial) : null,
+        quantity: summaryQuantity || 1,
+        deadline,
+        status,
+        notes: orderNotes ? sanitizeText(orderNotes) : null,
+        material_cost: materialCost,
+        labor_cost: laborCost,
+        overhead_cost: overheadCost,
+        total_cost: totalCost,
+        assigned_operator_id: assignedOperatorId,
+        linked_inventory_item_id: singleItem?.linked_inventory_item_id || null,
+        material_quantity_needed: singleItem?.material_quantity_needed || null,
+        drawing_file_id: singleItem?.drawing_file_id || null,
+        length: singleItem ? cleanNum(singleItem.length) : null,
+        width: singleItem ? cleanNum(singleItem.width) : null,
+        height: singleItem ? cleanNum(singleItem.height) : null,
+        tolerance_length: singleItem ? cleanNum(singleItem.tolerance_length) : null,
+        tolerance_width: singleItem ? cleanNum(singleItem.tolerance_width) : null,
+        tolerance_height: singleItem ? cleanNum(singleItem.tolerance_height) : null,
         created_by: userProfile.id,
         company_id: userProfile.company_id,
-      })
+      }
 
-    toast.dismiss(loadingToast)
+      const { data: insertedOrder, error: orderError } = await supabase
+        .from('orders')
+        .insert(orderPayload)
+        .select('id')
+        .single()
 
-    if (error) {
-      toast.error(`${t('orders', 'createOrderFailed')}: ${error.message}`)
-      return
+      if (orderError || !insertedOrder) {
+        toast.dismiss(loadingToast)
+        toast.error(`${t('orders', 'createOrderFailed')}: ${orderError?.message}`)
+        return
+      }
+
+      // Insert order_items
+      if (items.length > 0) {
+        const orderItems = items.map(item => ({
+          order_id: insertedOrder.id,
+          part_name: item.part_name ? sanitizeText(item.part_name) : 'Bez nazwy',
+          material: item.material ? sanitizeText(item.material) : null,
+          quantity: item.quantity || 1,
+          length: cleanNum(item.length),
+          width: cleanNum(item.width),
+          height: cleanNum(item.height),
+          complexity: item.complexity || null,
+          drawing_file_id: item.drawing_file_id || null,
+          notes: item.notes ? sanitizeText(item.notes) : null,
+        }))
+
+        const { error: itemsError } = await supabase
+          .from('order_items')
+          .insert(orderItems)
+
+        if (itemsError) {
+          logger.error('Failed to insert order_items', { error: itemsError })
+          // Order was created, items failed — warn but don't block
+          toast.error('Zamowienie utworzone, ale nie udalo sie zapisac pozycji: ' + itemsError.message)
+        }
+      }
+
+      toast.dismiss(loadingToast)
+      toast.success(t('orders', 'orderCreated'))
+      router.push('/orders')
+      router.refresh()
+    } catch (error) {
+      toast.dismiss(loadingToast)
+      toast.error('Wystapil blad podczas tworzenia zamowienia')
+      logger.error('Order creation error', { error })
+    } finally {
+      setIsSubmitting(false)
     }
-
-    toast.success(t('orders', 'orderCreated'))
-    router.push('/orders')
-    router.refresh()
   }
 
   const complexityOptions = [
@@ -354,288 +392,345 @@ export default function AddOrderPage() {
             <div className="max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <UnifiedPricingCard
                 pricingResult={pricingResult}
-                quantity={watch('quantity') || 1}
+                quantity={items[pricingItemIndex]?.quantity || 1}
                 onApply={handleApplyPricing}
                 onCancel={() => setPricingResult(null)}
                 allowEdit={true}
                 isApplying={false}
                 showCancelButton={true}
-                applyButtonText="✅ Zastosuj do formularza"
+                applyButtonText="Zastosuj do formularza"
               />
             </div>
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Card className="mb-6 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
-              <CardContent className="p-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                  {/* Order Number - Auto-generated */}
-                  <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2">
-                      {t('orders', 'orderNumber')} *
-                    </label>
-                    <div className="relative">
-                      <Input
-                        value={isGeneratingNumber ? 'Generowanie...' : generatedOrderNumber}
-                        disabled
-                        className="bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 cursor-not-allowed"
-                      />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        {isGeneratingNumber ? (
-                          <span className="animate-spin text-blue-500">⏳</span>
-                        ) : (
-                          <span className="text-green-500">✓</span>
-                        )}
-                      </div>
+        <form onSubmit={onSubmit}>
+          {/* === ORDER HEADER === */}
+          <Card className="mb-6 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+            <CardContent className="p-8">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Dane zamowienia</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Order Number */}
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">
+                    {t('orders', 'orderNumber')} *
+                  </label>
+                  <div className="relative">
+                    <Input
+                      value={isGeneratingNumber ? 'Generowanie...' : generatedOrderNumber}
+                      disabled
+                      className="bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 cursor-not-allowed"
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {isGeneratingNumber ? (
+                        <span className="animate-spin text-blue-500">&#x23F3;</span>
+                      ) : (
+                        <span className="text-green-500">&#x2713;</span>
+                      )}
                     </div>
-                    <p className="text-xs text-blue-400 mt-1">Numer nadany automatycznie</p>
                   </div>
+                  <p className="text-xs text-blue-400 mt-1">Numer nadany automatycznie</p>
+                </div>
 
-                  {/* Material - from Inventory (raw_material category) */}
-                  <div>
-                    <InventorySelect
-                      items={materialItems}
-                      loading={materialsLoading}
-                      value={currentMaterialNameForDisplay}
-                      onChange={(value, item) => {
-                        setValue('material', value) // Keep material name as string
-                        setValue('linked_inventory_item_id', item?.id || null)
-                      }}
-                      label={`${t('common', 'material')}`}
-                      placeholder={t('inventory', 'selectMaterial')}
-                      emptyMessage={t('inventory', 'noMaterialsInStock')}
-                      allowCustom={true}
-                      error={errors.linked_inventory_item_id?.message || errors.material?.message}
-                    />
-                  </div>
+                {/* Customer */}
+                <div className="sm:col-span-2">
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                    {t('orders', 'customer')} *
+                  </label>
+                  <CustomerSelect
+                    value={customerId}
+                    onChange={handleCustomerChange}
+                    onCreateNew={handleCreateNewCustomer}
+                    error={customerError}
+                  />
+                </div>
 
-                  {/* Material Quantity Needed per unit */}
-                  <div>
-                    <label htmlFor="material_quantity_needed" className="block text-slate-300 mb-2">Ilość materiału na jednostkę *</label>
-                    <Input
-                      id="material_quantity_needed"
-                      type="number"
-                      step="0.01"
-                      placeholder="np. 0.5 (kg/szt)"
-                      {...register('material_quantity_needed', { valueAsNumber: true })}
-                    />
-                    {errors.material_quantity_needed && <p className="text-red-400 text-sm mt-1">{errors.material_quantity_needed.message}</p>}
-                  </div>
+                {/* Deadline */}
+                <div>
+                  <DatePicker
+                    label={`${t('orders', 'deadline')}`}
+                    value={deadline}
+                    onChange={setDeadline}
+                    required
+                    minDate={new Date()}
+                    placeholder="Wybierz termin..."
+                  />
+                </div>
 
-                  {/* Customer Selection */}
+                {/* Status */}
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'status')} *</label>
+                  <Select
+                    options={statusOptions}
+                    value={status}
+                    onChange={(value) => setStatus(value as typeof status)}
+                  />
+                </div>
+
+                {/* Operator */}
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Przypisany operator</label>
+                  <Select
+                    options={[
+                      { value: '', label: operatorsLoading ? 'Ladowanie...' : 'Brak przypisania' },
+                      ...operators.map(op => ({ value: String(op.id), label: op.full_name }))
+                    ]}
+                    value={assignedOperatorId ? String(assignedOperatorId) : ''}
+                    onChange={(value) => setAssignedOperatorId(value ? Number(value) : null)}
+                  />
+                </div>
+
+                {/* Notes */}
+                <div className="sm:col-span-2">
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Notatki</label>
+                  <textarea
+                    value={orderNotes}
+                    onChange={(e) => setOrderNotes(e.target.value)}
+                    rows={2}
+                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    placeholder="Dodatkowe uwagi dotyczace zamowienia..."
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* === ORDER ITEMS === */}
+          {items.map((item, index) => (
+            <Card key={item.tempId} className="mb-4 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                    Pozycja {index + 1}
+                  </h3>
+                  {items.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => removeItem(index)}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    >
+                      Usun
+                    </Button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Part Name */}
                   <div className="sm:col-span-2">
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
-                      {t('orders', 'customer')} *
-                    </label>
-                    <CustomerSelect
-                      value={watch('customer_id')}
-                      onChange={handleCustomerChange}
-                      onCreateNew={handleCreateNewCustomer}
-                      error={errors.customer_id?.message}
-                    />
-                  </div>
-
-                  {/* Deadline */}
-                  <div>
-                    <label htmlFor="deadline" className="block text-slate-700 dark:text-slate-300 mb-2">{t('orders', 'deadline')} *</label>
-                    <Input
-                      id="deadline"
-                      type="date"
-                      {...register('deadline')}
-                    />
-                  </div>
-
-                  {/* Quantity */}
-                  <div>
-                    <label htmlFor="quantity" className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'quantity')} *</label>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      {...register('quantity', { valueAsNumber: true })}
-                    />
-                  </div>
-
-                  {/* Status */}
-                  <div>
-                    <label htmlFor="status" className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'status')} *</label>
-                    <Select
-                      options={statusOptions}
-                      value={watch('status')}
-                      onChange={(value) => setValue('status', value as "pending" | "in_progress" | "completed" | "delayed" | "cancelled")}
-                    />
-                  </div>
-
-                  {/* Assigned Operator */}
-                  <div>
-                    <label htmlFor="assigned_operator_id" className="block text-slate-700 dark:text-slate-300 mb-2">Przypisany operator</label>
-                    <Select
-                      options={[
-                        { value: '', label: operatorsLoading ? 'Ładowanie...' : 'Brak przypisania' },
-                        ...operators.map(op => ({ value: String(op.id), label: op.full_name }))
-                      ]}
-                      value={watch('assigned_operator_id') ? String(watch('assigned_operator_id')) : ''}
-                      onChange={(value) => setValue('assigned_operator_id', value ? Number(value) : null)}
-                    />
-                  </div>
-
-                  {/* Part Name - from Inventory (part/finished_good categories) */}
-                  <div className="col-span-2">
                     <InventorySelect
                       items={partItems}
                       loading={partsLoading}
-                      value={partName}
-                      onChange={(value) => setValue('part_name', value)}
+                      value={item.part_name}
+                      onChange={(value) => updateItem(index, { part_name: value })}
                       label={`${t('orders', 'partName')} (${t('orders', 'suggestedPrice')}!)`}
                       placeholder={t('inventory', 'selectPart')}
                       emptyMessage={t('inventory', 'noPartsInStock')}
                       allowCustom={true}
                     />
-                    <p className="text-xs text-blue-400 mt-1">
-                      {t('orders', 'partNameHint')}
-                    </p>
                   </div>
 
-                  {/* Technical Drawing Upload */}
-                  <div className="col-span-2">
+                  {/* Material */}
+                  <div>
+                    <InventorySelect
+                      items={materialItems}
+                      loading={materialsLoading}
+                      value={materialItems.find(mi => mi.id === item.linked_inventory_item_id)?.name || item.material}
+                      onChange={(value, selectedItem) => {
+                        updateItem(index, {
+                          material: value,
+                          linked_inventory_item_id: selectedItem?.id || null,
+                        })
+                      }}
+                      label={t('common', 'material')}
+                      placeholder={t('inventory', 'selectMaterial')}
+                      emptyMessage={t('inventory', 'noMaterialsInStock')}
+                      allowCustom={true}
+                    />
+                  </div>
+
+                  {/* Material Quantity Needed */}
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Ilosc materialu na jednostke</label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="np. 0.5 (kg/szt)"
+                      value={item.material_quantity_needed ?? ''}
+                      onChange={(e) => updateItem(index, { material_quantity_needed: e.target.value ? Number(e.target.value) : null })}
+                    />
+                  </div>
+
+                  {/* Quantity */}
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'quantity')} *</label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={item.quantity}
+                      onChange={(e) => updateItem(index, { quantity: Number(e.target.value) || 1 })}
+                      required
+                    />
+                  </div>
+
+                  {/* Complexity */}
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'complexity')}</label>
+                    <Select
+                      options={complexityOptions}
+                      value={item.complexity}
+                      onChange={(value) => updateItem(index, { complexity: value as 'simple' | 'medium' | 'complex' })}
+                    />
+                  </div>
+
+                  {/* Drawing */}
+                  <div className="sm:col-span-2">
                     <DrawingUpload
-                      value={watch('drawing_file_id') || null}
-                      onChange={(fileId) => setValue('drawing_file_id', fileId)}
+                      value={item.drawing_file_id}
+                      onChange={(fileId) => updateItem(index, { drawing_file_id: fileId })}
                       companyId={companyId}
                       userId={userId}
                     />
                   </div>
-                </div>
 
-                {/* Dimensions with tolerances */}
-                <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-blue-200 dark:border-blue-500/30">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Wymiary detalu (L x W x H)</h3>
-                  <div className="grid grid-cols-3 gap-4 mb-2">
-                    <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'length')} (mm)</label>
-                      <Input type="number" step="0.01" placeholder="np. 100" {...register('length', { valueAsNumber: true })} />
+                  {/* Dimensions */}
+                  <div className="sm:col-span-2 bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg border border-blue-200 dark:border-blue-500/30">
+                    <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Wymiary detalu (L x W x H)</h4>
+                    <div className="grid grid-cols-3 gap-3 mb-2">
+                      <div>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">{t('common', 'length')} (mm)</label>
+                        <Input type="number" step="0.01" placeholder="np. 100"
+                          value={item.length ?? ''}
+                          onChange={(e) => updateItem(index, { length: e.target.value ? Number(e.target.value) : null })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">{t('common', 'width')} (mm)</label>
+                        <Input type="number" step="0.01" placeholder="np. 50"
+                          value={item.width ?? ''}
+                          onChange={(e) => updateItem(index, { width: e.target.value ? Number(e.target.value) : null })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">{t('common', 'height')} (mm)</label>
+                        <Input type="number" step="0.01" placeholder="np. 20"
+                          value={item.height ?? ''}
+                          onChange={(e) => updateItem(index, { height: e.target.value ? Number(e.target.value) : null })}
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'width')} (mm)</label>
-                      <Input type="number" step="0.01" placeholder="np. 50" {...register('width', { valueAsNumber: true })} />
-                    </div>
-                    <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'height')} (mm)</label>
-                      <Input type="number" step="0.01" placeholder="np. 20" {...register('height', { valueAsNumber: true })} />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                        <Input type="number" step="0.001" placeholder="0.1"
+                          value={item.tolerance_length ?? ''}
+                          onChange={(e) => updateItem(index, { tolerance_length: e.target.value ? Number(e.target.value) : null })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                        <Input type="number" step="0.001" placeholder="0.1"
+                          value={item.tolerance_width ?? ''}
+                          onChange={(e) => updateItem(index, { tolerance_width: e.target.value ? Number(e.target.value) : null })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                        <Input type="number" step="0.001" placeholder="0.1"
+                          value={item.tolerance_height ?? ''}
+                          onChange={(e) => updateItem(index, { tolerance_height: e.target.value ? Number(e.target.value) : null })}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-slate-500 dark:text-slate-400 mb-1 text-xs">Tolerancja ± (mm)</label>
-                      <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_length', { valueAsNumber: true })} />
-                    </div>
-                    <div>
-                      <label className="block text-slate-500 dark:text-slate-400 mb-1 text-xs">Tolerancja ± (mm)</label>
-                      <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_width', { valueAsNumber: true })} />
-                    </div>
-                    <div>
-                      <label className="block text-slate-500 dark:text-slate-400 mb-1 text-xs">Tolerancja ± (mm)</label>
-                      <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_height', { valueAsNumber: true })} />
-                    </div>
-                  </div>
-                </div>
 
-                {/* Unified Pricing Calculator */}
-                <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-purple-200 dark:border-purple-500/30">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Kalkulator wyceny</h3>
-
-                  {/* Complexity */}
-                  <div className="mb-4">
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'complexity')}</label>
-                    <Select
-                      options={complexityOptions}
-                      value={watch('complexity') || 'medium'}
-                      onChange={(value) => setValue('complexity', value as "simple" | "medium" | "complex")}
+                  {/* Per-item notes */}
+                  <div className="sm:col-span-2">
+                    <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Notatki do pozycji</label>
+                    <Input
+                      placeholder="Uwagi do tej pozycji..."
+                      value={item.notes}
+                      onChange={(e) => updateItem(index, { notes: e.target.value })}
                     />
                   </div>
 
-                  {/* Calculate Button */}
-                  <Button
-                    type="button"
-                    onClick={handleCalculatePricing}
-                    disabled={isCalculating}
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-0"
-                  >
-                    {isCalculating ? (
-                      <>
-                        <span className="animate-spin mr-2">⏳</span>
-                        Obliczam...
-                      </>
-                    ) : (
-                      <>
-                        <span className="mr-2">🧮</span>
-                        Oblicz najlepszą cenę
-                      </>
-                    )}
-                  </Button>
-                </div>
-
-                {/* Cost Section */}
-                <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-200 dark:border-slate-600">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">💰 {t('orders', 'costCalculationTitle')}</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...register('material_cost', { valueAsNumber: true })}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...register('labor_cost', { valueAsNumber: true })}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...register('overhead_cost', { valueAsNumber: true })}
-                      />
-                    </div>
+                  {/* Pricing calculator button */}
+                  <div className="sm:col-span-2">
+                    <Button
+                      type="button"
+                      onClick={() => handleCalculatePricing(index)}
+                      disabled={isCalculating}
+                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-0"
+                    >
+                      {isCalculating && pricingItemIndex === index ? 'Obliczam...' : 'Oblicz cene dla tej pozycji'}
+                    </Button>
                   </div>
-                  <div className="mt-4 flex justify-between items-center border-t border-slate-200 dark:border-slate-600 pt-4">
-                    <span className="text-slate-700 dark:text-slate-300 font-medium">{t('orders', 'totalCostCalculated')}</span>
-                    <span className="text-2xl font-bold text-green-600 dark:text-green-400">
-                      {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
-                    </span>
-                  </div>
-                </div>
-
-                {/* Submit Buttons */}
-                <div className="flex gap-4">
-                  <Button
-                    type="submit"
-                    isLoading={isSubmitting}
-                    loadingText={t('orders', 'savingOrder')}
-                    className="flex-1 bg-green-600 hover:bg-green-700 border-0"
-                  >
-                    {t('orders', 'createOrderBtn')}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => router.push('/orders')}
-                    variant="secondary"
-                    className="px-8"
-                  >
-                    {t('common', 'cancel')}
-                  </Button>
                 </div>
               </CardContent>
             </Card>
-          </form>
+          ))}
+
+          {/* Add item button */}
+          <div className="mb-6">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={addItem}
+              className="w-full border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400"
+            >
+              + Dodaj kolejna pozycje
+            </Button>
+          </div>
+
+          {/* === COST SECTION === */}
+          <Card className="mb-6 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+            <CardContent className="p-8">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('orders', 'costCalculationTitle')}</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
+                  <Input type="number" step="0.01" value={materialCost} onChange={(e) => setMaterialCost(Number(e.target.value) || 0)} />
+                </div>
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
+                  <Input type="number" step="0.01" value={laborCost} onChange={(e) => setLaborCost(Number(e.target.value) || 0)} />
+                </div>
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
+                  <Input type="number" step="0.01" value={overheadCost} onChange={(e) => setOverheadCost(Number(e.target.value) || 0)} />
+                </div>
+              </div>
+              <div className="mt-4 flex justify-between items-center border-t border-slate-200 dark:border-slate-600 pt-4">
+                <span className="text-slate-700 dark:text-slate-300 font-medium">{t('orders', 'totalCostCalculated')}</span>
+                <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  {totalCost.toFixed(2)} PLN
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Submit */}
+          <div className="flex gap-4">
+            <Button
+              type="submit"
+              isLoading={isSubmitting}
+              loadingText={t('orders', 'savingOrder')}
+              className="flex-1 bg-green-600 hover:bg-green-700 border-0"
+            >
+              {t('orders', 'createOrderBtn')}
+            </Button>
+            <Button
+              type="button"
+              onClick={() => router.push('/orders')}
+              variant="secondary"
+              className="px-8"
+            >
+              {t('common', 'cancel')}
+            </Button>
+          </div>
+        </form>
       </div>
-      {/* Quick Add Customer Modal */}
+
       <QuickAddCustomerModal
         isOpen={isQuickAddOpen}
         onClose={() => setIsQuickAddOpen(false)}

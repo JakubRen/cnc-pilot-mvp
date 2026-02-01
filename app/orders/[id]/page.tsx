@@ -90,6 +90,13 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     .order('measured_at', { ascending: false })
     .limit(20)
 
+  // Fetch order_items for this order
+  const { data: orderItems } = await supabase
+    .from('order_items')
+    .select('*')
+    .eq('order_id', id)
+    .order('created_at', { ascending: true })
+
   // Fetch drawing file if exists
   let drawingFile = null
   if (order.drawing_file_id) {
@@ -232,6 +239,47 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               </div>
             </div>
           </div>
+
+          {/* Order Items (multi-item) */}
+          {orderItems && orderItems.length > 0 && (
+            <div className="col-span-2 bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Pozycje zamowienia ({orderItems.length})</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-200 dark:border-slate-700">
+                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">#</th>
+                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Nazwa</th>
+                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Material</th>
+                      <th className="text-right py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Ilosc</th>
+                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Wymiary (mm)</th>
+                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Zlozonosc</th>
+                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Notatki</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orderItems.map((item: any, idx: number) => (
+                      <tr key={item.id} className="border-b border-slate-100 dark:border-slate-700/50">
+                        <td className="py-2 px-3 text-slate-400">{idx + 1}</td>
+                        <td className="py-2 px-3 text-slate-900 dark:text-white font-medium">{item.part_name}</td>
+                        <td className="py-2 px-3 text-slate-700 dark:text-slate-300">{item.material || '-'}</td>
+                        <td className="py-2 px-3 text-right text-slate-900 dark:text-white font-semibold">{item.quantity} szt</td>
+                        <td className="py-2 px-3 text-slate-600 dark:text-slate-400 text-xs">
+                          {item.length || item.width || item.height
+                            ? `${item.length || '-'} x ${item.width || '-'} x ${item.height || '-'}`
+                            : '-'}
+                        </td>
+                        <td className="py-2 px-3 text-slate-600 dark:text-slate-400">
+                          {item.complexity === 'simple' ? 'Prosty' : item.complexity === 'medium' ? 'Sredni' : item.complexity === 'complex' ? 'Zlozony' : '-'}
+                        </td>
+                        <td className="py-2 px-3 text-slate-500 dark:text-slate-400 text-xs">{item.notes || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {/* Timeline */}
           <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
@@ -539,20 +587,14 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                 <span>✅</span> Kontrola Jakości
               </h2>
               <div className="flex gap-2">
-                {['in_progress', 'completed'].includes(order.status) && (
+                {['in_progress', 'completed', 'ready_to_ship'].includes(order.status) && (
                   <Link
-                    href={`/reports/quality-control/plans/add?order_id=${id}`}
-                    className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+                    href={`/orders/${id}/qc`}
+                    className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition font-semibold"
                   >
                     + Dodaj pomiar
                   </Link>
                 )}
-                <Link
-                  href="/reports/quality-control"
-                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
-                >
-                  Zobacz raport QC
-                </Link>
               </div>
             </div>
 
@@ -561,12 +603,11 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                 <div className="text-5xl mb-4">📏</div>
                 <p className="text-slate-500 dark:text-slate-400 mb-2">Brak pomiarów dla tego zamówienia</p>
                 <p className="text-slate-400 dark:text-slate-500 text-sm">
-                  Pomiary zostaną wyświetlone tutaj po dodaniu ich w module Kontroli Jakości
+                  Kliknij &quot;Dodaj pomiar&quot; aby przejść do modułu kontroli jakości
                 </p>
               </div>
             ) : (
               <div>
-                {/* QC Stats */}
                 {(() => {
                   const totalMeasurements = qcMeasurements.length
                   const passedCount = qcMeasurements.filter(m => m.is_pass).length
@@ -597,79 +638,19 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                   )
                 })()}
 
-                {/* Measurements Table */}
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-slate-100 dark:bg-slate-700">
-                      <tr>
-                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300">Wymiar</th>
-                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300">Nominał</th>
-                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300">Pomiar</th>
-                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300">Wynik</th>
-                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300">Operator</th>
-                        <th className="px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300">Data</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                      {qcMeasurements.slice(0, 10).map((measurement) => {
-                        const item = measurement.quality_control_items
-                        return (
-                          <tr key={measurement.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td className="px-4 py-2">
-                              <div className="flex items-center gap-2">
-                                <span className="text-slate-900 dark:text-white text-sm">{item?.name || '-'}</span>
-                                {item?.is_critical && (
-                                  <span className="px-1.5 py-0.5 bg-red-600/30 text-red-400 text-[10px] rounded">
-                                    KRYT
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="px-4 py-2 text-slate-500 dark:text-slate-400 text-sm font-mono">
-                              {item?.nominal_value} ±{Math.max(item?.tolerance_plus || 0, item?.tolerance_minus || 0)} {item?.unit}
-                            </td>
-                            <td className="px-4 py-2 text-slate-900 dark:text-white text-sm font-mono font-semibold">
-                              {measurement.measured_value} {item?.unit}
-                            </td>
-                            <td className="px-4 py-2">
-                              {measurement.is_pass ? (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">
-                                  <span>✓</span> OK
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded-full">
-                                  <span>✕</span> NOK
-                                </span>
-                              )}
-                            </td>
-                            <td className="px-4 py-2 text-slate-500 dark:text-slate-400 text-sm">
-                              {measurement.users?.full_name || '-'}
-                            </td>
-                            <td className="px-4 py-2 text-slate-400 dark:text-slate-500 text-xs">
-                              {new Date(measurement.measured_at).toLocaleString('pl-PL', {
-                                day: '2-digit',
-                                month: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
+                <div className="text-center">
+                  <Link
+                    href={`/orders/${id}/qc`}
+                    className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-semibold"
+                  >
+                    Zobacz pełną kontrolę jakości →
+                  </Link>
                 </div>
-
-                {qcMeasurements.length > 10 && (
-                  <p className="text-center text-slate-400 dark:text-slate-500 text-sm mt-4">
-                    Wyświetlono 10 z {qcMeasurements.length} pomiarów
-                  </p>
-                )}
               </div>
             )}
           </div>
           {/* Carbon Footprint Section (Full Width) */}
-          {order.status === 'completed' && (
+          {(order.status === 'completed' || order.status === 'ready_to_ship') && (
             <div className="col-span-2 bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">

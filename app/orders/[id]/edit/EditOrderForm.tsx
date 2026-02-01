@@ -6,43 +6,74 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
-import { useEffect } from 'react'
-import { useMaterials } from '@/hooks/useInventoryItems' // Import useMaterials
-import InventorySelect from '@/components/inventory/InventorySelect' // Import InventorySelect
-import { Input } from '@/components/ui/Input' // Import Input
+import { useEffect, useState } from 'react'
+import { useMaterials } from '@/hooks/useInventoryItems'
+import InventorySelect from '@/components/inventory/InventorySelect'
+import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
+import { Button } from '@/components/ui/Button'
 import { useOperators } from '@/hooks/useOperators'
 import { sanitizeText } from '@/lib/sanitization'
+import { logger } from '@/lib/logger'
 
+// --- Order-level schema (header) ---
 const orderSchema = z.object({
-  order_number: z.string().min(1, 'Numer zamówienia wymagany'),
+  order_number: z.string().min(1, 'Numer zamowienia wymagany'),
   customer_name: z.string().min(2, 'Nazwa klienta wymagana'),
-  quantity: z.number().min(1, 'Ilość musi być minimum 1'),
-  part_name: z.string().optional(),
-  material: z.string().optional(),
   deadline: z.string().min(1, 'Termin wymagany'),
   status: z.enum(['pending', 'in_progress', 'completed', 'delayed', 'cancelled']),
   notes: z.string().optional(),
-  // Dimensions with tolerances
+  material_cost: z.number().min(0, 'Koszt materialu musi byc dodatni'),
+  labor_cost: z.number().min(0, 'Koszt pracy musi byc dodatni'),
+  overhead_cost: z.number().min(0, 'Koszty ogolne musza byc dodatnie'),
+  total_cost: z.number().min(0, 'Calkowity koszt musi byc dodatni'),
+  assigned_operator_id: z.number().optional().nullable(),
+  // Flat fields for backwards compat (old orders without items)
+  quantity: z.number().min(1, 'Ilosc musi byc minimum 1'),
+  part_name: z.string().optional(),
+  material: z.string().optional(),
+  linked_inventory_item_id: z.string().uuid().optional().nullable(),
+  material_quantity_needed: z.number().min(0).optional().nullable(),
   length: z.union([z.number(), z.nan()]).optional().nullable(),
   width: z.union([z.number(), z.nan()]).optional().nullable(),
   height: z.union([z.number(), z.nan()]).optional().nullable(),
   tolerance_length: z.union([z.number(), z.nan()]).optional().nullable(),
   tolerance_width: z.union([z.number(), z.nan()]).optional().nullable(),
   tolerance_height: z.union([z.number(), z.nan()]).optional().nullable(),
-  // DAY 12: Cost tracking fields
-  material_cost: z.number().min(0, 'Koszt materiału musi być dodatni'),
-  labor_cost: z.number().min(0, 'Koszt pracy musi być dodatni'),
-  overhead_cost: z.number().min(0, 'Koszty ogólne muszą być dodatnie'),
-  total_cost: z.number().min(0, 'Całkowity koszt musi być dodatni'),
-  // Auto-Deduct fields
-  linked_inventory_item_id: z.string().uuid().optional().nullable(),
-  material_quantity_needed: z.number().min(0, 'Ilość materiału na jednostkę musi być większa lub równa 0').optional().nullable(),
-  // Operator assignment
-  assigned_operator_id: z.number().optional().nullable(),
 })
 
 type OrderFormData = z.infer<typeof orderSchema>
+
+// --- Multi-item types ---
+interface OrderItemEntry {
+  id: string | null // null = new item
+  tempId: string
+  part_name: string
+  material: string
+  quantity: number
+  length: number | null
+  width: number | null
+  height: number | null
+  complexity: string
+  drawing_file_id: string | null
+  notes: string
+}
+
+const generateTempId = () => Math.random().toString(36).substr(2, 9)
+
+const createEmptyItem = (): OrderItemEntry => ({
+  id: null,
+  tempId: generateTempId(),
+  part_name: '',
+  material: '',
+  quantity: 1,
+  length: null,
+  width: null,
+  height: null,
+  complexity: 'medium',
+  drawing_file_id: null,
+  notes: '',
+})
 
 interface OrderData {
   id: string
@@ -76,6 +107,10 @@ interface EditOrderFormProps {
 export default function EditOrderForm({ order }: EditOrderFormProps) {
   const router = useRouter()
 
+  const [orderItems, setOrderItems] = useState<OrderItemEntry[]>([])
+  const [hasItems, setHasItems] = useState(false)
+  const [itemsLoaded, setItemsLoaded] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -98,7 +133,6 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
   const materialCost = watch('material_cost') || 0
   const laborCost = watch('labor_cost') || 0
   const overheadCost = watch('overhead_cost') || 0
-
   const materialString = watch('material') || ''
   const linkedInventoryItemId = watch('linked_inventory_item_id')
 
@@ -108,21 +142,19 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
   const currentMaterialItem = materialItems.find(item => item.id === linkedInventoryItemId)
   const currentMaterialNameForDisplay = currentMaterialItem?.name || ''
 
-
   // Auto-calculate total cost
   useEffect(() => {
     const total = materialCost + laborCost + overheadCost
     setValue('total_cost', total)
   }, [materialCost, laborCost, overheadCost, setValue])
 
-  // Pre-fill form with existing order data
+  // Pre-fill form
   useEffect(() => {
     setValue('order_number', order.order_number)
     setValue('customer_name', order.customer_name)
     setValue('quantity', order.quantity)
     setValue('part_name', order.part_name || '')
     setValue('material', order.material || '')
-    // Convert timestamp to date format (YYYY-MM-DD)
     setValue('deadline', order.deadline?.split('T')[0] || '')
     setValue('status', order.status)
     setValue('notes', order.notes || '')
@@ -141,20 +173,83 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
     setValue('tolerance_height', order.tolerance_height ?? null)
   }, [order, setValue])
 
-  const onSubmit = async (data: OrderFormData) => {
-    const loadingToast = toast.loading('Aktualizowanie zamówienia...')
+  // Fetch order_items
+  useEffect(() => {
+    async function fetchItems() {
+      const { data, error } = await supabase
+        .from('order_items')
+        .select('*')
+        .eq('order_id', order.id)
+        .order('created_at', { ascending: true })
 
-    // Clean NaN values from dimensions
+      if (!error && data && data.length > 0) {
+        setHasItems(true)
+        setOrderItems(data.map((item: any) => ({
+          id: item.id,
+          tempId: generateTempId(),
+          part_name: item.part_name || '',
+          material: item.material || '',
+          quantity: item.quantity || 1,
+          length: item.length,
+          width: item.width,
+          height: item.height,
+          complexity: item.complexity || 'medium',
+          drawing_file_id: item.drawing_file_id,
+          notes: item.notes || '',
+        })))
+      }
+      setItemsLoaded(true)
+    }
+    fetchItems()
+  }, [order.id])
+
+  // Item manipulation
+  const updateOrderItem = (index: number, updates: Partial<OrderItemEntry>) => {
+    setOrderItems(prev => prev.map((item, i) => i === index ? { ...item, ...updates } : item))
+  }
+
+  const addOrderItem = () => {
+    setOrderItems(prev => [...prev, createEmptyItem()])
+    if (!hasItems) setHasItems(true)
+  }
+
+  const removeOrderItem = (index: number) => {
+    setOrderItems(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const onSubmit = async (data: OrderFormData) => {
+    const loadingToast = toast.loading('Aktualizowanie zamowienia...')
+
     const cleanNum = (v: number | null | undefined) => (v != null && !isNaN(v)) ? v : null
 
-    // Sanitize user inputs to prevent XSS attacks
+    // If multi-item, update summary fields
+    let summaryPartName = data.part_name
+    let summaryMaterial = data.material
+    let summaryQuantity = data.quantity
+
+    if (hasItems && orderItems.length > 0) {
+      summaryPartName = orderItems.length === 1
+        ? (orderItems[0].part_name || data.part_name || '')
+        : `${orderItems.length} pozycji`
+      summaryMaterial = orderItems.length === 1
+        ? (orderItems[0].material || data.material || '')
+        : 'Rozne'
+      summaryQuantity = orderItems.reduce((sum, item) => sum + (item.quantity || 0), 0)
+    }
+
     const finalOrderData = {
-      ...data,
-      customer_name: sanitizeText(data.customer_name),
       order_number: sanitizeText(data.order_number),
-      part_name: data.part_name ? sanitizeText(data.part_name) : null,
-      material: materialString ? sanitizeText(materialString) : null,
+      customer_name: sanitizeText(data.customer_name),
+      part_name: summaryPartName ? sanitizeText(summaryPartName) : null,
+      material: summaryMaterial ? sanitizeText(summaryMaterial) : null,
+      quantity: summaryQuantity,
+      deadline: data.deadline,
+      status: data.status,
       notes: data.notes ? sanitizeText(data.notes) : null,
+      material_cost: data.material_cost,
+      labor_cost: data.labor_cost,
+      overhead_cost: data.overhead_cost,
+      total_cost: data.total_cost,
       linked_inventory_item_id: data.linked_inventory_item_id,
       material_quantity_needed: data.material_quantity_needed,
       assigned_operator_id: data.assigned_operator_id,
@@ -164,77 +259,84 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
       tolerance_length: cleanNum(data.tolerance_length),
       tolerance_width: cleanNum(data.tolerance_width),
       tolerance_height: cleanNum(data.tolerance_height),
-    };
+      updated_at: new Date().toISOString(),
+    }
 
     const { error } = await supabase
       .from('orders')
-      .update({
-        ...finalOrderData,
-        updated_at: new Date().toISOString(),
-      })
+      .update(finalOrderData)
       .eq('id', order.id)
 
-    toast.dismiss(loadingToast)
-
     if (error) {
-      toast.error('Nie udało się zaktualizować zamówienia: ' + error.message)
+      toast.dismiss(loadingToast)
+      toast.error('Nie udalo sie zaktualizowac zamowienia: ' + error.message)
       return
     }
 
-    toast.success('Zamówienie zaktualizowane!')
+    // Update order_items if multi-item mode
+    if (hasItems && orderItems.length > 0) {
+      // Delete existing items and re-insert (simplest approach)
+      const { error: deleteError } = await supabase
+        .from('order_items')
+        .delete()
+        .eq('order_id', order.id)
+
+      if (deleteError) {
+        logger.error('Failed to delete old order_items', { error: deleteError })
+      }
+
+      const newItems = orderItems.map(item => ({
+        order_id: order.id,
+        part_name: item.part_name ? sanitizeText(item.part_name) : 'Bez nazwy',
+        material: item.material ? sanitizeText(item.material) : null,
+        quantity: item.quantity || 1,
+        length: cleanNum(item.length),
+        width: cleanNum(item.width),
+        height: cleanNum(item.height),
+        complexity: item.complexity || null,
+        drawing_file_id: item.drawing_file_id || null,
+        notes: item.notes ? sanitizeText(item.notes) : null,
+      }))
+
+      const { error: insertError } = await supabase
+        .from('order_items')
+        .insert(newItems)
+
+      if (insertError) {
+        logger.error('Failed to insert order_items', { error: insertError })
+        toast.error('Pozycje nie zostaly zapisane: ' + insertError.message)
+      }
+    } else if (hasItems && orderItems.length === 0) {
+      // All items removed — clean up
+      await supabase.from('order_items').delete().eq('order_id', order.id)
+    }
+
+    toast.dismiss(loadingToast)
+    toast.success('Zamowienie zaktualizowane!')
     router.push('/orders')
     router.refresh()
   }
 
+  const complexityOptions = [
+    { value: 'simple', label: 'Prosty' },
+    { value: 'medium', label: 'Sredni' },
+    { value: 'complex', label: 'Zlozony' },
+  ]
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700">
-      {/* 2-Column Grid - Same layout as add form */}
+      {/* 2-Column Grid - Order header */}
       <div className="grid grid-cols-2 gap-6 mb-6">
-        {/* LEFT COLUMN */}
-
         {/* Order Number */}
         <div>
-          <label htmlFor="edit_order_number" className="block text-slate-700 dark:text-slate-300 mb-2">Numer zamówienia *</label>
+          <label htmlFor="edit_order_number" className="block text-slate-700 dark:text-slate-300 mb-2">Numer zamowienia *</label>
           <input
             id="edit_order_number"
             {...register('order_number')}
             className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             placeholder="ORD-001"
           />
-          {errors.order_number && (
-            <p className="text-red-400 text-sm mt-1">{errors.order_number.message}</p>
-          )}
-        </div>
-
-        {/* Material - from Inventory (raw_material category) */}
-        <div>
-          <InventorySelect
-            items={materialItems}
-            loading={materialsLoading}
-            value={currentMaterialNameForDisplay}
-            onChange={(value, item) => {
-              setValue('material', value) // Keep material name as string
-              setValue('linked_inventory_item_id', item?.id || null)
-            }}
-            label="Materiał"
-            placeholder="Wybierz materiał"
-            emptyMessage="Brak materiałów w magazynie"
-            allowCustom={true}
-            error={errors.linked_inventory_item_id?.message || errors.material?.message}
-          />
-        </div>
-
-        {/* Material Quantity Needed per unit */}
-        <div>
-          <label htmlFor="material_quantity_needed" className="block text-slate-300 mb-2">Ilość materiału na jednostkę *</label>
-          <Input
-            id="material_quantity_needed"
-            type="number"
-            step="0.01"
-            placeholder="np. 0.5 (kg/szt)"
-            {...register('material_quantity_needed', { valueAsNumber: true })}
-          />
-          {errors.material_quantity_needed && <p className="text-red-400 text-sm mt-1">{errors.material_quantity_needed.message}</p>}
+          {errors.order_number && <p className="text-red-400 text-sm mt-1">{errors.order_number.message}</p>}
         </div>
 
         {/* Customer Name */}
@@ -246,9 +348,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
             className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
             placeholder="Metal-Precyzja Sp. z o.o."
           />
-          {errors.customer_name && (
-            <p className="text-red-400 text-sm mt-1">{errors.customer_name.message}</p>
-          )}
+          {errors.customer_name && <p className="text-red-400 text-sm mt-1">{errors.customer_name.message}</p>}
         </div>
 
         {/* Deadline */}
@@ -260,24 +360,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
             type="date"
             className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           />
-          {errors.deadline && (
-            <p className="text-red-400 text-sm mt-1">{errors.deadline.message}</p>
-          )}
-        </div>
-
-        {/* Quantity */}
-        <div>
-          <label htmlFor="edit_quantity" className="block text-slate-700 dark:text-slate-300 mb-2">Ilość *</label>
-          <input
-            id="edit_quantity"
-            {...register('quantity', { valueAsNumber: true })}
-            type="number"
-            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
-            placeholder="100"
-          />
-          {errors.quantity && (
-            <p className="text-red-400 text-sm mt-1">{errors.quantity.message}</p>
-          )}
+          {errors.deadline && <p className="text-red-400 text-sm mt-1">{errors.deadline.message}</p>}
         </div>
 
         {/* Status */}
@@ -288,10 +371,10 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
             {...register('status')}
             className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
           >
-            <option value="pending">Oczekujące</option>
+            <option value="pending">Oczekujace</option>
             <option value="in_progress">W realizacji</option>
-            <option value="completed">Ukończone</option>
-            <option value="delayed">Opóźnione</option>
+            <option value="completed">Ukonczone</option>
+            <option value="delayed">Opoznione</option>
             <option value="cancelled">Anulowane</option>
           </select>
         </div>
@@ -301,7 +384,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
           <label htmlFor="assigned_operator_id" className="block text-slate-700 dark:text-slate-300 mb-2">Przypisany operator</label>
           <Select
             options={[
-              { value: '', label: operatorsLoading ? 'Ładowanie...' : 'Brak przypisania' },
+              { value: '', label: operatorsLoading ? 'Ladowanie...' : 'Brak przypisania' },
               ...operators.map(op => ({ value: String(op.id), label: op.full_name }))
             ]}
             value={watch('assigned_operator_id') ? String(watch('assigned_operator_id')) : ''}
@@ -309,51 +392,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
           />
         </div>
 
-        {/* Part Name */}
-        <div>
-          <label htmlFor="edit_part_name" className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa części</label>
-          <input
-            id="edit_part_name"
-            {...register('part_name')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
-            placeholder="Flange 50mm"
-          />
-        </div>
-
-        {/* Dimensions with tolerances */}
-        <div className="col-span-2 bg-slate-50 dark:bg-slate-900 border border-blue-200 dark:border-blue-500/30 rounded-lg p-4">
-          <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Wymiary detalu (L x W x H)</h4>
-          <div className="grid grid-cols-3 gap-4 mb-2">
-            <div>
-              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Długość (mm)</label>
-              <Input type="number" step="0.01" placeholder="np. 100" {...register('length', { valueAsNumber: true })} />
-            </div>
-            <div>
-              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Szerokość (mm)</label>
-              <Input type="number" step="0.01" placeholder="np. 50" {...register('width', { valueAsNumber: true })} />
-            </div>
-            <div>
-              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Wysokość (mm)</label>
-              <Input type="number" step="0.01" placeholder="np. 20" {...register('height', { valueAsNumber: true })} />
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja ± (mm)</label>
-              <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_length', { valueAsNumber: true })} />
-            </div>
-            <div>
-              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja ± (mm)</label>
-              <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_width', { valueAsNumber: true })} />
-            </div>
-            <div>
-              <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja ± (mm)</label>
-              <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_height', { valueAsNumber: true })} />
-            </div>
-          </div>
-        </div>
-
-        {/* Notes - Full Width */}
+        {/* Notes */}
         <div className="col-span-2">
           <label htmlFor="edit_notes" className="block text-slate-700 dark:text-slate-300 mb-2">Notatki</label>
           <textarea
@@ -361,19 +400,217 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
             {...register('notes')}
             rows={3}
             className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
-            placeholder="Dodatkowe uwagi dotyczące zamówienia..."
+            placeholder="Dodatkowe uwagi dotyczace zamowienia..."
           />
         </div>
       </div>
 
-      {/* DAY 12: COST BREAKDOWN SECTION */}
-      <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-200 dark:border-slate-600">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">💰 Kalkulacja Kosztów</h3>
+      {/* === MULTI-ITEM SECTION === */}
+      {itemsLoaded && hasItems && orderItems.length > 0 ? (
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Pozycje zamowienia</h3>
+          {orderItems.map((item, index) => (
+            <div key={item.tempId} className="mb-4 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg">
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="font-semibold text-slate-900 dark:text-white">Pozycja {index + 1}</h4>
+                {orderItems.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeOrderItem(index)}
+                    className="text-red-500 hover:text-red-700 text-sm font-medium"
+                  >
+                    Usun
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Part Name */}
+                <div className="col-span-2">
+                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Nazwa czesci</label>
+                  <Input
+                    value={item.part_name}
+                    onChange={(e) => updateOrderItem(index, { part_name: e.target.value })}
+                    placeholder="Flange 50mm"
+                  />
+                </div>
+                {/* Material */}
+                <div>
+                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Material</label>
+                  <Input
+                    value={item.material}
+                    onChange={(e) => updateOrderItem(index, { material: e.target.value })}
+                    placeholder="Stal 316L"
+                  />
+                </div>
+                {/* Quantity */}
+                <div>
+                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Ilosc *</label>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={item.quantity}
+                    onChange={(e) => updateOrderItem(index, { quantity: Number(e.target.value) || 1 })}
+                  />
+                </div>
+                {/* Complexity */}
+                <div>
+                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Zlozonosc</label>
+                  <Select
+                    options={complexityOptions}
+                    value={item.complexity}
+                    onChange={(value) => updateOrderItem(index, { complexity: value })}
+                  />
+                </div>
+                {/* Dimensions */}
+                <div className="col-span-2 grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Dlugosc (mm)</label>
+                    <Input type="number" step="0.01" value={item.length ?? ''}
+                      onChange={(e) => updateOrderItem(index, { length: e.target.value ? Number(e.target.value) : null })} />
+                  </div>
+                  <div>
+                    <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Szerokosc (mm)</label>
+                    <Input type="number" step="0.01" value={item.width ?? ''}
+                      onChange={(e) => updateOrderItem(index, { width: e.target.value ? Number(e.target.value) : null })} />
+                  </div>
+                  <div>
+                    <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Wysokosc (mm)</label>
+                    <Input type="number" step="0.01" value={item.height ?? ''}
+                      onChange={(e) => updateOrderItem(index, { height: e.target.value ? Number(e.target.value) : null })} />
+                  </div>
+                </div>
+                {/* Notes */}
+                <div className="col-span-2">
+                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Notatki</label>
+                  <Input
+                    value={item.notes}
+                    onChange={(e) => updateOrderItem(index, { notes: e.target.value })}
+                    placeholder="Uwagi..."
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          {/* Material Cost */}
+          <button
+            type="button"
+            onClick={addOrderItem}
+            className="w-full py-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-500 dark:text-slate-400 hover:border-blue-500 hover:text-blue-500 transition font-medium"
+          >
+            + Dodaj kolejna pozycje
+          </button>
+        </div>
+      ) : itemsLoaded && !hasItems ? (
+        /* Flat mode for old orders without items */
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          {/* Material */}
           <div>
-            <label htmlFor="edit_material_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszt Materiału (PLN)</label>
+            <InventorySelect
+              items={materialItems}
+              loading={materialsLoading}
+              value={currentMaterialNameForDisplay}
+              onChange={(value, item) => {
+                setValue('material', value)
+                setValue('linked_inventory_item_id', item?.id || null)
+              }}
+              label="Material"
+              placeholder="Wybierz material"
+              emptyMessage="Brak materialow w magazynie"
+              allowCustom={true}
+              error={errors.linked_inventory_item_id?.message || errors.material?.message}
+            />
+          </div>
+
+          {/* Material Quantity Needed */}
+          <div>
+            <label htmlFor="material_quantity_needed" className="block text-slate-300 mb-2">Ilosc materialu na jednostke *</label>
+            <Input
+              id="material_quantity_needed"
+              type="number"
+              step="0.01"
+              placeholder="np. 0.5 (kg/szt)"
+              {...register('material_quantity_needed', { valueAsNumber: true })}
+            />
+          </div>
+
+          {/* Quantity */}
+          <div>
+            <label htmlFor="edit_quantity" className="block text-slate-700 dark:text-slate-300 mb-2">Ilosc *</label>
+            <input
+              id="edit_quantity"
+              {...register('quantity', { valueAsNumber: true })}
+              type="number"
+              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              placeholder="100"
+            />
+            {errors.quantity && <p className="text-red-400 text-sm mt-1">{errors.quantity.message}</p>}
+          </div>
+
+          {/* Part Name */}
+          <div>
+            <label htmlFor="edit_part_name" className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa czesci</label>
+            <input
+              id="edit_part_name"
+              {...register('part_name')}
+              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              placeholder="Flange 50mm"
+            />
+          </div>
+
+          {/* Dimensions */}
+          <div className="col-span-2 bg-slate-50 dark:bg-slate-900 border border-blue-200 dark:border-blue-500/30 rounded-lg p-4">
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Wymiary detalu (L x W x H)</h4>
+            <div className="grid grid-cols-3 gap-4 mb-2">
+              <div>
+                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Dlugosc (mm)</label>
+                <Input type="number" step="0.01" placeholder="np. 100" {...register('length', { valueAsNumber: true })} />
+              </div>
+              <div>
+                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Szerokosc (mm)</label>
+                <Input type="number" step="0.01" placeholder="np. 50" {...register('width', { valueAsNumber: true })} />
+              </div>
+              <div>
+                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Wysokosc (mm)</label>
+                <Input type="number" step="0.01" placeholder="np. 20" {...register('height', { valueAsNumber: true })} />
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_length', { valueAsNumber: true })} />
+              </div>
+              <div>
+                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_width', { valueAsNumber: true })} />
+              </div>
+              <div>
+                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_height', { valueAsNumber: true })} />
+              </div>
+            </div>
+          </div>
+
+          {/* Button to convert to multi-item */}
+          <div className="col-span-2">
+            <button
+              type="button"
+              onClick={addOrderItem}
+              className="w-full py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-500 dark:text-slate-400 hover:border-blue-500 hover:text-blue-500 transition text-sm"
+            >
+              + Przejdz na tryb wielu pozycji
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-6 text-center text-slate-400 py-4">Ladowanie pozycji...</div>
+      )}
+
+      {/* COST BREAKDOWN SECTION */}
+      <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-200 dark:border-slate-600">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Kalkulacja Kosztow</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label htmlFor="edit_material_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszt Materialu (PLN)</label>
             <input
               id="edit_material_cost"
               {...register('material_cost', { valueAsNumber: true })}
@@ -383,12 +620,8 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
               className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
               placeholder="0.00"
             />
-            {errors.material_cost && (
-              <p className="text-red-400 text-sm mt-1">{errors.material_cost.message}</p>
-            )}
+            {errors.material_cost && <p className="text-red-400 text-sm mt-1">{errors.material_cost.message}</p>}
           </div>
-
-          {/* Labor Cost */}
           <div>
             <label htmlFor="edit_labor_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszt Pracy (PLN)</label>
             <input
@@ -400,14 +633,10 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
               className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
               placeholder="0.00"
             />
-            {errors.labor_cost && (
-              <p className="text-red-400 text-sm mt-1">{errors.labor_cost.message}</p>
-            )}
+            {errors.labor_cost && <p className="text-red-400 text-sm mt-1">{errors.labor_cost.message}</p>}
           </div>
-
-          {/* Overhead Cost */}
           <div>
-            <label htmlFor="edit_overhead_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszty Ogólne (PLN)</label>
+            <label htmlFor="edit_overhead_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszty Ogolne (PLN)</label>
             <input
               id="edit_overhead_cost"
               {...register('overhead_cost', { valueAsNumber: true })}
@@ -417,16 +646,12 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
               className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
               placeholder="0.00"
             />
-            {errors.overhead_cost && (
-              <p className="text-red-400 text-sm mt-1">{errors.overhead_cost.message}</p>
-            )}
+            {errors.overhead_cost && <p className="text-red-400 text-sm mt-1">{errors.overhead_cost.message}</p>}
           </div>
         </div>
-
-        {/* Total Cost Display */}
         <div className="pt-4 border-t border-slate-200 dark:border-slate-600">
           <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold text-slate-700 dark:text-slate-200">Łączny Koszt:</span>
+            <span className="text-lg font-semibold text-slate-700 dark:text-slate-200">Laczny Koszt:</span>
             <span className="text-3xl font-bold text-green-400">
               {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
             </span>
@@ -434,7 +659,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
         </div>
       </div>
 
-      {/* Submit Buttons */}
+      {/* Submit */}
       <div className="flex gap-4 pt-4">
         <button
           type="submit"
