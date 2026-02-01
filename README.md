@@ -84,6 +84,18 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Multi-Item Orders + Module Reorganization (2026-02-01)
+
+**Feature:** Multi-position order form — one order can now have multiple items (parts), each with its own name, material, quantity, dimensions, complexity, drawing, and notes.
+
+- **Add Order (`/orders/add`):** Refactored to multi-item form with "+ Dodaj kolejna pozycje" button. Order header (customer, deadline, status, costs) separate from per-item fields. DatePicker calendar for deadline. Summary fields on `orders` table auto-populated for backwards compatibility.
+- **Edit Order (`/orders/[id]/edit`):** Loads `order_items` — if items exist shows multi-item editor, if not shows flat form (old orders). "+ Przejdz na tryb wielu pozycji" button to convert.
+- **Order Details (`/orders/[id]`):** Shows items table when `order_items` exist.
+- **RLS Migration:** `FIX_ORDER_ITEMS_RLS.sql` — added SELECT/INSERT/UPDATE/DELETE policies for `order_items`.
+- **QC DB Fix:** Added missing PRIMARY KEY on `quality_control_plans.id` + FK from `quality_control_items.plan_id`.
+- **Module Reorganization:** Moved carbon, costs, quality-control to `app/reports/`. Removed standalone time-tracking pages. Updated sidebar.
+- Commits: `566c484`, `8aa276a`, `c368722`
+
 ### ✅ Order Dimensions with Tolerances + Auto QC Plan (2026-01-30)
 
 **Feature:** L×W×H dimensions with tolerances saved to orders, auto-generated QC control plans from order dimensions.
