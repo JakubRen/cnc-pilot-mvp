@@ -458,7 +458,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
                   <Select
                     options={complexityOptions}
                     value={item.complexity}
-                    onChange={(value) => updateOrderItem(index, { complexity: value })}
+                    onChange={(value) => updateOrderItem(index, { complexity: String(value) })}
                   />
                 </div>
                 {/* Dimensions */}
