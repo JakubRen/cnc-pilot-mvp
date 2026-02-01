@@ -1,10 +1,9 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
-import CarbonPageClient from './CarbonPageClient'
+import CarbonReportClient from './CarbonReportClient'
 
-export default async function CarbonPage() {
+export default async function CarbonReportPage() {
   const user = await getUserProfile()
 
   if (!user || !user.company_id) {
@@ -46,16 +45,14 @@ export default async function CarbonPage() {
   const totalCO2 = recentReports?.reduce((sum, r) => sum + (r.total_co2_kg || 0), 0) || 0
 
   return (
-    <AppLayout>
-      <CarbonPageClient
-        materials={materials || []}
-        energies={energies || []}
-        reports={recentReports || []}
-        totalReports={totalReports}
-        totalCO2={totalCO2}
-        companyId={user.company_id}
-        userId={user.id}
-      />
-    </AppLayout>
+    <CarbonReportClient
+      materials={materials || []}
+      energies={energies || []}
+      reports={recentReports || []}
+      totalReports={totalReports}
+      totalCO2={totalCO2}
+      companyId={user.company_id}
+      userId={user.id}
+    />
   )
 }

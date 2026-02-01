@@ -25,7 +25,7 @@ export default function CarbonReportDetailClient({
         <div className="flex justify-between items-start mb-8">
           <div>
             <Link
-              href="/carbon"
+              href="/reports/carbon"
               className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm mb-2 inline-flex items-center gap-1"
             >
               ← {t('carbon', 'backToCalculator')}

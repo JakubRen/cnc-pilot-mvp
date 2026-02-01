@@ -72,7 +72,7 @@ export default async function QCPlanDetailPage({ params }: { params: Promise<{ i
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-2">
-            <Link href="/quality-control" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <Link href="/reports/reports/quality-control" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               ← Wróć
             </Link>
           </div>

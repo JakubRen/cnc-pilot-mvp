@@ -31,7 +31,7 @@ export default async function CarbonReportDetailPage({ params }: Props) {
     .single()
 
   if (error || !report) {
-    redirect('/carbon')
+    redirect('/reports/carbon')
   }
 
   const createdAt = new Date(report.created_at).toLocaleString('pl-PL', {

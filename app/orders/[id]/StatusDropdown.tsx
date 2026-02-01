@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { updateOrderStatus } from '../actions'
 
 interface StatusDropdownProps {
   orderId: string
@@ -21,18 +21,12 @@ export default function StatusDropdown({ orderId, currentStatus }: StatusDropdow
     setIsUpdating(true)
     setStatus(newStatus) // Optimistic update
 
-    const { error } = await supabase
-      .from('orders')
-      .update({
-        status: newStatus,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', orderId)
+    const result = await updateOrderStatus(orderId, newStatus)
 
     setIsUpdating(false)
 
-    if (error) {
-      toast.error('Nie udało się zmienić statusu: ' + error.message)
+    if (!result.success) {
+      toast.error('Nie udało się zmienić statusu: ' + result.error)
       setStatus(currentStatus) // Revert on error
       return
     }

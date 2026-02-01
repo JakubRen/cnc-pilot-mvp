@@ -21,7 +21,7 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
     } else {
       params.set(key, value)
     }
-    router.push(`/costs?${params.toString()}`)
+    router.push(`/reports/costs?${params.toString()}`)
   }
 
   return (
@@ -78,7 +78,7 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
         {/* Reset */}
         {(currentStatus !== 'all' || currentProfitable !== 'all' || currentDays !== 30) && (
           <button
-            onClick={() => router.push('/costs')}
+            onClick={() => router.push('/reports/costs')}
             className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
           >
             ✕ {t('costs', 'clearFilters')}

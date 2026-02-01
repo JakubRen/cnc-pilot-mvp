@@ -62,7 +62,8 @@ export async function updateOperationStatus(
 }
 
 export async function completeProductionPlan(
-  planId: string
+  planId: string,
+  orderId?: string | null
 ): Promise<{ success: boolean; message?: string }> {
   try {
     const supabase = await createClient()
@@ -89,24 +90,34 @@ export async function completeProductionPlan(
       return { success: false, message: planError.message }
     }
 
-    // Update order status to ready_to_ship if order exists
-    const { data: plan } = await supabase
-      .from('production_plans')
-      .select('order_id')
-      .eq('id', planId)
-      .single()
+    // Resolve order_id: use passed param or fetch from plan
+    let resolvedOrderId = orderId
+    if (!resolvedOrderId) {
+      const { data: plan } = await supabase
+        .from('production_plans')
+        .select('order_id')
+        .eq('id', planId)
+        .single()
+      resolvedOrderId = plan?.order_id
+    }
 
-    if (plan?.order_id) {
-      await supabase
+    if (resolvedOrderId) {
+      const { error: orderError } = await supabase
         .from('orders')
         .update({ status: 'ready_to_ship', updated_at: now })
-        .eq('id', plan.order_id)
+        .eq('id', resolvedOrderId)
 
-      revalidatePath(`/orders/${plan.order_id}`)
+      if (orderError) {
+        // Plan is completed but order update failed — log but don't fail
+        console.error('Failed to update order status:', orderError.message)
+      }
+
+      revalidatePath(`/orders/${resolvedOrderId}`)
     }
 
     revalidatePath(`/production/${planId}`)
     revalidatePath('/production')
+    revalidatePath('/orders')
 
     return { success: true }
   } catch (err) {

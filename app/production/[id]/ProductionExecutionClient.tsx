@@ -182,7 +182,7 @@ export default function ProductionExecutionClient({
           })
 
           if (shouldComplete) {
-            await handleCompleteProduction()
+            await handleCompleteProduction(orderId)
           }
         }
       }
@@ -194,8 +194,8 @@ export default function ProductionExecutionClient({
     }
   }
 
-  const handleCompleteProduction = async () => {
-    const result = await completeProductionPlan(planId)
+  const handleCompleteProduction = async (orderIdParam?: string | null) => {
+    const result = await completeProductionPlan(planId, orderIdParam || orderId)
     if (result.success) {
       setPlanStatus('completed')
       toast.success('Plan produkcji zakończony!')
@@ -216,7 +216,7 @@ export default function ProductionExecutionClient({
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">🔄 Routing Produkcyjny</h2>
           {(planStatus === 'in_progress' || planStatus === 'active') && (
             <button
-              onClick={handleCompleteProduction}
+              onClick={() => handleCompleteProduction(orderId)}
               disabled={!allOpsCompleted}
               title={!allOpsCompleted ? 'Zakończ wszystkie operacje najpierw' : 'Zakończ plan produkcji'}
               className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition ${

@@ -1,11 +1,10 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
+import CostsReportClient from './CostsReportClient'
 import CostFilters from './CostFilters'
-import CostsPageClient from './CostsPageClient'
 
-export default async function CostsPage({
+export default async function CostsReportPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -24,7 +23,7 @@ export default async function CostsPage({
   const profitableFilter = typeof params.profitable === 'string' ? params.profitable : 'all'
   const days = typeof params.days === 'string' ? parseInt(params.days) : 30
 
-  // Calculate date filter (extracted to avoid impure function call in query chain)
+  // Calculate date filter
   const dateFilter = new Date()
   dateFilter.setDate(dateFilter.getDate() - days)
   const dateFilterISO = dateFilter.toISOString()
@@ -87,18 +86,16 @@ export default async function CostsPage({
   }
 
   return (
-    <AppLayout>
-      <div className="p-8">
-        <div className="max-w-7xl mx-auto">
-          <CostsPageClient stats={stats} orders={filteredOrders}>
-            <CostFilters
-              currentStatus={statusFilter}
-              currentProfitable={profitableFilter}
-              currentDays={days}
-            />
-          </CostsPageClient>
-        </div>
+    <div className="p-8">
+      <div className="max-w-7xl mx-auto">
+        <CostsReportClient stats={stats} orders={filteredOrders}>
+          <CostFilters
+            currentStatus={statusFilter}
+            currentProfitable={profitableFilter}
+            currentDays={days}
+          />
+        </CostsReportClient>
       </div>
-    </AppLayout>
+    </div>
   )
 }

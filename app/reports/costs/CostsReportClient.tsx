@@ -35,13 +35,13 @@ interface Stats {
   days: number
 }
 
-interface CostsPageClientProps {
+interface CostsReportClientProps {
   stats: Stats
   orders: Order[]
   children?: React.ReactNode
 }
 
-export default function CostsPageClient({ stats, orders, children }: CostsPageClientProps) {
+export default function CostsReportClient({ stats, orders, children }: CostsReportClientProps) {
   const { t } = useTranslation()
 
   const getStatusBadge = (status: string) => {
@@ -73,6 +73,11 @@ export default function CostsPageClient({ stats, orders, children }: CostsPageCl
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
+          <div className="flex items-center gap-3 mb-1">
+            <Link href="/reports" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm">
+              ← Raporty
+            </Link>
+          </div>
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white">{t('costs', 'title')}</h1>
           <p className="text-slate-700 dark:text-slate-400 mt-1">
             {t('costs', 'lastNDays', { days: stats.days })} • {stats.totalOrders} {t('costs', 'orders')}

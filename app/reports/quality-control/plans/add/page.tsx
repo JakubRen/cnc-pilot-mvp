@@ -136,7 +136,7 @@ export default function AddQCPlanPage() {
 
       toast.dismiss(loadingToast)
       toast.success('Plan kontroli utworzony!')
-      router.push('/quality-control')
+      router.push('/reports/reports/quality-control')
       router.refresh()
     } catch (error) {
       toast.dismiss(loadingToast)
@@ -153,7 +153,7 @@ export default function AddQCPlanPage() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
-            <Link href="/quality-control" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <Link href="/reports/reports/quality-control" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               ← Wróć
             </Link>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Nowy Plan Kontroli</h1>
@@ -307,7 +307,7 @@ export default function AddQCPlanPage() {
               >
                 {isSubmitting ? 'Tworzenie...' : 'Utwórz Plan Kontroli'}
               </Button>
-              <Link href="/quality-control">
+              <Link href="/reports/reports/quality-control">
                 <Button type="button" variant="ghost">
                   Anuluj
                 </Button>

@@ -5,6 +5,34 @@ import { getUserProfile } from '@/lib/auth-server'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 
+export async function updateOrderStatus(orderId: string, newStatus: string): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+  const userProfile = await getUserProfile()
+
+  if (!userProfile) {
+    return { success: false, error: 'User not authenticated.' }
+  }
+
+  const { error } = await supabase
+    .from('orders')
+    .update({
+      status: newStatus,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', orderId)
+    .eq('company_id', userProfile.company_id)
+
+  if (error) {
+    logger.error('Error updating order status', { error: error.message })
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/orders')
+  revalidatePath(`/orders/${orderId}`)
+
+  return { success: true }
+}
+
 export async function duplicateOrder(orderId: string): Promise<{ success: boolean; newOrderId?: string; error?: string }> {
   const supabase = await createClient()
   const userProfile = await getUserProfile()

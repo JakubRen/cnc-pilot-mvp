@@ -35,7 +35,7 @@ interface CarbonReport {
   }
 }
 
-interface CarbonPageClientProps {
+interface CarbonReportClientProps {
   materials: Material[]
   energies: Energy[]
   reports: CarbonReport[]
@@ -45,7 +45,7 @@ interface CarbonPageClientProps {
   userId: number
 }
 
-export default function CarbonPageClient({
+export default function CarbonReportClient({
   materials,
   energies,
   reports,
@@ -53,7 +53,7 @@ export default function CarbonPageClient({
   totalCO2,
   companyId,
   userId
-}: CarbonPageClientProps) {
+}: CarbonReportClientProps) {
   const { t, lang } = useTranslation()
 
   const materialCategories = [
@@ -70,6 +70,11 @@ export default function CarbonPageClient({
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
+            <div className="flex items-center gap-3 mb-1">
+              <Link href="/reports" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm">
+                ← Raporty
+              </Link>
+            </div>
             <h1 className="text-4xl font-bold text-slate-900 dark:text-white">{t('carbon', 'title')}</h1>
             <p className="text-slate-500 dark:text-slate-400 mt-1">{t('carbon', 'subtitle')}</p>
           </div>
@@ -141,7 +146,7 @@ export default function CarbonPageClient({
                   {reports.slice(0, 5).map((report) => (
                     <Link
                       key={report.id}
-                      href={`/carbon/${report.id}`}
+                      href={`/reports/carbon/${report.id}`}
                       className="block p-3 bg-slate-50 dark:bg-slate-900 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition"
                     >
                       <div className="flex justify-between items-start">

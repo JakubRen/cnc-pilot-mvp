@@ -39,11 +39,25 @@ export default async function ReportsDashboard() {
       color: 'orange',
     },
     {
-      title: 'Raport Przychodów',
-      description: 'Analiza przychodów, per klient, per miesiąc',
-      href: '/reports/revenue',
+      title: 'Raport Kontroli Jakości',
+      description: 'Plany kontroli, pomiary, wskaźnik zgodności',
+      href: '/reports/quality-control',
+      icon: '✅',
+      color: 'teal',
+    },
+    {
+      title: 'Raport Śladu Węglowego',
+      description: 'Emisje CO₂, kalkulator, paszporty węglowe',
+      href: '/reports/carbon',
+      icon: '🌿',
+      color: 'emerald',
+    },
+    {
+      title: 'Koszty i Rentowność',
+      description: 'Analiza kosztów, marże, rentowność zamówień',
+      href: '/reports/costs',
       icon: '💰',
-      color: 'purple',
+      color: 'amber',
     },
   ]
 
