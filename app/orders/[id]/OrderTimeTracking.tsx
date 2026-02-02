@@ -3,11 +3,10 @@
 // Time tracking section for order details page
 // ============================================
 
-import { TIME } from '@/lib/constants/time'
-
 'use client';
 
 import { useState } from 'react';
+import { TIME } from '@/lib/constants/time'
 import Timer from '@/components/time-tracking/Timer';
 import { formatDurationHuman, compareActualVsEstimated, getComparisonBadgeColor } from '@/lib/time-utils';
 

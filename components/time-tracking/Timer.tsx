@@ -3,11 +3,10 @@
 // Real-time timer with crash protection
 // ============================================
 
-import { TIME } from '@/lib/constants/time'
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { TIME } from '@/lib/constants/time'
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 import { useConfirmation } from '@/components/ui/ConfirmationDialog';

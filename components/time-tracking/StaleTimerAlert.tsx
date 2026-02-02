@@ -3,11 +3,10 @@
 // Alert for timers running >12 hours
 // ============================================
 
-import { TIME, BUSINESS } from '@/lib/constants/time'
-
 'use client';
 
 import { useEffect, useState } from 'react';
+import { TIME, BUSINESS } from '@/lib/constants/time'
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 
