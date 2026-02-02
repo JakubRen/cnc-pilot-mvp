@@ -2,35 +2,13 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
 import type { Customer } from '@/types/customers'
 import { useEffect } from 'react'
-
-const quickCustomerSchema = z.object({
-  name: z.string()
-    .min(2, 'Nazwa musi mieć przynajmniej 2 znaki')
-    .max(100, 'Nazwa nie może przekraczać 100 znaków'),
-  email: z.string()
-    .email('Nieprawidłowy adres email')
-    .optional()
-    .or(z.literal('')),
-  phone: z.string()
-    .min(9, 'Numer telefonu musi mieć przynajmniej 9 cyfr')
-    .max(15, 'Numer telefonu nie może przekraczać 15 cyfr')
-    .optional()
-    .or(z.literal('')),
-  nip: z.string()
-    .length(10, 'NIP musi składać się z 10 cyfr')
-    .regex(/^\d+$/, 'NIP może zawierać tylko cyfry')
-    .optional()
-    .or(z.literal('')),
-})
-
-type QuickCustomerFormData = z.infer<typeof quickCustomerSchema>
+import { quickCustomerSchema, type QuickCustomerFormData } from '@/lib/validation-schemas'
 
 interface QuickAddCustomerModalProps {
   isOpen: boolean
