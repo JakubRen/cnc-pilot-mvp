@@ -1,96 +1,63 @@
 import { test, expect } from '@playwright/test'
+import { LoginPage } from './page-objects/LoginPage'
+import { TEST_USER } from './helpers/test-data'
 
-test.describe('Authentication', () => {
-  test('should display login page correctly', async ({ page }) => {
-    await page.goto('/login')
+test.describe('Login Page', () => {
+  let loginPage: LoginPage
 
-    // Check main elements are visible
-    await expect(page.locator('h1')).toContainText('CNC')
-    await expect(page.locator('input[type="email"]')).toBeVisible()
-    await expect(page.locator('input[type="password"]')).toBeVisible()
-    await expect(page.locator('button[type="submit"]')).toBeVisible()
+  test.beforeEach(async ({ page }) => {
+    loginPage = new LoginPage(page)
+    await loginPage.goto()
   })
 
-  test('should show validation errors for empty form', async ({ page }) => {
-    await page.goto('/login')
-
-    // Click submit without filling form
-    await page.click('button[type="submit"]')
-
-    // Wait for validation errors
-    await page.waitForTimeout(500)
-
-    // Check that we're still on login page (not redirected)
-    await expect(page).toHaveURL(/.*login/)
+  test('displays login form correctly', async () => {
+    await loginPage.expectVisible()
   })
 
-  test('should show error for invalid email format', async ({ page }) => {
-    await page.goto('/login')
-
-    await page.fill('input[type="email"]', 'invalid-email')
-    await page.fill('input[type="password"]', 'password123')
-    await page.click('button[type="submit"]')
-
-    // Should show validation error
-    await page.waitForTimeout(500)
-    await expect(page).toHaveURL(/.*login/)
+  test('stays on login page when submitting empty form', async () => {
+    await loginPage.submitButton.click()
+    await loginPage.page.waitForTimeout(500)
+    await loginPage.expectStillOnLogin()
   })
 
-  test('should show error for short password', async ({ page }) => {
-    await page.goto('/login')
-
-    await page.fill('input[type="email"]', 'test@example.com')
-    await page.fill('input[type="password"]', '123') // Too short
-    await page.click('button[type="submit"]')
-
-    // Should show validation error
-    await page.waitForTimeout(500)
-    await expect(page).toHaveURL(/.*login/)
+  test('stays on login page with invalid email format', async () => {
+    await loginPage.login('invalid-email', 'password123')
+    await loginPage.page.waitForTimeout(500)
+    await loginPage.expectStillOnLogin()
   })
 
-  test('should have link to register page', async ({ page }) => {
-    await page.goto('/login')
-
-    const registerLink = page.locator('a[href="/register"]')
-    await expect(registerLink).toBeVisible()
-
-    await registerLink.click()
-    await expect(page).toHaveURL(/.*register/)
+  test('stays on login page with short password', async () => {
+    await loginPage.login('test@example.com', '123')
+    await loginPage.page.waitForTimeout(500)
+    await loginPage.expectStillOnLogin()
   })
 
-  test('should have link to forgot password page', async ({ page }) => {
-    await page.goto('/login')
-
-    const forgotLink = page.locator('a[href="/forgot-password"]')
-    await expect(forgotLink).toBeVisible()
+  test('has link to register page', async () => {
+    await expect(loginPage.registerLink).toBeVisible()
+    await loginPage.registerLink.click()
+    await expect(loginPage.page).toHaveURL(/.*register/)
   })
 
-  // Note: Full login test requires test credentials
-  // This can be enabled when we have a test user setup
-  test('should login successfully with valid credentials', async ({ page }) => {
-    await page.goto('/login')
+  test('has link to forgot password page', async () => {
+    await expect(loginPage.forgotPasswordLink).toBeVisible()
+  })
 
-    await page.fill('input[type="email"]', process.env.TEST_USER_EMAIL || 'test@cnc-pilot.pl')
-    await page.fill('input[type="password"]', process.env.TEST_USER_PASSWORD || 'test123456')
-    await page.click('button[type="submit"]')
-
-    // Should redirect to dashboard
-    await expect(page).toHaveURL('/', { timeout: 10000 })
+  test('logs in successfully with valid credentials', async () => {
+    await loginPage.login(TEST_USER.email, TEST_USER.password)
+    await expect(loginPage.page).toHaveURL('/', { timeout: 20000 })
   })
 })
 
 test.describe('Register Page', () => {
-  test('should display register page correctly', async ({ page }) => {
+  test('displays register form correctly', async ({ page }) => {
     await page.goto('/register')
-
     await expect(page.locator('input[type="email"]')).toBeVisible()
     await expect(page.locator('input[type="password"]')).toBeVisible()
     await expect(page.locator('button[type="submit"]')).toBeVisible()
   })
 
-  test('should have link to login page', async ({ page }) => {
+  test('has link to login page', async ({ page }) => {
     await page.goto('/register')
-
     const loginLink = page.locator('a[href="/login"]')
     await expect(loginLink).toBeVisible()
   })

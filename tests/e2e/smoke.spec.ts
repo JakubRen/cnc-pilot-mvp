@@ -1,81 +1,51 @@
 import { test, expect } from '@playwright/test'
+import { PROTECTED_ROUTES, VIEWPORTS } from './helpers/test-data'
 
 test.describe('Smoke Tests', () => {
-  test('app should load without errors', async ({ page }) => {
-    // Listen for console errors
+  test('app loads without critical console errors', async ({ page }) => {
     const errors: string[] = []
     page.on('console', msg => {
-      if (msg.type() === 'error') {
-        errors.push(msg.text())
-      }
+      if (msg.type() === 'error') errors.push(msg.text())
     })
 
     await page.goto('/login')
-
-    // Page should load successfully
     await expect(page).toHaveTitle(/CNC/)
 
-    // Should not have critical JavaScript errors
     const criticalErrors = errors.filter(e =>
       !e.includes('favicon') &&
       !e.includes('404') &&
       !e.includes('hydration')
     )
+    expect(criticalErrors).toHaveLength(0)
+  })
 
-    // Log any errors for debugging
-    if (criticalErrors.length > 0) {
-      console.log('Console errors:', criticalErrors)
+  test('login page is responsive across viewports', async ({ page }) => {
+    for (const [name, size] of Object.entries(VIEWPORTS)) {
+      await page.setViewportSize(size)
+      await page.goto('/login')
+      await expect(page.locator('input[type="email"]')).toBeVisible()
     }
   })
 
-  test('login page should be responsive', async ({ page }) => {
-    // Desktop view
-    await page.setViewportSize({ width: 1920, height: 1080 })
-    await page.goto('/login')
-    await expect(page.locator('input[type="email"]')).toBeVisible()
-
-    // Tablet view
-    await page.setViewportSize({ width: 768, height: 1024 })
-    await expect(page.locator('input[type="email"]')).toBeVisible()
-
-    // Mobile view
-    await page.setViewportSize({ width: 375, height: 667 })
-    await expect(page.locator('input[type="email"]')).toBeVisible()
-  })
-
-  test('should redirect unauthenticated users from protected routes', async ({ page }) => {
-    // Try to access protected routes without authentication
-    const protectedRoutes = ['/', '/orders', '/inventory', '/time-tracking', '/users']
-
-    for (const route of protectedRoutes) {
+  test('unauthenticated users are redirected from protected routes', async ({ page }) => {
+    for (const route of PROTECTED_ROUTES) {
       await page.goto(route)
-
-      // Should redirect to login
       await expect(page).toHaveURL(/.*login/, { timeout: 5000 })
     }
   })
 
-  test('API health endpoint should respond', async ({ request }) => {
+  test('API health endpoint responds OK', async ({ request }) => {
     const response = await request.get('/api/health')
-
-    // Should return 200 OK
     expect(response.ok()).toBeTruthy()
 
     const body = await response.json()
     expect(['ok', 'degraded']).toContain(body.status)
   })
-})
 
-test.describe('Performance', () => {
-  test('login page should load within 3 seconds', async ({ page }) => {
-    const startTime = Date.now()
-
+  test('login page loads within 3 seconds', async ({ page }) => {
+    const start = Date.now()
     await page.goto('/login')
     await page.waitForLoadState('networkidle')
-
-    const loadTime = Date.now() - startTime
-
-    // Should load within 3 seconds
-    expect(loadTime).toBeLessThan(3000)
+    expect(Date.now() - start).toBeLessThan(3000)
   })
 })
