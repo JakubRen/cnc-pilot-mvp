@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import AppLayout from '@/components/layout/AppLayout'
 import { ProductFormData, productCategoryLabels, productUnitLabels } from '@/types/products'
 import { Button } from '@/components/ui/Button'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { ABC_DEFAULTS, MATERIAL_RISK_FACTORS } from '@/types/abc-pricing'
 
 // Helper: convert NaN/empty to null for optional number fields
@@ -73,6 +74,7 @@ type ExtendedProductFormData = ProductFormData & {
 
 export default function AddProductPage() {
   const router = useRouter()
+  const { profile } = useUserProfile()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [machines, setMachines] = useState<Machine[]>([])
 
@@ -93,21 +95,12 @@ export default function AddProductPage() {
   // Fetch machines for default_machine_id select
   useEffect(() => {
     async function fetchMachines() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile) return
+      if (!profile?.company_id) return
 
       const { data } = await supabase
         .from('machines')
         .select('id, name, code')
-        .eq('company_id', userProfile.company_id)
+        .eq('company_id', profile.company_id)
         .eq('status', 'active')
         .order('name')
 
@@ -115,28 +108,26 @@ export default function AddProductPage() {
     }
 
     fetchMachines()
-  }, [])
+  }, [profile?.company_id])
 
   const onSubmit = async (data: ExtendedProductFormData) => {
     setIsSubmitting(true)
     const loadingToast = toast.loading('Tworzę towar...')
 
     try {
-      // Get user
-      const { data: { user } } = await supabase.auth.getUser()
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user!.id)
-        .single()
+      if (!profile?.company_id) {
+        toast.dismiss(loadingToast)
+        toast.error('Brak przypisanej firmy')
+        return
+      }
 
       // Insert product
       const { error } = await supabase
         .from('products')
         .insert({
           ...data,
-          company_id: userProfile!.company_id,
-          created_by: userProfile!.id,
+          company_id: profile.company_id,
+          created_by: profile.id,
         })
 
       if (error) throw error

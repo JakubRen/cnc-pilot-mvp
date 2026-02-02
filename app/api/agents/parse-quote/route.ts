@@ -6,6 +6,7 @@ import {
   type FunctionDeclaration,
 } from '@google/generative-ai'
 import { createClient } from '@/lib/supabase-server'
+import { getUserProfile } from '@/lib/auth-server'
 
 // =====================================================
 // Parse Quote Email → JSON (Google Gemini 2.5 Flash)
@@ -214,26 +215,17 @@ function handleAIError(error: unknown): NextResponse {
 
 export async function POST(request: NextRequest) {
   try {
-    // Auth check
-    const supabase = await createClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    // Auth + profile
+    const userProfile = await getUserProfile()
 
-    if (authError || !user) {
+    if (!userProfile?.company_id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get company_id
-    const { data: userProfile } = await supabase
-      .from('users')
-      .select('company_id')
-      .eq('auth_id', user.id)
-      .single()
-
-    if (!userProfile?.company_id) {
-      return NextResponse.json({ error: 'User has no company' }, { status: 403 })
-    }
-
     const companyId = userProfile.company_id
+
+    // Supabase client for inventory queries
+    const supabase = await createClient()
 
     // Validate API key
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY

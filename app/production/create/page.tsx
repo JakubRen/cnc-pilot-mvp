@@ -17,14 +17,16 @@ import {
   calculateOperationCost
 } from '@/types/operations'
 import Link from 'next/link'
+import { useUserProfile } from '@/hooks/useUserProfile'
 
 export default function CreateProductionPlanPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const orderId = searchParams.get('order_id')
+  const { profile } = useUserProfile()
 
-  const [companyId, setCompanyId] = useState<string>('')
-  const [userId, setUserId] = useState<number>(0)
+  const companyId = profile?.company_id || ''
+  const userId = profile?.id || 0
   const [orderNumber, setOrderNumber] = useState<string>('')
   const [customerName, setCustomerName] = useState<string>('')
 
@@ -42,62 +44,41 @@ export default function CreateProductionPlanPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Load user and order info
+  // Load order info when profile is ready
   useEffect(() => {
-    async function loadUserAndOrder() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/login')
-        return
-      }
+    async function loadOrder() {
+      if (!profile?.company_id || !orderId) return
 
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
+      const { data: order } = await supabase
+        .from('orders')
+        .select('order_number, customer_name, company_id, part_name, quantity, material')
+        .eq('id', orderId)
         .single()
 
-      if (!userProfile) {
-        toast.error('Nie znaleziono profilu użytkownika')
+      if (!order) {
+        toast.error('Nie znaleziono zlecenia')
+        router.push('/orders')
         return
       }
 
-      setCompanyId(userProfile.company_id)
-      setUserId(userProfile.id)
-
-      // If order_id provided, load order details
-      if (orderId) {
-        const { data: order } = await supabase
-          .from('orders')
-          .select('order_number, customer_name, company_id, part_name, quantity, material')
-          .eq('id', orderId)
-          .single()
-
-        if (!order) {
-          toast.error('Nie znaleziono zlecenia')
-          router.push('/orders')
-          return
-        }
-
-        // Verify company_id matches
-        if (order.company_id !== userProfile.company_id) {
-          toast.error('Brak dostępu do tego zlecenia')
-          router.push('/orders')
-          return
-        }
-
-        setOrderNumber(order.order_number)
-        setCustomerName(order.customer_name)
-
-        // Pre-fill from order if available
-        if (order.part_name) setPartName(order.part_name)
-        if (order.quantity) setQuantity(order.quantity)
-        if (order.material) setMaterial(order.material)
+      // Verify company_id matches
+      if (order.company_id !== profile.company_id) {
+        toast.error('Brak dostępu do tego zlecenia')
+        router.push('/orders')
+        return
       }
+
+      setOrderNumber(order.order_number)
+      setCustomerName(order.customer_name)
+
+      // Pre-fill from order if available
+      if (order.part_name) setPartName(order.part_name)
+      if (order.quantity) setQuantity(order.quantity)
+      if (order.material) setMaterial(order.material)
     }
 
-    loadUserAndOrder()
-  }, [orderId, router])
+    loadOrder()
+  }, [orderId, router, profile?.company_id])
 
   // Validation
   const validate = (): boolean => {

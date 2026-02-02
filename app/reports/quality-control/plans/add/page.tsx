@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/Input'
 import Link from 'next/link'
 import { logger } from '@/lib/logger'
 import { sanitizeText } from '@/lib/sanitization'
+import { useUserProfile } from '@/hooks/useUserProfile'
 
 interface QCItem {
   id: string
@@ -23,6 +24,7 @@ interface QCItem {
 
 export default function AddQCPlanPage() {
   const router = useRouter()
+  const { profile } = useUserProfile()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [planName, setPlanName] = useState('')
   const [partName, setPartName] = useState('')
@@ -84,17 +86,7 @@ export default function AddQCPlanPage() {
     const loadingToast = toast.loading('Tworzenie planu kontroli...')
 
     try {
-      // Get user info
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Nie zalogowany')
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile?.company_id) throw new Error('Brak firmy')
+      if (!profile?.company_id) throw new Error('Brak firmy')
 
       // Sanitize user inputs to prevent XSS attacks
       const sanitizedPlanName = sanitizeText(planName)
@@ -105,11 +97,11 @@ export default function AddQCPlanPage() {
       const { data: plan, error: planError } = await supabase
         .from('quality_control_plans')
         .insert({
-          company_id: userProfile.company_id,
+          company_id: profile.company_id,
           name: sanitizedPlanName,
           part_name: sanitizedPartName,
           description: sanitizedDescription,
-          created_by: userProfile.id
+          created_by: profile.id
         })
         .select()
         .single()

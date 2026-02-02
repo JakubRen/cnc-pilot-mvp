@@ -10,6 +10,7 @@ import { useTranslation } from '@/hooks/useTranslation'
 import { usePermissions } from '@/hooks/usePermissions'
 import { useFormErrorScroll } from '@/hooks/useFormErrorScroll'
 import { sanitizeText } from '@/lib/sanitization'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { Button } from '@/components/ui/Button'
 
 type InventoryFormData = {
@@ -31,6 +32,7 @@ type InventoryFormData = {
 export default function AddInventoryForm() {
   const router = useRouter()
   const { t } = useTranslation()
+  const { profile } = useUserProfile()
   const { canViewPrices } = usePermissions()
   const showPrices = canViewPrices('inventory')
 
@@ -69,22 +71,7 @@ export default function AddInventoryForm() {
   const onSubmit = async (data: InventoryFormData) => {
     const loadingToast = toast.loading(t('inventory', 'creatingItem'))
 
-    // Get current user
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      toast.dismiss(loadingToast)
-      toast.error(t('inventory', 'notAuthenticated'))
-      return
-    }
-
-    // Get user's company
-    const { data: userData } = await supabase
-      .from('users')
-      .select('company_id')
-      .eq('id', user.id)
-      .single()
-
-    if (!userData?.company_id) {
+    if (!profile?.company_id) {
       toast.dismiss(loadingToast)
       toast.error(t('auth', 'companyNotFound'))
       return
@@ -110,8 +97,8 @@ export default function AddInventoryForm() {
         quantity: Number(data.quantity),
         low_stock_threshold: Number(data.low_stock_threshold),
         unit_cost: data.unit_cost ? Number(data.unit_cost) : null,
-        company_id: userData.company_id,
-        created_by: user.id,
+        company_id: profile.company_id,
+        created_by: profile.id,
       })
       .select()
       .single()
@@ -137,8 +124,8 @@ export default function AddInventoryForm() {
           quantity_after: Number(data.quantity),
           reason: 'Initial stock',
           batch_number: data.batch_number,
-          company_id: userData.company_id,
-          created_by: user.id,
+          company_id: profile.company_id,
+          created_by: profile.id,
         })
     }
 

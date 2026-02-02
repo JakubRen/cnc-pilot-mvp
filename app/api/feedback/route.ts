@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
+import { getUserProfile } from '@/lib/auth-server'
 import { logger } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
 import { BUSINESS } from '@/lib/constants/time'
@@ -66,20 +67,15 @@ export async function POST(request: Request) {
     // User already fetched for rate limiting above
 
     if (!user) {
-      // Silent fail for unauthenticated users (shouldn't happen but don't break UX)
       logger.warn('[FeedbackAPI] No authenticated user, skipping feedback log')
       return NextResponse.json({ status: 'skipped_no_auth' })
     }
 
     // Get user profile for user_id and company_id
-    const { data: userProfile, error: profileError } = await supabase
-      .from('users')
-      .select('id, company_id')
-      .eq('auth_id', user.id)
-      .single()
+    const userProfile = await getUserProfile()
 
-    if (profileError || !userProfile) {
-      logger.warn('[FeedbackAPI] Could not get user profile', { error: profileError?.message })
+    if (!userProfile) {
+      logger.warn('[FeedbackAPI] Could not get user profile')
       return NextResponse.json({ status: 'skipped_no_profile' })
     }
 
@@ -119,20 +115,11 @@ export async function GET(request: Request) {
   try {
     const supabase = await createClient()
 
-    // Verify authentication
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    // Get user's company_id
-    const { data: userProfile } = await supabase.from('users').select('company_id').eq('auth_id', user.id).single()
+    // Get user profile (handles auth check)
+    const userProfile = await getUserProfile()
 
     if (!userProfile?.company_id) {
-      return NextResponse.json({ error: 'No company assigned' }, { status: 403 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     // Parse query params

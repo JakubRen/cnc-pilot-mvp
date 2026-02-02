@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/Input'
 import Link from 'next/link'
 import { logger } from '@/lib/logger'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { tCooperation, CooperationTranslationKey } from '@/lib/translation-helpers'
 
 interface Cooperant {
@@ -38,6 +39,7 @@ interface SelectedItem {
 
 export default function SendToCooperationPage() {
   const { t, lang } = useTranslation()
+  const { profile } = useUserProfile()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [cooperants, setCooperants] = useState<Cooperant[]>([])
@@ -69,41 +71,32 @@ export default function SendToCooperationPage() {
   ]
 
   useEffect(() => {
+    async function loadData() {
+      if (!profile?.company_id) return
+
+      // Load cooperants
+      const { data: coops } = await supabase
+        .from('cooperants')
+        .select('*')
+        .eq('company_id', profile.company_id)
+        .eq('is_active', true)
+        .order('name')
+
+      if (coops) setCooperants(coops)
+
+      // Load active orders
+      const { data: activeOrders } = await supabase
+        .from('orders')
+        .select('id, order_number, customer_name, part_name, quantity')
+        .eq('company_id', profile.company_id)
+        .in('status', ['pending', 'in_progress'])
+        .order('deadline')
+
+      if (activeOrders) setOrders(activeOrders)
+    }
+
     loadData()
-  }, [])
-
-  const loadData = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-
-    const { data: userProfile } = await supabase
-      .from('users')
-      .select('company_id')
-      .eq('auth_id', user.id)
-      .single()
-
-    if (!userProfile?.company_id) return
-
-    // Load cooperants
-    const { data: coops } = await supabase
-      .from('cooperants')
-      .select('*')
-      .eq('company_id', userProfile.company_id)
-      .eq('is_active', true)
-      .order('name')
-
-    if (coops) setCooperants(coops)
-
-    // Load active orders
-    const { data: activeOrders } = await supabase
-      .from('orders')
-      .select('id, order_number, customer_name, part_name, quantity')
-      .eq('company_id', userProfile.company_id)
-      .in('status', ['pending', 'in_progress'])
-      .order('deadline')
-
-    if (activeOrders) setOrders(activeOrders)
-  }
+  }, [profile?.company_id])
 
   // When cooperant is selected, update operation type and expected date
   useEffect(() => {
@@ -175,26 +168,17 @@ export default function SendToCooperationPage() {
     const loadingToast = toast.loading(tCooperation('creatingShipment', lang))
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Musisz być zalogowany')
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile?.company_id) throw new Error('Brak przypisanej firmy')
+      if (!profile?.company_id) throw new Error('Brak przypisanej firmy')
 
       // Generate operation number
       const { data: opNumber } = await supabase
-        .rpc('generate_operation_number', { p_company_id: userProfile.company_id })
+        .rpc('generate_operation_number', { p_company_id: profile.company_id })
 
       // Create external operation
       const { data: operation, error: opError } = await supabase
         .from('external_operations')
         .insert({
-          company_id: userProfile.company_id,
+          company_id: profile.company_id,
           cooperant_id: selectedCooperant || null,
           operation_number: opNumber || `EXT-${Date.now()}`,
           operation_type: operationType,
@@ -202,7 +186,7 @@ export default function SendToCooperationPage() {
           expected_return_date: expectedReturnDate || null,
           notes: notes || null,
           transport_info: transportInfo || null,
-          sent_by: userProfile.id
+          sent_by: profile.id
         })
         .select()
         .single()

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { logger } from '@/lib/logger'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 interface SavedFilter {
@@ -29,32 +30,24 @@ export default function SavedFilters({
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [filterName, setFilterName] = useState('')
   const [loading, setLoading] = useState(true)
+  const { profile } = useUserProfile()
   const { confirm, ConfirmDialog } = useConfirmation()
 
   useEffect(() => {
     fetchSavedFilters()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterType])
+  }, [filterType, profile?.company_id])
 
   const fetchSavedFilters = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile) return
+      if (!profile?.company_id) return
 
       const { data, error } = await supabase
         .from('saved_filters')
         .select('*')
         .eq('filter_type', filterType)
-        .or(`user_id.eq.${userProfile.id},is_default.eq.true`)
-        .eq('company_id', userProfile.company_id)
+        .or(`user_id.eq.${profile.id},is_default.eq.true`)
+        .eq('company_id', profile.company_id)
         .order('is_default', { ascending: false })
         .order('created_at', { ascending: false })
 
@@ -76,22 +69,13 @@ export default function SavedFilters({
     const loadingToast = toast.loading('Zapisywanie filtru...')
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile) throw new Error('No user profile')
+      if (!profile?.company_id) throw new Error('No user profile')
 
       const { error } = await supabase
         .from('saved_filters')
         .insert({
-          user_id: userProfile.id,
-          company_id: userProfile.company_id,
+          user_id: profile.id,
+          company_id: profile.company_id,
           name: filterName,
           filter_type: filterType,
           filter_config: currentFilters,

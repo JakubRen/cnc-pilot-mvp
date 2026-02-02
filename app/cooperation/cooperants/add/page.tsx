@@ -12,10 +12,12 @@ import Link from 'next/link'
 import { logger } from '@/lib/logger'
 import { sanitizeText, sanitizeEmail } from '@/lib/sanitization'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { tCooperation, CooperationTranslationKey } from '@/lib/translation-helpers'
 
 export default function AddCooperantPage() {
   const { t, lang } = useTranslation()
+  const { profile } = useUserProfile()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -58,22 +60,13 @@ export default function AddCooperantPage() {
     const loadingToast = toast.loading('Dodawanie kooperanta...')
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Musisz być zalogowany')
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile?.company_id) throw new Error('Brak przypisanej firmy')
+      if (!profile?.company_id) throw new Error('Brak przypisanej firmy')
 
       // Sanitize user inputs to prevent XSS attacks
       const { error } = await supabase
         .from('cooperants')
         .insert({
-          company_id: userProfile.company_id,
+          company_id: profile.company_id,
           name: sanitizeText(name.trim()),
           service_type: sanitizeText(serviceType),
           contact_person: contactPerson ? sanitizeText(contactPerson) : null,

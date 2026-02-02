@@ -17,6 +17,7 @@ import {
   StockAlertData,
   TeamInviteData,
 } from '@/lib/email'
+import { getUserProfile } from '@/lib/auth-server'
 import { logger } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
 import { BUSINESS } from '@/lib/constants/time'
@@ -37,31 +38,20 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient()
 
-    // Verify authentication
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
+    // Get user profile (handles auth check)
+    const userProfile = await getUserProfile()
+    if (!userProfile?.company_id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     // Rate limiting - 10 requests per minute per user
     try {
-      await limiter.check(10, user.id)
+      await limiter.check(10, userProfile.email)
     } catch {
       return NextResponse.json(
         { error: 'Zbyt wiele emaili wysłanych. Poczekaj chwilę.' },
         { status: 429 }
       )
-    }
-
-    // Get user profile and company
-    const { data: userProfile } = await supabase
-      .from('users')
-      .select('id, company_id, full_name')
-      .eq('auth_id', user.id)
-      .single()
-
-    if (!userProfile?.company_id) {
-      return NextResponse.json({ error: 'No company' }, { status: 403 })
     }
 
     const body: SendEmailRequest = await req.json()

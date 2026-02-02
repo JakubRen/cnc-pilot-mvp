@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { logger } from '@/lib/logger'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 
 interface Tag {
@@ -36,6 +37,7 @@ const PRESET_COLORS = [
 
 export default function TagManager() {
   const { t } = useTranslation()
+  const { profile } = useUserProfile()
   const [tags, setTags] = useState<Tag[]>([])
   const [loading, setLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -45,25 +47,16 @@ export default function TagManager() {
 
   useEffect(() => {
     fetchTags()
-  }, [])
+  }, [profile?.company_id])
 
   const fetchTags = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile?.company_id) return
+      if (!profile?.company_id) return
 
       const { data, error } = await supabase
         .from('tags')
         .select('*')
-        .eq('company_id', userProfile.company_id)
+        .eq('company_id', profile.company_id)
         .order('created_at', { ascending: false })
 
       if (error) throw error
@@ -87,16 +80,7 @@ export default function TagManager() {
     const loadingToast = toast.loading(editingTag ? t('common', 'loading') : t('common', 'loading'))
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile?.company_id) throw new Error('No company')
+      if (!profile?.company_id) throw new Error('No company')
 
       if (editingTag) {
         // Update existing tag
@@ -104,7 +88,7 @@ export default function TagManager() {
           .from('tags')
           .update({ name: formData.name, color: formData.color })
           .eq('id', editingTag.id)
-          .eq('company_id', userProfile.company_id)
+          .eq('company_id', profile.company_id)
 
         if (error) throw error
         toast.success(t('common', 'success'))
@@ -115,7 +99,7 @@ export default function TagManager() {
           .insert({
             name: formData.name,
             color: formData.color,
-            company_id: userProfile.company_id,
+            company_id: profile.company_id,
           })
 
         if (error) throw error

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useUserProfile } from '@/hooks/useUserProfile'
 
 interface Product {
   id: string
@@ -40,33 +41,18 @@ export default function ProductsAutocomplete({
   const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { profile } = useUserProfile()
 
-  // Fetch products on mount and when category changes
+  // Fetch products when profile/category changes
   useEffect(() => {
     async function fetchProducts() {
+      if (!profile?.company_id) return
       setLoading(true)
-
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        setLoading(false)
-        return
-      }
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile) {
-        setLoading(false)
-        return
-      }
 
       let query = supabase
         .from('products')
         .select('id, sku, name, category, unit, description')
-        .eq('company_id', userProfile.company_id)
+        .eq('company_id', profile.company_id)
         .eq('is_active', true)
         .order('name')
 
@@ -80,7 +66,7 @@ export default function ProductsAutocomplete({
     }
 
     fetchProducts()
-  }, [categoryFilter])
+  }, [categoryFilter, profile?.company_id])
 
   // Filter products based on search query
   const filteredProducts = products.filter(product => {

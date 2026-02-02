@@ -4,8 +4,8 @@
 // ============================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase-server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { getUserProfile } from '@/lib/auth-server'
 import { logger } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
 import { BUSINESS } from '@/lib/constants/time'
@@ -27,39 +27,22 @@ interface CreateUserRequest {
 export async function POST(request: NextRequest) {
   try {
     // 1. Sprawdź czy użytkownik jest zalogowany i ma uprawnienia
-    const supabase = await createClient()
-    const { data: { user: authUser } } = await supabase.auth.getUser()
+    const currentUser = await getUserProfile()
 
-    // Rate limiting - 5 requests per minute per user
-    if (authUser) {
-      try {
-        await limiter.check(5, authUser.id)
-      } catch {
-        return NextResponse.json(
-          { error: 'Zbyt wiele żądań. Poczekaj chwilę przed utworzeniem kolejnego użytkownika.' },
-          { status: 429 }
-        )
-      }
-    }
-
-    if (!authUser) {
+    if (!currentUser?.company_id) {
       return NextResponse.json(
         { error: 'Nie jesteś zalogowany' },
         { status: 401 }
       )
     }
 
-    // Pobierz profil użytkownika (musi być owner/admin)
-    const { data: currentUser, error: profileError } = await supabase
-      .from('users')
-      .select('id, role, company_id')
-      .eq('auth_id', authUser.id)
-      .single()
-
-    if (profileError || !currentUser) {
+    // Rate limiting - 5 requests per minute per user
+    try {
+      await limiter.check(5, currentUser.email)
+    } catch {
       return NextResponse.json(
-        { error: 'Nie znaleziono profilu użytkownika' },
-        { status: 403 }
+        { error: 'Zbyt wiele żądań. Poczekaj chwilę przed utworzeniem kolejnego użytkownika.' },
+        { status: 429 }
       )
     }
 

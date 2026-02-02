@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
+import { getUserProfile } from '@/lib/auth-server'
 import { logger } from '@/lib/logger'
 import type { CreateQuoteInput, CreateQuoteResponse } from '@/types/quotes'
 
@@ -14,27 +15,13 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
 
-    // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    // Auth + profile in one call
+    const userProfile = await getUserProfile()
 
-    if (authError || !user) {
+    if (!userProfile?.company_id) {
       return NextResponse.json(
         { error: 'Nie jesteś zalogowany' },
         { status: 401 }
-      )
-    }
-
-    // Get user profile
-    const { data: userProfile, error: profileError } = await supabase
-      .from('users')
-      .select('id, company_id, full_name')
-      .eq('auth_id', user.id)
-      .single()
-
-    if (profileError || !userProfile?.company_id) {
-      return NextResponse.json(
-        { error: 'Nie znaleziono profilu użytkownika lub firmy' },
-        { status: 400 }
       )
     }
 

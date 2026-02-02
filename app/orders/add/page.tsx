@@ -20,6 +20,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/Button'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useOperators } from '@/hooks/useOperators'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { sanitizeText } from '@/lib/sanitization'
 
 const generateTempId = () => Math.random().toString(36).substr(2, 9)
@@ -62,8 +63,9 @@ export default function AddOrderPage() {
   const [items, setItems] = useState<OrderItemEntry[]>([createEmptyItem()])
 
   // --- Other state ---
-  const [companyId, setCompanyId] = useState('')
-  const [userId, setUserId] = useState<number>(0)
+  const { profile } = useUserProfile()
+  const companyId = profile?.company_id || ''
+  const userId = profile?.id || 0
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false)
   const [pendingCustomerName, setPendingCustomerName] = useState('')
   const [generatedOrderNumber, setGeneratedOrderNumber] = useState('')
@@ -81,24 +83,6 @@ export default function AddOrderPage() {
   const { operators, loading: operatorsLoading } = useOperators()
 
   const totalCost = materialCost + laborCost + overheadCost
-
-  // Get user and company info
-  useEffect(() => {
-    async function fetchUserInfo() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-      if (userProfile) {
-        setCompanyId(userProfile.company_id)
-        setUserId(userProfile.id)
-      }
-    }
-    fetchUserInfo()
-  }, [])
 
   // Auto-generate order number
   useEffect(() => {
@@ -238,20 +222,7 @@ export default function AddOrderPage() {
     const loadingToast = toast.loading(t('orders', 'savingOrder'))
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        toast.dismiss(loadingToast)
-        toast.error(t('orders', 'notLoggedIn'))
-        return
-      }
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile?.company_id) {
+      if (!profile?.company_id) {
         toast.dismiss(loadingToast)
         toast.error(t('orders', 'noCompanyAssigned'))
         return
@@ -295,8 +266,8 @@ export default function AddOrderPage() {
         tolerance_length: singleItem ? cleanNum(singleItem.tolerance_length) : null,
         tolerance_width: singleItem ? cleanNum(singleItem.tolerance_width) : null,
         tolerance_height: singleItem ? cleanNum(singleItem.tolerance_height) : null,
-        created_by: userProfile.id,
-        company_id: userProfile.company_id,
+        created_by: profile.id,
+        company_id: profile.company_id,
       }
 
       const { data: insertedOrder, error: orderError } = await supabase

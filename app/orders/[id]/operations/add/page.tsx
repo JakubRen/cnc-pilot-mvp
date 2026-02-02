@@ -16,14 +16,16 @@ import {
   calculateOperationCost
 } from '@/types/operations'
 import Link from 'next/link'
+import { useUserProfile } from '@/hooks/useUserProfile'
 
 export default function AddOrderItemPage() {
   const router = useRouter()
   const params = useParams()
   const orderId = params.id as string
+  const { profile } = useUserProfile()
 
-  const [companyId, setCompanyId] = useState<string>('')
-  const [userId, setUserId] = useState<number>(0)
+  const companyId = profile?.company_id || ''
+  const userId = profile?.id || 0
   const [orderNumber, setOrderNumber] = useState<string>('')
 
   // Form state
@@ -40,30 +42,11 @@ export default function AddOrderItemPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Load user and order info
+  // Load order info when profile is ready
   useEffect(() => {
-    async function loadUserAndOrder() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/login')
-        return
-      }
+    async function loadOrder() {
+      if (!profile?.company_id) return
 
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile) {
-        toast.error('Nie znaleziono profilu użytkownika')
-        return
-      }
-
-      setCompanyId(userProfile.company_id)
-      setUserId(userProfile.id)
-
-      // Load order to get order number for display
       const { data: order } = await supabase
         .from('orders')
         .select('order_number, company_id')
@@ -77,7 +60,7 @@ export default function AddOrderItemPage() {
       }
 
       // Verify company_id matches
-      if (order.company_id !== userProfile.company_id) {
+      if (order.company_id !== profile.company_id) {
         toast.error('Brak dostępu do tego zlecenia')
         router.push('/orders')
         return
@@ -86,8 +69,8 @@ export default function AddOrderItemPage() {
       setOrderNumber(order.order_number)
     }
 
-    loadUserAndOrder()
-  }, [orderId, router])
+    loadOrder()
+  }, [orderId, router, profile?.company_id])
 
   // Validation
   const validate = (): boolean => {
