@@ -19,10 +19,11 @@ import {
 } from '@/lib/email'
 import { logger } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
+import { BUSINESS } from '@/lib/constants/time'
 
 // Rate limiter: 10 email sends per minute per user
 const limiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
+  interval: BUSINESS.RATE_LIMIT_WINDOW_MS,
   uniqueTokenPerInterval: 300, // Max 300 users tracked
 })
 

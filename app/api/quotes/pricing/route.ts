@@ -10,10 +10,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getUnifiedPricing } from '@/lib/pricing/unified-engine-free'
 import { logger } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
+import { BUSINESS } from '@/lib/constants/time'
 
 // Rate limiter: 30 requests per minute per IP
 const limiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
+  interval: BUSINESS.RATE_LIMIT_WINDOW_MS,
   uniqueTokenPerInterval: 500,
 })
 

@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
+import { TIME } from '@/lib/constants/time'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 
@@ -164,7 +165,7 @@ export async function stopTimer(timeLogId: string, finalOrderStatus: string = 'c
 
   const endTime = new Date()
   const startTime = new Date(timeLog.start_time)
-  const durationInSeconds = Math.max(0, (endTime.getTime() - startTime.getTime()) / 1000) // Ensure non-negative duration
+  const durationInSeconds = Math.max(0, (endTime.getTime() - startTime.getTime()) / TIME.MS_PER_SECOND) // Ensure non-negative duration
 
   // Update the time log
   const { error: updateError } = await supabase
@@ -173,7 +174,7 @@ export async function stopTimer(timeLogId: string, finalOrderStatus: string = 'c
       end_time: endTime.toISOString(),
       status: 'completed',
       duration_seconds: Math.round(durationInSeconds), // Store as integer seconds
-      total_cost: (userProfile.hourly_rate || 0) * (durationInSeconds / 3600), // Calculate cost based on hourly rate
+      total_cost: (userProfile.hourly_rate || 0) * (durationInSeconds / TIME.SECONDS_PER_HOUR), // Calculate cost based on hourly rate
     })
     .eq('id', timeLogId)
 

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
+import { TIME, BUSINESS } from '@/lib/constants/time'
 
 export default async function MachinesPage() {
   const user = await getUserProfile()
@@ -45,7 +46,7 @@ export default async function MachinesPage() {
   const machinesNeedingMaintenance = machines?.filter(m => {
     if (!m.next_maintenance_date || m.status !== 'active') return false
     const nextDate = new Date(m.next_maintenance_date)
-    return nextDate <= new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000) // within 7 days
+    return nextDate <= new Date(today.getTime() + BUSINESS.MAINTENANCE_WINDOW_DAYS * TIME.MS_PER_DAY)
   }) || []
 
   const overdueMachines = machinesNeedingMaintenance.filter(m => {
@@ -67,7 +68,7 @@ export default async function MachinesPage() {
   const getMaintenanceUrgency = (machine: { next_maintenance_date: string | null; status: string }) => {
     if (!machine.next_maintenance_date || machine.status !== 'active') return null
     const nextDate = new Date(machine.next_maintenance_date)
-    const daysUntil = Math.ceil((nextDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    const daysUntil = Math.ceil((nextDate.getTime() - today.getTime()) / TIME.MS_PER_DAY)
 
     if (daysUntil < 0) {
       return <span className="text-red-400 text-xs font-semibold animate-pulse">⚠️ {Math.abs(daysUntil)} dni po terminie!</span>
@@ -126,7 +127,7 @@ export default async function MachinesPage() {
               </h3>
               <div className="space-y-2">
                 {overdueMachines.map(m => {
-                  const daysOverdue = Math.ceil((today.getTime() - new Date(m.next_maintenance_date).getTime()) / (1000 * 60 * 60 * 24))
+                  const daysOverdue = Math.ceil((today.getTime() - new Date(m.next_maintenance_date).getTime()) / TIME.MS_PER_DAY)
                   return (
                     <Link
                       key={m.id}

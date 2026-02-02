@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { TIME } from '@/lib/constants/time'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { Input } from '@/components/ui/Input'
@@ -66,7 +67,7 @@ export default function OrderCostAnalysis({
       if (log.status === 'completed' || log.status === 'running') {
         const start = new Date(log.start_time)
         const end = log.end_time ? new Date(log.end_time) : new Date()
-        const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60)
+        const hours = (end.getTime() - start.getTime()) / TIME.MS_PER_HOUR
         const rate = log.hourly_rate || 150
         totalHours += hours
         totalCost += hours * rate

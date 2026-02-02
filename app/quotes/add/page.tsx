@@ -15,6 +15,7 @@ import CustomerSelect from '@/components/customers/CustomerSelect'
 import QuickAddCustomerModal from '@/components/customers/QuickAddCustomerModal'
 import InventoryAutocomplete from '@/components/inventory/InventoryAutocomplete'
 import AIImportDialog from '@/components/quotes/AIImportDialog'
+import { TIME, BUSINESS } from '@/lib/constants/time'
 
 // Typ dla pozycji oferty
 interface QuoteItem {
@@ -324,7 +325,7 @@ export default function AddQuotePage() {
           status: 'draft',
           pricing_method: 'multi_item',
           token: crypto.randomUUID(),
-          expires_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days
+          expires_at: new Date(Date.now() + BUSINESS.QUOTE_EXPIRY_DAYS * TIME.MS_PER_DAY).toISOString(),
         })
         .select()
         .single()

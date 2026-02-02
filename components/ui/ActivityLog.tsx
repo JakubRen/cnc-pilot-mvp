@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { TIME } from '@/lib/constants/time'
 
 export interface ActivityItem {
   id: string
@@ -49,12 +50,12 @@ const activityIcons = {
 function formatTimeAgo(date: Date | string): string {
   const now = new Date()
   const then = new Date(date)
-  const seconds = Math.floor((now.getTime() - then.getTime()) / 1000)
+  const seconds = Math.floor((now.getTime() - then.getTime()) / TIME.MS_PER_SECOND)
 
-  if (seconds < 60) return 'przed chwilą'
-  if (seconds < 3600) return `${Math.floor(seconds / 60)} min temu`
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h temu`
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)} dni temu`
+  if (seconds < TIME.SECONDS_PER_MINUTE) return 'przed chwilą'
+  if (seconds < TIME.SECONDS_PER_HOUR) return `${Math.floor(seconds / TIME.SECONDS_PER_MINUTE)} min temu`
+  if (seconds < TIME.SECONDS_PER_DAY) return `${Math.floor(seconds / TIME.SECONDS_PER_HOUR)}h temu`
+  if (seconds < TIME.SECONDS_PER_WEEK) return `${Math.floor(seconds / TIME.SECONDS_PER_DAY)} dni temu`
   return then.toLocaleDateString('pl-PL')
 }
 

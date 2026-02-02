@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
+import { TIME } from '@/lib/constants/time';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface OverdueOrder {
@@ -184,7 +185,7 @@ export default function UrgentTasks({ urgentTasks }: UrgentTasksProps) {
             {staleTimers.slice(0, 2).map((timer) => {
               const hoursRunning = Math.floor(
                 (new Date().getTime() - new Date(timer.start_time).getTime()) /
-                  (1000 * 60 * 60)
+                  TIME.MS_PER_HOUR
               );
               return (
                 <div

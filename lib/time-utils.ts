@@ -3,13 +3,15 @@
 // Helper functions for time tracking
 // ============================================
 
+import { TIME } from '@/lib/constants/time'
+
 /**
  * Format seconds to HH:MM:SS
  */
 export function formatDuration(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
+  const h = Math.floor(seconds / TIME.SECONDS_PER_HOUR);
+  const m = Math.floor((seconds % TIME.SECONDS_PER_HOUR) / TIME.SECONDS_PER_MINUTE);
+  const s = seconds % TIME.SECONDS_PER_MINUTE;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
@@ -17,8 +19,8 @@ export function formatDuration(seconds: number): string {
  * Format seconds to human-readable format (e.g., "5h 42m")
  */
 export function formatDurationHuman(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
+  const h = Math.floor(seconds / TIME.SECONDS_PER_HOUR);
+  const m = Math.floor((seconds % TIME.SECONDS_PER_HOUR) / TIME.SECONDS_PER_MINUTE);
 
   if (h > 0) {
     return `${h}h ${m}m`;
@@ -30,7 +32,7 @@ export function formatDurationHuman(seconds: number): string {
  * Calculate cost from duration and hourly rate
  */
 export function calculateCost(durationSeconds: number, hourlyRate: number): number {
-  return (durationSeconds / 3600) * hourlyRate;
+  return (durationSeconds / TIME.SECONDS_PER_HOUR) * hourlyRate;
 }
 
 /**
@@ -39,7 +41,7 @@ export function calculateCost(durationSeconds: number, hourlyRate: number): numb
 export function isStaleTimer(startTime: string, thresholdHours: number = 12): boolean {
   const start = new Date(startTime);
   const now = new Date();
-  const hoursElapsed = (now.getTime() - start.getTime()) / (1000 * 60 * 60);
+  const hoursElapsed = (now.getTime() - start.getTime()) / TIME.MS_PER_HOUR;
   return hoursElapsed > thresholdHours;
 }
 
@@ -97,7 +99,7 @@ export function validateTimeRange(startTime: Date, endTime: Date): { valid: bool
     return { valid: false, error: 'End time must be after start time' };
   }
 
-  const durationHours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
+  const durationHours = (endTime.getTime() - startTime.getTime()) / TIME.MS_PER_HOUR;
   if (durationHours > 24) {
     return { valid: false, error: 'Duration cannot exceed 24 hours' };
   }
@@ -115,5 +117,5 @@ export function parseDurationToSeconds(duration: string): number {
   const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
   const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
 
-  return (hours * 3600) + (minutes * 60);
+  return (hours * TIME.SECONDS_PER_HOUR) + (minutes * TIME.SECONDS_PER_MINUTE);
 }

@@ -3,6 +3,7 @@
 // =====================================================
 // Pełny model ABC zgodny ze specyfikacją biznesową
 // Oblicza rzeczywiste koszty na podstawie:
+import { TIME } from '@/lib/constants/time'
 // - Real Hourly Rate (RHR) maszyny
 // - Czas cyklu z karty produktu
 // - Koszty materiału z ryzykiem złomu
@@ -182,7 +183,7 @@ export function calculateMachiningCost(
 ): MachiningCostDetails {
   // Adjust cycle time for efficiency (CAM is too optimistic)
   const adjustedCycleTime = cycleTimeMinutes * efficiencyFactor
-  const adjustedCycleTimeHours = adjustedCycleTime / 60
+  const adjustedCycleTimeHours = adjustedCycleTime / TIME.MINUTES_PER_HOUR
 
   // Cost per unit
   const machiningCostPerUnit = adjustedCycleTimeHours * machineRunRate
@@ -212,7 +213,7 @@ export function calculateSetupCost(
   setupSpecialistRate: number,
   batchSize: number
 ): SetupCostDetails {
-  const setupTimeHours = setupTimeMinutes / 60
+  const setupTimeHours = setupTimeMinutes / TIME.MINUTES_PER_HOUR
 
   // Total setup cost (machine tied up + specialist)
   const totalSetupCost = setupTimeHours * (machineRunRate + setupSpecialistRate)
@@ -244,7 +245,7 @@ export function calculateLaborCost(
   machinesPerOperator: number,
   quantity: number
 ): LaborCostDetails {
-  const adjustedCycleTimeHours = (cycleTimeMinutes * efficiencyFactor) / 60
+  const adjustedCycleTimeHours = (cycleTimeMinutes * efficiencyFactor) / TIME.MINUTES_PER_HOUR
 
   // Effective rate per machine (shared operator)
   const effectiveRatePerMachine = operatorHourlyRate / machinesPerOperator

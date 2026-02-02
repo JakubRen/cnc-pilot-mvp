@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
+import { TIME } from '@/lib/constants/time'
 import { redirect, notFound } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import Link from 'next/link'
@@ -93,7 +94,7 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
     machine.status === 'active'
 
   const daysUntilMaintenance = machine.next_maintenance_date
-    ? Math.ceil((new Date(machine.next_maintenance_date).getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    ? Math.ceil((new Date(machine.next_maintenance_date).getTime() - today.getTime()) / TIME.MS_PER_DAY)
     : null
 
   return (

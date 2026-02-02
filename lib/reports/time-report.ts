@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase-server';
 import { logger } from '@/lib/logger';
+import { TIME } from '@/lib/constants/time';
 
 export interface TimeReportFilters {
   userId?: number;
@@ -73,7 +74,7 @@ export async function getTimeReport(
   return (data || []).map((log) => {
     const startTime = new Date(log.start_time);
     const endTime = log.end_time ? new Date(log.end_time) : new Date();
-    const durationHours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
+    const durationHours = (endTime.getTime() - startTime.getTime()) / TIME.MS_PER_HOUR;
     const totalCost = durationHours * (log.hourly_rate || 0);
 
     const order = log.order as { order_number: string } | { order_number: string }[] | null;
@@ -120,7 +121,7 @@ export async function getTimeReportSummary(companyId: string) {
     if (log.end_time) {
       const startTime = new Date(log.start_time);
       const endTime = new Date(log.end_time);
-      const durationHours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
+      const durationHours = (endTime.getTime() - startTime.getTime()) / TIME.MS_PER_HOUR;
       totalHours += durationHours;
       totalCost += durationHours * (log.hourly_rate || 0);
     }
@@ -168,7 +169,7 @@ export async function getTimeByUser(companyId: string) {
 
     const startTime = new Date(log.start_time);
     const endTime = new Date(log.end_time);
-    const durationHours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
+    const durationHours = (endTime.getTime() - startTime.getTime()) / TIME.MS_PER_HOUR;
 
     acc[userName].hours += durationHours;
     acc[userName].cost += durationHours * (log.hourly_rate || 0);

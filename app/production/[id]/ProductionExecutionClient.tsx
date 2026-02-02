@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { TIME } from '@/lib/constants/time'
 import { supabase } from '@/lib/supabase'
 import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 import { updateOperationStatus, completeProductionPlan } from '@/lib/production-actions'
@@ -66,9 +67,9 @@ export default function ProductionExecutionClient({
   }, [])
 
   const formatTime = (seconds: number): string => {
-    const h = Math.floor(seconds / 3600)
-    const m = Math.floor((seconds % 3600) / 60)
-    const s = seconds % 60
+    const h = Math.floor(seconds / TIME.SECONDS_PER_HOUR)
+    const m = Math.floor((seconds % TIME.SECONDS_PER_HOUR) / TIME.SECONDS_PER_MINUTE)
+    const s = seconds % TIME.SECONDS_PER_MINUTE
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
   }
 
@@ -140,7 +141,7 @@ export default function ProductionExecutionClient({
             status: 'completed',
             end_time: new Date().toISOString(),
             duration_seconds: timer.elapsedSeconds,
-            total_cost: (timer.elapsedSeconds / 3600) * hourlyRate,
+            total_cost: (timer.elapsedSeconds / TIME.SECONDS_PER_HOUR) * hourlyRate,
           })
           .eq('id', timer.timeLogId)
       }
@@ -288,7 +289,7 @@ export default function ProductionExecutionClient({
                             {formatTime(timer.elapsedSeconds)}
                           </div>
                           <div className="text-xs text-slate-500 dark:text-slate-400">
-                            {((timer.elapsedSeconds / 3600) * hourlyRate).toFixed(2)} PLN
+                            {((timer.elapsedSeconds / TIME.SECONDS_PER_HOUR) * hourlyRate).toFixed(2)} PLN
                           </div>
                         </div>
                       )}
@@ -346,13 +347,13 @@ export default function ProductionExecutionClient({
                     <div>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt setup</p>
                       <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                        {formatCost((operation.setup_time_minutes / 60) * operation.hourly_rate)}
+                        {formatCost((operation.setup_time_minutes / TIME.MINUTES_PER_HOUR) * operation.hourly_rate)}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt run</p>
                       <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                        {formatCost((operation.run_time_per_unit_minutes * quantity / 60) * operation.hourly_rate)}
+                        {formatCost((operation.run_time_per_unit_minutes * quantity / TIME.MINUTES_PER_HOUR) * operation.hourly_rate)}
                       </p>
                     </div>
                     <div>

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase-server'
+import { TIME } from '@/lib/constants/time'
 
 // Track server start time for uptime calculation
 const serverStartTime = Date.now()
@@ -30,9 +31,9 @@ interface HealthResponse {
 }
 
 function formatUptime(seconds: number): string {
-  const days = Math.floor(seconds / 86400)
-  const hours = Math.floor((seconds % 86400) / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
+  const days = Math.floor(seconds / TIME.SECONDS_PER_DAY)
+  const hours = Math.floor((seconds % TIME.SECONDS_PER_DAY) / TIME.SECONDS_PER_HOUR)
+  const minutes = Math.floor((seconds % TIME.SECONDS_PER_HOUR) / TIME.SECONDS_PER_MINUTE)
   const secs = Math.floor(seconds % 60)
 
   const parts = []
@@ -73,7 +74,7 @@ async function checkTable(
 
 export async function GET() {
   const dbStartTime = Date.now()
-  const uptimeSeconds = (Date.now() - serverStartTime) / 1000
+  const uptimeSeconds = (Date.now() - serverStartTime) / TIME.MS_PER_SECOND
 
   try {
     const supabase = await createClient()

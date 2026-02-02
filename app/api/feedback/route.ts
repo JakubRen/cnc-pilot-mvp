@@ -2,10 +2,11 @@ import { createClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
 import { logger } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
+import { BUSINESS } from '@/lib/constants/time'
 
 // Rate limiter: 30 feedback submissions per minute per user
 const limiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
+  interval: BUSINESS.RATE_LIMIT_WINDOW_MS,
   uniqueTokenPerInterval: 300, // Max 300 users tracked
 })
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/hooks/useTranslation'
+import { TIME } from '@/lib/constants/time'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 
@@ -125,7 +126,7 @@ export default function CooperationPageClient({
           </h3>
           <div className="space-y-2">
             {overdueOperations.map(op => {
-              const daysOverdue = Math.floor((today.getTime() - new Date(op.expected_return_date!).getTime()) / (1000 * 60 * 60 * 24))
+              const daysOverdue = Math.floor((today.getTime() - new Date(op.expected_return_date!).getTime()) / TIME.MS_PER_DAY)
               return (
                 <div key={op.id} className="flex justify-between items-center bg-red-900/20 p-3 rounded-lg">
                   <div>

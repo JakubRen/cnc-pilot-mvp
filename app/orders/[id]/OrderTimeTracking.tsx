@@ -3,6 +3,8 @@
 // Time tracking section for order details page
 // ============================================
 
+import { TIME } from '@/lib/constants/time'
+
 'use client';
 
 import { useState } from 'react';
@@ -45,7 +47,7 @@ export default function OrderTimeTracking({
   // Calculate totals
   const completedLogs = timeLogs.filter(log => log.status === 'completed');
   const totalSeconds = completedLogs.reduce((sum, log) => sum + log.duration_seconds, 0);
-  const totalHours = totalSeconds / 3600;
+  const totalHours = totalSeconds / TIME.SECONDS_PER_HOUR;
   const totalCost = completedLogs.reduce((sum, log) => sum + log.total_cost, 0);
 
   // Compare with estimate

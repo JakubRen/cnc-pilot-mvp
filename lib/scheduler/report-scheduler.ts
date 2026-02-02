@@ -2,6 +2,7 @@
 import cron from 'node-cron'
 import { sendEmail, reportEmail } from '../email/email-client'
 import { createClient } from '@/lib/supabase-server'
+import { TIME } from '@/lib/constants/time'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { logger } from '@/lib/logger'
 
@@ -231,7 +232,7 @@ async function executeReport(report: ScheduledReport) {
           day: 'numeric',
         }),
         summary,
-        // TODO: Add CSV/Excel attachment
+        // BACKLOG: CSV/Excel attachment — tracked in techdebt report 2026-02-02
       }),
       text: summary,
     })
@@ -249,7 +250,7 @@ async function executeReport(report: ScheduledReport) {
   } catch (error) {
     logger.error(`Error executing report ${report.name}`, { error })
 
-    // TODO: Log error to database or send alert
+    // BACKLOG: Error alerting to database/Slack — tracked in techdebt report 2026-02-02
   }
 }
 
@@ -340,7 +341,7 @@ async function generateTimeReport(supabase: SupabaseClient, companyId: string, f
   const totalHours =
     timeLogs?.reduce((sum: number, log: TimeLog) => {
       if (log.end_time && log.start_time) {
-        const hours = (new Date(log.end_time).getTime() - new Date(log.start_time).getTime()) / 3600000
+        const hours = (new Date(log.end_time).getTime() - new Date(log.start_time).getTime()) / TIME.MS_PER_HOUR
         return sum + hours
       }
       return sum

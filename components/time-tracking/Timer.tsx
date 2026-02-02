@@ -3,6 +3,8 @@
 // Real-time timer with crash protection
 // ============================================
 
+import { TIME } from '@/lib/constants/time'
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -268,13 +270,13 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
   };
 
   const formatTime = (seconds: number): string => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
+    const h = Math.floor(seconds / TIME.SECONDS_PER_HOUR);
+    const m = Math.floor((seconds % TIME.SECONDS_PER_HOUR) / TIME.SECONDS_PER_MINUTE);
+    const s = seconds % TIME.SECONDS_PER_MINUTE;
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
-  const currentCost = (elapsedSeconds / 3600) * hourlyRate;
+  const currentCost = (elapsedSeconds / TIME.SECONDS_PER_HOUR) * hourlyRate;
 
   return (
     <>

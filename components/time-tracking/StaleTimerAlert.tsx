@@ -3,6 +3,8 @@
 // Alert for timers running >12 hours
 // ============================================
 
+import { TIME, BUSINESS } from '@/lib/constants/time'
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -33,7 +35,7 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
   useEffect(() => {
     loadStaleTimers();
 
-    const interval = setInterval(loadStaleTimers, 5 * 60 * 1000); // 5 min
+    const interval = setInterval(loadStaleTimers, BUSINESS.STALE_TIMER_CHECK_MS);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId]);
@@ -118,7 +120,7 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
           <div className="space-y-2">
             {staleTimers.map(timer => {
               const hoursRunning = Math.floor(
-                (new Date().getTime() - new Date(timer.start_time).getTime()) / (1000 * 60 * 60)
+                (new Date().getTime() - new Date(timer.start_time).getTime()) / TIME.MS_PER_HOUR
               );
 
               return (

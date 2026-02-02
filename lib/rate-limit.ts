@@ -4,6 +4,7 @@
 // ============================================
 
 import { LRUCache } from 'lru-cache'
+import { BUSINESS } from '@/lib/constants/time'
 
 type RateLimitOptions = {
   uniqueTokenPerInterval?: number
@@ -20,7 +21,7 @@ type RateLimitOptions = {
 export function rateLimit(options?: RateLimitOptions) {
   const tokenCache = new LRUCache<string, number>({
     max: options?.uniqueTokenPerInterval || 500,
-    ttl: options?.interval || 60000, // 1 minute
+    ttl: options?.interval || BUSINESS.RATE_LIMIT_WINDOW_MS,
   })
 
   return {

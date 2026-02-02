@@ -8,10 +8,11 @@ import { createClient } from '@/lib/supabase-server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { logger } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
+import { BUSINESS } from '@/lib/constants/time'
 
 // Rate limiter: 5 user creations per minute per admin
 const limiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
+  interval: BUSINESS.RATE_LIMIT_WINDOW_MS,
   uniqueTokenPerInterval: 200, // Max 200 admins tracked
 })
 

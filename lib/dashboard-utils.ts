@@ -1,3 +1,5 @@
+import { TIME } from '@/lib/constants/time'
+
 // Dashboard utility functions for formatting and calculations
 
 // ============================================
@@ -8,9 +10,9 @@ export function formatRelativeTime(timestamp: string): string {
   const now = new Date();
   const past = new Date(timestamp);
   const diffMs = now.getTime() - past.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHour = Math.floor(diffMin / 60);
+  const diffSec = Math.floor(diffMs / TIME.MS_PER_SECOND);
+  const diffMin = Math.floor(diffSec / TIME.SECONDS_PER_MINUTE);
+  const diffHour = Math.floor(diffMin / TIME.MINUTES_PER_HOUR);
   const diffDay = Math.floor(diffHour / 24);
 
   if (diffSec < 60) {
@@ -31,8 +33,8 @@ export function formatRelativeTime(timestamp: string): string {
 }
 
 export function formatDuration(seconds: number): string {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
+  const hours = Math.floor(seconds / TIME.SECONDS_PER_HOUR);
+  const minutes = Math.floor((seconds % TIME.SECONDS_PER_HOUR) / TIME.SECONDS_PER_MINUTE);
 
   if (hours > 0) {
     return `${hours}h ${minutes}m`;
@@ -81,7 +83,7 @@ export function getOrderPriorityColor(deadline: string, status: string): {
   const deadlineDate = new Date(deadline);
   deadlineDate.setHours(0, 0, 0, 0);
   const diffMs = deadlineDate.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const diffDays = Math.ceil(diffMs / TIME.MS_PER_DAY);
 
   if (diffDays < 0) {
     // Overdue
@@ -260,7 +262,7 @@ export function getDaysUntil(dateString: string): number {
   const target = new Date(dateString);
   target.setHours(0, 0, 0, 0);
   const diffMs = target.getTime() - today.getTime();
-  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  return Math.ceil(diffMs / TIME.MS_PER_DAY);
 }
 
 export function formatDate(dateString: string): string {

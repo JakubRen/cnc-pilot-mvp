@@ -2,6 +2,7 @@
 
 import { FilterState } from './OrderFilters'
 import { useTranslation } from '@/hooks/useTranslation'
+import { TIME } from '@/lib/constants/time'
 
 interface OrderForStats {
   id: string
@@ -28,7 +29,7 @@ export default function OrderStats({ orders, onFilterClick }: OrderStatsProps) {
     urgent: orders.filter(o => {
       const deadline = new Date(o.deadline)
       const today = new Date()
-      const daysUntilDeadline = Math.ceil((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+      const daysUntilDeadline = Math.ceil((deadline.getTime() - today.getTime()) / TIME.MS_PER_DAY)
       return daysUntilDeadline <= 3 && daysUntilDeadline >= 0 && o.status !== 'completed' && o.status !== 'cancelled'
     }).length,
     overdue: orders.filter(o => {

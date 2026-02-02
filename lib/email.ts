@@ -3,6 +3,7 @@
 // ============================================
 
 import { Resend } from 'resend'
+import { TIME } from '@/lib/constants/time'
 import { logger } from '@/lib/logger'
 
 // Initialize Resend client only if API key is available
@@ -310,7 +311,7 @@ export function generateStatusChangedEmail(data: OrderEmailData): EmailPayload {
 
 export function generateDeadlineApproachingEmail(data: OrderEmailData): EmailPayload {
   const daysLeft = data.deadline
-    ? Math.ceil((new Date(data.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    ? Math.ceil((new Date(data.deadline).getTime() - Date.now()) / TIME.MS_PER_DAY)
     : 0
 
   const html = baseTemplate(`
