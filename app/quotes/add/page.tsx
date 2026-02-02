@@ -4,33 +4,17 @@ import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { supabase } from '@/lib/supabase'
 import DatePicker from '@/components/ui/DatePicker'
-import type { UnifiedPricingResult } from '@/types/quotes'
 import type { Customer } from '@/types/customers'
 import { logger } from '@/lib/logger'
 import AppLayout from '@/components/layout/AppLayout'
 import CustomerSelect from '@/components/customers/CustomerSelect'
 import QuickAddCustomerModal from '@/components/customers/QuickAddCustomerModal'
-import InventoryAutocomplete from '@/components/inventory/InventoryAutocomplete'
 import AIImportDialog from '@/components/quotes/AIImportDialog'
+import QuoteItemCard, { type QuoteItem } from '@/components/quotes/QuoteItemCard'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import { TIME, BUSINESS } from '@/lib/constants/time'
-
-// Typ dla pozycji oferty
-interface QuoteItem {
-  id: string
-  part_name: string
-  material: string
-  quantity: number
-  complexity: 'simple' | 'medium' | 'complex'
-  unit_price: number | null
-  total_price: number | null
-  pricing_result: UnifiedPricingResult | null
-  isCalculating: boolean
-  productLinked: boolean     // true = part_name wybrano z bazy Inventory
-  materialLinked: boolean    // true = material wybrano z bazy Inventory
-}
 
 // Generuj unikalne ID
 const generateId = () => Math.random().toString(36).substr(2, 9)
@@ -55,8 +39,9 @@ export default function AddQuotePage() {
   const searchParams = useSearchParams()
   const urlCustomerId = searchParams.get('customer_id')
 
-  const [companyId, setCompanyId] = useState<string>('')
-  const [userId, setUserId] = useState<number>(0)
+  const { profile } = useUserProfile()
+  const companyId = profile?.company_id || ''
+  const userId = profile?.id || 0
 
   // Customer state
   const [customerId, setCustomerId] = useState<string>(urlCustomerId || '')
@@ -76,27 +61,6 @@ export default function AddQuotePage() {
 
   // Submit state
   const [isCreating, setIsCreating] = useState(false)
-
-  // Get user and company info
-  useEffect(() => {
-    async function fetchUserInfo() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (userProfile) {
-        setCompanyId(userProfile.company_id)
-        setUserId(userProfile.id)
-      }
-    }
-
-    fetchUserInfo()
-  }, [])
 
   // Pre-fetch customer if customer_id in URL
   useEffect(() => {
@@ -363,11 +327,6 @@ export default function AddQuotePage() {
     }
   }
 
-  const complexityOptions = [
-    { value: 'simple', label: 'Prosta (1-2h)' },
-    { value: 'medium', label: 'Średnia (3-6h)' },
-    { value: 'complex', label: 'Złożona (8-20h)' },
-  ]
 
   return (
     <AppLayout>
@@ -419,142 +378,26 @@ export default function AddQuotePage() {
 
             <div className="space-y-4">
               {items.map((item, index) => (
-                <div
+                <QuoteItemCard
                   key={item.id}
-                  className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
-                >
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-slate-900 dark:text-white font-semibold">
-                      Pozycja {index + 1}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      {item.total_price !== null && (
-                        <span className="text-green-600 dark:text-green-400 font-bold">
-                          {item.total_price.toFixed(2)} PLN
-                        </span>
-                      )}
-                      {items.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeItem(item.id)}
-                          className="text-red-400 hover:text-red-300 text-sm font-medium"
-                        >
-                          Usuń
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Part Name */}
-                    <div>
-                      <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
-                        Nazwa części *
-                      </label>
-                      <InventoryAutocomplete
-                        value={item.part_name}
-                        onChange={(value, inventoryItem) => {
-                          setItems(prev => prev.map(i =>
-                            i.id === item.id
-                              ? { ...i, part_name: value, productLinked: !!inventoryItem }
-                              : i
-                          ))
-                        }}
-                        categoryFilter="finished_good"
-                        placeholder="Wybierz z magazynu..."
-                        allowCustom={true}
-                        error={getItemValidationError(item, 'product')}
-                      />
-                    </div>
-
-                    {/* Material */}
-                    <div>
-                      <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
-                        Materiał *
-                      </label>
-                      <InventoryAutocomplete
-                        value={item.material}
-                        onChange={(value, inventoryItem) => {
-                          setItems(prev => prev.map(i =>
-                            i.id === item.id
-                              ? { ...i, material: value, materialLinked: !!inventoryItem }
-                              : i
-                          ))
-                        }}
-                        categoryFilter="raw_material"
-                        placeholder="Wybierz materiał..."
-                        allowCustom={true}
-                        error={getItemValidationError(item, 'material')}
-                      />
-                    </div>
-
-                    {/* Quantity */}
-                    <div>
-                      <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
-                        Ilość *
-                      </label>
-                      <Input
-                        type="number"
-                        min="1"
-                        value={item.quantity}
-                        onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 1)}
-                      />
-                    </div>
-
-                    {/* Complexity */}
-                    <div>
-                      <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
-                        Złożoność
-                      </label>
-                      <select
-                        value={item.complexity}
-                        onChange={(e) => updateItem(item.id, 'complexity', e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
-                      >
-                        {complexityOptions.map(opt => (
-                          <option key={opt.value} value={opt.value}>{opt.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Calculate Button */}
-                  <div className="mt-4 flex justify-end">
-                    <Button
-                      type="button"
-                      onClick={() => calculateItemPricing(item.id)}
-                      disabled={item.isCalculating}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      {item.isCalculating ? (
-                        <>
-                          <span className="animate-spin mr-2">⏳</span>
-                          Obliczam...
-                        </>
-                      ) : item.total_price !== null ? (
-                        '🔄 Przelicz cenę'
-                      ) : (
-                        '🧮 Oblicz cenę'
-                      )}
-                    </Button>
-                  </div>
-
-                  {/* Pricing Result */}
-                  {item.pricing_result && (
-                    <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                      <div className="flex justify-between items-center">
-                        <div className="text-sm text-slate-600 dark:text-slate-400">
-                          <span className="font-medium">Metoda:</span> {item.pricing_result.recommended.method === 'rule_based' ? 'Kalkulator' : item.pricing_result.recommended.method === 'historical' ? 'Historia' : 'Hybrid'}
-                          <span className="mx-2">|</span>
-                          <span className="font-medium">Pewność:</span> {item.pricing_result.recommended.confidence}%
-                        </div>
-                        <div className="text-sm text-slate-600 dark:text-slate-400">
-                          {item.unit_price?.toFixed(2)} PLN/szt
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  item={item}
+                  index={index}
+                  canRemove={items.length > 1}
+                  onRemove={removeItem}
+                  onPartNameChange={(id, value, linked) => {
+                    setItems(prev => prev.map(i =>
+                      i.id === id ? { ...i, part_name: value, productLinked: linked } : i
+                    ))
+                  }}
+                  onMaterialChange={(id, value, linked) => {
+                    setItems(prev => prev.map(i =>
+                      i.id === id ? { ...i, material: value, materialLinked: linked } : i
+                    ))
+                  }}
+                  onFieldChange={updateItem}
+                  onCalculate={calculateItemPricing}
+                  getValidationError={getItemValidationError}
+                />
               ))}
             </div>
 
