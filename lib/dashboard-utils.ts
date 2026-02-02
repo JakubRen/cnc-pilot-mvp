@@ -142,7 +142,7 @@ export function getStatusBadgeColor(status: string): {
       };
     case 'in_progress':
       return {
-        bgColor: 'bg-blue-600',
+        bgColor: 'bg-violet-600',
         textColor: 'text-white',
         label: 'W realizacji',
       };
@@ -187,7 +187,7 @@ export function getActivityIcon(type: string): string {
 
 export function getActivityColor(type: string): string {
   const colors: Record<string, string> = {
-    order_created: 'text-blue-600',
+    order_created: 'text-violet-600',
     order_completed: 'text-green-600',
     low_stock_alert: 'text-yellow-600',
     timer_started: 'text-purple-600',

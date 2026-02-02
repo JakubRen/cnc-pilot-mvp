@@ -126,15 +126,15 @@ export default function MeasurementForm({ planId, items, orders, userId, company
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+    <form onSubmit={handleSubmit} className="bg-card border border-border rounded-lg p-4">
       {/* Order & Sample Info */}
       <div className="grid grid-cols-3 gap-3 mb-4">
         <div>
-          <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Zamówienie</label>
+          <label className="block text-muted-foreground text-xs mb-1">Zamówienie</label>
           <select
             value={selectedOrder}
             onChange={(e) => setSelectedOrder(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm focus:border-violet-500 focus:outline-none"
           >
             <option value="">-- Wybierz --</option>
             {orders.map(order => (
@@ -145,7 +145,7 @@ export default function MeasurementForm({ planId, items, orders, userId, company
           </select>
         </div>
         <div>
-          <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Nr partii</label>
+          <label className="block text-muted-foreground text-xs mb-1">Nr partii</label>
           <Input
             value={batchNumber}
             onChange={(e) => setBatchNumber(e.target.value)}
@@ -154,7 +154,7 @@ export default function MeasurementForm({ planId, items, orders, userId, company
           />
         </div>
         <div>
-          <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Nr próbki</label>
+          <label className="block text-muted-foreground text-xs mb-1">Nr próbki</label>
           <Input
             type="number"
             min="1"
@@ -169,8 +169,8 @@ export default function MeasurementForm({ planId, items, orders, userId, company
       <div className="space-y-3">
         {items.map((item) => {
           const status = getStatus(item, measurements[item.id] || '')
-          const borderColor = status === 'ok' ? 'border-green-500' : status === 'nok' ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'
-          const bgColor = status === 'ok' ? 'bg-green-900/20' : status === 'nok' ? 'bg-red-900/20' : 'bg-slate-50 dark:bg-slate-900'
+          const borderColor = status === 'ok' ? 'border-green-500' : status === 'nok' ? 'border-red-500' : 'border-border'
+          const bgColor = status === 'ok' ? 'bg-green-900/20' : status === 'nok' ? 'bg-red-900/20' : 'bg-muted'
 
           return (
             <div
@@ -179,14 +179,14 @@ export default function MeasurementForm({ planId, items, orders, userId, company
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-900 dark:text-white font-medium text-sm">{item.name}</span>
+                  <span className="text-foreground font-medium text-sm">{item.name}</span>
                   {item.is_critical && (
                     <span className="px-1.5 py-0.5 bg-red-600/30 text-red-400 text-[10px] rounded">
                       KRYT
                     </span>
                   )}
                 </div>
-                <span className="text-slate-500 dark:text-slate-400 text-xs font-mono">
+                <span className="text-muted-foreground text-xs font-mono">
                   {item.nominal_value} ±{Math.max(item.tolerance_plus, item.tolerance_minus)} {item.unit}
                 </span>
               </div>

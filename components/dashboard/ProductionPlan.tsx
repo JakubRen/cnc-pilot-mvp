@@ -24,17 +24,16 @@ interface ProductionPlanProps {
 export default function ProductionPlan({ productionPlan }: ProductionPlanProps) {
   const { t } = useTranslation();
   // DUAL THEME STYLES
-  const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border min-h-[200px]";
-  const headerTextClass = "text-xl font-bold text-slate-900 dark:text-foreground";
+  const containerClass = "bg-card rounded-lg p-6 shadow-sm border border-border min-h-[200px]";
+  const headerTextClass = "text-xl font-bold text-foreground";
 
   if (productionPlan.length === 0) {
     return (
       <div className={containerClass}>
-        <h2 className={headerTextClass}>📋 {t('dashboard', 'productionPlan')}</h2>
+        <h2 className={headerTextClass}>{t('dashboard', 'productionPlan')}</h2>
         <div className="text-center py-8">
-          <p className="text-6xl mb-4">✅</p>
           <p className="text-lg font-medium text-green-600 dark:text-green-400">{t('dashboard', 'noActiveOrders')}</p>
-          <p className="text-sm text-slate-500 dark:text-muted-foreground mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             {t('dashboard', 'allOrdersCompleted')}
           </p>
         </div>
@@ -47,11 +46,11 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className={headerTextClass}>
-          📋 {t('dashboard', 'productionPlan')} ({productionPlan.length})
+          {t('dashboard', 'productionPlan')} ({productionPlan.length})
         </h2>
         <Link
           href="/orders"
-          className="text-sm text-blue-600 dark:text-primary hover:underline"
+          className="text-sm text-primary hover:underline"
         >
           {t('dashboard', 'seeAll')} →
         </Link>
@@ -67,7 +66,7 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
             <Link
               key={order.id}
               href={`/orders/${order.id}`}
-              className="block bg-slate-50 dark:bg-slate-700/50 rounded-md p-4 hover:bg-slate-100 dark:hover:bg-slate-700 transition border-l-4 hover-lift"
+              className="block bg-muted rounded-md p-4 hover:bg-accent transition border-l-4"
               style={{
                 borderLeftColor:
                   priority.color === 'red'
@@ -82,7 +81,7 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-lg">{priority.icon}</span>
-                    <h3 className="font-semibold text-slate-900 dark:text-foreground">
+                    <h3 className="font-semibold text-foreground">
                       #{order.order_number}
                     </h3>
                     <span
@@ -91,7 +90,7 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
                       {statusBadge.label}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">{order.customer_name}</p>
+                  <p className="text-sm text-muted-foreground">{order.customer_name}</p>
                 </div>
                 <div className="text-right">
                   <p
@@ -105,14 +104,14 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
                   >
                     {priority.label}
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {new Date(order.deadline).toLocaleDateString('pl-PL')}
                   </p>
                 </div>
               </div>
 
               {/* Order Meta */}
-              <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
                 <span>{t('dashboard', 'quantity')}: {order.quantity} {t('dashboard', 'pieces')}</span>
                 {order.assigned_operator?.name && (
                   <span>{t('dashboard', 'operator')}: {order.assigned_operator.name}</span>
@@ -133,7 +132,7 @@ export default function ProductionPlan({ productionPlan }: ProductionPlanProps) 
         <div className="mt-4 text-center">
           <Link
             href="/orders"
-            className="text-sm text-blue-600 dark:text-primary hover:underline"
+            className="text-sm text-primary hover:underline"
           >
             {t('dashboard', 'seeAllOrders')} →
           </Link>

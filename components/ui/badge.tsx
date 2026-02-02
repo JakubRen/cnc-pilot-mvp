@@ -21,7 +21,7 @@ export const Badge = ({
   };
   
   const variants = {
-    default: "bg-blue-600/10 text-blue-400 border border-blue-600/20",
+    default: "bg-violet-600/10 text-violet-400 border border-violet-600/20",
     secondary: "bg-slate-700 text-slate-300",
     outline: "text-slate-300 border border-slate-600",
     success: "bg-green-500/10 text-green-400 border border-green-500/20",

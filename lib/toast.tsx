@@ -30,7 +30,7 @@ const ToastIcons = {
     </svg>
   ),
   info: (
-    <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+    <svg className="w-5 h-5 text-violet-500" fill="currentColor" viewBox="0 0 20 20">
       <path
         fillRule="evenodd"
         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
@@ -39,7 +39,7 @@ const ToastIcons = {
     </svg>
   ),
   loading: (
-    <svg className="w-5 h-5 text-blue-500 animate-spin" fill="none" viewBox="0 0 24 24">
+    <svg className="w-5 h-5 text-violet-500 animate-spin" fill="none" viewBox="0 0 24 24">
       <circle
         className="opacity-25"
         cx="12"
@@ -77,7 +77,7 @@ function renderToast(
       <div
         className={`${
           t.visible ? 'animate-enter' : 'animate-leave'
-        } max-w-md w-full glass-panel border border-slate-200 dark:border-slate-700 shadow-lg rounded-lg pointer-events-auto flex items-center gap-3 p-4`}
+        } max-w-md w-full bg-card border border-border shadow-md rounded-lg pointer-events-auto flex items-center gap-3 p-4`}
       >
         {/* Icon */}
         <div className="flex-shrink-0">
@@ -86,7 +86,7 @@ function renderToast(
 
         {/* Message */}
         <div className="flex-1">
-          <p className="text-sm font-medium text-slate-900 dark:text-white">
+          <p className="text-sm font-medium text-foreground">
             {message}
           </p>
         </div>
@@ -98,7 +98,7 @@ function renderToast(
               options.action!.onClick()
               toast.dismiss(t.id)
             }}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-semibold transition"
+            className="text-primary hover:text-primary/80 text-sm font-semibold transition"
           >
             {options.action.label}
           </button>
@@ -107,7 +107,7 @@ function renderToast(
         {/* Close button */}
         <button
           onClick={() => toast.dismiss(t.id)}
-          className="flex-shrink-0 text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+          className="flex-shrink-0 text-muted-foreground hover:text-foreground transition"
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path

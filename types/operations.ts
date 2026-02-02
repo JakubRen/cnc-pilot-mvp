@@ -193,7 +193,7 @@ export const operationStatusLabels: Record<OperationStatus, string> = {
 
 export const operationStatusColors: Record<OperationStatus, string> = {
   pending: 'bg-yellow-600',
-  in_progress: 'bg-blue-600',
+  in_progress: 'bg-violet-600',
   completed: 'bg-green-600',
   quality_check: 'bg-purple-600',
   failed: 'bg-red-600'

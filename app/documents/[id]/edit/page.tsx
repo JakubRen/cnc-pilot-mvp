@@ -40,7 +40,7 @@ export default async function EditDocumentPage({ params }: { params: Promise<{ i
   if (document.status !== 'draft') {
     return (
       <AppLayout>
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+        <div className="min-h-screen bg-background p-8">
           <div className="max-w-4xl mx-auto">
             <div className="bg-red-900/20 border border-red-700/50 rounded-lg p-8 text-center">
               <h1 className="text-2xl font-bold text-red-200 mb-4">Nie można edytować</h1>
@@ -93,7 +93,7 @@ export default async function EditDocumentPage({ params }: { params: Promise<{ i
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+      <div className="min-h-screen bg-background p-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-white mb-2">Edytuj Dokument</h1>
           <p className="text-slate-400 mb-8">{document.document_number}</p>

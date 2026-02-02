@@ -150,7 +150,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
   const getStatusColor = (status: string) => {
     const colors = {
       pending: 'bg-yellow-600',
-      in_progress: 'bg-blue-600',
+      in_progress: 'bg-violet-600',
       completed: 'bg-green-600',
       delayed: 'bg-red-600',
       cancelled: 'bg-gray-600',
@@ -166,7 +166,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
   const isOverdue = deadlineDate <= today && order.status !== 'completed' && order.status !== 'cancelled'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
+    <div className="min-h-screen bg-background p-8">
       <div className="max-w-4xl mx-auto">
         {/* Breadcrumbs */}
         <Breadcrumbs
@@ -181,7 +181,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Zamówienie #{order.order_number}</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Zamówienie #{order.order_number}</h1>
             <div className="flex gap-3 items-center">
               <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white uppercase ${getStatusColor(order.status)}`}>
                 {order.status === 'pending' ? 'Oczekujące' : order.status === 'in_progress' ? 'W realizacji' : order.status === 'completed' ? 'Ukończone' : order.status === 'delayed' ? 'Opóźnione' : order.status === 'cancelled' ? 'Anulowane' : order.status === 'ready_to_ship' ? 'Do wysyłki' : order.status}
@@ -197,13 +197,13 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             <GenerateClientLink customerName={order.customer_name} />
             <Link
               href={`/orders/${id}/edit`}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+              className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
             >
               Edytuj
             </Link>
             <Link
               href="/orders"
-              className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+              className="px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-accent transition"
             >
               Wróć do zamówień
             </Link>
@@ -213,68 +213,68 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
         {/* Order Details Grid */}
         <div className="grid grid-cols-2 gap-6">
           {/* Customer Information */}
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Informacje o kliencie</h2>
+          <div className="bg-card p-6 rounded-lg border border-border">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Informacje o kliencie</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Nazwa klienta</p>
-                <p className="text-slate-900 dark:text-white font-semibold text-lg">{order.customer_name}</p>
+                <p className="text-muted-foreground text-sm">Nazwa klienta</p>
+                <p className="text-foreground font-semibold text-lg">{order.customer_name}</p>
               </div>
             </div>
           </div>
 
           {/* Order Details */}
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Szczegóły zamówienia</h2>
+          <div className="bg-card p-6 rounded-lg border border-border">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Szczegóły zamówienia</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Nazwa części</p>
-                <p className="text-slate-900 dark:text-white font-semibold">{order.part_name || 'Brak'}</p>
+                <p className="text-muted-foreground text-sm">Nazwa części</p>
+                <p className="text-foreground font-semibold">{order.part_name || 'Brak'}</p>
               </div>
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Materiał</p>
-                <p className="text-slate-900 dark:text-white font-semibold">{order.material || 'Brak'}</p>
+                <p className="text-muted-foreground text-sm">Materiał</p>
+                <p className="text-foreground font-semibold">{order.material || 'Brak'}</p>
               </div>
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Ilość</p>
-                <p className="text-slate-900 dark:text-white font-semibold">{order.quantity} szt</p>
+                <p className="text-muted-foreground text-sm">Ilość</p>
+                <p className="text-foreground font-semibold">{order.quantity} szt</p>
               </div>
             </div>
           </div>
 
           {/* Order Items (multi-item) */}
           {orderItems && orderItems.length > 0 && (
-            <div className="col-span-2 bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Pozycje zamowienia ({orderItems.length})</h2>
+            <div className="col-span-2 bg-card p-6 rounded-lg border border-border">
+              <h2 className="text-xl font-semibold text-foreground mb-4">Pozycje zamowienia ({orderItems.length})</h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">#</th>
-                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Nazwa</th>
-                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Material</th>
-                      <th className="text-right py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Ilosc</th>
-                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Wymiary (mm)</th>
-                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Zlozonosc</th>
-                      <th className="text-left py-2 px-3 text-slate-500 dark:text-slate-400 font-medium">Notatki</th>
+                    <tr className="border-b border-border">
+                      <th className="text-left py-2 px-3 text-muted-foreground font-medium">#</th>
+                      <th className="text-left py-2 px-3 text-muted-foreground font-medium">Nazwa</th>
+                      <th className="text-left py-2 px-3 text-muted-foreground font-medium">Material</th>
+                      <th className="text-right py-2 px-3 text-muted-foreground font-medium">Ilosc</th>
+                      <th className="text-left py-2 px-3 text-muted-foreground font-medium">Wymiary (mm)</th>
+                      <th className="text-left py-2 px-3 text-muted-foreground font-medium">Zlozonosc</th>
+                      <th className="text-left py-2 px-3 text-muted-foreground font-medium">Notatki</th>
                     </tr>
                   </thead>
                   <tbody>
                     {orderItems.map((item: any, idx: number) => (
-                      <tr key={item.id} className="border-b border-slate-100 dark:border-slate-700/50">
-                        <td className="py-2 px-3 text-slate-400">{idx + 1}</td>
-                        <td className="py-2 px-3 text-slate-900 dark:text-white font-medium">{item.part_name}</td>
-                        <td className="py-2 px-3 text-slate-700 dark:text-slate-300">{item.material || '-'}</td>
-                        <td className="py-2 px-3 text-right text-slate-900 dark:text-white font-semibold">{item.quantity} szt</td>
-                        <td className="py-2 px-3 text-slate-600 dark:text-slate-400 text-xs">
+                      <tr key={item.id} className="border-b border-slate-100/50">
+                        <td className="py-2 px-3 text-muted-foreground">{idx + 1}</td>
+                        <td className="py-2 px-3 text-foreground font-medium">{item.part_name}</td>
+                        <td className="py-2 px-3 text-foreground">{item.material || '-'}</td>
+                        <td className="py-2 px-3 text-right text-foreground font-semibold">{item.quantity} szt</td>
+                        <td className="py-2 px-3 text-muted-foreground text-xs">
                           {item.length || item.width || item.height
                             ? `${item.length || '-'} x ${item.width || '-'} x ${item.height || '-'}`
                             : '-'}
                         </td>
-                        <td className="py-2 px-3 text-slate-600 dark:text-slate-400">
+                        <td className="py-2 px-3 text-muted-foreground">
                           {item.complexity === 'simple' ? 'Prosty' : item.complexity === 'medium' ? 'Sredni' : item.complexity === 'complex' ? 'Zlozony' : '-'}
                         </td>
-                        <td className="py-2 px-3 text-slate-500 dark:text-slate-400 text-xs">{item.notes || '-'}</td>
+                        <td className="py-2 px-3 text-muted-foreground text-xs">{item.notes || '-'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -284,49 +284,49 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           )}
 
           {/* Timeline */}
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Oś czasu</h2>
+          <div className="bg-card p-6 rounded-lg border border-border">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Oś czasu</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Termin</p>
-                <p className={`font-semibold text-lg ${isOverdue ? 'text-red-400' : 'text-slate-900 dark:text-white'}`}>
+                <p className="text-muted-foreground text-sm">Termin</p>
+                <p className={`font-semibold text-lg ${isOverdue ? 'text-red-400' : 'text-foreground'}`}>
                   {formatDate(order.deadline)}
                 </p>
               </div>
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Data utworzenia</p>
-                <p className="text-slate-900 dark:text-white">{formatDate(order.created_at)}</p>
+                <p className="text-muted-foreground text-sm">Data utworzenia</p>
+                <p className="text-foreground">{formatDate(order.created_at)}</p>
               </div>
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Ostatnia aktualizacja</p>
-                <p className="text-slate-900 dark:text-white">{formatDate(order.updated_at)}</p>
+                <p className="text-muted-foreground text-sm">Ostatnia aktualizacja</p>
+                <p className="text-foreground">{formatDate(order.updated_at)}</p>
               </div>
             </div>
           </div>
 
           {/* Creator Information */}
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Utworzone przez</h2>
+          <div className="bg-card p-6 rounded-lg border border-border">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Utworzone przez</h2>
             <div className="space-y-3">
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Imię i nazwisko</p>
-                <p className="text-slate-900 dark:text-white font-semibold">{order.creator?.full_name || 'Nieznany'}</p>
+                <p className="text-muted-foreground text-sm">Imię i nazwisko</p>
+                <p className="text-foreground font-semibold">{order.creator?.full_name || 'Nieznany'}</p>
               </div>
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Email</p>
-                <p className="text-slate-900 dark:text-white">{order.creator?.email || 'Brak'}</p>
+                <p className="text-muted-foreground text-sm">Email</p>
+                <p className="text-foreground">{order.creator?.email || 'Brak'}</p>
               </div>
             </div>
           </div>
 
           {/* Technical Drawing */}
           {drawingFile && (
-            <div className="col-span-2 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-lg border-2 border-blue-500/50">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+            <div className="col-span-2 bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 p-6 rounded-lg border-2 border-violet-500/50">
+              <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
                 <span className="text-2xl">📐</span>
                 Rysunek Techniczny
               </h2>
-              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+              <div className="bg-card p-4 rounded-lg border border-border">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="text-4xl">
@@ -334,10 +334,10 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                        drawingFile.name.toLowerCase().endsWith('.dxf') ? '📐' : '🖼️'}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900 dark:text-white">
+                      <p className="text-sm font-medium text-foreground">
                         {drawingFile.name}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-muted-foreground">
                         {(drawingFile.file_size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
@@ -346,7 +346,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                     href={drawingFile.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow-lg"
+                    className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold shadow-lg"
                   >
                     📱 Otwórz na tablecie →
                   </a>
@@ -357,7 +357,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                   <div className="mt-4">
                     <iframe
                       src={drawingFile.url}
-                      className="w-full h-96 border border-slate-300 dark:border-slate-600 rounded-lg"
+                      className="w-full h-96 border border-border rounded-lg"
                       title="Podgląd rysunku PDF"
                     />
                   </div>
@@ -370,13 +370,13 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                     <img
                       src={drawingFile.url}
                       alt="Rysunek techniczny"
-                      className="w-full h-auto border border-slate-300 dark:border-slate-600 rounded-lg"
+                      className="w-full h-auto border border-border rounded-lg"
                     />
                   </div>
                 )}
               </div>
 
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-3 italic">
+              <p className="text-xs text-muted-foreground mt-3 italic">
                 💡 Operator przy maszynie może otworzyć rysunek na tablecie przez przycisk powyżej
               </p>
             </div>
@@ -386,35 +386,35 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           <OrderProductionPlans orderId={id} productionPlans={productionPlans as any} />
 
           {/* Assigned Operator */}
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Przypisany operator</h2>
+          <div className="bg-card p-6 rounded-lg border border-border">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Przypisany operator</h2>
             <div className="space-y-3">
               {order.assigned_operator ? (
                 <>
                   <div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Imię i nazwisko</p>
-                    <p className="text-slate-900 dark:text-white font-semibold">{order.assigned_operator.full_name}</p>
+                    <p className="text-muted-foreground text-sm">Imię i nazwisko</p>
+                    <p className="text-foreground font-semibold">{order.assigned_operator.full_name}</p>
                   </div>
                   <div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Email</p>
-                    <p className="text-slate-900 dark:text-white">{order.assigned_operator.email}</p>
+                    <p className="text-muted-foreground text-sm">Email</p>
+                    <p className="text-foreground">{order.assigned_operator.email}</p>
                   </div>
                 </>
               ) : (
-                <p className="text-slate-400 dark:text-slate-500">Brak przypisanego operatora</p>
+                <p className="text-muted-foreground">Brak przypisanego operatora</p>
               )}
             </div>
           </div>
 
           {/* Quick Status Change */}
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-blue-200 dark:border-blue-700">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Szybka zmiana statusu</h2>
+          <div className="bg-card p-6 rounded-lg border border-violet-200 dark:border-violet-700">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Szybka zmiana statusu</h2>
             <StatusDropdown orderId={order.id} currentStatus={order.status} />
           </div>
 
           {/* Tags */}
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Tagi</h2>
+          <div className="bg-card p-6 rounded-lg border border-border">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Tagi</h2>
             <TagSelect
               entityType="order"
               entityId={order.id}
@@ -443,9 +443,9 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 
           {/* Notes (Full Width if exists) */}
           {order.notes && (
-            <div className="col-span-2 bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Notatki</h2>
-              <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{order.notes}</p>
+            <div className="col-span-2 bg-card p-6 rounded-lg border border-border">
+              <h2 className="text-xl font-semibold text-foreground mb-4">Notatki</h2>
+              <p className="text-foreground whitespace-pre-wrap">{order.notes}</p>
             </div>
           )}
 
@@ -466,9 +466,9 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           <OrderQCSummary orderId={id} orderStatus={order.status} qcMeasurements={qcMeasurements} />
           {/* Carbon Footprint Section (Full Width) */}
           {(order.status === 'completed' || order.status === 'ready_to_ship') && (
-            <div className="col-span-2 bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
+            <div className="col-span-2 bg-card p-6 rounded-lg border border-border">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
                   <span>🌿</span> Ślad Węglowy
                 </h2>
                 <Link
@@ -478,7 +478,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                   Oblicz emisje CO2
                 </Link>
               </div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 Oblicz ślad węglowy dla tego zamówienia w module raportów CO₂.
               </p>
             </div>

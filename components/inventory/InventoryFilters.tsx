@@ -66,7 +66,7 @@ export default function InventoryFilters({
     <div className="space-y-6">
       {/* Search */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           Szukaj
         </label>
         <input
@@ -74,19 +74,19 @@ export default function InventoryFilters({
           value={filters.search}
           onChange={(e) => updateFilter('search', e.target.value)}
           placeholder="Nazwa lub SKU..."
-          className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
         />
       </div>
 
       {/* Category */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           Kategoria
         </label>
         <select
           value={filters.category}
           onChange={(e) => updateFilter('category', e.target.value)}
-          className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
         >
           {INVENTORY_CATEGORIES.map((cat) => (
             <option key={cat.value} value={cat.value}>
@@ -98,13 +98,13 @@ export default function InventoryFilters({
 
       {/* Status */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           Status stanu
         </label>
         <select
           value={filters.status}
           onChange={(e) => updateFilter('status', e.target.value as InventoryFilterState['status'])}
-          className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
         >
           <option value="all">Wszystkie</option>
           <option value="ok">W normie</option>
@@ -115,7 +115,7 @@ export default function InventoryFilters({
 
       {/* Sort */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           Sortowanie
         </label>
         <div className="space-y-2">
@@ -133,9 +133,9 @@ export default function InventoryFilters({
                 value={option.value}
                 checked={filters.sortBy === option.value}
                 onChange={(e) => updateFilter('sortBy', e.target.value as InventoryFilterState['sortBy'])}
-                className="text-blue-600"
+                className="text-violet-600"
               />
-              <span className="text-sm text-slate-700 dark:text-slate-300">{option.label}</span>
+              <span className="text-sm text-foreground">{option.label}</span>
             </label>
           ))}
         </div>

@@ -118,7 +118,7 @@ export const productionPlanStatusLabels: Record<ProductionPlanStatus, string> = 
 
 export const productionPlanStatusColors: Record<ProductionPlanStatus, string> = {
   draft: 'bg-slate-600',
-  active: 'bg-blue-600',
+  active: 'bg-violet-600',
   in_progress: 'bg-purple-600',
   completed: 'bg-green-600',
   cancelled: 'bg-gray-600',

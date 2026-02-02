@@ -85,8 +85,8 @@ export default async function MachinesPage() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Maszyny</h1>
-              <p className="text-slate-500 dark:text-slate-400 mt-1">Zarządzanie parkiem maszynowym i przeglądami</p>
+              <h1 className="text-4xl font-bold text-foreground">Maszyny</h1>
+              <p className="text-muted-foreground mt-1">Zarządzanie parkiem maszynowym i przeglądami</p>
             </div>
             <Link href="/machines/add">
               <Button variant="primary">+ Dodaj maszynę</Button>
@@ -95,24 +95,24 @@ export default async function MachinesPage() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-              <p className="text-slate-500 dark:text-slate-400 text-sm">Wszystkie</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-white">{totalMachines}</p>
+            <div className="bg-card border border-border rounded-lg p-4">
+              <p className="text-muted-foreground text-sm">Wszystkie</p>
+              <p className="text-3xl font-bold text-foreground">{totalMachines}</p>
             </div>
-            <div className="bg-white dark:bg-slate-800 border border-green-200 dark:border-green-700/50 rounded-lg p-4">
-              <p className="text-slate-500 dark:text-slate-400 text-sm">Aktywne</p>
+            <div className="bg-card border border-green-200 dark:border-green-700/50 rounded-lg p-4">
+              <p className="text-muted-foreground text-sm">Aktywne</p>
               <p className="text-3xl font-bold text-green-600 dark:text-green-400">{activeMachines}</p>
             </div>
-            <div className="bg-white dark:bg-slate-800 border border-yellow-200 dark:border-yellow-700/50 rounded-lg p-4">
-              <p className="text-slate-500 dark:text-slate-400 text-sm">W konserwacji</p>
+            <div className="bg-card border border-yellow-200 dark:border-yellow-700/50 rounded-lg p-4">
+              <p className="text-muted-foreground text-sm">W konserwacji</p>
               <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{inMaintenanceMachines}</p>
             </div>
-            <div className={`bg-white dark:bg-slate-800 border rounded-lg p-4 ${brokenMachines > 0 ? 'border-red-200 dark:border-red-700/50' : 'border-slate-200 dark:border-slate-700'}`}>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">Awarie</p>
-              <p className={`text-3xl font-bold ${brokenMachines > 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-400 dark:text-slate-500'}`}>{brokenMachines}</p>
+            <div className={`bg-card border rounded-lg p-4 ${brokenMachines > 0 ? 'border-red-200 dark:border-red-700/50' : 'border-border'}`}>
+              <p className="text-muted-foreground text-sm">Awarie</p>
+              <p className={`text-3xl font-bold ${brokenMachines > 0 ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'}`}>{brokenMachines}</p>
             </div>
-            <div className={`bg-white dark:bg-slate-800 border rounded-lg p-4 ${overdueMachines.length > 0 ? 'border-red-200 dark:border-red-700/50' : 'border-slate-200 dark:border-slate-700'}`}>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">Przegląd zaległy</p>
+            <div className={`bg-card border rounded-lg p-4 ${overdueMachines.length > 0 ? 'border-red-200 dark:border-red-700/50' : 'border-border'}`}>
+              <p className="text-muted-foreground text-sm">Przegląd zaległy</p>
               <p className={`text-3xl font-bold ${overdueMachines.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
                 {overdueMachines.length}
               </p>
@@ -135,8 +135,8 @@ export default async function MachinesPage() {
                       className="flex justify-between items-center bg-red-50 dark:bg-red-900/20 p-3 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition"
                     >
                       <div>
-                        <span className="text-slate-900 dark:text-white font-medium">{m.name}</span>
-                        {m.code && <span className="text-slate-500 dark:text-slate-400 ml-2">({m.code})</span>}
+                        <span className="text-foreground font-medium">{m.name}</span>
+                        {m.code && <span className="text-muted-foreground ml-2">({m.code})</span>}
                       </div>
                       <span className="text-red-600 dark:text-red-400 font-semibold">{daysOverdue} dni po terminie</span>
                     </Link>
@@ -149,12 +149,12 @@ export default async function MachinesPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Machines List */}
             <div className="lg:col-span-2">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Park maszynowy</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">Park maszynowy</h2>
               {!machines || machines.length === 0 ? (
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-12 text-center">
+                <div className="bg-card border border-border rounded-lg p-12 text-center">
                   <div className="text-6xl mb-4">🔧</div>
-                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Brak maszyn</h2>
-                  <p className="text-slate-500 dark:text-slate-400 mb-6">Dodaj maszyny CNC i urządzenia produkcyjne</p>
+                  <h2 className="text-xl font-semibold text-foreground mb-2">Brak maszyn</h2>
+                  <p className="text-muted-foreground mb-6">Dodaj maszyny CNC i urządzenia produkcyjne</p>
                   <Link href="/machines/add">
                     <Button variant="primary">Dodaj pierwszą maszynę</Button>
                   </Link>
@@ -165,27 +165,27 @@ export default async function MachinesPage() {
                     <Link
                       key={machine.id}
                       href={`/machines/${machine.id}`}
-                      className="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:border-blue-500/50 transition"
+                      className="block bg-card border border-border rounded-lg p-4 hover:border-violet-500/50 transition"
                     >
                       <div className="flex justify-between items-start">
                         <div>
                           <div className="flex items-center gap-3 mb-1">
-                            <span className="text-slate-900 dark:text-white font-semibold text-lg">{machine.name}</span>
+                            <span className="text-foreground font-semibold text-lg">{machine.name}</span>
                             {getStatusBadge(machine.status)}
                           </div>
-                          <div className="text-slate-700 dark:text-slate-400 text-sm">
+                          <div className="text-slate-700 dark:text-muted-foreground text-sm">
                             {machine.code && <span className="mr-3">Kod: {machine.code}</span>}
                             {machine.manufacturer && <span className="mr-3">{machine.manufacturer}</span>}
                             {machine.model && <span>{machine.model}</span>}
                           </div>
                           {machine.location && (
-                            <p className="text-slate-500 dark:text-slate-500 text-xs mt-1">📍 {machine.location}</p>
+                            <p className="text-slate-500 dark:text-muted-foreground text-xs mt-1">📍 {machine.location}</p>
                           )}
                         </div>
                         <div className="text-right">
                           {machine.next_maintenance_date && (
                             <div>
-                              <p className="text-slate-500 dark:text-slate-500 text-xs">Następny przegląd</p>
+                              <p className="text-slate-500 dark:text-muted-foreground text-xs">Następny przegląd</p>
                               {getMaintenanceUrgency(machine)}
                             </div>
                           )}
@@ -200,16 +200,16 @@ export default async function MachinesPage() {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Upcoming Maintenance */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">Zaplanowane przeglądy</h3>
+              <div className="bg-card border border-border rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-foreground mb-3">Zaplanowane przeglądy</h3>
                 {!upcomingMaintenance || upcomingMaintenance.length === 0 ? (
-                  <p className="text-slate-500 dark:text-slate-500 text-sm">Brak zaplanowanych przeglądów</p>
+                  <p className="text-slate-500 dark:text-muted-foreground text-sm">Brak zaplanowanych przeglądów</p>
                 ) : (
                   <div className="space-y-2">
                     {upcomingMaintenance.slice(0, 5).map((log) => (
-                      <div key={log.id} className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
-                        <p className="text-slate-900 dark:text-white text-sm font-medium">{log.title}</p>
-                        <p className="text-slate-700 dark:text-slate-400 text-xs">
+                      <div key={log.id} className="p-3 bg-muted rounded-lg">
+                        <p className="text-foreground text-sm font-medium">{log.title}</p>
+                        <p className="text-slate-700 dark:text-muted-foreground text-xs">
                           {log.machines?.name}
                           {log.scheduled_date && (
                             <span className="ml-2">
@@ -224,8 +224,8 @@ export default async function MachinesPage() {
               </div>
 
               {/* Quick Stats */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">Typy maszyn</h3>
+              <div className="bg-card border border-border rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-foreground mb-3">Typy maszyn</h3>
                 {machines && machines.length > 0 ? (
                   <div className="space-y-2">
                     {Object.entries(
@@ -236,13 +236,13 @@ export default async function MachinesPage() {
                       }, {})
                     ).map(([type, count]) => (
                       <div key={type} className="flex justify-between items-center">
-                        <span className="text-slate-700 dark:text-slate-400 text-sm">{type}</span>
-                        <span className="text-slate-900 dark:text-white font-semibold">{count}</span>
+                        <span className="text-slate-700 dark:text-muted-foreground text-sm">{type}</span>
+                        <span className="text-foreground font-semibold">{count}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-slate-500 dark:text-slate-500 text-sm">Brak danych</p>
+                  <p className="text-slate-500 dark:text-muted-foreground text-sm">Brak danych</p>
                 )}
               </div>
             </div>

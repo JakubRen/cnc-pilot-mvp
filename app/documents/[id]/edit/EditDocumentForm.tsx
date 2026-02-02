@@ -263,10 +263,10 @@ export default function EditDocumentForm({ documentId, document, items: existing
   return (
     <>
       <ConfirmDialog />
-      <form className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700 space-y-6">
+      <form className="bg-card p-8 rounded-lg border border-border space-y-6">
         {/* Typ dokumentu */}
       <div>
-        <label htmlFor="document_type" className="block text-slate-700 dark:text-slate-300 mb-3 font-medium">
+        <label htmlFor="document_type" className="block text-foreground mb-3 font-medium">
           Typ Dokumentu *
         </label>
         <div className="grid grid-cols-3 gap-4">
@@ -282,7 +282,7 @@ export default function EditDocumentForm({ documentId, document, items: existing
               className={`px-4 py-3 rounded-lg border-2 font-semibold transition ${
                 documentType === type.value
                   ? `bg-${type.color}-600 border-${type.color}-500 text-white`
-                  : 'bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-500'
+                  : 'bg-muted border-border text-foreground hover:border-border dark:hover:border-slate-500'
               }`}
             >
               {type.label}
@@ -293,7 +293,7 @@ export default function EditDocumentForm({ documentId, document, items: existing
 
       {/* Kontrahent */}
       <div>
-        <label htmlFor="contractor" className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+        <label htmlFor="contractor" className="block text-foreground mb-2 font-medium">
           Kontrahent *
         </label>
         <input
@@ -301,14 +301,14 @@ export default function EditDocumentForm({ documentId, document, items: existing
           type="text"
           value={contractor}
           onChange={(e) => setContractor(e.target.value)}
-          className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
           placeholder="Nazwa firmy lub dostawcy"
         />
       </div>
 
       {/* Opis */}
       <div>
-        <label htmlFor="description" className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+        <label htmlFor="description" className="block text-foreground mb-2 font-medium">
           Opis (opcjonalnie)
         </label>
         <textarea
@@ -316,7 +316,7 @@ export default function EditDocumentForm({ documentId, document, items: existing
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
           placeholder="Dodatkowe informacje o dokumencie..."
         />
       </div>
@@ -324,13 +324,13 @@ export default function EditDocumentForm({ documentId, document, items: existing
       {/* Pozycje dokumentu */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <label className="block text-slate-700 dark:text-slate-300 font-medium">
+          <label className="block text-foreground font-medium">
             Pozycje Dokumentu *
           </label>
           <button
             type="button"
             onClick={addItem}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold text-sm"
           >
             + Dodaj Pozycję
           </button>
@@ -341,9 +341,9 @@ export default function EditDocumentForm({ documentId, document, items: existing
             const selectedItem = inventoryItems.find(inv => inv.id === item.inventory_id)
 
             return (
-              <div key={index} className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+              <div key={index} className="bg-muted p-4 rounded-lg border border-border">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-slate-900 dark:text-white font-semibold">Pozycja {index + 1}</span>
+                  <span className="text-foreground font-semibold">Pozycja {index + 1}</span>
                   {items.length > 1 && (
                     <button
                       type="button"
@@ -358,11 +358,11 @@ export default function EditDocumentForm({ documentId, document, items: existing
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Komponent */}
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">Komponent *</label>
+                    <label className="block text-muted-foreground mb-2 text-sm">Komponent *</label>
                     <select
                       value={item.inventory_id}
                       onChange={(e) => updateItem(index, 'inventory_id', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     >
                       <option value="">Wybierz komponent...</option>
                       {inventoryItems.map((inv) => (
@@ -375,7 +375,7 @@ export default function EditDocumentForm({ documentId, document, items: existing
 
                   {/* Ilość */}
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
+                    <label className="block text-muted-foreground mb-2 text-sm">
                       Ilość * {selectedItem && `(${selectedItem.unit})`}
                     </label>
                     <input
@@ -384,11 +384,11 @@ export default function EditDocumentForm({ documentId, document, items: existing
                       min="0"
                       value={item.quantity || ''}
                       onChange={(e) => updateItem(index, 'quantity', parseFloat(e.target.value) || 0)}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="0"
                     />
                     {selectedItem && (
-                      <p className="text-slate-500 text-xs mt-1">
+                      <p className="text-muted-foreground text-xs mt-1">
                         Dostępne: {selectedItem.quantity} {selectedItem.unit}
                       </p>
                     )}
@@ -396,12 +396,12 @@ export default function EditDocumentForm({ documentId, document, items: existing
 
                   {/* Notatka */}
                   <div className="sm:col-span-2">
-                    <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">Notatka (opcjonalnie)</label>
+                    <label className="block text-muted-foreground mb-2 text-sm">Notatka (opcjonalnie)</label>
                     <input
                       type="text"
                       value={item.notes}
                       onChange={(e) => updateItem(index, 'notes', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="Dodatkowe informacje..."
                     />
                   </div>
@@ -426,23 +426,23 @@ export default function EditDocumentForm({ documentId, document, items: existing
           type="button"
           onClick={handleUpdate}
           disabled={isSubmitting}
-          className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition"
+          className="px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition"
         >
           Zapisz jako Szkic
         </button>
         <button
           type="button"
           onClick={() => router.push(`/documents/${documentId}`)}
-          className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 font-semibold transition"
+          className="px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-muted dark:hover:bg-slate-600 font-semibold transition"
         >
           Anuluj
         </button>
       </div>
 
         {/* Info */}
-        <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4 text-sm text-blue-200">
+        <div className="bg-violet-900/20 border border-violet-700/50 rounded-lg p-4 text-sm text-violet-200">
           <p className="font-semibold mb-2">ℹ️ Informacja:</p>
-          <ul className="list-disc list-inside space-y-1 text-blue-300">
+          <ul className="list-disc list-inside space-y-1 text-violet-300">
             <li><strong>Zapisz jako Szkic:</strong> Dokument pozostanie szkicem (możesz edytować dalej)</li>
             <li><strong>Zatwierdź i Zapisz:</strong> Automatycznie zaktualizuje stany magazynowe (nieodwracalne)</li>
             <li><strong>PW:</strong> Dodaje do magazynu (+)</li>

@@ -28,19 +28,19 @@ export function BulkActionBar({
     <div
       className={cn(
         'fixed bottom-6 left-1/2 -translate-x-1/2 z-40',
-        'glass-panel border border-slate-200 dark:border-slate-700',
-        'rounded-xl shadow-2xl p-4',
+        'bg-card border border-border',
+        'rounded-lg shadow-md p-4',
         'animate-slide-in-bottom',
         className
       )}
     >
       <div className="flex items-center gap-4">
         {/* Selected count */}
-        <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+        <div className="flex items-center gap-2 px-3 py-2 bg-accent rounded-lg">
+          <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
-          <span className="text-sm font-semibold text-slate-900 dark:text-white">
+          <span className="text-sm font-semibold text-foreground">
             {selectedCount} zaznaczonych
           </span>
         </div>
@@ -64,7 +64,7 @@ export function BulkActionBar({
         {/* Deselect all */}
         <button
           onClick={onDeselectAll}
-          className="ml-2 p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+          className="ml-2 p-2 text-muted-foreground hover:text-foreground transition rounded-lg hover:bg-muted"
           aria-label="Odznacz wszystko"
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

@@ -133,24 +133,24 @@ export default function SavedFilters({
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+      <div className="bg-card border border-border rounded-lg p-4">
         <div className="animate-pulse">
-          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-3"></div>
-          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+          <div className="h-4 bg-secondary rounded w-3/4 mb-3"></div>
+          <div className="h-4 bg-secondary rounded w-1/2"></div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+    <div className="bg-card border border-border rounded-lg p-4">
       <ConfirmDialog />
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Zapisane Filtry</h3>
+        <h3 className="text-sm font-semibold text-foreground">Zapisane Filtry</h3>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="text-xs text-blue-400 hover:text-blue-300 transition font-semibold"
+          className="text-xs text-violet-400 hover:text-violet-300 transition font-semibold"
         >
           + Zapisz Aktualny
         </button>
@@ -158,7 +158,7 @@ export default function SavedFilters({
 
       {/* Saved Filters List */}
       {savedFilters.length === 0 ? (
-        <p className="text-xs text-slate-500 dark:text-slate-400 text-center py-4">
+        <p className="text-xs text-muted-foreground text-center py-4">
           Brak zapisanych filtrów
         </p>
       ) : (
@@ -166,18 +166,18 @@ export default function SavedFilters({
           {savedFilters.map((filter) => (
             <div
               key={filter.id}
-              className="flex items-center justify-between p-3 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition group"
+              className="flex items-center justify-between p-3 bg-muted rounded-lg hover:bg-accent transition group"
             >
               <button
                 onClick={() => handleLoadFilter(filter)}
                 className="flex-1 text-left"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-slate-900 dark:text-white font-medium">
+                  <span className="text-sm text-foreground font-medium">
                     {filter.name}
                   </span>
                   {filter.is_default && (
-                    <span className="px-2 py-0.5 bg-blue-600 text-white text-xs rounded-full">
+                    <span className="px-2 py-0.5 bg-violet-600 text-white text-xs rounded-full">
                       System
                     </span>
                   )}
@@ -201,13 +201,13 @@ export default function SavedFilters({
       {/* Save Filter Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-w-md w-full">
+          <div className="bg-card border border-border rounded-lg shadow-xl max-w-md w-full">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Zapisz Filtr</h3>
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h3 className="text-xl font-bold text-foreground">Zapisz Filtr</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+                className="text-muted-foreground hover:text-foreground transition"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -217,7 +217,7 @@ export default function SavedFilters({
 
             {/* Modal Body */}
             <div className="p-6">
-              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Nazwa Filtru
               </label>
               <input
@@ -225,7 +225,7 @@ export default function SavedFilters({
                 value={filterName}
                 onChange={(e) => setFilterName(e.target.value)}
                 placeholder="np. Pilne zamówienia z tagiem XYZ"
-                className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 bg-muted border border-border rounded-lg text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleSaveFilter()
@@ -234,16 +234,16 @@ export default function SavedFilters({
             </div>
 
             {/* Modal Actions */}
-            <div className="flex gap-3 p-6 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex gap-3 p-6 border-t border-border">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-900 dark:text-white rounded-lg transition font-semibold"
+                className="flex-1 px-4 py-2 bg-muted hover:bg-accent text-foreground rounded-lg transition font-semibold"
               >
                 Anuluj
               </button>
               <button
                 onClick={handleSaveFilter}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                className="flex-1 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition font-semibold"
               >
                 Zapisz
               </button>

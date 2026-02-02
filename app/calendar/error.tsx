@@ -29,7 +29,7 @@ export default function CalendarError({
         <div className="flex gap-3 justify-center">
           <button
             onClick={reset}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition"
           >
             Spróbuj ponownie
           </button>

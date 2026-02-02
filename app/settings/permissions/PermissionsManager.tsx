@@ -241,8 +241,8 @@ export default function PermissionsManager({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Users List */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Użytkownicy</h2>
+      <div className="bg-card rounded-lg border border-border p-4">
+        <h2 className="text-lg font-semibold text-foreground mb-4">Użytkownicy</h2>
         <div className="space-y-2">
           {users.map((user) => (
             <button
@@ -250,8 +250,8 @@ export default function PermissionsManager({
               onClick={() => handleSelectUser(user)}
               className={`w-full text-left p-3 rounded-lg transition ${
                 selectedUser?.id === user.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-muted text-foreground hover:bg-accent'
               }`}
             >
               <div className="font-medium">{user.full_name}</div>
@@ -262,7 +262,7 @@ export default function PermissionsManager({
                     user.role === 'owner'
                       ? 'bg-purple-600'
                       : user.role === 'admin'
-                        ? 'bg-blue-600'
+                        ? 'bg-violet-600'
                         : user.role === 'manager'
                           ? 'bg-green-600'
                           : user.role === 'operator'
@@ -279,15 +279,15 @@ export default function PermissionsManager({
       </div>
 
       {/* Permissions Editor */}
-      <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+      <div className="lg:col-span-2 bg-card rounded-lg border border-border p-4">
         {selectedUser ? (
           <>
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                <h2 className="text-lg font-semibold text-foreground">
                   Uprawnienia: {selectedUser.full_name}
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className="text-sm text-muted-foreground">
                   Rola: {ROLE_LABELS[selectedUser.role] || selectedUser.role}
                 </p>
               </div>
@@ -297,8 +297,8 @@ export default function PermissionsManager({
             </div>
 
             {/* Interface Mode Selector */}
-            <div className="mb-6 p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
-              <h3 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
+            <div className="mb-6 p-4 bg-muted/50 rounded-lg border border-border">
+              <h3 className="text-foreground font-semibold mb-3 flex items-center gap-2">
                 <span className="text-xl">🖥️</span>
                 Tryb interfejsu
               </h3>
@@ -309,8 +309,8 @@ export default function PermissionsManager({
                     onClick={() => setInterfaceMode(mode)}
                     className={`p-3 rounded-lg text-left transition border-2 ${
                       interfaceMode === mode
-                        ? 'bg-blue-600 border-blue-400 text-white'
-                        : 'bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-500'
+                        ? 'bg-violet-600 border-violet-400 text-white'
+                        : 'bg-white dark:bg-muted border-border text-foreground hover:border-slate-400 dark:hover:border-slate-500'
                     }`}
                   >
                     <div className="font-medium">{INTERFACE_MODE_LABELS[mode]}</div>
@@ -326,19 +326,19 @@ export default function PermissionsManager({
             <div className="flex gap-4 mb-6 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-green-600" />
-                <span className="text-slate-600 dark:text-slate-300">Nadane (nadpisanie)</span>
+                <span className="text-muted-foreground">Nadane (nadpisanie)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-red-600" />
-                <span className="text-slate-600 dark:text-slate-300">Odebrane (nadpisanie)</span>
+                <span className="text-muted-foreground">Odebrane (nadpisanie)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-green-600/40" />
-                <span className="text-slate-600 dark:text-slate-300">Z roli (aktywne)</span>
+                <span className="text-muted-foreground">Z roli (aktywne)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-slate-600" />
-                <span className="text-slate-600 dark:text-slate-300">Z roli (brak)</span>
+                <span className="text-muted-foreground">Z roli (brak)</span>
               </div>
             </div>
 
@@ -346,7 +346,7 @@ export default function PermissionsManager({
             <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
               {Object.entries(permissionsByModule).map(([module, perms]) => (
                 <div key={module}>
-                  <h3 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
+                  <h3 className="text-foreground font-semibold mb-3 flex items-center gap-2">
                     <span className="text-xl">
                       {module === 'dashboard' && '📊'}
                       {module === 'orders' && '📦'}
@@ -376,7 +376,7 @@ export default function PermissionsManager({
                                 ? 'bg-red-600 text-white'
                                 : state === 'role-granted'
                                   ? 'bg-green-600/40 text-green-300'
-                                  : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+                                  : 'bg-secondary text-muted-foreground'
                           }`}
                           title={perm.description}
                         >
@@ -390,7 +390,7 @@ export default function PermissionsManager({
             </div>
 
             {/* Info */}
-            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 rounded-lg text-sm text-blue-700 dark:text-blue-200">
+            <div className="mt-6 p-4 bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700/50 rounded-lg text-sm text-violet-700 dark:text-violet-200">
               <p className="font-semibold mb-1">Jak to działa?</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>Kliknij uprawnienie aby nadpisać domyślne z roli</li>
@@ -402,10 +402,10 @@ export default function PermissionsManager({
         ) : (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">👈</div>
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+            <h3 className="text-xl font-semibold text-foreground mb-2">
               Wybierz użytkownika
             </h3>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Wybierz użytkownika z listy po lewej, aby zarządzać jego
               uprawnieniami
             </p>

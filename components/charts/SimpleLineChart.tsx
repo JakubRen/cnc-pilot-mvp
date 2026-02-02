@@ -15,7 +15,7 @@ export default function SimpleLineChart<T = Record<string, unknown>>({
   data,
   xKey,
   yKey,
-  color = '#3b82f6',
+  color = '#8b5cf6',
   height = 300
 }: SimpleLineChartProps<T>) {
   const { resolvedTheme } = useTheme()

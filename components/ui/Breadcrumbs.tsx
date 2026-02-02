@@ -24,7 +24,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
               {/* Separator */}
               {index > 0 && (
                 <svg
-                  className="w-4 h-4 mx-2 text-slate-400 dark:text-slate-500"
+                  className="w-4 h-4 mx-2 text-muted-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -39,8 +39,8 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
                   className={cn(
                     'flex items-center gap-1.5',
                     isLast
-                      ? 'text-slate-900 dark:text-white font-medium'
-                      : 'text-slate-500 dark:text-slate-400'
+                      ? 'text-foreground font-medium'
+                      : 'text-muted-foreground'
                   )}
                   aria-current={isLast ? 'page' : undefined}
                 >
@@ -50,7 +50,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
               ) : (
                 <Link
                   href={item.href}
-                  className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                  className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {item.icon && <span className="w-4 h-4">{item.icon}</span>}
                   {item.label}

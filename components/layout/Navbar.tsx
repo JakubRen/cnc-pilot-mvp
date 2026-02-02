@@ -34,7 +34,7 @@ export default function Navbar({ user }: NavbarProps) {
     const colors = {
       owner: 'bg-purple-600',
       admin: 'bg-indigo-600',
-      manager: 'bg-blue-600',
+      manager: 'bg-violet-600',
       operator: 'bg-green-600',
       viewer: 'bg-gray-600',
       pending: 'bg-yellow-600',
@@ -48,11 +48,11 @@ export default function Navbar({ user }: NavbarProps) {
   return (
     <div className="mb-6">
       {/* Top bar with user info */}
-      <div className="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-slate-700">
+      <div className="flex justify-between items-center pb-4 border-b border-border">
         <div className="flex items-center gap-4">
-          <span className="text-slate-500 dark:text-slate-400">
+          <span className="text-muted-foreground">
             Logged in as:{' '}
-            <span className="text-slate-900 dark:text-white font-semibold">{user.email}</span>
+            <span className="text-foreground font-semibold">{user.email}</span>
           </span>
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold text-white uppercase ${getRoleBadgeColor()}`}
@@ -74,8 +74,8 @@ export default function Navbar({ user }: NavbarProps) {
           href="/users"
           className={`px-4 py-2 rounded-lg font-semibold transition ${
             isActive('/users')
-              ? 'bg-blue-600 text-white'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              ? 'bg-violet-600 text-white'
+              : 'bg-muted text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
           Users
@@ -84,8 +84,8 @@ export default function Navbar({ user }: NavbarProps) {
           href="/orders"
           className={`px-4 py-2 rounded-lg font-semibold transition ${
             isActive('/orders')
-              ? 'bg-blue-600 text-white'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              ? 'bg-violet-600 text-white'
+              : 'bg-muted text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
           Orders
@@ -94,8 +94,8 @@ export default function Navbar({ user }: NavbarProps) {
           href="/inventory"
           className={`px-4 py-2 rounded-lg font-semibold transition ${
             isActive('/inventory')
-              ? 'bg-blue-600 text-white'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              ? 'bg-violet-600 text-white'
+              : 'bg-muted text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
           Inventory

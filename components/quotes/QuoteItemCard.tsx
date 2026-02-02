@@ -43,9 +43,9 @@ export default function QuoteItemCard({
   onCalculate, getValidationError,
 }: Props) {
   return (
-    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+    <div className="bg-muted p-4 rounded-lg border border-border">
       <div className="flex justify-between items-center mb-4">
-        <span className="text-slate-900 dark:text-white font-semibold">
+        <span className="text-foreground font-semibold">
           Pozycja {index + 1}
         </span>
         <div className="flex items-center gap-2">
@@ -69,7 +69,7 @@ export default function QuoteItemCard({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Part Name */}
         <div>
-          <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
+          <label className="block text-muted-foreground mb-2 text-sm">
             Nazwa części *
           </label>
           <InventoryAutocomplete
@@ -86,7 +86,7 @@ export default function QuoteItemCard({
 
         {/* Material */}
         <div>
-          <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
+          <label className="block text-muted-foreground mb-2 text-sm">
             Materiał *
           </label>
           <InventoryAutocomplete
@@ -103,7 +103,7 @@ export default function QuoteItemCard({
 
         {/* Quantity */}
         <div>
-          <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
+          <label className="block text-muted-foreground mb-2 text-sm">
             Ilość *
           </label>
           <Input
@@ -116,13 +116,13 @@ export default function QuoteItemCard({
 
         {/* Complexity */}
         <div>
-          <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
+          <label className="block text-muted-foreground mb-2 text-sm">
             Złożoność
           </label>
           <select
             value={item.complexity}
             onChange={(e) => onFieldChange(item.id, 'complexity', e.target.value)}
-            className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
           >
             {complexityOptions.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -137,7 +137,7 @@ export default function QuoteItemCard({
           type="button"
           onClick={() => onCalculate(item.id)}
           disabled={item.isCalculating}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
+          className="bg-violet-600 hover:bg-violet-700 text-white"
         >
           {item.isCalculating ? (
             <>
@@ -156,12 +156,12 @@ export default function QuoteItemCard({
       {item.pricing_result && (
         <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
           <div className="flex justify-between items-center">
-            <div className="text-sm text-slate-600 dark:text-slate-400">
+            <div className="text-sm text-muted-foreground">
               <span className="font-medium">Metoda:</span> {item.pricing_result.recommended.method === 'rule_based' ? 'Kalkulator' : item.pricing_result.recommended.method === 'historical' ? 'Historia' : 'Hybrid'}
               <span className="mx-2">|</span>
               <span className="font-medium">Pewność:</span> {item.pricing_result.recommended.confidence}%
             </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400">
+            <div className="text-sm text-muted-foreground">
               {item.unit_price?.toFixed(2)} PLN/szt
             </div>
           </div>

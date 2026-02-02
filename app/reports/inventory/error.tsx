@@ -27,7 +27,7 @@ export default function InventoryReportError({
         </p>
         <button
           onClick={reset}
-          className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="w-full px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
         >
           Spróbuj ponownie
         </button>

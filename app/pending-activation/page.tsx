@@ -65,14 +65,14 @@ export default function PendingActivationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-background p-8">
       <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 max-w-md w-full">
         <div className="text-center">
           {/* Icon */}
@@ -100,7 +100,7 @@ export default function PendingActivationPage() {
           {/* Info */}
           <div className="text-left space-y-3 mb-6">
             <div className="flex items-start gap-3">
-              <span className="text-blue-400 text-xl">①</span>
+              <span className="text-violet-400 text-xl">①</span>
               <div>
                 <p className="text-slate-300 text-sm font-medium">
                   Konto zostało utworzone
@@ -132,7 +132,7 @@ export default function PendingActivationPage() {
           <div className="space-y-3">
             <button
               onClick={handleRefresh}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+              className="w-full py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
             >
               🔄 Sprawdź status
             </button>

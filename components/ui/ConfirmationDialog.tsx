@@ -31,13 +31,13 @@ export function ConfirmationDialog({
   const icons = {
     danger: <TrashIcon className="h-6 w-6 text-red-600" />,
     warning: <ExclamationTriangleIcon className="h-6 w-6 text-yellow-600" />,
-    info: <QuestionMarkCircleIcon className="h-6 w-6 text-blue-600" />,
+    info: <QuestionMarkCircleIcon className="h-6 w-6 text-violet-600" />,
   }
 
   const iconBg = {
     danger: 'bg-red-100 dark:bg-red-900/30',
     warning: 'bg-yellow-100 dark:bg-yellow-900/30',
-    info: 'bg-blue-100 dark:bg-blue-900/30',
+    info: 'bg-violet-100 dark:bg-violet-900/30',
   }
 
   const handleConfirm = async () => {
@@ -73,7 +73,7 @@ export function ConfirmationDialog({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <HeadlessDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-6 text-left align-middle shadow-xl transition-all">
+              <HeadlessDialog.Panel className="w-full max-w-md transform overflow-hidden rounded-lg bg-card p-6 text-left align-middle shadow-md transition-all border border-border">
                 <div className="flex items-start gap-4">
                   <div className={`flex-shrink-0 p-3 rounded-full ${iconBg[variant]}`}>
                     {icons[variant]}
@@ -81,11 +81,11 @@ export function ConfirmationDialog({
                   <div className="flex-1">
                     <HeadlessDialog.Title
                       as="h3"
-                      className="text-lg font-semibold leading-6 text-slate-900 dark:text-white"
+                      className="text-lg font-semibold leading-6 text-foreground"
                     >
                       {title}
                     </HeadlessDialog.Title>
-                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                    <p className="mt-2 text-sm text-muted-foreground">
                       {description}
                     </p>
                   </div>

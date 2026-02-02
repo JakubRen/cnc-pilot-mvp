@@ -69,10 +69,10 @@ export default function OrderItemCard({
   ]
 
   return (
-    <Card className="mb-4 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+    <Card className="mb-4 bg-card border-border">
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+          <h3 className="text-lg font-semibold text-foreground">
             Pozycja {index + 1}
           </h3>
           {itemCount > 1 && (
@@ -123,7 +123,7 @@ export default function OrderItemCard({
 
           {/* Material Quantity Needed */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">Ilosc materialu na jednostke</label>
+            <label className="block text-foreground mb-2 text-sm">Ilosc materialu na jednostke</label>
             <Input
               type="number"
               step="0.01"
@@ -135,7 +135,7 @@ export default function OrderItemCard({
 
           {/* Quantity */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'quantity')} *</label>
+            <label className="block text-foreground mb-2 text-sm">{t('common', 'quantity')} *</label>
             <Input
               type="number"
               min={1}
@@ -147,7 +147,7 @@ export default function OrderItemCard({
 
           {/* Complexity */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('common', 'complexity')}</label>
+            <label className="block text-foreground mb-2 text-sm">{t('common', 'complexity')}</label>
             <Select
               options={complexityOptions}
               value={item.complexity}
@@ -166,25 +166,25 @@ export default function OrderItemCard({
           </div>
 
           {/* Dimensions */}
-          <div className="sm:col-span-2 bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg border border-blue-200 dark:border-blue-500/30">
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Wymiary detalu (L x W x H)</h4>
+          <div className="sm:col-span-2 bg-muted/50 p-4 rounded-lg border border-violet-200 dark:border-violet-500/30">
+            <h4 className="text-sm font-semibold text-foreground mb-3">Wymiary detalu (L x W x H)</h4>
             <div className="grid grid-cols-3 gap-3 mb-2">
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">{t('common', 'length')} (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">{t('common', 'length')} (mm)</label>
                 <Input type="number" step="0.01" placeholder="np. 100"
                   value={item.length ?? ''}
                   onChange={(e) => onUpdate(index, { length: e.target.value ? Number(e.target.value) : null })}
                 />
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">{t('common', 'width')} (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">{t('common', 'width')} (mm)</label>
                 <Input type="number" step="0.01" placeholder="np. 50"
                   value={item.width ?? ''}
                   onChange={(e) => onUpdate(index, { width: e.target.value ? Number(e.target.value) : null })}
                 />
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">{t('common', 'height')} (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">{t('common', 'height')} (mm)</label>
                 <Input type="number" step="0.01" placeholder="np. 20"
                   value={item.height ?? ''}
                   onChange={(e) => onUpdate(index, { height: e.target.value ? Number(e.target.value) : null })}
@@ -193,21 +193,21 @@ export default function OrderItemCard({
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
                 <Input type="number" step="0.001" placeholder="0.1"
                   value={item.tolerance_length ?? ''}
                   onChange={(e) => onUpdate(index, { tolerance_length: e.target.value ? Number(e.target.value) : null })}
                 />
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
                 <Input type="number" step="0.001" placeholder="0.1"
                   value={item.tolerance_width ?? ''}
                   onChange={(e) => onUpdate(index, { tolerance_width: e.target.value ? Number(e.target.value) : null })}
                 />
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
                 <Input type="number" step="0.001" placeholder="0.1"
                   value={item.tolerance_height ?? ''}
                   onChange={(e) => onUpdate(index, { tolerance_height: e.target.value ? Number(e.target.value) : null })}
@@ -218,7 +218,7 @@ export default function OrderItemCard({
 
           {/* Per-item notes */}
           <div className="sm:col-span-2">
-            <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Notatki do pozycji</label>
+            <label className="block text-muted-foreground text-xs mb-1">Notatki do pozycji</label>
             <Input
               placeholder="Uwagi do tej pozycji..."
               value={item.notes}
@@ -232,7 +232,7 @@ export default function OrderItemCard({
               type="button"
               onClick={() => onCalculatePricing(index)}
               disabled={isCalculating}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-0"
+              className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 border-0"
             >
               {isCalculating && isPricingTarget ? 'Obliczam...' : 'Oblicz cene dla tej pozycji'}
             </Button>

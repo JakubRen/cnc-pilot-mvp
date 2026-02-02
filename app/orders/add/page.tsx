@@ -328,9 +328,9 @@ export default function AddOrderPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
+    <div className="min-h-screen bg-background p-8">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8">{t('orders', 'addNewOrder')}</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">{t('orders', 'addNewOrder')}</h1>
 
         {/* Unified Pricing Modal */}
         {pricingResult && (
@@ -352,35 +352,35 @@ export default function AddOrderPage() {
 
         <form onSubmit={onSubmit}>
           {/* === ORDER HEADER === */}
-          <Card className="mb-6 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+          <Card className="mb-6 bg-card border-border">
             <CardContent className="p-8">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Dane zamowienia</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-6">Dane zamowienia</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Order Number */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">
+                  <label className="block text-foreground mb-2">
                     {t('orders', 'orderNumber')} *
                   </label>
                   <div className="relative">
                     <Input
                       value={isGeneratingNumber ? 'Generowanie...' : generatedOrderNumber}
                       disabled
-                      className="bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 cursor-not-allowed"
+                      className="bg-muted/50 text-muted-foreground cursor-not-allowed"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       {isGeneratingNumber ? (
-                        <span className="animate-spin text-blue-500">&#x23F3;</span>
+                        <span className="animate-spin text-violet-500">&#x23F3;</span>
                       ) : (
                         <span className="text-green-500">&#x2713;</span>
                       )}
                     </div>
                   </div>
-                  <p className="text-xs text-blue-400 mt-1">Numer nadany automatycznie</p>
+                  <p className="text-xs text-violet-400 mt-1">Numer nadany automatycznie</p>
                 </div>
 
                 {/* Customer */}
                 <div className="sm:col-span-2">
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                  <label className="block text-foreground mb-2 font-medium">
                     {t('orders', 'customer')} *
                   </label>
                   <CustomerSelect
@@ -405,7 +405,7 @@ export default function AddOrderPage() {
 
                 {/* Status */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'status')} *</label>
+                  <label className="block text-foreground mb-2">{t('common', 'status')} *</label>
                   <Select
                     options={statusOptions}
                     value={status}
@@ -415,7 +415,7 @@ export default function AddOrderPage() {
 
                 {/* Operator */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Przypisany operator</label>
+                  <label className="block text-foreground mb-2">Przypisany operator</label>
                   <Select
                     options={[
                       { value: '', label: operatorsLoading ? 'Ladowanie...' : 'Brak przypisania' },
@@ -428,12 +428,12 @@ export default function AddOrderPage() {
 
                 {/* Notes */}
                 <div className="sm:col-span-2">
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Notatki</label>
+                  <label className="block text-foreground mb-2">Notatki</label>
                   <textarea
                     value={orderNotes}
                     onChange={(e) => setOrderNotes(e.target.value)}
                     rows={2}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     placeholder="Dodatkowe uwagi dotyczace zamowienia..."
                   />
                 </div>
@@ -468,32 +468,32 @@ export default function AddOrderPage() {
               type="button"
               variant="secondary"
               onClick={addItem}
-              className="w-full border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400"
+              className="w-full border-2 border-dashed border-border hover:border-violet-500 dark:hover:border-violet-400"
             >
               + Dodaj kolejna pozycje
             </Button>
           </div>
 
           {/* === COST SECTION === */}
-          <Card className="mb-6 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+          <Card className="mb-6 bg-card border-border">
             <CardContent className="p-8">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('orders', 'costCalculationTitle')}</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">{t('orders', 'costCalculationTitle')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
+                  <label className="block text-foreground mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
                   <Input type="number" step="0.01" value={materialCost} onChange={(e) => setMaterialCost(Number(e.target.value) || 0)} />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
+                  <label className="block text-foreground mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
                   <Input type="number" step="0.01" value={laborCost} onChange={(e) => setLaborCost(Number(e.target.value) || 0)} />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
+                  <label className="block text-foreground mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
                   <Input type="number" step="0.01" value={overheadCost} onChange={(e) => setOverheadCost(Number(e.target.value) || 0)} />
                 </div>
               </div>
-              <div className="mt-4 flex justify-between items-center border-t border-slate-200 dark:border-slate-600 pt-4">
-                <span className="text-slate-700 dark:text-slate-300 font-medium">{t('orders', 'totalCostCalculated')}</span>
+              <div className="mt-4 flex justify-between items-center border-t border-border pt-4">
+                <span className="text-foreground font-medium">{t('orders', 'totalCostCalculated')}</span>
                 <span className="text-2xl font-bold text-green-600 dark:text-green-400">
                   {totalCost.toFixed(2)} PLN
                 </span>

@@ -17,20 +17,20 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
   const maxRevenue = customers[0]?.revenue || 1;
 
   // DUAL THEME STYLES
-  const containerClass = "glass-panel rounded-xl p-6 shadow-sm dark:shadow-md border border-slate-200 dark:border-border min-h-[200px]";
-  const headerTextClass = "text-xl font-semibold text-slate-900 dark:text-foreground";
+  const containerClass = "bg-card rounded-lg p-6 shadow-sm border border-border min-h-[200px]";
+  const headerTextClass = "text-xl font-semibold text-foreground";
 
   if (customers.length === 0) {
     return (
       <div className={containerClass}>
         <h2 className={`${headerTextClass} mb-4 flex items-center gap-2`}>
-          <span>👥</span> Top 5 Klientów
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg> Top 5 Klientów
         </h2>
         <div className="text-center py-8">
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-muted-foreground">
             Brak completed orders z kosztami
           </p>
-          <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             Zamówienia z kosztami pojawią się tutaj po ukończeniu
           </p>
         </div>
@@ -41,7 +41,7 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
   return (
     <div className={containerClass}>
       <h2 className={`${headerTextClass} mb-4 flex items-center gap-2`}>
-        <span>👥</span> Top 5 Klientów
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg> Top 5 Klientów
       </h2>
 
       <div className="space-y-4 stagger-fade-in">
@@ -51,13 +51,13 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
               <div className="flex items-center gap-2">
                 <span className={`font-bold text-sm w-7 h-7 rounded-full flex items-center justify-center ${
                   index === 0 ? 'bg-yellow-500 dark:bg-yellow-600 text-white' :
-                  index === 1 ? 'bg-slate-400 dark:bg-slate-600 text-white' :
+                  index === 1 ? 'bg-muted-foreground text-white' :
                   index === 2 ? 'bg-orange-500 dark:bg-orange-700 text-white' :
-                  'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                  'bg-muted text-muted-foreground'
                 }`}>
                   #{index + 1}
                 </span>
-                <span className="font-semibold text-slate-900 dark:text-foreground truncate max-w-[180px]">
+                <span className="font-semibold text-foreground truncate max-w-[180px]">
                   {customer.name}
                 </span>
               </div>
@@ -69,21 +69,21 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
                     className="font-bold text-green-600 dark:text-green-400"
                   />
                 ) : (
-                  <div className="font-bold text-slate-400">---</div>
+                  <div className="font-bold text-muted-foreground">---</div>
                 )}
-                <div className="text-xs text-slate-500 dark:text-slate-400">
+                <div className="text-xs text-muted-foreground">
                   {customer.count} {customer.count === 1 ? 'zlecenie' : customer.count < 5 ? 'zlecenia' : 'zleceń'}
                 </div>
               </div>
             </div>
             {/* Progress bar - tylko gdy widoczne revenue */}
             {showRevenue && (
-              <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-500 ${
-                    index === 0 ? 'bg-gradient-to-r from-green-500 to-green-400 dark:from-green-600 dark:to-green-400' :
-                    index === 1 ? 'bg-gradient-to-r from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-400' :
-                    'bg-gradient-to-r from-slate-400 to-slate-300 dark:from-slate-600 dark:to-slate-500'
+                    index === 0 ? 'bg-green-500' :
+                    index === 1 ? 'bg-violet-500' :
+                    'bg-muted-foreground'
                   }`}
                   style={{ width: `${(customer.revenue / maxRevenue) * 100}%` }}
                 />

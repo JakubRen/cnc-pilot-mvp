@@ -324,16 +324,16 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
   ]
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700">
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-card p-8 rounded-lg border border-border">
       {/* 2-Column Grid - Order header */}
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* Order Number */}
         <div>
-          <label htmlFor="edit_order_number" className="block text-slate-700 dark:text-slate-300 mb-2">Numer zamowienia *</label>
+          <label htmlFor="edit_order_number" className="block text-foreground mb-2">Numer zamowienia *</label>
           <input
             id="edit_order_number"
             {...register('order_number')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
             placeholder="ORD-001"
           />
           {errors.order_number && <p className="text-red-400 text-sm mt-1">{errors.order_number.message}</p>}
@@ -341,11 +341,11 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Customer Name */}
         <div>
-          <label htmlFor="edit_customer_name" className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa klienta *</label>
+          <label htmlFor="edit_customer_name" className="block text-foreground mb-2">Nazwa klienta *</label>
           <input
             id="edit_customer_name"
             {...register('customer_name')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
             placeholder="Metal-Precyzja Sp. z o.o."
           />
           {errors.customer_name && <p className="text-red-400 text-sm mt-1">{errors.customer_name.message}</p>}
@@ -353,23 +353,23 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Deadline */}
         <div>
-          <label htmlFor="edit_deadline" className="block text-slate-700 dark:text-slate-300 mb-2">Termin *</label>
+          <label htmlFor="edit_deadline" className="block text-foreground mb-2">Termin *</label>
           <input
             id="edit_deadline"
             {...register('deadline')}
             type="date"
-            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
           />
           {errors.deadline && <p className="text-red-400 text-sm mt-1">{errors.deadline.message}</p>}
         </div>
 
         {/* Status */}
         <div>
-          <label htmlFor="edit_status" className="block text-slate-700 dark:text-slate-300 mb-2">Status *</label>
+          <label htmlFor="edit_status" className="block text-foreground mb-2">Status *</label>
           <select
             id="edit_status"
             {...register('status')}
-            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
           >
             <option value="pending">Oczekujace</option>
             <option value="in_progress">W realizacji</option>
@@ -381,7 +381,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Assigned Operator */}
         <div>
-          <label htmlFor="assigned_operator_id" className="block text-slate-700 dark:text-slate-300 mb-2">Przypisany operator</label>
+          <label htmlFor="assigned_operator_id" className="block text-foreground mb-2">Przypisany operator</label>
           <Select
             options={[
               { value: '', label: operatorsLoading ? 'Ladowanie...' : 'Brak przypisania' },
@@ -394,12 +394,12 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
         {/* Notes */}
         <div className="col-span-2">
-          <label htmlFor="edit_notes" className="block text-slate-700 dark:text-slate-300 mb-2">Notatki</label>
+          <label htmlFor="edit_notes" className="block text-foreground mb-2">Notatki</label>
           <textarea
             id="edit_notes"
             {...register('notes')}
             rows={3}
-            className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
             placeholder="Dodatkowe uwagi dotyczace zamowienia..."
           />
         </div>
@@ -408,11 +408,11 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
       {/* === MULTI-ITEM SECTION === */}
       {itemsLoaded && hasItems && orderItems.length > 0 ? (
         <div className="mb-6">
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Pozycje zamowienia</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-4">Pozycje zamowienia</h3>
           {orderItems.map((item, index) => (
-            <div key={item.tempId} className="mb-4 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg">
+            <div key={item.tempId} className="mb-4 p-4 bg-muted border border-border rounded-lg">
               <div className="flex justify-between items-center mb-3">
-                <h4 className="font-semibold text-slate-900 dark:text-white">Pozycja {index + 1}</h4>
+                <h4 className="font-semibold text-foreground">Pozycja {index + 1}</h4>
                 {orderItems.length > 1 && (
                   <button
                     type="button"
@@ -426,7 +426,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
               <div className="grid grid-cols-2 gap-4">
                 {/* Part Name */}
                 <div className="col-span-2">
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Nazwa czesci</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Nazwa czesci</label>
                   <Input
                     value={item.part_name}
                     onChange={(e) => updateOrderItem(index, { part_name: e.target.value })}
@@ -435,7 +435,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
                 </div>
                 {/* Material */}
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Material</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Material</label>
                   <Input
                     value={item.material}
                     onChange={(e) => updateOrderItem(index, { material: e.target.value })}
@@ -444,7 +444,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
                 </div>
                 {/* Quantity */}
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Ilosc *</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Ilosc *</label>
                   <Input
                     type="number"
                     min={1}
@@ -454,7 +454,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
                 </div>
                 {/* Complexity */}
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Zlozonosc</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Zlozonosc</label>
                   <Select
                     options={complexityOptions}
                     value={item.complexity}
@@ -464,24 +464,24 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
                 {/* Dimensions */}
                 <div className="col-span-2 grid grid-cols-3 gap-2">
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Dlugosc (mm)</label>
+                    <label className="block text-muted-foreground text-xs mb-1">Dlugosc (mm)</label>
                     <Input type="number" step="0.01" value={item.length ?? ''}
                       onChange={(e) => updateOrderItem(index, { length: e.target.value ? Number(e.target.value) : null })} />
                   </div>
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Szerokosc (mm)</label>
+                    <label className="block text-muted-foreground text-xs mb-1">Szerokosc (mm)</label>
                     <Input type="number" step="0.01" value={item.width ?? ''}
                       onChange={(e) => updateOrderItem(index, { width: e.target.value ? Number(e.target.value) : null })} />
                   </div>
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Wysokosc (mm)</label>
+                    <label className="block text-muted-foreground text-xs mb-1">Wysokosc (mm)</label>
                     <Input type="number" step="0.01" value={item.height ?? ''}
                       onChange={(e) => updateOrderItem(index, { height: e.target.value ? Number(e.target.value) : null })} />
                   </div>
                 </div>
                 {/* Notes */}
                 <div className="col-span-2">
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Notatki</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Notatki</label>
                   <Input
                     value={item.notes}
                     onChange={(e) => updateOrderItem(index, { notes: e.target.value })}
@@ -495,7 +495,7 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
           <button
             type="button"
             onClick={addOrderItem}
-            className="w-full py-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-500 dark:text-slate-400 hover:border-blue-500 hover:text-blue-500 transition font-medium"
+            className="w-full py-3 border-2 border-dashed border-border rounded-lg text-muted-foreground hover:border-violet-500 hover:text-violet-500 transition font-medium"
           >
             + Dodaj kolejna pozycje
           </button>
@@ -535,12 +535,12 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
           {/* Quantity */}
           <div>
-            <label htmlFor="edit_quantity" className="block text-slate-700 dark:text-slate-300 mb-2">Ilosc *</label>
+            <label htmlFor="edit_quantity" className="block text-foreground mb-2">Ilosc *</label>
             <input
               id="edit_quantity"
               {...register('quantity', { valueAsNumber: true })}
               type="number"
-              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               placeholder="100"
             />
             {errors.quantity && <p className="text-red-400 text-sm mt-1">{errors.quantity.message}</p>}
@@ -548,43 +548,43 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
 
           {/* Part Name */}
           <div>
-            <label htmlFor="edit_part_name" className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa czesci</label>
+            <label htmlFor="edit_part_name" className="block text-foreground mb-2">Nazwa czesci</label>
             <input
               id="edit_part_name"
               {...register('part_name')}
-              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               placeholder="Flange 50mm"
             />
           </div>
 
           {/* Dimensions */}
-          <div className="col-span-2 bg-slate-50 dark:bg-slate-900 border border-blue-200 dark:border-blue-500/30 rounded-lg p-4">
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Wymiary detalu (L x W x H)</h4>
+          <div className="col-span-2 bg-muted border border-violet-200 dark:border-violet-500/30 rounded-lg p-4">
+            <h4 className="text-sm font-semibold text-foreground mb-3">Wymiary detalu (L x W x H)</h4>
             <div className="grid grid-cols-3 gap-4 mb-2">
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Dlugosc (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Dlugosc (mm)</label>
                 <Input type="number" step="0.01" placeholder="np. 100" {...register('length', { valueAsNumber: true })} />
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Szerokosc (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Szerokosc (mm)</label>
                 <Input type="number" step="0.01" placeholder="np. 50" {...register('width', { valueAsNumber: true })} />
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Wysokosc (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Wysokosc (mm)</label>
                 <Input type="number" step="0.01" placeholder="np. 20" {...register('height', { valueAsNumber: true })} />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
                 <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_length', { valueAsNumber: true })} />
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
                 <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_width', { valueAsNumber: true })} />
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tolerancja +/- (mm)</label>
+                <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
                 <Input type="number" step="0.001" placeholder="0.1" {...register('tolerance_height', { valueAsNumber: true })} />
               </div>
             </div>
@@ -595,63 +595,63 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
             <button
               type="button"
               onClick={addOrderItem}
-              className="w-full py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-500 dark:text-slate-400 hover:border-blue-500 hover:text-blue-500 transition text-sm"
+              className="w-full py-2 border-2 border-dashed border-border rounded-lg text-muted-foreground hover:border-violet-500 hover:text-violet-500 transition text-sm"
             >
               + Przejdz na tryb wielu pozycji
             </button>
           </div>
         </div>
       ) : (
-        <div className="mb-6 text-center text-slate-400 py-4">Ladowanie pozycji...</div>
+        <div className="mb-6 text-center text-muted-foreground py-4">Ladowanie pozycji...</div>
       )}
 
       {/* COST BREAKDOWN SECTION */}
-      <div className="bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6 border border-slate-200 dark:border-slate-600">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Kalkulacja Kosztow</h3>
+      <div className="bg-muted/50 p-6 rounded-lg mb-6 border border-border">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Kalkulacja Kosztow</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
-            <label htmlFor="edit_material_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszt Materialu (PLN)</label>
+            <label htmlFor="edit_material_cost" className="block text-foreground mb-2">Koszt Materialu (PLN)</label>
             <input
               id="edit_material_cost"
               {...register('material_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
               min="0"
-              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               placeholder="0.00"
             />
             {errors.material_cost && <p className="text-red-400 text-sm mt-1">{errors.material_cost.message}</p>}
           </div>
           <div>
-            <label htmlFor="edit_labor_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszt Pracy (PLN)</label>
+            <label htmlFor="edit_labor_cost" className="block text-foreground mb-2">Koszt Pracy (PLN)</label>
             <input
               id="edit_labor_cost"
               {...register('labor_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
               min="0"
-              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               placeholder="0.00"
             />
             {errors.labor_cost && <p className="text-red-400 text-sm mt-1">{errors.labor_cost.message}</p>}
           </div>
           <div>
-            <label htmlFor="edit_overhead_cost" className="block text-slate-700 dark:text-slate-300 mb-2">Koszty Ogolne (PLN)</label>
+            <label htmlFor="edit_overhead_cost" className="block text-foreground mb-2">Koszty Ogolne (PLN)</label>
             <input
               id="edit_overhead_cost"
               {...register('overhead_cost', { valueAsNumber: true })}
               type="number"
               step="0.01"
               min="0"
-              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               placeholder="0.00"
             />
             {errors.overhead_cost && <p className="text-red-400 text-sm mt-1">{errors.overhead_cost.message}</p>}
           </div>
         </div>
-        <div className="pt-4 border-t border-slate-200 dark:border-slate-600">
+        <div className="pt-4 border-t border-border">
           <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold text-slate-700 dark:text-slate-200">Laczny Koszt:</span>
+            <span className="text-lg font-semibold text-foreground">Laczny Koszt:</span>
             <span className="text-3xl font-bold text-green-400">
               {(materialCost + laborCost + overheadCost).toFixed(2)} PLN
             </span>
@@ -664,14 +664,14 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex-1 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold transition"
+          className="flex-1 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-50 font-semibold transition"
         >
           {isSubmitting ? 'Aktualizowanie...' : 'Zapisz zmiany'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/orders')}
-          className="px-8 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+          className="px-8 py-3 bg-muted text-foreground rounded-lg hover:bg-accent transition"
         >
           Anuluj
         </button>

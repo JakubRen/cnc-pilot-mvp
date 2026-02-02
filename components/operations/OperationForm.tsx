@@ -190,28 +190,28 @@ export default function OperationForm({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <label className="block text-slate-700 dark:text-slate-300 font-medium">
+        <label className="block text-foreground font-medium">
           🔧 Operacje Technologiczne
         </label>
         <button
           type="button"
           onClick={addOperation}
           data-testid="add-operation-button"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm"
+          className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold text-sm"
         >
           + Dodaj Operację
         </button>
       </div>
 
       {operations.length === 0 ? (
-        <div className="bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-8 text-center">
-          <p className="text-slate-500 dark:text-slate-400 mb-4">
+        <div className="bg-muted border-2 border-dashed border-border rounded-lg p-8 text-center">
+          <p className="text-muted-foreground mb-4">
             Brak operacji. Dodaj pierwszą operację aby określić routing produkcyjny.
           </p>
           <button
             type="button"
             onClick={addOperation}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+            className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
           >
             + Dodaj Pierwszą Operację
           </button>
@@ -230,12 +230,12 @@ export default function OperationForm({
               <div
                 key={`op-${index}`}
                 data-testid={`operation-${index + 1}`}
-                className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border-2 border-slate-200 dark:border-slate-700"
+                className="bg-muted p-6 rounded-lg border-2 border-border"
               >
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <span className="text-2xl font-bold text-foreground">
                       #{operation.operation_number}
                     </span>
                     <div className="flex gap-2">
@@ -273,14 +273,14 @@ export default function OperationForm({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   {/* Operation Type */}
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 text-sm mb-2">
+                    <label className="block text-muted-foreground text-sm mb-2">
                       Typ operacji *
                     </label>
                     <select
                       value={operation.operation_type}
                       onChange={(e) => updateOperation(index, 'operation_type', e.target.value as OperationType)}
                       data-testid={`operation-type-${index + 1}`}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     >
                       {Object.entries(operationTypeLabels).map(([value, label]) => (
                         <option key={value} value={value}>{label}</option>
@@ -290,7 +290,7 @@ export default function OperationForm({
 
                   {/* Operation Name */}
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 text-sm mb-2">
+                    <label className="block text-muted-foreground text-sm mb-2">
                       Nazwa operacji *
                     </label>
                     <input
@@ -299,20 +299,20 @@ export default function OperationForm({
                       onChange={(e) => updateOperation(index, 'operation_name', e.target.value)}
                       placeholder="np. Toczenie zgrubne"
                       data-testid={`operation-name-${index + 1}`}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     />
                   </div>
 
                   {/* Machine */}
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 text-sm mb-2">
+                    <label className="block text-muted-foreground text-sm mb-2">
                       Maszyna (opcjonalnie)
                     </label>
                     <select
                       value={operation.machine_id || ''}
                       onChange={(e) => updateOperation(index, 'machine_id', e.target.value || undefined)}
                       data-testid={`machine-select-${index + 1}`}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                       disabled={isLoadingMachines}
                     >
                       <option value="">Nie przypisano</option>
@@ -326,7 +326,7 @@ export default function OperationForm({
 
                   {/* Hourly Rate */}
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 text-sm mb-2">
+                    <label className="block text-muted-foreground text-sm mb-2">
                       Stawka godzinowa (PLN/h) *
                     </label>
                     <input
@@ -336,13 +336,13 @@ export default function OperationForm({
                       value={operation.hourly_rate}
                       onChange={(e) => updateOperation(index, 'hourly_rate', parseFloat(e.target.value) || 0)}
                       data-testid={`hourly-rate-${index + 1}`}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     />
                   </div>
 
                   {/* Setup Time */}
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 text-sm mb-2">
+                    <label className="block text-muted-foreground text-sm mb-2">
                       ⏱️ Setup Time (min) *
                     </label>
                     <input
@@ -362,17 +362,17 @@ export default function OperationForm({
                         updateOperation(index, 'setup_time_minutes', finalValue)
                       }}
                       data-testid={`setup-time-${index + 1}`}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="Czas przygotowania (jednorazowy)"
                     />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Koszt setup: {formatCost(costs.setupCost)}
                     </p>
                   </div>
 
                   {/* Run Time */}
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 text-sm mb-2">
+                    <label className="block text-muted-foreground text-sm mb-2">
                       🔄 Run Time (min/szt) *
                     </label>
                     <input
@@ -392,17 +392,17 @@ export default function OperationForm({
                         updateOperation(index, 'run_time_per_unit_minutes', finalValue)
                       }}
                       data-testid={`run-time-${index + 1}`}
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="Czas obróbki 1 sztuki"
                     />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Koszt run ({quantity} szt.): {formatCost(costs.runCost)}
                     </p>
                   </div>
 
                   {/* Description */}
                   <div className="md:col-span-2">
-                    <label className="block text-slate-600 dark:text-slate-400 text-sm mb-2">
+                    <label className="block text-muted-foreground text-sm mb-2">
                       Opis (opcjonalnie)
                     </label>
                     <textarea
@@ -410,14 +410,14 @@ export default function OperationForm({
                       onChange={(e) => updateOperation(index, 'description', e.target.value)}
                       rows={2}
                       placeholder="Dodatkowe informacje o operacji..."
-                      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none resize-none"
+                      className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none resize-none"
                     />
                   </div>
                 </div>
 
                 {/* Auto-estimate button */}
-                <div className="flex items-center justify-between p-3 bg-blue-900/20 border border-blue-700/50 rounded-lg">
-                  <div className="text-sm text-blue-200">
+                <div className="flex items-center justify-between p-3 bg-violet-900/20 border border-violet-700/50 rounded-lg">
+                  <div className="text-sm text-violet-200">
                     <p className="font-semibold mb-1">💡 Automatyczne szacowanie</p>
                     <p className="text-xs">
                       Kliknij aby oszacować Setup/Run Time na podstawie typu operacji i złożoności
@@ -428,7 +428,7 @@ export default function OperationForm({
                     onClick={() => autoEstimate(index)}
                     disabled={estimatingIndex === index}
                     data-testid={`auto-estimate-${index + 1}`}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {estimatingIndex === index ? '⏳ Szacuję...' : '🤖 Oszacuj'}
                   </button>
@@ -469,7 +469,7 @@ export default function OperationForm({
 
           {/* Total summary */}
           {operations.length > 0 && (
-            <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-2 border-blue-500/50 rounded-lg p-6">
+            <div className="bg-gradient-to-r from-violet-900/30 to-purple-900/30 border-2 border-violet-500/50 rounded-lg p-6">
               <h3 className="text-lg font-bold text-white mb-4">📊 Podsumowanie wszystkich operacji</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {(() => {
@@ -488,25 +488,25 @@ export default function OperationForm({
                   return (
                     <>
                       <div className="text-center">
-                        <p className="text-sm text-blue-300 mb-1">Setup Time</p>
+                        <p className="text-sm text-violet-300 mb-1">Setup Time</p>
                         <p className="text-2xl font-bold text-white">
                           {formatDuration(totalSetupTime)}
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-sm text-blue-300 mb-1">Run Time</p>
+                        <p className="text-sm text-violet-300 mb-1">Run Time</p>
                         <p className="text-2xl font-bold text-white">
                           {formatDuration(totalRunTime)}
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-sm text-blue-300 mb-1">Czas całkowity</p>
+                        <p className="text-sm text-violet-300 mb-1">Czas całkowity</p>
                         <p className="text-2xl font-bold text-white">
                           {formatDuration(totalSetupTime + totalRunTime)}
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-sm text-blue-300 mb-1">Koszt całkowity</p>
+                        <p className="text-sm text-violet-300 mb-1">Koszt całkowity</p>
                         <p className="text-3xl font-bold text-green-400">
                           {formatCost(totalCost)}
                         </p>
@@ -520,9 +520,9 @@ export default function OperationForm({
         </div>
       )}
 
-      <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4 text-sm text-blue-200">
+      <div className="bg-violet-900/20 border border-violet-700/50 rounded-lg p-4 text-sm text-violet-200">
         <p className="font-semibold mb-2">ℹ️ Informacja o Setup/Run Time:</p>
-        <ul className="list-disc list-inside space-y-1 text-blue-300 text-xs">
+        <ul className="list-disc list-inside space-y-1 text-violet-300 text-xs">
           <li><strong>Setup Time:</strong> Czas przygotowawczy maszyny - jednorazowy, niezależny od ilości sztuk</li>
           <li><strong>Run Time:</strong> Czas obróbki jednej sztuki - mnożony przez ilość w zleceniu</li>
           <li><strong>Koszt całkowity:</strong> Setup Cost + (Run Time × ilość × stawka)</li>

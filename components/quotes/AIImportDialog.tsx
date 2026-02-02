@@ -119,14 +119,14 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
       <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
 
       {/* Dialog */}
-      <div className="relative bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-card rounded-lg shadow-md w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-xl font-bold text-foreground">
               AI Import z maila
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Wklej treść maila - AI wyciągnie pozycje i sprawdzi magazyn
             </p>
           </div>
@@ -142,7 +142,7 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
         <div className="p-6 space-y-4">
           {/* Input */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Treść maila / zapytania
             </label>
             <textarea
@@ -150,7 +150,7 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
               onChange={(e) => setText(e.target.value)}
               rows={8}
               placeholder="Wklej tutaj treść maila od klienta, np.:&#10;&#10;Dzień dobry, proszę o wycenę:&#10;- 50 szt tulei fi30x100mm ze stali 316L&#10;- 20 szt kołnierzy fi150x20mm z aluminium 6061&#10;Termin do 15.02.2026."
-              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-purple-500 focus:outline-none text-sm font-mono"
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-purple-500 focus:outline-none text-sm font-mono"
               disabled={isAnalyzing}
             />
             <p className="text-xs text-slate-400 mt-1">
@@ -194,25 +194,25 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
               </div>
 
               {/* Items table */}
-              <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+              <div className="border border-border rounded-lg overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-100 dark:bg-slate-700">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className="text-left p-3 text-slate-600 dark:text-slate-300">#</th>
-                      <th className="text-left p-3 text-slate-600 dark:text-slate-300">Nazwa</th>
-                      <th className="text-left p-3 text-slate-600 dark:text-slate-300">Materiał</th>
-                      <th className="text-right p-3 text-slate-600 dark:text-slate-300">Ilość</th>
-                      <th className="text-left p-3 text-slate-600 dark:text-slate-300">Magazyn</th>
+                      <th className="text-left p-3 text-muted-foreground">#</th>
+                      <th className="text-left p-3 text-muted-foreground">Nazwa</th>
+                      <th className="text-left p-3 text-muted-foreground">Materiał</th>
+                      <th className="text-right p-3 text-muted-foreground">Ilość</th>
+                      <th className="text-left p-3 text-muted-foreground">Magazyn</th>
                     </tr>
                   </thead>
                   <tbody>
                     {preview.items.map((item, i) => {
                       const badge = STATUS_BADGE[item.inventory_status] || STATUS_BADGE.not_found
                       return (
-                        <tr key={i} className="border-t border-slate-200 dark:border-slate-700">
+                        <tr key={i} className="border-t border-border">
                           <td className="p-3 text-slate-400">{i + 1}</td>
                           <td className="p-3">
-                            <div className="font-medium text-slate-900 dark:text-white">
+                            <div className="font-medium text-foreground">
                               {item.product_name || item.part_name}
                             </div>
                             {item.product_name && item.product_name !== item.part_name && (
@@ -224,10 +224,10 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
                               <div className="text-xs text-slate-500">{item.dimensions}</div>
                             )}
                           </td>
-                          <td className="p-3 text-slate-600 dark:text-slate-400">
+                          <td className="p-3 text-muted-foreground">
                             {item.material || '—'}
                           </td>
-                          <td className="p-3 text-right text-slate-900 dark:text-white">
+                          <td className="p-3 text-right text-foreground">
                             {item.quantity}
                           </td>
                           <td className="p-3">
@@ -261,7 +261,7 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
                 <Button
                   type="button"
                   onClick={() => setPreview(null)}
-                  className="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600"
+                  className="flex-1 bg-secondary text-foreground hover:bg-slate-300 dark:hover:bg-slate-600"
                 >
                   Popraw treść
                 </Button>

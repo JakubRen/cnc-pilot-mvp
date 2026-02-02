@@ -22,7 +22,7 @@ export default function DetailPageSkeleton() {
         </div>
 
         {/* Main content card */}
-        <div className="glass-panel rounded-xl p-6 border border-border mb-6">
+        <div className="bg-card rounded-lg p-6 border border-border mb-6">
           {/* Card header */}
           <div className="h-6 bg-muted rounded w-40 mb-6 animate-pulse" />
 
@@ -38,7 +38,7 @@ export default function DetailPageSkeleton() {
         </div>
 
         {/* Secondary section */}
-        <div className="glass-panel rounded-xl p-6 border border-border mb-6">
+        <div className="bg-card rounded-lg p-6 border border-border mb-6">
           <div className="h-6 bg-muted rounded w-32 mb-4 animate-pulse" />
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
@@ -48,7 +48,7 @@ export default function DetailPageSkeleton() {
         </div>
 
         {/* Third section (optional - table-like) */}
-        <div className="glass-panel rounded-xl p-6 border border-border">
+        <div className="bg-card rounded-lg p-6 border border-border">
           <div className="h-6 bg-muted rounded w-36 mb-4 animate-pulse" />
           <div className="space-y-2">
             {/* Table header */}

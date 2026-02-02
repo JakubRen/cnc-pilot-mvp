@@ -63,7 +63,7 @@ export const roleLabels: Record<UserRole, string> = {
 
 export const roleColors: Record<UserRole, string> = {
   owner: 'bg-purple-600',
-  admin: 'bg-blue-600',
+  admin: 'bg-violet-600',
   manager: 'bg-green-600',
   operator: 'bg-yellow-600',
   viewer: 'bg-slate-600',
@@ -72,7 +72,7 @@ export const roleColors: Record<UserRole, string> = {
 
 export const roleTextColors: Record<UserRole, string> = {
   owner: 'text-purple-100',
-  admin: 'text-blue-100',
+  admin: 'text-violet-100',
   manager: 'text-green-100',
   operator: 'text-yellow-100',
   viewer: 'text-slate-100',

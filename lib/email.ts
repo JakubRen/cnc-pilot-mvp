@@ -124,7 +124,7 @@ const baseTemplate = (content: string, title: string) => `
     .logo {
       font-size: 24px;
       font-weight: bold;
-      color: #3b82f6;
+      color: #8b5cf6;
     }
     .title {
       font-size: 20px;
@@ -161,7 +161,7 @@ const baseTemplate = (content: string, title: string) => `
     }
     .btn {
       display: inline-block;
-      background: #3b82f6;
+      background: #8b5cf6;
       color: #ffffff;
       padding: 12px 24px;
       border-radius: 8px;
@@ -170,7 +170,7 @@ const baseTemplate = (content: string, title: string) => `
       margin-top: 16px;
     }
     .btn:hover {
-      background: #2563eb;
+      background: #7c3aed;
     }
     .status-badge {
       display: inline-block;
@@ -180,7 +180,7 @@ const baseTemplate = (content: string, title: string) => `
       font-weight: 500;
     }
     .status-pending { background: #fef3c7; color: #92400e; }
-    .status-in_progress { background: #dbeafe; color: #1e40af; }
+    .status-in_progress { background: #ede9fe; color: #5b21b6; }
     .status-completed { background: #d1fae5; color: #065f46; }
     .status-delayed { background: #fee2e2; color: #991b1b; }
     .alert { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
@@ -195,7 +195,7 @@ const baseTemplate = (content: string, title: string) => `
       font-size: 12px;
     }
     .footer a {
-      color: #3b82f6;
+      color: #8b5cf6;
       text-decoration: none;
     }
   </style>

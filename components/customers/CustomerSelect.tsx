@@ -88,11 +88,11 @@ export default function CustomerSelect({
           onFocus={handleInputFocus}
           disabled={disabled}
           placeholder="Wyszukaj klienta po nazwie, email lub NIP..."
-          className={`w-full px-4 py-3 pr-10 rounded-lg bg-slate-50 dark:bg-slate-900 border ${
+          className={`w-full px-4 py-3 pr-10 rounded-lg bg-muted border ${
             error
               ? 'border-red-500'
-              : 'border-slate-200 dark:border-slate-700'
-          } text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none ${
+              : 'border-border'
+          } text-foreground focus:border-violet-500 focus:outline-none ${
             disabled ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         />
@@ -123,22 +123,22 @@ export default function CustomerSelect({
 
       {/* Dropdown */}
       {isOpen && !disabled && (
-        <div className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-h-64 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-2 bg-card border border-border rounded-lg shadow-xl max-h-64 overflow-y-auto">
           {loading && (
-            <div className="p-4 text-center text-slate-500 dark:text-slate-400">
+            <div className="p-4 text-center text-muted-foreground">
               Wyszukiwanie...
             </div>
           )}
 
           {!loading && results.length === 0 && searchTerm.trim().length < 2 && (
-            <div className="p-4 text-center text-slate-500 dark:text-slate-400 text-sm">
+            <div className="p-4 text-center text-muted-foreground text-sm">
               Wpisz przynajmniej 2 znaki aby wyszukać klienta
             </div>
           )}
 
           {!loading && results.length > 0 && (
             <div>
-              <div className="px-3 py-2 text-xs text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+              <div className="px-3 py-2 text-xs text-muted-foreground border-b border-border">
                 Znaleziono {results.length} klientów
               </div>
               {results.map((customer) => (
@@ -146,12 +146,12 @@ export default function CustomerSelect({
                   key={customer.id}
                   type="button"
                   onClick={() => handleSelectCustomer(customer)}
-                  className="w-full px-4 py-3 text-left hover:bg-slate-100 dark:hover:bg-slate-700 border-b border-slate-100 dark:border-slate-700 last:border-b-0 transition"
+                  className="w-full px-4 py-3 text-left hover:bg-muted border-b border-slate-100 dark:border-border last:border-b-0 transition"
                 >
-                  <div className="font-semibold text-slate-900 dark:text-white">
+                  <div className="font-semibold text-foreground">
                     {customer.name}
                   </div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400 mt-1 space-x-3">
+                  <div className="text-sm text-muted-foreground mt-1 space-x-3">
                     {customer.email && <span>📧 {customer.email}</span>}
                     {customer.phone && <span>📞 {customer.phone}</span>}
                     {customer.nip && <span>NIP: {customer.nip}</span>}
@@ -162,17 +162,17 @@ export default function CustomerSelect({
           )}
 
           {showCreateOption && (
-            <div className="border-t-2 border-blue-500 dark:border-blue-400">
+            <div className="border-t-2 border-violet-500 dark:border-violet-400">
               <button
                 type="button"
                 onClick={handleCreateNew}
-                className="w-full px-4 py-3 text-left bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition"
+                className="w-full px-4 py-3 text-left bg-violet-50 dark:bg-violet-900/20 hover:bg-violet-100 dark:hover:bg-violet-900/30 transition"
               >
-                <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold">
+                <div className="flex items-center gap-2 text-primary font-semibold">
                   <span className="text-xl">+</span>
                   <span>Dodaj nowego klienta: "{searchTerm}"</span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-7">
+                <p className="text-xs text-muted-foreground mt-1 ml-7">
                   Bez wprowadzenia do systemu nie będzie możliwe utworzenie oferty/zamówienia
                 </p>
               </button>

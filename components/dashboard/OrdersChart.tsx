@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { memo } from 'react';
 import {
@@ -29,16 +29,16 @@ const OrdersChart = memo(function OrdersChart() {
 
   const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.1)';
   const textColor = isDark ? '#94a3b8' : '#64748b';
-  const tooltipBg = isDark ? 'rgba(3, 7, 18, 0.9)' : 'rgba(255, 255, 255, 0.95)';
-  const tooltipBorder = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-  const tooltipText = isDark ? '#f8fafc' : '#0f172a';
-  const accentColor = isDark ? '#06b6d4' : '#2563eb';
+  const tooltipBg = isDark ? '#1e293b' : 'rgba(255, 255, 255, 0.95)';
+  const tooltipBorder = isDark ? '#334155' : 'rgba(0,0,0,0.1)';
+  const tooltipText = isDark ? '#f1f5f9' : '#0f172a';
+  const accentColor = isDark ? '#8b5cf6' : '#7c3aed';
 
   return (
-    <div className="glass-panel p-6 rounded-xl border border-slate-200 dark:border-border shadow-sm dark:shadow-none">
+    <div className="bg-card p-6 rounded-lg border border-border shadow-sm">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-foreground tracking-wide">
+          <h3 className="text-lg font-semibold text-foreground tracking-wide">
             Aktywność zamówień
           </h3>
           <p className="text-xs text-muted-foreground font-mono mt-1 uppercase tracking-wider">
@@ -48,9 +48,9 @@ const OrdersChart = memo(function OrdersChart() {
 
         {/* Decorative HUD Element */}
         <div className="flex gap-2">
-           <div className={`h-2 w-2 rounded-full ${isDark ? 'bg-cyan-500' : 'bg-blue-500'} animate-pulse`}></div>
-           <div className={`h-2 w-2 rounded-full ${isDark ? 'bg-cyan-500/30' : 'bg-blue-500/30'}`}></div>
-           <div className={`h-2 w-2 rounded-full ${isDark ? 'bg-cyan-500/10' : 'bg-blue-500/10'}`}></div>
+           <div className="h-2 w-2 rounded-full bg-primary animate-pulse"></div>
+           <div className="h-2 w-2 rounded-full bg-primary/30"></div>
+           <div className="h-2 w-2 rounded-full bg-primary/10"></div>
         </div>
       </div>
 
@@ -83,7 +83,6 @@ const OrdersChart = memo(function OrdersChart() {
             <Tooltip
               contentStyle={{
                 backgroundColor: tooltipBg,
-                backdropFilter: 'blur(8px)',
                 border: `1px solid ${tooltipBorder}`,
                 borderRadius: '8px',
                 color: tooltipText,
@@ -99,7 +98,7 @@ const OrdersChart = memo(function OrdersChart() {
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorValue)"
-              activeDot={{ r: 6, strokeWidth: 0, fill: isDark ? '#22d3ee' : '#3b82f6' }}
+              activeDot={{ r: 6, strokeWidth: 0, fill: '#8b5cf6' }}
             />
           </AreaChart>
         </ResponsiveContainer>

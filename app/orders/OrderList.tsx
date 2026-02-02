@@ -130,10 +130,10 @@ export default function OrderList({
 
     if (!orders || orders.length === 0) {
       return (
-        <div className="text-center py-16 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+        <div className="text-center py-16 text-muted-foreground bg-card border border-border rounded-lg">
           <div className="text-6xl mb-4">📦</div>
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{t('orders', 'noOrders')}</h3>
-          <p className="text-slate-500 dark:text-slate-400 mb-6">{t('orders', 'startCreating')}</p>
+          <h3 className="text-xl font-semibold text-foreground mb-2">{t('orders', 'noOrders')}</h3>
+          <p className="text-muted-foreground mb-6">{t('orders', 'startCreating')}</p>
           <Link href="/orders/add">
             <Button variant="primary">
               {t('orders', 'createFirst')}
@@ -158,47 +158,47 @@ export default function OrderList({
         <ConfirmDialog />
         {/* Desktop View - Table (hidden on mobile) */}
         <div
-          className="hidden md:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+          className="hidden md:block bg-card border border-border rounded-lg overflow-hidden"
           role="region"
           aria-label="Lista zamówień"
         >
           <table className="w-full" role="table" aria-label="Tabela zamówień">
-            <thead className="bg-slate-100 dark:bg-slate-700">
+            <thead className="bg-muted">
               <tr role="row">
                 <th className="px-4 py-3 text-left" role="columnheader" scope="col">
                   <input
                     type="checkbox"
                     checked={allSelected}
                     onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
-                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
+                    className="w-4 h-4 rounded border-border bg-white dark:bg-muted text-violet-600 focus:ring-violet-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
                     title={allSelected ? t('orders', 'deselectAll') : t('orders', 'selectAll')}
                     aria-label={allSelected ? 'Odznacz wszystkie zamówienia' : 'Zaznacz wszystkie zamówienia'}
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('orders', 'orderNumber')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('orders', 'customer')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('common', 'quantity')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('orders', 'deadline')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('common', 'status')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   Operator
                 </th>
                 {showPrices && (
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                     {t('common', 'cost')}
                   </th>
                 )}
-                <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider" role="columnheader" scope="col">
+                <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('common', 'actions')}
                 </th>
               </tr>
@@ -212,16 +212,16 @@ export default function OrderList({
                   role="row"
                   aria-selected={selectedOrders.has(order.id)}
                   className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition relative ${
-                    selectedOrders.has(order.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                    selectedOrders.has(order.id) ? 'bg-violet-50 dark:bg-violet-900/20' : ''
                   } ${pending ? 'opacity-60 pointer-events-none' : ''}`}
                 >
                   {/* Pending indicator overlay */}
                   {pending && (
                     <td
                       colSpan={showPrices ? 9 : 8}
-                      className="absolute inset-0 flex items-center justify-center bg-slate-900/10 dark:bg-slate-900/30 z-10"
+                      className="absolute inset-0 flex items-center justify-center bg-slate-900/10 dark:bg-background/30 z-10"
                     >
-                      <div className="animate-spin h-6 w-6 border-3 border-blue-500 border-t-transparent rounded-full" />
+                      <div className="animate-spin h-6 w-6 border-3 border-violet-500 border-t-transparent rounded-full" />
                     </td>
                   )}
                   <td className="px-4 py-4" role="gridcell">
@@ -229,7 +229,7 @@ export default function OrderList({
                       type="checkbox"
                       checked={selectedOrders.has(order.id)}
                       onChange={() => onToggleSelect(order.id)}
-                      className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
+                      className="w-4 h-4 rounded border-border bg-white dark:bg-muted text-violet-600 focus:ring-violet-500 focus:ring-offset-white dark:focus:ring-offset-slate-800 cursor-pointer"
                       onClick={(e) => e.stopPropagation()}
                       disabled={pending}
                       aria-label={`Zaznacz zamówienie ${order.order_number}`}
@@ -238,20 +238,20 @@ export default function OrderList({
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link
                       href={`/orders/${order.id}`}
-                      className="text-blue-400 hover:text-blue-300 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="text-violet-400 hover:text-violet-300 font-semibold focus:outline-none focus:ring-2 focus:ring-violet-500"
                     >
                       {order.order_number}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                     {order.customer_name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                     {order.quantity}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex flex-col gap-1">
-                      <span className={isOrderOverdue(order.deadline, order.status) ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-slate-700 dark:text-slate-300'}>
+                      <span className={isOrderOverdue(order.deadline, order.status) ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-foreground'}>
                         {new Date(order.deadline).toLocaleDateString()}
                       </span>
                       {isOrderOverdue(order.deadline, order.status) && (
@@ -264,9 +264,9 @@ export default function OrderList({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {order.assigned_operator_name ? (
-                      <span className="text-slate-700 dark:text-slate-300">{order.assigned_operator_name}</span>
+                      <span className="text-foreground">{order.assigned_operator_name}</span>
                     ) : (
-                      <span className="text-slate-400 dark:text-slate-500 text-xs">-</span>
+                      <span className="text-muted-foreground text-xs">-</span>
                     )}
                   </td>
                   {showPrices && (
@@ -282,7 +282,7 @@ export default function OrderList({
                           }`}
                         />
                       ) : (
-                        <span className="text-slate-400 dark:text-slate-500 text-xs">-</span>
+                        <span className="text-muted-foreground text-xs">-</span>
                       )}
                     </td>
                   )}
@@ -290,22 +290,22 @@ export default function OrderList({
                     <div className="relative inline-block" ref={openMenuId === order.id ? menuRef : null}>
                       <button
                         onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
-                        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
+                        className="p-2 hover:bg-muted rounded-lg transition"
                         aria-label={`Akcje dla zamówienia ${order.order_number}`}
                         aria-haspopup="menu"
                         aria-expanded={openMenuId === order.id}
                       >
-                        <span className="text-slate-500 dark:text-slate-400">⋮</span>
+                        <span className="text-muted-foreground">⋮</span>
                       </button>
                       {openMenuId === order.id && (
                         <div
-                          className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1"
+                          className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-muted border border-border rounded-lg shadow-xl z-10 py-1"
                           role="menu"
                           aria-orientation="vertical"
                         >
                           <Link
                             href={`/orders/${order.id}`}
-                            className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-slate-50 dark:hover:bg-slate-600"
                             onClick={() => setOpenMenuId(null)}
                             role="menuitem"
                           >
@@ -313,7 +313,7 @@ export default function OrderList({
                           </Link>
                           <Link
                             href={`/orders/${order.id}/edit`}
-                            className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-slate-50 dark:hover:bg-slate-600"
                             onClick={() => setOpenMenuId(null)}
                             role="menuitem"
                           >
@@ -349,15 +349,15 @@ export default function OrderList({
         {/* Mobile View - Cards (visible only on mobile) */}
         <div className="md:hidden space-y-4" role="region" aria-label="Lista zamówień">
           {/* Select All Checkbox */}
-          <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
+          <div className="flex items-center gap-3 p-4 bg-card border border-border rounded-lg">
             <input
               type="checkbox"
               checked={allSelected}
               onChange={() => allSelected ? onDeselectAll() : onSelectAll()}
-              className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+              className="w-5 h-5 rounded border-border bg-white dark:bg-muted text-violet-600 focus:ring-violet-500 cursor-pointer"
               aria-label={allSelected ? 'Odznacz wszystkie zamówienia' : 'Zaznacz wszystkie zamówienia'}
             />
-            <span className="text-sm text-slate-600 dark:text-slate-300 font-medium">
+            <span className="text-sm text-muted-foreground font-medium">
               {allSelected ? t('orders', 'deselectAll') : t('orders', 'selectAll')} ({orders.length})
             </span>
           </div>
@@ -368,35 +368,35 @@ export default function OrderList({
             return (
             <div
               key={order.id}
-              className={`bg-white dark:bg-slate-800 border rounded-lg overflow-hidden transition relative ${
+              className={`bg-card border rounded-lg overflow-hidden transition relative ${
                 selectedOrders.has(order.id)
-                  ? 'border-blue-500 dark:border-blue-400 shadow-lg'
-                  : 'border-slate-200 dark:border-slate-700'
+                  ? 'border-violet-500 dark:border-violet-400 shadow-lg'
+                  : 'border-border'
               } ${pending ? 'opacity-60 pointer-events-none' : ''}`}
               role="article"
               aria-label={`Zamówienie ${order.order_number}`}
             >
               {/* Pending indicator overlay */}
               {pending && (
-                <div className="absolute inset-0 flex items-center justify-center z-20 bg-slate-900/20 dark:bg-slate-900/40 rounded-lg">
-                  <div className="animate-spin h-8 w-8 border-3 border-blue-500 border-t-transparent rounded-full" />
+                <div className="absolute inset-0 flex items-center justify-center z-20 bg-slate-900/20 dark:bg-background/40 rounded-lg">
+                  <div className="animate-spin h-8 w-8 border-3 border-violet-500 border-t-transparent rounded-full" />
                 </div>
               )}
               {/* Card Header */}
-              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+              <div className="flex items-center justify-between p-4 bg-muted border-b border-border">
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     checked={selectedOrders.has(order.id)}
                     onChange={() => onToggleSelect(order.id)}
-                    className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    className="w-5 h-5 rounded border-border bg-white dark:bg-muted text-violet-600 focus:ring-violet-500 cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                     disabled={pending}
                     aria-label={`Zaznacz zamówienie ${order.order_number}`}
                   />
                   <Link
                     href={`/orders/${order.id}`}
-                    className="text-lg font-bold text-blue-400 hover:text-blue-300"
+                    className="text-lg font-bold text-violet-400 hover:text-violet-300"
                   >
                     {order.order_number}
                   </Link>
@@ -405,22 +405,22 @@ export default function OrderList({
                 <div className="relative" ref={openMenuId === order.id ? menuRef : null}>
                   <button
                     onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
-                    className="p-2 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition"
+                    className="p-2 hover:bg-accent rounded-lg transition"
                     aria-label={`Akcje dla zamówienia ${order.order_number}`}
                     aria-haspopup="menu"
                     aria-expanded={openMenuId === order.id}
                   >
-                    <span className="text-slate-500 dark:text-slate-400 text-xl">⋮</span>
+                    <span className="text-muted-foreground text-xl">⋮</span>
                   </button>
                   {openMenuId === order.id && (
                     <div
-                      className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl z-10 py-1"
+                      className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-muted border border-border rounded-lg shadow-xl z-10 py-1"
                       role="menu"
                       aria-orientation="vertical"
                     >
                       <Link
                         href={`/orders/${order.id}`}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-slate-50 dark:hover:bg-slate-600"
                         onClick={() => setOpenMenuId(null)}
                         role="menuitem"
                       >
@@ -428,7 +428,7 @@ export default function OrderList({
                       </Link>
                       <Link
                         href={`/orders/${order.id}/edit`}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-600"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-slate-50 dark:hover:bg-slate-600"
                         onClick={() => setOpenMenuId(null)}
                         role="menuitem"
                       >
@@ -459,10 +459,10 @@ export default function OrderList({
               <div className="p-4 space-y-3">
                 {/* Customer */}
                 <div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                  <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                     {t('orders', 'customer')}
                   </p>
-                  <p className="text-base text-slate-900 dark:text-white font-medium">
+                  <p className="text-base text-foreground font-medium">
                     {order.customer_name}
                   </p>
                 </div>
@@ -470,10 +470,10 @@ export default function OrderList({
                 {/* Quantity & Part */}
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                    <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                       {t('common', 'quantity')}
                     </p>
-                    <p className="text-base text-slate-900 dark:text-white">
+                    <p className="text-base text-foreground">
                       {order.quantity} {order.part_name && `× ${order.part_name}`}
                     </p>
                   </div>
@@ -481,14 +481,14 @@ export default function OrderList({
 
                 {/* Deadline */}
                 <div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                  <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                     {t('orders', 'deadline')}
                   </p>
                   <div className="flex items-center gap-2">
                     <p className={`text-base font-medium ${
                       isOrderOverdue(order.deadline, order.status)
                         ? 'text-red-500 dark:text-red-400'
-                        : 'text-slate-900 dark:text-white'
+                        : 'text-foreground'
                     }`}>
                       {new Date(order.deadline).toLocaleDateString('pl-PL')}
                     </p>
@@ -501,17 +501,17 @@ export default function OrderList({
                 {/* Status & Operator */}
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                    <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                       {t('common', 'status')}
                     </p>
                     {getStatusBadge(order.status)}
                   </div>
                   {order.assigned_operator_name && (
                     <div className="flex-1">
-                      <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                      <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                         Operator
                       </p>
-                      <p className="text-base text-slate-900 dark:text-white">
+                      <p className="text-base text-foreground">
                         {order.assigned_operator_name}
                       </p>
                     </div>
@@ -521,7 +521,7 @@ export default function OrderList({
                 {/* Price (if permissions) */}
                 {showPrices && order.total_cost && order.total_cost > 0 && (
                   <div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                    <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                       {t('common', 'cost')}
                     </p>
                     <PriceDisplay
@@ -539,7 +539,7 @@ export default function OrderList({
                 {/* Tags (if any) */}
                 {order.tags && order.tags.length > 0 && (
                   <div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                    <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                       Tagi
                     </p>
                     <div className="flex flex-wrap gap-1">

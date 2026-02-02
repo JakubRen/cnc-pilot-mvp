@@ -18,7 +18,7 @@ export function TouchSelect({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           {label}
         </label>
       )}
@@ -29,13 +29,13 @@ export function TouchSelect({
           px-4
           py-3
           text-base
-          bg-white dark:bg-slate-800
-          border border-slate-300 dark:border-slate-600
+          bg-card
+          border border-border
           rounded-lg
-          text-slate-900 dark:text-white
+          text-foreground
           focus:outline-none
           focus:ring-2
-          focus:ring-blue-500
+          focus:ring-violet-500
           focus:border-transparent
           disabled:opacity-50
           disabled:cursor-not-allowed

@@ -25,9 +25,9 @@ const PRESET_COLORS = [
   '#22c55e', // green
   '#10b981', // emerald
   '#14b8a6', // teal
-  '#06b6d4', // cyan
+  '#8b5cf6', // cyan
   '#0ea5e9', // sky
-  '#3b82f6', // blue
+  '#8b5cf6', // blue
   '#6366f1', // indigo
   '#8b5cf6', // violet
   '#a855f7', // purple
@@ -163,7 +163,7 @@ export default function TagManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent" />
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-violet-500 border-t-transparent" />
       </div>
     )
   }
@@ -174,14 +174,14 @@ export default function TagManager() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('tagsSection', 'manage')}</h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+          <h2 className="text-2xl font-bold text-foreground">{t('tagsSection', 'manage')}</h2>
+          <p className="text-muted-foreground text-sm mt-1">
             {t('tagsSection', 'subtitle')}
           </p>
         </div>
         <button
           onClick={openCreateModal}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold flex items-center gap-2"
+          className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition font-semibold flex items-center gap-2"
         >
           <span className="text-lg">+</span>
           {t('tagsSection', 'create')}
@@ -190,15 +190,15 @@ export default function TagManager() {
 
       {/* Tags List */}
       {tags.length === 0 ? (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-12 text-center">
+        <div className="bg-card border border-border rounded-lg p-12 text-center">
           <div className="text-6xl mb-4">🏷️</div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('tagsSection', 'noTags')}</h3>
-          <p className="text-slate-500 dark:text-slate-400 mb-6">
+          <h3 className="text-xl font-bold text-foreground mb-2">{t('tagsSection', 'noTags')}</h3>
+          <p className="text-muted-foreground mb-6">
             {t('tagsSection', 'noTagsDesc')}
           </p>
           <button
             onClick={openCreateModal}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+            className="px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition font-semibold"
           >
             {t('tagsSection', 'createFirst')}
           </button>
@@ -208,7 +208,7 @@ export default function TagManager() {
           {tags.map((tag) => (
             <div
               key={tag.id}
-              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:border-slate-300 dark:hover:border-slate-600 transition"
+              className="bg-card border border-border rounded-lg p-4 hover:border-slate-300 dark:hover:border-slate-600 transition"
             >
               <div className="flex items-center justify-between mb-3">
                 <div
@@ -221,7 +221,7 @@ export default function TagManager() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleEdit(tag)}
-                  className="flex-1 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded text-sm transition"
+                  className="flex-1 px-3 py-1.5 bg-muted hover:bg-accent text-foreground rounded text-sm transition"
                 >
                   {t('common', 'edit')}
                 </button>
@@ -240,10 +240,10 @@ export default function TagManager() {
       {/* Create/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-w-md w-full">
+          <div className="bg-card border border-border rounded-lg shadow-xl max-w-md w-full">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h3 className="text-xl font-bold text-foreground">
                 {editingTag ? t('common', 'edit') : t('tagsSection', 'create')}
               </h3>
               <button
@@ -251,7 +251,7 @@ export default function TagManager() {
                   setIsModalOpen(false)
                   setEditingTag(null)
                 }}
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+                className="text-slate-400 hover:text-foreground transition"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -263,7 +263,7 @@ export default function TagManager() {
             <form onSubmit={handleSubmit} className="p-6">
               {/* Name Input */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   {t('tagsSection', 'name')}
                 </label>
                 <input
@@ -271,14 +271,14 @@ export default function TagManager() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder={t('tagsSection', 'namePlaceholder')}
-                  className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-slate-50 dark:bg-muted border border-border rounded-lg text-foreground placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500"
                   autoFocus
                 />
               </div>
 
               {/* Color Picker */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-3">
+                <label className="block text-sm font-medium text-muted-foreground mb-3">
                   {t('tagsSection', 'color')}
                 </label>
                 <div className="grid grid-cols-8 gap-2">
@@ -300,7 +300,7 @@ export default function TagManager() {
 
               {/* Preview */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   {t('tagsSection', 'preview')}
                 </label>
                 <div
@@ -319,13 +319,13 @@ export default function TagManager() {
                     setIsModalOpen(false)
                     setEditingTag(null)
                   }}
-                  className="flex-1 px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-lg transition font-semibold"
+                  className="flex-1 px-4 py-2 bg-secondary hover:bg-slate-300 dark:hover:bg-slate-600 text-foreground rounded-lg transition font-semibold"
                 >
                   {t('common', 'cancel')}
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                  className="flex-1 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition font-semibold"
                 >
                   {editingTag ? t('tagsSection', 'save') : t('tagsSection', 'create')}
                 </button>

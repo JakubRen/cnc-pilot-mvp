@@ -102,7 +102,7 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
   // Action color mapping
   const getActionColor = (action: string) => {
     if (action.includes('create') || action.includes('add')) return 'text-green-400'
-    if (action.includes('update') || action.includes('edit')) return 'text-blue-400'
+    if (action.includes('update') || action.includes('edit')) return 'text-violet-400'
     if (action.includes('delete') || action.includes('remove')) return 'text-red-400'
     if (action.includes('login') || action.includes('logout')) return 'text-yellow-400'
     return 'text-slate-400'
@@ -113,14 +113,14 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
       {/* LEFT COLUMN - Filters */}
       <div className="space-y-4">
         {/* Search */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">{t('common', 'search')}</label>
+        <div className="bg-card border border-border rounded-lg p-4">
+          <label className="text-sm font-semibold text-foreground mb-2 block">{t('common', 'search')}</label>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('auditLogs', 'searchPlaceholder')}
-            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm focus:border-violet-500 focus:outline-none"
           />
         </div>
 
@@ -131,12 +131,12 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
         />
 
         {/* Action Filter */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">{t('auditLogs', 'action')}</label>
+        <div className="bg-card border border-border rounded-lg p-4">
+          <label className="text-sm font-semibold text-foreground mb-2 block">{t('auditLogs', 'action')}</label>
           <select
             value={actionFilter}
             onChange={(e) => setActionFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm focus:border-violet-500 focus:outline-none"
           >
             <option value="all">{t('common', 'all')}</option>
             {uniqueActions.map(action => (
@@ -146,12 +146,12 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
         </div>
 
         {/* Entity Type Filter */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">{t('auditLogs', 'entityType')}</label>
+        <div className="bg-card border border-border rounded-lg p-4">
+          <label className="text-sm font-semibold text-foreground mb-2 block">{t('auditLogs', 'entityType')}</label>
           <select
             value={entityTypeFilter}
             onChange={(e) => setEntityTypeFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm focus:border-violet-500 focus:outline-none"
           >
             <option value="all">{t('common', 'all')}</option>
             {uniqueEntityTypes.map(type => (
@@ -161,12 +161,12 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
         </div>
 
         {/* User Filter */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">{t('auditLogs', 'user')}</label>
+        <div className="bg-card border border-border rounded-lg p-4">
+          <label className="text-sm font-semibold text-foreground mb-2 block">{t('auditLogs', 'user')}</label>
           <select
             value={userFilter}
             onChange={(e) => setUserFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm focus:border-violet-500 focus:outline-none"
           >
             <option value="all">{t('common', 'all')}</option>
             {uniqueUsers.map(user => user && (
@@ -178,35 +178,35 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
         </div>
 
         {/* Results Count */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
-          <p className="text-sm text-slate-500 dark:text-slate-400">{t('common', 'results')}</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{filteredLogs.length}</p>
+        <div className="bg-card border border-border rounded-lg p-4 text-center">
+          <p className="text-sm text-muted-foreground">{t('common', 'results')}</p>
+          <p className="text-2xl font-bold text-foreground">{filteredLogs.length}</p>
           <p className="text-xs text-slate-500">{t('auditLogs', 'showing', { total: logs.length })}</p>
         </div>
       </div>
 
       {/* RIGHT COLUMN - Logs Table */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+      <div className="bg-card border border-border rounded-lg overflow-hidden">
         <div className="overflow-x-auto max-h-[calc(100vh-200px)] overflow-y-auto">
           <table className="w-full">
-            <thead className="bg-slate-100 dark:bg-slate-700 sticky top-0 z-10">
+            <thead className="bg-muted sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                   {t('common', 'date')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                   {t('auditLogs', 'user')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                   {t('common', 'actions')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                   {t('common', 'type')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                   ID
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                   IP
                 </th>
               </tr>
@@ -214,7 +214,7 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
               {filteredLogs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                  <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                     {t('auditLogs', 'noLogs')}
                   </td>
                 </tr>
@@ -225,7 +225,7 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
 
                   return (
                     <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                      <td className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                      <td className="px-4 py-3 text-sm text-muted-foreground whitespace-nowrap">
                         {new Date(log.created_at).toLocaleString('pl-PL', {
                           year: 'numeric',
                           month: '2-digit',
@@ -235,7 +235,7 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
                         })}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <div className="text-slate-900 dark:text-white font-medium">{userName}</div>
+                        <div className="text-foreground font-medium">{userName}</div>
                         <div className="text-xs text-slate-500">{userEmail}</div>
                       </td>
                       <td className="px-4 py-3 text-sm">
@@ -243,10 +243,10 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
                           {log.action}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-slate-700 dark:text-slate-300">
+                      <td className="px-4 py-3 text-sm text-foreground">
                         {log.entity_type}
                       </td>
-                      <td className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400 font-mono text-xs">
+                      <td className="px-4 py-3 text-sm text-muted-foreground font-mono text-xs">
                         {log.entity_id || '-'}
                       </td>
                       <td className="px-4 py-3 text-sm text-slate-500 font-mono text-xs">

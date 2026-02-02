@@ -12,25 +12,25 @@ export default function NoAccessPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-8 max-w-md text-center">
+    <div className="min-h-screen bg-muted flex items-center justify-center p-4">
+      <div className="bg-card rounded-lg border border-border p-8 max-w-md text-center">
         <div className="text-6xl mb-6">🚫</div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+        <h1 className="text-2xl font-bold text-foreground mb-4">
           {t('auth', 'noAccess')}
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 mb-6">
+        <p className="text-muted-foreground mb-6">
           {t('auth', 'noAccessMessage')}
         </p>
         <div className="flex flex-col gap-3">
           <Link
             href="/"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+            className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
           >
             {t('auth', 'returnToDashboard')}
           </Link>
           <Link
             href="/logout"
-            className="px-6 py-3 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition"
+            className="px-6 py-3 bg-secondary text-foreground rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition"
           >
             {t('nav', 'logout')}
           </Link>

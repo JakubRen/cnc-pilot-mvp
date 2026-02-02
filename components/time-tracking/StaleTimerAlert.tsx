@@ -113,7 +113,7 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
           <h3 className="font-semibold text-yellow-400 mb-2">
             Long-Running Timers Detected
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+          <p className="text-sm text-muted-foreground mb-3">
             The following timers have been running for over 12 hours:
           </p>
           <div className="space-y-2">
@@ -125,13 +125,13 @@ export default function StaleTimerAlert({ companyId }: { companyId: string }) {
               return (
                 <div
                   key={timer.id}
-                  className="bg-white dark:bg-slate-800 rounded p-3 flex items-center justify-between"
+                  className="bg-card rounded p-3 flex items-center justify-between"
                 >
                   <div>
-                    <div className="font-medium text-slate-900 dark:text-white">
+                    <div className="font-medium text-foreground">
                       Order #{timer.order_number} - {timer.user_name}
                     </div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400">
+                    <div className="text-sm text-muted-foreground">
                       Running for {hoursRunning} hours
                     </div>
                   </div>

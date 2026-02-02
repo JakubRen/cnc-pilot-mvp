@@ -72,14 +72,14 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
   const selectedTagsData = tags.filter((tag) => selectedTags.includes(tag.id))
 
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+    <div className="bg-card border border-border rounded-lg p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{t('tags', 'filterByTags')}</h3>
+        <h3 className="text-sm font-semibold text-foreground">{t('tags', 'filterByTags')}</h3>
         {selectedTags.length > 0 && (
           <button
             onClick={handleClearAll}
-            className="text-xs text-blue-400 hover:text-blue-300 transition"
+            className="text-xs text-violet-400 hover:text-violet-300 transition"
           >
             {t('tagsSection', 'clearFilter')}
           </button>
@@ -115,19 +115,19 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {selectedTags.length > 1 && (
         <div className="mb-4">
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-slate-500 dark:text-slate-400">{t('tags', 'logic')}:</span>
+            <span className="text-muted-foreground">{t('tags', 'logic')}:</span>
             <button
               onClick={() => setLogic(logic === 'AND' ? 'OR' : 'AND')}
               className={`px-3 py-1 rounded-lg font-medium transition ${
                 logic === 'AND'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-muted text-muted-foreground hover:bg-accent'
               }`}
             >
               {logic === 'AND' ? t('tags', 'allAND') : t('tags', 'anyOR')}
             </button>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1">
             {logic === 'AND'
               ? t('tagsSection', 'matchAll')
               : t('tagsSection', 'matchAny')}
@@ -138,7 +138,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {/* Expand/Collapse Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-900 dark:text-white text-sm rounded-lg transition"
+        className="w-full flex items-center justify-between px-3 py-2 bg-muted hover:bg-accent text-foreground text-sm rounded-lg transition"
       >
         <span>
           {selectedTags.length === 0
@@ -159,7 +159,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {isOpen && (
         <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
           {tags.length === 0 ? (
-            <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">
+            <p className="text-sm text-muted-foreground text-center py-4">
               {t('tagsSection', 'noAvailableTags')}
             </p>
           ) : (
@@ -171,8 +171,8 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
                   onClick={() => handleToggleTag(tag.id)}
                   className={`w-full flex items-center gap-3 p-2 rounded-lg text-sm transition ${
                     isSelected
-                      ? 'bg-slate-100 dark:bg-slate-700'
-                      : 'hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                      ? 'bg-muted'
+                      : 'hover:bg-muted/50'
                   }`}
                 >
                   <div className="flex items-center gap-2 flex-1">
@@ -180,10 +180,10 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
                       className="w-4 h-4 rounded-full flex-shrink-0"
                       style={{ backgroundColor: tag.color }}
                     />
-                    <span className="text-slate-900 dark:text-white text-left">{tag.name}</span>
+                    <span className="text-foreground text-left">{tag.name}</span>
                   </div>
                   {isSelected && (
-                    <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-violet-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   )}

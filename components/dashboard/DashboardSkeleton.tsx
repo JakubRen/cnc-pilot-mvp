@@ -6,8 +6,8 @@ export default function DashboardSkeleton() {
       <div className="max-w-7xl mx-auto">
         {/* Header Skeleton */}
         <div className="mb-8">
-          <div className="h-8 w-48 bg-slate-200 dark:bg-slate-700 animate-pulse rounded mb-2" />
-          <div className="h-4 w-64 bg-slate-200 dark:bg-slate-700 animate-pulse rounded" />
+          <div className="h-8 w-48 bg-muted animate-pulse rounded mb-2" />
+          <div className="h-4 w-64 bg-muted animate-pulse rounded" />
         </div>
 
         {/* Metric Cards Skeleton */}
@@ -22,11 +22,11 @@ export default function DashboardSkeleton() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           {/* Urgent Tasks */}
           <div className="lg:col-span-1">
-            <div className="glass-panel rounded-xl p-6 border border-slate-200 dark:border-border">
-              <div className="h-6 w-32 bg-slate-200 dark:bg-slate-700 animate-pulse rounded mb-4" />
+            <div className="bg-card rounded-lg p-6 border border-border">
+              <div className="h-6 w-32 bg-muted animate-pulse rounded mb-4" />
               <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-16 bg-slate-200 dark:bg-slate-700 animate-pulse rounded" />
+                  <div key={i} className="h-16 bg-muted animate-pulse rounded" />
                 ))}
               </div>
             </div>

@@ -53,10 +53,10 @@ export default async function ProductionPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               ⚙️ Plan Produkcji
             </h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Operacje technologiczne • Routing produkcyjny • Setup/Run Time
             </p>
           </div>
@@ -64,17 +64,17 @@ export default async function ProductionPage() {
 
         {/* Production Plans List */}
         {!productionPlans || productionPlans.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-700 p-12 text-center">
+          <div className="bg-card rounded-lg border-2 border-dashed border-border p-12 text-center">
             <div className="text-6xl mb-4">📋</div>
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
               Brak planów produkcji
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 mb-6">
+            <p className="text-muted-foreground mb-6">
               Plany produkcji tworzy się z poziomu zleceń.
             </p>
             <Link
               href="/orders"
-              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+              className="inline-block px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
             >
               Przejdź do Zleceń
             </Link>
@@ -94,15 +94,15 @@ export default async function ProductionPage() {
                 <Link
                   key={typedPlan.id}
                   href={`/production/${typedPlan.id}`}
-                  className="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:border-blue-500 hover:shadow-lg transition"
+                  className="block bg-card border border-border rounded-lg p-6 hover:border-violet-500 hover:shadow-lg transition"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                        <h3 className="text-xl font-bold text-foreground">
                           {typedPlan.part_name}
                         </h3>
-                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-xs font-semibold rounded">
+                        <span className="px-2 py-1 bg-violet-100 dark:bg-violet-900 text-violet-800 dark:text-violet-100 text-xs font-semibold rounded">
                           {typedPlan.quantity} szt.
                         </span>
                         <span className={`px-2 py-1 ${productionPlanStatusColors[typedPlan.status]} text-white text-xs font-semibold rounded`}>
@@ -112,7 +112,7 @@ export default async function ProductionPage() {
                           {priority}
                         </span>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>📋 {typedPlan.plan_number}</span>
                         {order && <span>📦 {order.order_number}</span>}
                         {order && <span>👤 {order.customer_name}</span>}
@@ -121,30 +121,30 @@ export default async function ProductionPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-4 gap-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
+                  <div className="grid grid-cols-4 gap-4 p-4 bg-muted rounded-lg">
                     <div className="text-center">
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Postęp</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs text-muted-foreground mb-1">Postęp</p>
+                      <p className="text-lg font-bold text-foreground">
                         {completion}%
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-muted-foreground">
                         {completedOps}/{operationsCount} op
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Setup Time</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs text-muted-foreground mb-1">Setup Time</p>
+                      <p className="text-lg font-bold text-foreground">
                         {Math.floor(typedPlan.total_setup_time_minutes || 0)} min
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Run Time</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs text-muted-foreground mb-1">Run Time</p>
+                      <p className="text-lg font-bold text-foreground">
                         {Math.floor(typedPlan.total_run_time_minutes || 0)} min
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt szac.</p>
+                      <p className="text-xs text-muted-foreground mb-1">Koszt szac.</p>
                       <p className="text-lg font-bold text-green-600 dark:text-green-400">
                         {typedPlan.estimated_cost?.toFixed(2) || '0.00'} PLN
                       </p>

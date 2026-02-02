@@ -176,11 +176,11 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+    <form onSubmit={handleSubmit} className="bg-card border border-border rounded-lg p-6">
       {/* Product Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="md:col-span-2">
-          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('carbon', 'productName')} *</label>
+          <label className="block text-foreground mb-2 text-sm">{t('carbon', 'productName')} *</label>
           <Input
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
@@ -189,7 +189,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
           />
         </div>
         <div>
-          <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('carbon', 'quantityPcs')}</label>
+          <label className="block text-foreground mb-2 text-sm">{t('carbon', 'quantityPcs')}</label>
           <Input
             type="number"
             min="1"
@@ -201,11 +201,11 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
 
       {/* Order Link */}
       <div className="mb-6">
-        <label className="block text-slate-700 dark:text-slate-300 mb-2 text-sm">{t('carbon', 'linkToOrder')}</label>
+        <label className="block text-foreground mb-2 text-sm">{t('carbon', 'linkToOrder')}</label>
         <select
           value={orderId}
           onChange={(e) => setOrderId(e.target.value)}
-          className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
         >
           <option value="">{t('carbon', 'noLink')}</option>
           {orders.map(order => (
@@ -217,17 +217,17 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
       </div>
 
       {/* Material Section */}
-      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 mb-4">
-        <h3 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
+      <div className="bg-muted rounded-lg p-4 mb-4">
+        <h3 className="text-foreground font-semibold mb-3 flex items-center gap-2">
           <span>🔩</span> {t('carbon', 'materialEmission')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">{t('carbon', 'material')}</label>
+            <label className="block text-muted-foreground mb-2 text-sm">{t('carbon', 'material')}</label>
             <select
               value={selectedMaterial}
               onChange={(e) => setSelectedMaterial(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
             >
               <option value="">{t('carbon', 'selectMaterial')}</option>
               {Object.entries(materialsByCategory).map(([cat, mats]) => (
@@ -242,7 +242,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
             </select>
           </div>
           <div>
-            <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">{t('carbon', 'materialWeightKg')}</label>
+            <label className="block text-muted-foreground mb-2 text-sm">{t('carbon', 'materialWeightKg')}</label>
             <Input
               type="number"
               step="0.001"
@@ -255,24 +255,24 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
         </div>
         {materialCO2 > 0 && (
           <div className="mt-3 text-right">
-            <span className="text-slate-500 dark:text-slate-400 text-sm">{t('carbon', 'materialEmissionResult')} </span>
+            <span className="text-muted-foreground text-sm">{t('carbon', 'materialEmissionResult')} </span>
             <span className="text-green-400 font-semibold">{materialCO2.toFixed(3)} kg CO₂</span>
           </div>
         )}
       </div>
 
       {/* Energy Section */}
-      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 mb-6">
-        <h3 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
+      <div className="bg-muted rounded-lg p-4 mb-6">
+        <h3 className="text-foreground font-semibold mb-3 flex items-center gap-2">
           <span>⚡</span> {t('carbon', 'energyEmission')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">{t('carbon', 'energySource')}</label>
+            <label className="block text-muted-foreground mb-2 text-sm">{t('carbon', 'energySource')}</label>
             <select
               value={selectedEnergy}
               onChange={(e) => setSelectedEnergy(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
             >
               <option value="">{t('carbon', 'selectSource')}</option>
               {energies.map(en => (
@@ -283,7 +283,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
             </select>
           </div>
           <div>
-            <label className="block text-slate-500 dark:text-slate-400 mb-2 text-sm">
+            <label className="block text-muted-foreground mb-2 text-sm">
               {t('carbon', 'consumption')} ({energies.find(e => e.id === selectedEnergy)?.unit || 'kWh'})
             </label>
             <Input
@@ -298,7 +298,7 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
         </div>
         {energyCO2 > 0 && (
           <div className="mt-3 text-right">
-            <span className="text-slate-500 dark:text-slate-400 text-sm">{t('carbon', 'energyEmissionResult')} </span>
+            <span className="text-muted-foreground text-sm">{t('carbon', 'energyEmissionResult')} </span>
             <span className="text-green-400 font-semibold">{energyCO2.toFixed(3)} kg CO₂</span>
           </div>
         )}
@@ -310,24 +310,24 @@ export default function CarbonCalculator({ materials, energies, companyId, userI
           <h3 className="text-green-400 font-semibold mb-4 text-lg">📊 {t('carbon', 'calculationResult')}</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">{t('carbon', 'totalEmission')}</p>
+              <p className="text-muted-foreground text-sm">{t('carbon', 'totalEmission')}</p>
               <p className="text-3xl font-bold text-green-400">{totalCO2.toFixed(3)} kg</p>
               <p className="text-slate-500 text-xs">CO₂</p>
             </div>
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">{t('carbon', 'emissionPerUnit')}</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-white">{co2PerUnit.toFixed(3)} kg</p>
+              <p className="text-muted-foreground text-sm">{t('carbon', 'emissionPerUnit')}</p>
+              <p className="text-3xl font-bold text-foreground">{co2PerUnit.toFixed(3)} kg</p>
               <p className="text-slate-500 text-xs">{t('carbon', 'perPcs')}</p>
             </div>
           </div>
           <div className="mt-4 pt-4 border-t border-green-700/30">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500 dark:text-slate-400">{t('carbon', 'material2')}</span>
-              <span className="text-slate-900 dark:text-white">{materialCO2.toFixed(3)} kg CO₂</span>
+              <span className="text-muted-foreground">{t('carbon', 'material2')}</span>
+              <span className="text-foreground">{materialCO2.toFixed(3)} kg CO₂</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500 dark:text-slate-400">{t('carbon', 'energy')}</span>
-              <span className="text-slate-900 dark:text-white">{energyCO2.toFixed(3)} kg CO₂</span>
+              <span className="text-muted-foreground">{t('carbon', 'energy')}</span>
+              <span className="text-foreground">{energyCO2.toFixed(3)} kg CO₂</span>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Sidebar from './Sidebar';
@@ -11,6 +11,7 @@ import InterfaceModeGuard from './InterfaceModeGuard';
 import type { InterfaceMode } from '@/lib/auth';
 import { LiveRegionProvider } from '@/components/ui/LiveRegion';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -38,7 +39,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* Skip link for accessibility */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:shadow-lg focus:font-semibold"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-violet-600 focus:text-white focus:rounded-lg focus:shadow-lg focus:font-semibold"
       >
         Przejdź do treści głównej
       </a>
@@ -91,13 +92,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* Floating Help Button */}
       <button
         onClick={() => setShowShortcutsHelp(true)}
-        className="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg dark:shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center justify-center transition z-30 group focus:outline-none focus:ring-2 focus:ring-blue-500 hidden lg:flex"
+        className="fixed bottom-6 right-6 w-10 h-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-md flex items-center justify-center transition z-30 group focus:outline-none focus:ring-2 focus:ring-ring hidden lg:flex"
         title="Keyboard Shortcuts (Ctrl+/)"
         aria-label="Show keyboard shortcuts"
       >
-        <span className="text-xl">⌨️</span>
-        {/* Tooltip */}
-        <span className="absolute bottom-full mb-2 right-0 px-3 py-1 bg-slate-800 dark:bg-slate-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none border border-slate-700">
+        <QuestionMarkCircleIcon className="w-5 h-5" />
+        <span className="absolute bottom-full mb-2 right-0 px-3 py-1 bg-popover text-popover-foreground text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none border border-border">
           Skróty klawiszowe (Ctrl+/)
         </span>
       </button>

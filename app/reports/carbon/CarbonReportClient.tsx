@@ -71,12 +71,12 @@ export default function CarbonReportClient({
         <div className="flex justify-between items-center mb-8">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <Link href="/reports" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm">
+              <Link href="/reports" className="text-muted-foreground hover:text-foreground text-sm">
                 ← Raporty
               </Link>
             </div>
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white">{t('carbon', 'title')}</h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">{t('carbon', 'subtitle')}</p>
+            <h1 className="text-4xl font-bold text-foreground">{t('carbon', 'title')}</h1>
+            <p className="text-muted-foreground mt-1">{t('carbon', 'subtitle')}</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="px-3 py-1 bg-green-600/20 text-green-400 text-sm rounded-full border border-green-700/50">
@@ -86,14 +86,14 @@ export default function CarbonReportClient({
         </div>
 
         {/* Info Banner */}
-        <div className="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-700/50 rounded-lg p-6 mb-8">
+        <div className="bg-gradient-to-r from-green-900/30 to-violet-900/30 border border-green-700/50 rounded-lg p-6 mb-8">
           <div className="flex items-start gap-4">
             <div className="text-4xl">🌍</div>
             <div>
-              <h3 className="text-slate-900 dark:text-white font-semibold text-lg mb-1">
+              <h3 className="text-foreground font-semibold text-lg mb-1">
                 {t('carbon', 'cbamTitle')}
               </h3>
-              <p className="text-slate-700 dark:text-slate-300 text-sm">
+              <p className="text-foreground text-sm">
                 {t('carbon', 'cbamDescription')}
               </p>
             </div>
@@ -102,29 +102,29 @@ export default function CarbonReportClient({
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">{t('carbon', 'reports')}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">{totalReports}</p>
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-muted-foreground text-sm">{t('carbon', 'reports')}</p>
+            <p className="text-3xl font-bold text-foreground">{totalReports}</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 border border-green-700/50 rounded-lg p-4">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">{t('carbon', 'totalEmissions')}</p>
+          <div className="bg-card border border-green-700/50 rounded-lg p-4">
+            <p className="text-muted-foreground text-sm">{t('carbon', 'totalEmissions')}</p>
             <p className="text-3xl font-bold text-green-400">{totalCO2.toFixed(1)} kg</p>
             <p className="text-slate-500 text-xs">CO₂</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">{t('carbon', 'materialsInDatabase')}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">{materials.length}</p>
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-muted-foreground text-sm">{t('carbon', 'materialsInDatabase')}</p>
+            <p className="text-3xl font-bold text-foreground">{materials.length}</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">{t('carbon', 'energySources')}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">{energies.length}</p>
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-muted-foreground text-sm">{t('carbon', 'energySources')}</p>
+            <p className="text-3xl font-bold text-foreground">{energies.length}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Calculator */}
           <div className="lg:col-span-2">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t('carbon', 'calculator')}</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">{t('carbon', 'calculator')}</h2>
             <CarbonCalculator
               materials={materials}
               energies={energies}
@@ -135,8 +135,8 @@ export default function CarbonReportClient({
 
           {/* Recent Reports */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">{t('carbon', 'recentReports')}</h3>
+            <div className="bg-card border border-border rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-foreground mb-3">{t('carbon', 'recentReports')}</h3>
               {reports.length === 0 ? (
                 <p className="text-slate-500 text-sm text-center py-4">
                   {t('carbon', 'noReports')}
@@ -147,11 +147,11 @@ export default function CarbonReportClient({
                     <Link
                       key={report.id}
                       href={`/reports/carbon/${report.id}`}
-                      className="block p-3 bg-slate-50 dark:bg-slate-900 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                      className="block p-3 bg-muted rounded-lg hover:bg-muted transition"
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="text-slate-900 dark:text-white text-sm font-medium">{report.product_name}</p>
+                          <p className="text-foreground text-sm font-medium">{report.product_name}</p>
                           <p className="text-slate-500 text-xs">
                             {report.report_number}
                             {report.orders && <span> • {report.orders.order_number}</span>}
@@ -171,24 +171,24 @@ export default function CarbonReportClient({
             </div>
 
             {/* Formula Explanation */}
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">{t('carbon', 'formula')}</h3>
-              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg font-mono text-sm text-green-400 mb-3">
+            <div className="bg-card border border-border rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-foreground mb-3">{t('carbon', 'formula')}</h3>
+              <div className="bg-muted p-3 rounded-lg font-mono text-sm text-green-400 mb-3">
                 CO₂ = (Waga × EF<sub>mat</sub>) + (kWh × EF<sub>en</sub>)
               </div>
-              <div className="text-slate-500 dark:text-slate-400 text-xs space-y-1">
-                <p><span className="text-slate-700 dark:text-slate-300">EF<sub>mat</sub></span> = {t('carbon', 'materialEmissionFactor')}</p>
-                <p><span className="text-slate-700 dark:text-slate-300">EF<sub>en</sub></span> = {t('carbon', 'energyEmissionFactor')}</p>
+              <div className="text-muted-foreground text-xs space-y-1">
+                <p><span className="text-foreground">EF<sub>mat</sub></span> = {t('carbon', 'materialEmissionFactor')}</p>
+                <p><span className="text-foreground">EF<sub>en</sub></span> = {t('carbon', 'energyEmissionFactor')}</p>
               </div>
             </div>
 
             {/* Material Categories */}
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">{t('carbon', 'materialCoefficients')}</h3>
+            <div className="bg-card border border-border rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-foreground mb-3">{t('carbon', 'materialCoefficients')}</h3>
               <div className="space-y-2 text-sm">
                 {materialCategories.map(({ cat, label, range }) => (
                   <div key={cat} className="flex justify-between items-center">
-                    <span className="text-slate-700 dark:text-slate-300">{label}</span>
+                    <span className="text-foreground">{label}</span>
                     <span className="text-slate-500 font-mono text-xs">{range}</span>
                   </div>
                 ))}

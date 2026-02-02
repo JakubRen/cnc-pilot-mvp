@@ -92,45 +92,45 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Basic Info */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2">
+            <h2 className="text-xl font-semibold text-foreground border-b border-border pb-2">
               Podstawowe informacje
             </h2>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Typ kontrahenta <span className="text-red-500">*</span>
               </label>
               <div className="grid grid-cols-3 gap-3">
-                <label className="relative flex items-center justify-center px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50 dark:has-[:checked]:bg-blue-900/20">
+                <label className="relative flex items-center justify-center px-4 py-3 rounded-lg bg-muted border-2 border-border cursor-pointer hover:border-violet-500 dark:hover:border-violet-400 transition has-[:checked]:border-violet-600 has-[:checked]:bg-violet-50 dark:has-[:checked]:bg-violet-900/20">
                   <input
                     {...register('type')}
                     type="radio"
                     value="client"
                     className="sr-only"
                   />
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">
+                  <span className="text-sm font-medium text-foreground">
                     👤 Klient
                   </span>
                 </label>
-                <label className="relative flex items-center justify-center px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50 dark:has-[:checked]:bg-blue-900/20">
+                <label className="relative flex items-center justify-center px-4 py-3 rounded-lg bg-muted border-2 border-border cursor-pointer hover:border-violet-500 dark:hover:border-violet-400 transition has-[:checked]:border-violet-600 has-[:checked]:bg-violet-50 dark:has-[:checked]:bg-violet-900/20">
                   <input
                     {...register('type')}
                     type="radio"
                     value="supplier"
                     className="sr-only"
                   />
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">
+                  <span className="text-sm font-medium text-foreground">
                     📦 Sprzedawca
                   </span>
                 </label>
-                <label className="relative flex items-center justify-center px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50 dark:has-[:checked]:bg-blue-900/20">
+                <label className="relative flex items-center justify-center px-4 py-3 rounded-lg bg-muted border-2 border-border cursor-pointer hover:border-violet-500 dark:hover:border-violet-400 transition has-[:checked]:border-violet-600 has-[:checked]:bg-violet-50 dark:has-[:checked]:bg-violet-900/20">
                   <input
                     {...register('type')}
                     type="radio"
                     value="cooperator"
                     className="sr-only"
                   />
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">
+                  <span className="text-sm font-medium text-foreground">
                     🤝 Kooperant
                   </span>
                 </label>
@@ -138,20 +138,20 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
               {errors.type && (
                 <p className="mt-1 text-sm text-red-500">{errors.type.message}</p>
               )}
-              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-2 text-xs text-muted-foreground">
                 Klient - odbiorcy produktów | Sprzedawca - dostawcy materiałów | Kooperant - partnerzy współpracy
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Nazwa kontrahenta <span className="text-red-500">*</span>
               </label>
               <input
                 {...register('name')}
                 type="text"
                 placeholder="np. Firma XYZ Sp. z o.o."
-                className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               />
               {errors.name && (
                 <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
@@ -161,20 +161,20 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2">
+            <h2 className="text-xl font-semibold text-foreground border-b border-border pb-2">
               Dane kontaktowe
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Email
                 </label>
                 <input
                   {...register('email')}
                   type="email"
                   placeholder="kontakt@firma.pl"
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
@@ -182,14 +182,14 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Telefon
                 </label>
                 <input
                   {...register('phone')}
                   type="tel"
                   placeholder="123456789"
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 />
                 {errors.phone && (
                   <p className="mt-1 text-sm text-red-500">{errors.phone.message}</p>
@@ -198,7 +198,7 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 NIP
               </label>
               <input
@@ -206,12 +206,12 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
                 type="text"
                 placeholder="1234567890"
                 maxLength={10}
-                className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               />
               {errors.nip && (
                 <p className="mt-1 text-sm text-red-500">{errors.nip.message}</p>
               )}
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-xs text-muted-foreground">
                 10 cyfr bez myślników
               </p>
             </div>
@@ -219,19 +219,19 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
 
           {/* Address */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2">
+            <h2 className="text-xl font-semibold text-foreground border-b border-border pb-2">
               Adres
             </h2>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Ulica
               </label>
               <input
                 {...register('street')}
                 type="text"
                 placeholder="ul. Przykładowa 123"
-                className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               />
               {errors.street && (
                 <p className="mt-1 text-sm text-red-500">{errors.street.message}</p>
@@ -240,7 +240,7 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Miasto
                 </label>
                 <Controller
@@ -262,7 +262,7 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Kod pocztowy
                 </label>
                 <input
@@ -270,7 +270,7 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
                   type="text"
                   placeholder="00-000"
                   maxLength={6}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 />
                 {errors.postal_code && (
                   <p className="mt-1 text-sm text-red-500">{errors.postal_code.message}</p>
@@ -279,7 +279,7 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Kraj
               </label>
               <Controller
@@ -302,19 +302,19 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
 
           {/* Notes */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2">
+            <h2 className="text-xl font-semibold text-foreground border-b border-border pb-2">
               Dodatkowe informacje
             </h2>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Notatki
               </label>
               <textarea
                 {...register('notes')}
                 rows={4}
                 placeholder="Dodatkowe informacje o kliencie..."
-                className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none resize-none"
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none resize-none"
               />
               {errors.notes && (
                 <p className="mt-1 text-sm text-red-500">{errors.notes.message}</p>
@@ -323,11 +323,11 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
           </div>
 
           {/* Actions */}
-          <div className="flex gap-4 pt-6 border-t border-slate-200 dark:border-slate-700">
+          <div className="flex gap-4 pt-6 border-t border-border">
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700"
+              className="flex-1 bg-violet-600 hover:bg-violet-700"
             >
               {isSubmitting ? 'Zapisywanie...' : '✓ Zapisz zmiany'}
             </Button>

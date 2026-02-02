@@ -50,14 +50,14 @@ export function ResponsiveOrderList({
           <div className="flex gap-2 text-sm">
             <button
               onClick={onSelectAll}
-              className="px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+              className="px-3 py-2 bg-muted text-foreground rounded-lg hover:bg-accent transition"
             >
               Zaznacz wszystkie
             </button>
             {selectedOrders.size > 0 && (
               <button
                 onClick={onDeselectAll}
-                className="px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+                className="px-3 py-2 bg-muted text-foreground rounded-lg hover:bg-accent transition"
               >
                 Odznacz ({selectedOrders.size})
               </button>
@@ -73,8 +73,8 @@ export function ResponsiveOrderList({
               <div key={order.id} className={`relative ${pending ? 'opacity-60 pointer-events-none' : ''}`}>
                 {/* Pending indicator overlay */}
                 {pending && (
-                  <div className="absolute inset-0 flex items-center justify-center z-20 bg-slate-900/20 dark:bg-slate-900/40 rounded-lg">
-                    <div className="animate-spin h-8 w-8 border-3 border-blue-500 border-t-transparent rounded-full" />
+                  <div className="absolute inset-0 flex items-center justify-center z-20 bg-slate-900/20 dark:bg-background/40 rounded-lg">
+                    <div className="animate-spin h-8 w-8 border-3 border-violet-500 border-t-transparent rounded-full" />
                   </div>
                 )}
                 {/* Selection checkbox overlay */}
@@ -84,7 +84,7 @@ export function ResponsiveOrderList({
                       type="checkbox"
                       checked={selectedOrders.has(order.id)}
                       onChange={() => onToggleSelect(order.id)}
-                      className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      className="w-5 h-5 rounded border-slate-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
                     />
                   </div>
                 )}

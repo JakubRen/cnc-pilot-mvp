@@ -73,10 +73,10 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               ⚙️ Plan Produkcji {typedPlan.plan_number}
             </h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               {typedPlan.part_name} • {typedPlan.quantity} szt.
             </p>
           </div>
@@ -86,14 +86,14 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
             {(orderIdFromRawData || order?.id) && (
               <Link
                 href={`/orders/${orderIdFromRawData || order?.id}`}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition-colors"
               >
                 📦 Zlecenie {order?.order_number ? `#${order.order_number}` : ''}
               </Link>
             )}
             <Link
               href="/production"
-              className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+              className="px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-accent transition"
             >
               Powrót
             </Link>
@@ -101,28 +101,28 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
         </div>
 
         {/* Order Info Card */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">📋 Informacje o zleceniu</h2>
+        <div className="bg-card border border-border rounded-lg p-6 mb-6">
+          <h2 className="text-xl font-bold text-foreground mb-4">📋 Informacje o zleceniu</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Zlecenie</p>
-              <p className="text-slate-900 dark:text-white font-semibold">#{order?.order_number}</p>
+              <p className="text-muted-foreground text-sm mb-1">Zlecenie</p>
+              <p className="text-foreground font-semibold">#{order?.order_number}</p>
             </div>
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Klient</p>
-              <p className="text-slate-900 dark:text-white font-semibold">{order?.customer_name}</p>
+              <p className="text-muted-foreground text-sm mb-1">Klient</p>
+              <p className="text-foreground font-semibold">{order?.customer_name}</p>
             </div>
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Termin</p>
-              <p className="text-slate-900 dark:text-white font-semibold">
+              <p className="text-muted-foreground text-sm mb-1">Termin</p>
+              <p className="text-foreground font-semibold">
                 {order?.deadline ? new Date(order.deadline).toLocaleDateString('pl-PL') : 'Brak'}
               </p>
             </div>
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Status zlecenia</p>
+              <p className="text-muted-foreground text-sm mb-1">Status zlecenia</p>
               <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
                 order?.status === 'completed' ? 'bg-green-600' :
-                order?.status === 'in_progress' ? 'bg-blue-600' :
+                order?.status === 'in_progress' ? 'bg-violet-600' :
                 order?.status === 'delayed' ? 'bg-red-600' :
                 order?.status === 'cancelled' ? 'bg-gray-600' :
                 order?.status === 'ready_to_ship' ? 'bg-indigo-600' :
@@ -135,27 +135,27 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
         </div>
 
         {/* Production Details Card */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">🔧 Szczegóły produkcji</h2>
+        <div className="bg-card border border-border rounded-lg p-6 mb-6">
+          <h2 className="text-xl font-bold text-foreground mb-4">🔧 Szczegóły produkcji</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Część</p>
-              <p className="text-slate-900 dark:text-white font-semibold">{typedPlan.part_name}</p>
+              <p className="text-muted-foreground text-sm mb-1">Część</p>
+              <p className="text-foreground font-semibold">{typedPlan.part_name}</p>
             </div>
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Ilość</p>
-              <p className="text-slate-900 dark:text-white font-semibold">{typedPlan.quantity} szt.</p>
+              <p className="text-muted-foreground text-sm mb-1">Ilość</p>
+              <p className="text-foreground font-semibold">{typedPlan.quantity} szt.</p>
             </div>
             {typedPlan.material && (
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Materiał</p>
-                <p className="text-slate-900 dark:text-white font-semibold">{typedPlan.material}</p>
+                <p className="text-muted-foreground text-sm mb-1">Materiał</p>
+                <p className="text-foreground font-semibold">{typedPlan.material}</p>
               </div>
             )}
             {(typedPlan.length || typedPlan.width || typedPlan.height) && (
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Wymiary</p>
-                <p className="text-slate-900 dark:text-white font-semibold">
+                <p className="text-muted-foreground text-sm mb-1">Wymiary</p>
+                <p className="text-foreground font-semibold">
                   {typedPlan.length && `${typedPlan.length}mm`}
                   {typedPlan.width && ` × ${typedPlan.width}mm`}
                   {typedPlan.height && ` × ${typedPlan.height}mm`}
@@ -165,31 +165,31 @@ export default async function ProductionDetailsPage({ params }: { params: Promis
             {/* Drawing file section removed - files table may not exist in TEST */}
           </div>
           {typedPlan.technical_notes && (
-            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
-              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Notatki technologiczne</p>
-              <p className="text-slate-900 dark:text-white">{typedPlan.technical_notes}</p>
+            <div className="mt-4 p-4 bg-muted rounded-lg">
+              <p className="text-muted-foreground text-sm mb-1">Notatki technologiczne</p>
+              <p className="text-foreground">{typedPlan.technical_notes}</p>
             </div>
           )}
         </div>
 
         {/* Summary Card */}
-        <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-2 border-blue-500/50 rounded-lg p-6 mb-6">
+        <div className="bg-gradient-to-r from-violet-900/30 to-purple-900/30 border-2 border-violet-500/50 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold text-white mb-4">📊 Podsumowanie</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
-              <p className="text-sm text-blue-300 mb-1">Operacje</p>
+              <p className="text-sm text-violet-300 mb-1">Operacje</p>
               <p className="text-3xl font-bold text-white">{operations.length}</p>
             </div>
             <div className="text-center">
-              <p className="text-sm text-blue-300 mb-1">Setup Time</p>
+              <p className="text-sm text-violet-300 mb-1">Setup Time</p>
               <p className="text-3xl font-bold text-white">{formatDuration(totalSetupTime)}</p>
             </div>
             <div className="text-center">
-              <p className="text-sm text-blue-300 mb-1">Run Time</p>
+              <p className="text-sm text-violet-300 mb-1">Run Time</p>
               <p className="text-3xl font-bold text-white">{formatDuration(totalRunTime)}</p>
             </div>
             <div className="text-center">
-              <p className="text-sm text-blue-300 mb-1">Koszt całkowity</p>
+              <p className="text-sm text-violet-300 mb-1">Koszt całkowity</p>
               <p className="text-4xl font-bold text-green-400">{formatCost(totalCost)}</p>
             </div>
           </div>

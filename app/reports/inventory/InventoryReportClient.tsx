@@ -64,36 +64,36 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
       {/* Summary Cards */}
       {summary && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Wszystkie pozycje</p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">{summary.total_items}</p>
+          <div className="bg-card rounded-lg border border-border p-4">
+            <p className="text-muted-foreground text-xs mb-1">Wszystkie pozycje</p>
+            <p className="text-2xl font-bold text-foreground">{summary.total_items}</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Niski stan</p>
+          <div className="bg-card rounded-lg border border-border p-4">
+            <p className="text-muted-foreground text-xs mb-1">Niski stan</p>
             <p className="text-2xl font-bold text-red-400">{summary.low_stock_count}</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Kategorie</p>
-            <p className="text-2xl font-bold text-blue-400">{summary.categories}</p>
+          <div className="bg-card rounded-lg border border-border p-4">
+            <p className="text-muted-foreground text-xs mb-1">Kategorie</p>
+            <p className="text-2xl font-bold text-violet-400">{summary.categories}</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-            <p className="text-slate-500 dark:text-slate-400 text-xs mb-1">Wartość całkowita</p>
+          <div className="bg-card rounded-lg border border-border p-4">
+            <p className="text-muted-foreground text-xs mb-1">Wartość całkowita</p>
             <p className="text-2xl font-bold text-green-400">-</p>
-            <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">Wymaga danych o kosztach</p>
+            <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1">Wymaga danych o kosztach</p>
           </div>
         </div>
       )}
 
       {/* Filters & Export */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 mb-6">
+      <div className="bg-card rounded-lg border border-border p-4 mb-6">
         <div className="flex items-center gap-4 flex-wrap">
           {/* Category Filter */}
           <div>
-            <label className="text-slate-500 dark:text-slate-400 text-sm mr-2">Kategoria:</label>
+            <label className="text-muted-foreground text-sm mr-2">Kategoria:</label>
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="px-3 py-2 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
             >
               <option value="all">Wszystkie</option>
               {categories.map((cat) => (
@@ -111,9 +111,9 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
               id="lowStockToggle"
               checked={lowStockOnly}
               onChange={(e) => setLowStockOnly(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-blue-600 focus:ring-blue-500 focus:ring-offset-white dark:focus:ring-offset-slate-900"
+              className="w-4 h-4 rounded border-border bg-muted text-violet-600 focus:ring-violet-500 focus:ring-offset-white dark:focus:ring-offset-slate-900"
             />
-            <label htmlFor="lowStockToggle" className="text-slate-700 dark:text-slate-300 text-sm cursor-pointer">
+            <label htmlFor="lowStockToggle" className="text-foreground text-sm cursor-pointer">
               Tylko niski stan
             </label>
           </div>
@@ -125,14 +125,14 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
               placeholder="Szukaj po nazwie lub SKU..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground placeholder-slate-500 dark:placeholder-slate-500 focus:border-violet-500 focus:outline-none"
             />
           </div>
 
           {/* Export Button */}
           <button
             onClick={handleExport}
-            className="ml-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold flex items-center gap-2"
+            className="ml-auto px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold flex items-center gap-2"
           >
             <svg
               className="w-5 h-5"
@@ -153,30 +153,30 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
       </div>
 
       {/* Desktop View - Table (hidden on mobile) */}
-      <div className="hidden md:block bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div className="hidden md:block bg-card rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+            <thead className="bg-slate-100 dark:bg-background border-b border-border">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
                   SKU
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
                   Nazwa
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
                   Kategoria
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
                   Ilość
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
                   Próg
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
                   Lokalizacja
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
                   Partia
                 </th>
               </tr>
@@ -186,15 +186,15 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
                 const isLowStock = item.quantity < item.low_stock_threshold;
                 return (
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                    <td className="px-4 py-3 text-slate-900 dark:text-white font-mono text-sm">
+                    <td className="px-4 py-3 text-foreground font-mono text-sm">
                       {item.sku}
                     </td>
-                    <td className="px-4 py-3 text-slate-900 dark:text-white">{item.name}</td>
-                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300">{item.category}</td>
+                    <td className="px-4 py-3 text-foreground">{item.name}</td>
+                    <td className="px-4 py-3 text-foreground">{item.category}</td>
                     <td className="px-4 py-3">
                       <span
                         className={`font-semibold ${
-                          isLowStock ? 'text-red-400' : 'text-slate-900 dark:text-white'
+                          isLowStock ? 'text-red-400' : 'text-foreground'
                         }`}
                       >
                         {item.quantity} {item.unit}
@@ -205,13 +205,13 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {item.low_stock_threshold} {item.unit}
                     </td>
-                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
+                    <td className="px-4 py-3 text-foreground">
                       {item.location || '-'}
                     </td>
-                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-mono text-sm">
+                    <td className="px-4 py-3 text-foreground font-mono text-sm">
                       {item.batch_number || '-'}
                     </td>
                   </tr>
@@ -224,14 +224,14 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
         {/* Empty State */}
         {filteredItems.length === 0 && (
           <div className="p-12 text-center">
-            <p className="text-slate-500 dark:text-slate-400">Brak pozycji spełniających kryteria filtrowania</p>
+            <p className="text-muted-foreground">Brak pozycji spełniających kryteria filtrowania</p>
           </div>
         )}
 
         {/* Count */}
-        <div className="px-4 py-3 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
-            Wyświetlono <span className="text-slate-900 dark:text-white font-semibold">{filteredItems.length}</span> pozycji
+        <div className="px-4 py-3 bg-slate-100 dark:bg-background border-t border-border">
+          <p className="text-muted-foreground text-sm">
+            Wyświetlono <span className="text-foreground font-semibold">{filteredItems.length}</span> pozycji
           </p>
         </div>
       </div>
@@ -239,8 +239,8 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
       {/* Mobile View - Cards (visible only on mobile) */}
       <div className="md:hidden space-y-4">
         {filteredItems.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
-            <p className="text-slate-500 dark:text-slate-400">Brak pozycji spełniających kryteria filtrowania</p>
+          <div className="bg-card rounded-lg border border-border p-12 text-center">
+            <p className="text-muted-foreground">Brak pozycji spełniających kryteria filtrowania</p>
           </div>
         ) : (
           <>
@@ -249,19 +249,19 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
               return (
                 <div
                   key={item.id}
-                  className={`bg-white dark:bg-slate-800 border rounded-lg overflow-hidden ${
+                  className={`bg-card border rounded-lg overflow-hidden ${
                     isLowStock
                       ? 'border-red-500 dark:border-red-400'
-                      : 'border-slate-200 dark:border-slate-700'
+                      : 'border-border'
                   }`}
                 >
                   {/* Card Header */}
-                  <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center justify-between p-4 bg-muted border-b border-border">
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                      <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                         SKU
                       </p>
-                      <p className="text-base font-mono font-bold text-slate-900 dark:text-white">
+                      <p className="text-base font-mono font-bold text-foreground">
                         {item.sku}
                       </p>
                     </div>
@@ -276,20 +276,20 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
                   <div className="p-4 space-y-3">
                     {/* Name */}
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                      <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                         Nazwa
                       </p>
-                      <p className="text-base text-slate-900 dark:text-white font-medium">
+                      <p className="text-base text-foreground font-medium">
                         {item.name}
                       </p>
                     </div>
 
                     {/* Category */}
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                      <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                         Kategoria
                       </p>
-                      <p className="text-base text-slate-900 dark:text-white">
+                      <p className="text-base text-foreground">
                         {item.category}
                       </p>
                     </div>
@@ -297,20 +297,20 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
                     {/* Quantity + Threshold */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                        <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                           Ilość
                         </p>
                         <p className={`text-lg font-bold ${
-                          isLowStock ? 'text-red-400' : 'text-slate-900 dark:text-white'
+                          isLowStock ? 'text-red-400' : 'text-foreground'
                         }`}>
                           {item.quantity} {item.unit}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                        <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                           Próg
                         </p>
-                        <p className="text-lg text-slate-500 dark:text-slate-400">
+                        <p className="text-lg text-muted-foreground">
                           {item.low_stock_threshold} {item.unit}
                         </p>
                       </div>
@@ -319,26 +319,26 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
                     {/* Location + Batch */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                        <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                           Lokalizacja
                         </p>
-                        <p className="text-sm text-slate-900 dark:text-white">
+                        <p className="text-sm text-foreground">
                           {item.location || '-'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                        <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                           Partia
                         </p>
-                        <p className="text-sm font-mono text-slate-900 dark:text-white">
+                        <p className="text-sm font-mono text-foreground">
                           {item.batch_number || '-'}
                         </p>
                       </div>
                     </div>
 
                     {/* Creator + Date */}
-                    <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <div className="pt-2 border-t border-border">
+                      <p className="text-xs text-muted-foreground">
                         Utworzone {new Date(item.created_at).toLocaleDateString('pl-PL')} przez {item.creator_name || 'Unknown'}
                       </p>
                     </div>
@@ -348,9 +348,9 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
             })}
 
             {/* Count */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
-              <p className="text-slate-500 dark:text-slate-400 text-sm text-center">
-                Wyświetlono <span className="text-slate-900 dark:text-white font-semibold">{filteredItems.length}</span> pozycji
+            <div className="bg-card rounded-lg border border-border p-4">
+              <p className="text-muted-foreground text-sm text-center">
+                Wyświetlono <span className="text-foreground font-semibold">{filteredItems.length}</span> pozycji
               </p>
             </div>
           </>

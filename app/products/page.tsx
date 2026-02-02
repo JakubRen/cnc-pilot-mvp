@@ -32,17 +32,17 @@ export default async function ProductsPage() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               📦 Towary
             </h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Katalog produktów i materiałów
             </p>
           </div>
 
           {/* Product Table */}
           {!products || products.length === 0 ? (
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-8">
+            <div className="bg-card rounded-lg border border-border p-8">
               <EmptyProducts />
             </div>
           ) : (

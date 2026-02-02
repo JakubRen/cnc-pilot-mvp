@@ -25,7 +25,7 @@ export default function Loading() {
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="glass-panel rounded-xl p-6 border border-border min-h-[160px] animate-pulse"
+              className="bg-card rounded-lg p-6 border border-border min-h-[160px] animate-pulse"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="h-12 w-12 bg-muted rounded-lg"></div>
@@ -44,7 +44,7 @@ export default function Loading() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 stagger-fade-in">
           {/* Urgent Tasks Skeleton */}
           <div className="lg:col-span-1">
-            <div className="glass-panel rounded-xl p-6 border border-border min-h-[320px] animate-pulse">
+            <div className="bg-card rounded-lg p-6 border border-border min-h-[320px] animate-pulse">
               <div className="h-6 bg-muted rounded w-32 mb-4"></div>
               <div className="space-y-3">
                 {[...Array(4)].map((_, i) => (
@@ -56,7 +56,7 @@ export default function Loading() {
 
           {/* Production Plan + Top Customers Skeleton */}
           <div className="lg:col-span-2 flex flex-col gap-6">
-            <div className="glass-panel rounded-xl p-6 border border-border min-h-[200px] animate-pulse">
+            <div className="bg-card rounded-lg p-6 border border-border min-h-[200px] animate-pulse">
               <div className="h-6 bg-muted rounded w-40 mb-4"></div>
               <div className="space-y-3">
                 {[...Array(3)].map((_, i) => (
@@ -64,7 +64,7 @@ export default function Loading() {
                 ))}
               </div>
             </div>
-            <div className="glass-panel rounded-xl p-6 border border-border min-h-[200px] animate-pulse">
+            <div className="bg-card rounded-lg p-6 border border-border min-h-[200px] animate-pulse">
               <div className="h-6 bg-muted rounded w-36 mb-4"></div>
               <div className="space-y-3">
                 {[...Array(3)].map((_, i) => (
@@ -80,7 +80,7 @@ export default function Loading() {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="glass-panel rounded-xl p-6 border border-border min-h-[280px] animate-pulse"
+              className="bg-card rounded-lg p-6 border border-border min-h-[280px] animate-pulse"
             >
               <div className="h-6 bg-muted rounded w-32 mb-4"></div>
               <div className="h-48 bg-muted rounded-lg"></div>

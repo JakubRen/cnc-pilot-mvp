@@ -3,7 +3,7 @@
 
 export default function VerifyEmailPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-background p-8">
       <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 max-w-md w-full">
         <div className="text-center">
           <div className="text-6xl mb-6">📧</div>
@@ -37,7 +37,7 @@ export default function VerifyEmailPage() {
           </ul>
           <a
             href="/login"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="inline-block px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition"
           >
             Powrót do logowania
           </a>

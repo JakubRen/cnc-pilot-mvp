@@ -6,6 +6,11 @@ import NotificationBell from './NotificationBell';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import {
+  UserIcon,
+  Cog6ToothIcon,
+  ArrowRightStartOnRectangleIcon,
+} from '@heroicons/react/24/outline';
 
 interface HeaderProps {
   isSidebarOpen?: boolean;
@@ -36,11 +41,11 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
       case 'owner':
         return 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30';
       case 'admin':
-        return 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30';
+        return 'bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-500/20 dark:text-violet-300 dark:border-violet-500/30';
       case 'operator':
         return 'bg-green-100 text-green-700 border-green-200 dark:bg-green-500/20 dark:text-green-300 dark:border-green-500/30';
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-500/20 dark:text-slate-300 dark:border-slate-500/30';
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -50,11 +55,11 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
   };
 
   return (
-    <header className="glass-panel sticky top-0 z-50 border-b border-slate-200 dark:border-border px-6 py-4 flex items-center justify-between backdrop-blur-md shadow-sm dark:shadow-none">
+    <header className="bg-card sticky top-0 z-50 border-b border-border px-6 py-4 flex items-center justify-between shadow-sm">
       {onToggleSidebar && (
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden text-slate-400 dark:text-muted-foreground hover:text-slate-900 dark:hover:text-foreground p-2 rounded-lg transition-colors focus:outline-none"
+          className="lg:hidden text-muted-foreground hover:text-foreground p-2 rounded-lg transition-colors focus:outline-none"
           aria-label={t('nav', 'toggleSidebar')}
         >
           <svg
@@ -90,7 +95,7 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
 
         <NotificationBell />
 
-        <div className="h-6 w-px bg-slate-200 dark:bg-border mx-2"></div>
+        <div className="h-6 w-px bg-border mx-2"></div>
 
         <ThemeToggle />
 
@@ -98,25 +103,25 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
         <div className="relative ml-2" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center gap-3 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-all duration-300 border border-transparent hover:border-slate-200 dark:hover:border-border group"
+            className="flex items-center gap-3 px-3 py-1.5 hover:bg-muted rounded-lg transition-colors border border-transparent hover:border-border"
           >
-            {/* Avatar with Glow */}
+            {/* Avatar */}
             <div className="relative">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-cyan-600 dark:to-blue-700 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md dark:shadow-[0_0_10px_rgba(6,182,212,0.3)] group-hover:shadow-lg dark:group-hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-shadow">
+              <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm">
                 {userName.charAt(0).toUpperCase()}
               </div>
-              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-[#030712] rounded-full"></div>
+              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-card rounded-full"></div>
             </div>
 
             <div className="text-left hidden sm:block">
-              <div className="text-sm font-medium text-slate-900 dark:text-foreground group-hover:text-blue-600 dark:group-hover:text-primary transition-colors">{userName}</div>
+              <div className="text-sm font-medium text-foreground">{userName}</div>
               <div className={`text-[10px] px-2 py-0.5 rounded-full inline-block mt-0.5 uppercase tracking-wider font-mono border ${getRoleBadgeColor(userRole)}`}>
                 {getRoleLabel(userRole)}
               </div>
             </div>
 
             <svg
-              className="w-4 h-4 text-slate-400 dark:text-muted-foreground transition-transform duration-300"
+              className="w-4 h-4 text-muted-foreground transition-transform duration-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -127,41 +132,41 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
 
           {/* Dropdown Menu */}
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-60 glass-panel rounded-lg shadow-xl dark:shadow-2xl border border-slate-200 dark:border-border z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              <div className="sm:hidden px-4 py-3 border-b border-slate-200 dark:border-border bg-slate-50 dark:bg-black/20">
-                <div className="text-sm font-medium text-slate-900 dark:text-foreground">{userName}</div>
-                <div className="text-xs text-slate-500 dark:text-muted-foreground mt-1">{userRole}</div>
+            <div className="absolute right-0 mt-2 w-60 bg-card rounded-lg shadow-md border border-border z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              <div className="sm:hidden px-4 py-3 border-b border-border bg-muted">
+                <div className="text-sm font-medium text-foreground">{userName}</div>
+                <div className="text-xs text-muted-foreground mt-1">{userRole}</div>
               </div>
 
               <div className="p-1">
                 <Link
                   href="/profile"
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 dark:text-muted-foreground hover:text-slate-900 dark:hover:text-foreground hover:bg-slate-100 dark:hover:bg-white/5 rounded-md transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
                   onClick={() => setIsDropdownOpen(false)}
                 >
-                  <span className="text-lg">👤</span>
+                  <UserIcon className="w-4 h-4" />
                   <span>{t('nav', 'profile')}</span>
                 </Link>
 
                 <Link
                   href="/settings"
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 dark:text-muted-foreground hover:text-slate-900 dark:hover:text-foreground hover:bg-slate-100 dark:hover:bg-white/5 rounded-md transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
                   onClick={() => setIsDropdownOpen(false)}
                 >
-                  <span className="text-lg">⚙️</span>
+                  <Cog6ToothIcon className="w-4 h-4" />
                   <span>{t('nav', 'settings')}</span>
                 </Link>
               </div>
 
-              <div className="border-t border-slate-200 dark:border-border my-1" />
+              <div className="border-t border-border my-1" />
 
               <div className="p-1">
                 <Link
                   href="/logout"
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-destructive hover:bg-red-50 dark:hover:bg-destructive/10 rounded-md transition-colors"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 rounded-md transition-colors"
                   onClick={() => setIsDropdownOpen(false)}
                 >
-                  <span className="text-lg">🚪</span>
+                  <ArrowRightStartOnRectangleIcon className="w-4 h-4" />
                   <span>{t('nav', 'logout')}</span>
                 </Link>
               </div>

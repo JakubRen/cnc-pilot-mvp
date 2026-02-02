@@ -57,9 +57,9 @@ export default function CooperationPageClient({
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { bg: string; text: string; label: string }> = {
       pending: { bg: 'bg-yellow-600', text: 'text-yellow-100', label: t('cooperation', 'prepared') },
-      sent: { bg: 'bg-blue-600', text: 'text-blue-100', label: t('cooperation', 'sent') },
+      sent: { bg: 'bg-violet-600', text: 'text-violet-100', label: t('cooperation', 'sent') },
       in_progress: { bg: 'bg-purple-600', text: 'text-purple-100', label: t('cooperation', 'atCooperant') },
-      returning: { bg: 'bg-cyan-600', text: 'text-cyan-100', label: t('cooperation', 'onWayBack') },
+      returning: { bg: 'bg-violet-600', text: 'text-violet-100', label: t('cooperation', 'onWayBack') },
       completed: { bg: 'bg-green-600', text: 'text-green-100', label: t('cooperation', 'completed') },
       delayed: { bg: 'bg-red-600', text: 'text-red-100', label: t('cooperation', 'delayed') },
     }
@@ -79,8 +79,8 @@ export default function CooperationPageClient({
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-white">{t('cooperation', 'title')}</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">{t('cooperation', 'subtitle')}</p>
+          <h1 className="text-4xl font-bold text-foreground">{t('cooperation', 'title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('cooperation', 'subtitle')}</p>
         </div>
         <div className="flex gap-3">
           <Link href="/cooperation/cooperants">
@@ -94,24 +94,24 @@ export default function CooperationPageClient({
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">{t('cooperation', 'cooperants')}</p>
-          <p className="text-3xl font-bold text-slate-900 dark:text-white">{cooperants?.length || 0}</p>
+        <div className="bg-card border border-border rounded-lg p-4">
+          <p className="text-muted-foreground text-sm">{t('cooperation', 'cooperants')}</p>
+          <p className="text-3xl font-bold text-foreground">{cooperants?.length || 0}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 border border-yellow-700/50 rounded-lg p-4">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">{t('cooperation', 'prepared')}</p>
+        <div className="bg-card border border-yellow-700/50 rounded-lg p-4">
+          <p className="text-muted-foreground text-sm">{t('cooperation', 'prepared')}</p>
           <p className="text-3xl font-bold text-yellow-400">{pendingCount}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 border border-blue-700/50 rounded-lg p-4">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">{t('cooperation', 'atCooperant')}</p>
-          <p className="text-3xl font-bold text-blue-400">{sentCount}</p>
+        <div className="bg-card border border-violet-700/50 rounded-lg p-4">
+          <p className="text-muted-foreground text-sm">{t('cooperation', 'atCooperant')}</p>
+          <p className="text-3xl font-bold text-violet-400">{sentCount}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 border border-cyan-700/50 rounded-lg p-4">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">{t('cooperation', 'onWayBack')}</p>
-          <p className="text-3xl font-bold text-cyan-400">{returningCount}</p>
+        <div className="bg-card border border-violet-700/50 rounded-lg p-4">
+          <p className="text-muted-foreground text-sm">{t('cooperation', 'onWayBack')}</p>
+          <p className="text-3xl font-bold text-violet-400">{returningCount}</p>
         </div>
-        <div className={`bg-white dark:bg-slate-800 border rounded-lg p-4 ${overdueOperations.length > 0 ? 'border-red-700/50' : 'border-slate-200 dark:border-slate-700'}`}>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">{t('cooperation', 'delayed')}</p>
+        <div className={`bg-card border rounded-lg p-4 ${overdueOperations.length > 0 ? 'border-red-700/50' : 'border-border'}`}>
+          <p className="text-muted-foreground text-sm">{t('cooperation', 'delayed')}</p>
           <p className={`text-3xl font-bold ${overdueOperations.length > 0 ? 'text-red-400' : 'text-green-400'}`}>
             {overdueOperations.length}
           </p>
@@ -130,9 +130,9 @@ export default function CooperationPageClient({
               return (
                 <div key={op.id} className="flex justify-between items-center bg-red-900/20 p-3 rounded-lg">
                   <div>
-                    <span className="text-slate-900 dark:text-white font-medium">{op.operation_number}</span>
-                    <span className="text-slate-500 dark:text-slate-400 mx-2">•</span>
-                    <span className="text-slate-700 dark:text-slate-300">{op.cooperants?.name || op.operation_type}</span>
+                    <span className="text-foreground font-medium">{op.operation_number}</span>
+                    <span className="text-muted-foreground mx-2">•</span>
+                    <span className="text-foreground">{op.cooperants?.name || op.operation_type}</span>
                   </div>
                   <span className="text-red-400 font-semibold">
                     {t('cooperation', 'daysDelay', { days: daysOverdue })}
@@ -147,11 +147,11 @@ export default function CooperationPageClient({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Active Operations */}
         <div className="lg:col-span-2">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{t('cooperation', 'activeOperations')}</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">{t('cooperation', 'activeOperations')}</h2>
           {!activeOperations || activeOperations.length === 0 ? (
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-8 text-center">
+            <div className="bg-card border border-border rounded-lg p-8 text-center">
               <div className="text-5xl mb-4">🚚</div>
-              <p className="text-slate-500 dark:text-slate-400 mb-4">{t('cooperation', 'noActiveOperations')}</p>
+              <p className="text-muted-foreground mb-4">{t('cooperation', 'noActiveOperations')}</p>
               <Link href="/cooperation/send">
                 <Button variant="primary" size="sm">{t('cooperation', 'createFirst')}</Button>
               </Link>
@@ -167,12 +167,12 @@ export default function CooperationPageClient({
                   <Link
                     key={operation.id}
                     href={`/cooperation/${operation.id}`}
-                    className={`block bg-white dark:bg-slate-800 border rounded-lg p-4 hover:border-blue-500/50 transition ${isOverdue ? 'border-red-700/50' : 'border-slate-200 dark:border-slate-700'}`}
+                    className={`block bg-card border rounded-lg p-4 hover:border-violet-500/50 transition ${isOverdue ? 'border-red-700/50' : 'border-border'}`}
                   >
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <div className="flex items-center gap-3">
-                          <span className="text-slate-900 dark:text-white font-semibold text-lg">{operation.operation_number}</span>
+                          <span className="text-foreground font-semibold text-lg">{operation.operation_number}</span>
                           {getStatusBadge(operation.status)}
                           {isOverdue && (
                             <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-600 text-white animate-pulse">
@@ -180,13 +180,13 @@ export default function CooperationPageClient({
                             </span>
                           )}
                         </div>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+                        <p className="text-muted-foreground text-sm mt-1">
                           {operation.operation_type} • {operation.cooperants?.name || t('cooperation', 'noCooperant')}
                         </p>
                       </div>
                       <div className="text-right">
                         {operation.expected_return_date && (
-                          <p className={`text-sm ${isOverdue ? 'text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                          <p className={`text-sm ${isOverdue ? 'text-red-400' : 'text-muted-foreground'}`}>
                             {t('cooperation', 'returnDate')} {new Date(operation.expected_return_date).toLocaleDateString('pl-PL')}
                           </p>
                         )}
@@ -204,14 +204,14 @@ export default function CooperationPageClient({
                         {operation.external_operation_items.slice(0, 3).map((item) => (
                           <span
                             key={item.id}
-                            className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded"
+                            className="px-2 py-1 bg-muted text-foreground text-xs rounded"
                           >
                             {item.part_name} ({item.quantity} {t('cooperation', 'pcs')})
                             {item.orders && <span className="text-slate-500 ml-1">• {item.orders.order_number}</span>}
                           </span>
                         ))}
                         {operation.external_operation_items.length > 3 && (
-                          <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-500 text-xs rounded">
+                          <span className="px-2 py-1 bg-muted text-slate-500 text-xs rounded">
                             {t('cooperation', 'moreItems', { count: operation.external_operation_items.length - 3 })}
                           </span>
                         )}
@@ -227,10 +227,10 @@ export default function CooperationPageClient({
         {/* Sidebar - Recently Completed */}
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">{t('cooperation', 'recentlyCompleted')}</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-3">{t('cooperation', 'recentlyCompleted')}</h3>
             {!completedOperations || completedOperations.length === 0 ? (
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 text-center">
-                <p className="text-slate-500 dark:text-slate-400 text-sm">{t('cooperation', 'noCompleted')}</p>
+              <div className="bg-card border border-border rounded-lg p-4 text-center">
+                <p className="text-muted-foreground text-sm">{t('cooperation', 'noCompleted')}</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -238,11 +238,11 @@ export default function CooperationPageClient({
                   <Link
                     key={op.id}
                     href={`/cooperation/${op.id}`}
-                    className="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:border-green-500/50 transition"
+                    className="block bg-card border border-border rounded-lg p-3 hover:border-green-500/50 transition"
                   >
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="text-slate-900 dark:text-white text-sm font-medium">{op.operation_number}</p>
+                        <p className="text-foreground text-sm font-medium">{op.operation_number}</p>
                         <p className="text-slate-500 text-xs">{op.cooperants?.name || op.operation_type}</p>
                       </div>
                       <span className="text-green-400 text-xs">✓</span>

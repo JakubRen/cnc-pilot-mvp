@@ -67,7 +67,7 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
   const getStatusBadge = (status: string) => {
     const badges = {
       draft: { label: 'Szkic', color: 'bg-slate-600' },
-      sent: { label: 'Wysłana', color: 'bg-blue-600' },
+      sent: { label: 'Wysłana', color: 'bg-violet-600' },
       viewed: { label: 'Obejrzana', color: 'bg-purple-600' },
       accepted: { label: 'Zaakceptowana', color: 'bg-green-600' },
       rejected: { label: 'Odrzucona', color: 'bg-red-600' },
@@ -92,7 +92,7 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
               <p className="text-slate-400">Zarządzaj ofertami cenowymi</p>
             </div>
             <Link href="/quotes/add">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button className="bg-violet-600 hover:bg-violet-700 text-white">
                 + Nowa Oferta
               </Button>
             </Link>
@@ -106,7 +106,7 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
             </div>
             <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
               <div className="text-slate-400 text-sm mb-2">Wysłane/Obejrzane</div>
-              <div className="text-3xl font-bold text-blue-400">{stats.sent}</div>
+              <div className="text-3xl font-bold text-violet-400">{stats.sent}</div>
             </div>
             <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
               <div className="text-slate-400 text-sm mb-2">Zaakceptowane</div>
@@ -134,7 +134,7 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Klient, numer oferty, część..."
-                  className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-violet-500 focus:outline-none"
                 />
               </div>
 
@@ -144,7 +144,7 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-violet-500 focus:outline-none"
                 >
                   <option value="all">Wszystkie statusy</option>
                   <option value="draft">Szkic</option>
@@ -174,7 +174,7 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
               </p>
               {quotes.length === 0 && (
                 <Link href="/quotes/add">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button className="bg-violet-600 hover:bg-violet-700 text-white">
                     + Utwórz pierwszą ofertę
                   </Button>
                 </Link>
@@ -218,7 +218,7 @@ export default function QuotesPageClient({ quotes, userProfile }: QuotesPageClie
                         <td className="px-6 py-4">
                           <Link
                             href={`/quotes/${quote.id}`}
-                            className="text-blue-400 hover:text-blue-300 font-medium"
+                            className="text-violet-400 hover:text-violet-300 font-medium"
                           >
                             {quote.quote_number}
                           </Link>

@@ -6,7 +6,7 @@ export function DashboardSkeleton() {
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
         {/* Title */}
-        <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded w-64 mb-8 animate-pulse" />
+        <div className="h-10 bg-secondary rounded w-64 mb-8 animate-pulse" />
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

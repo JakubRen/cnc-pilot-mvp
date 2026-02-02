@@ -127,21 +127,21 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
   ]
 
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-      <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+    <div className="bg-card border border-border rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
         <span>🔔</span> {t('notifications', 'title')}
       </h3>
 
       {/* Master toggle */}
-      <div className="flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg mb-6">
+      <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg mb-6">
         <div>
-          <p className="text-slate-900 dark:text-white font-medium">{t('notifications', 'enableAll')}</p>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">{t('notifications', 'enableAllDesc')}</p>
+          <p className="text-foreground font-medium">{t('notifications', 'enableAll')}</p>
+          <p className="text-muted-foreground text-sm">{t('notifications', 'enableAllDesc')}</p>
         </div>
         <button
           onClick={() => handleToggle('email_enabled')}
           className={`relative w-14 h-8 rounded-full transition-colors ${
-            preferences.email_enabled ? 'bg-blue-600' : 'bg-slate-600'
+            preferences.email_enabled ? 'bg-violet-600' : 'bg-slate-600'
           }`}
         >
           <span
@@ -157,19 +157,19 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
         {notificationTypes.map((type) => (
           <div
             key={type.key}
-            className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition"
+            className="flex items-center justify-between p-4 bg-slate-50 dark:bg-muted/30 rounded-lg hover:bg-muted/50 transition"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">{type.icon}</span>
               <div>
-                <p className="text-slate-900 dark:text-white font-medium">{type.label}</p>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">{type.description}</p>
+                <p className="text-foreground font-medium">{type.label}</p>
+                <p className="text-muted-foreground text-sm">{type.description}</p>
               </div>
             </div>
             <button
               onClick={() => handleToggle(type.key)}
               className={`relative w-12 h-6 rounded-full transition-colors ${
-                preferences[type.key] ? 'bg-blue-600' : 'bg-slate-600'
+                preferences[type.key] ? 'bg-violet-600' : 'bg-slate-600'
               }`}
             >
               <span
@@ -183,14 +183,14 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
 
         {/* Deadline days selector */}
         {preferences.deadline_approaching && (
-          <div className="p-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg ml-8">
-            <label className="block text-slate-600 dark:text-slate-300 text-sm mb-2">
+          <div className="p-4 bg-slate-50 dark:bg-muted/30 rounded-lg ml-8">
+            <label className="block text-muted-foreground text-sm mb-2">
               {t('notifications', 'deadlineReminder')}:
             </label>
             <select
               value={preferences.deadline_days_before}
               onChange={(e) => handleDaysChange(parseInt(e.target.value))}
-              className="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white rounded-lg px-4 py-2"
+              className="bg-white dark:bg-muted border border-border text-foreground rounded-lg px-4 py-2"
             >
               <option value={1}>{t('notifications', 'days1')}</option>
               <option value={2}>{t('notifications', 'days2')}</option>
@@ -203,11 +203,11 @@ export default function NotificationSettings({ userId, initialPreferences }: Not
       </div>
 
       {/* Save button */}
-      <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+      <div className="mt-6 pt-6 border-t border-border">
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition disabled:opacity-50"
+          className="px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-medium transition disabled:opacity-50"
         >
           {saving ? t('notifications', 'saving') : t('notifications', 'saveSettings')}
         </button>

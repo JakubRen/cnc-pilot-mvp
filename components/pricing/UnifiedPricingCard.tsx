@@ -63,34 +63,34 @@ export default function UnifiedPricingCard({
   }
 
   return (
-    <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border-2 border-green-500 rounded-lg p-8 shadow-xl">
-      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
+    <div className="bg-gradient-to-br from-green-50 to-violet-50 dark:from-green-900/20 dark:to-violet-900/20 border-2 border-green-500 rounded-lg p-8 shadow-xl">
+      <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
         💰 Rekomendowana cena
       </h2>
 
       {/* Main Price Display */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 mb-6">
+      <div className="bg-card rounded-lg p-6 mb-6">
         <div className="text-center">
           {customPrice && (
             <div className="mb-2">
-              <span className="inline-block px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+              <span className="inline-block px-3 py-1 bg-violet-600 text-white text-xs font-semibold rounded-full">
                 ✏️ Cena dostosowana
               </span>
             </div>
           )}
-          <div className={`text-5xl font-bold mb-2 ${customPrice ? 'text-blue-600 dark:text-blue-400' : 'text-green-600 dark:text-green-400'}`}>
+          <div className={`text-5xl font-bold mb-2 ${customPrice ? 'text-primary' : 'text-green-600 dark:text-green-400'}`}>
             {getFinalPrice().toFixed(2)} PLN
           </div>
-          <div className="text-slate-500 dark:text-slate-400">
+          <div className="text-muted-foreground">
             {(getFinalPrice() / quantity).toFixed(2)} PLN / szt.
           </div>
           {customPrice && pricingResult.recommended.price !== customPrice && (
-            <div className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            <div className="mt-2 text-sm text-muted-foreground">
               <span className="line-through">Rekomendowana: {pricingResult.recommended.price.toFixed(2)} PLN</span>
             </div>
           )}
           <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
-            <span className="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+            <span className="px-3 py-1 bg-violet-600 text-white text-xs font-semibold rounded-full">
               {customPrice ? 'Ręcznie dostosowana' :
                pricingResult.recommended.method === 'rule_based' ? 'Kalkulator' :
                pricingResult.recommended.method === 'historical' ? 'Historia' :
@@ -106,35 +106,35 @@ export default function UnifiedPricingCard({
       </div>
 
       {/* Reasoning */}
-      <div className="bg-white/50 dark:bg-slate-900/50 rounded-lg p-4 mb-6">
-        <p className="text-sm text-slate-700 dark:text-slate-300">
+      <div className="bg-white/50 dark:bg-background/50 rounded-lg p-4 mb-6">
+        <p className="text-sm text-foreground">
           <strong>Uzasadnienie:</strong> {pricingResult.recommended.reasoning}
         </p>
       </div>
 
       {/* Breakdown */}
       <div className="grid grid-cols-2 gap-3 mb-6 text-sm">
-        <div className="bg-white dark:bg-slate-800 rounded p-3">
-          <p className="text-slate-500 dark:text-slate-400">Materiał</p>
-          <p className="text-slate-900 dark:text-white font-semibold">
+        <div className="bg-card rounded p-3">
+          <p className="text-muted-foreground">Materiał</p>
+          <p className="text-foreground font-semibold">
             {pricingResult.recommended.breakdown.materialCost.toFixed(2)} PLN
           </p>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded p-3">
-          <p className="text-slate-500 dark:text-slate-400">Robocizna</p>
-          <p className="text-slate-900 dark:text-white font-semibold">
+        <div className="bg-card rounded p-3">
+          <p className="text-muted-foreground">Robocizna</p>
+          <p className="text-foreground font-semibold">
             {pricingResult.recommended.breakdown.laborCost.toFixed(2)} PLN
           </p>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded p-3">
-          <p className="text-slate-500 dark:text-slate-400">Setup</p>
-          <p className="text-slate-900 dark:text-white font-semibold">
+        <div className="bg-card rounded p-3">
+          <p className="text-muted-foreground">Setup</p>
+          <p className="text-foreground font-semibold">
             {pricingResult.recommended.breakdown.setupCost.toFixed(2)} PLN
           </p>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded p-3">
-          <p className="text-slate-500 dark:text-slate-400">Marża</p>
-          <p className="text-slate-900 dark:text-white font-semibold">
+        <div className="bg-card rounded p-3">
+          <p className="text-muted-foreground">Marża</p>
+          <p className="text-foreground font-semibold">
             {getFinalMargin()}%
           </p>
         </div>
@@ -142,11 +142,11 @@ export default function UnifiedPricingCard({
 
       {/* Editable Price Section */}
       {allowEdit && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 rounded-lg p-6 mb-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+        <div className="bg-violet-50 dark:bg-violet-900/20 border-2 border-violet-500 rounded-lg p-6 mb-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             ✏️ Dostosuj cenę
             {customPrice && (
-              <span className="text-xs font-normal px-2 py-1 bg-blue-600 text-white rounded-full">
+              <span className="text-xs font-normal px-2 py-1 bg-violet-600 text-white rounded-full">
                 Edytowane
               </span>
             )}
@@ -155,7 +155,7 @@ export default function UnifiedPricingCard({
           <div className="space-y-4">
             {/* Manual Price Input */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Twoja finalna cena (PLN)
               </label>
               <Input
@@ -177,14 +177,14 @@ export default function UnifiedPricingCard({
                 min="0"
                 className="text-lg font-semibold"
               />
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Cena za całość ({quantity} szt.)
               </p>
             </div>
 
             {/* Margin Slider */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Marża: {getFinalMargin().toFixed(1)}%
               </label>
               <div className="flex items-center gap-4">
@@ -195,13 +195,13 @@ export default function UnifiedPricingCard({
                   step="0.5"
                   value={getFinalMargin()}
                   onChange={(e) => handleMarginChange(parseFloat(e.target.value))}
-                  className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:cursor-pointer"
+                  className="flex-1 h-2 bg-secondary rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-violet-600 [&::-webkit-slider-thumb]:cursor-pointer"
                 />
-                <span className="text-sm font-semibold text-slate-900 dark:text-white min-w-[60px] text-right">
+                <span className="text-sm font-semibold text-foreground min-w-[60px] text-right">
                   {getFinalMargin().toFixed(1)}%
                 </span>
               </div>
-              <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <div className="flex justify-between text-xs text-muted-foreground mt-1">
                 <span>0%</span>
                 <span>Koszt: {(pricingResult.recommended.breakdown.totalCostBeforeMargin || 0).toFixed(2)} PLN</span>
                 <span>100%</span>
@@ -225,24 +225,24 @@ export default function UnifiedPricingCard({
       {/* Compare Methods */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         {pricingResult.estimates.ruleBased && (
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-4 text-center">
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Kalkulator</p>
-            <p className="text-xl font-bold text-slate-900 dark:text-white">
+          <div className="bg-card rounded-lg p-4 text-center">
+            <p className="text-xs text-muted-foreground mb-2">Kalkulator</p>
+            <p className="text-xl font-bold text-foreground">
               {pricingResult.estimates.ruleBased.price.toFixed(2)}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-muted-foreground">
               {pricingResult.estimates.ruleBased.confidence}% pewności
             </p>
           </div>
         )}
 
         {pricingResult.estimates.historical && (
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-4 text-center">
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Historia</p>
-            <p className="text-xl font-bold text-slate-900 dark:text-white">
+          <div className="bg-card rounded-lg p-4 text-center">
+            <p className="text-xs text-muted-foreground mb-2">Historia</p>
+            <p className="text-xl font-bold text-foreground">
               {pricingResult.estimates.historical.price.toFixed(2)}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-muted-foreground">
               {pricingResult.estimates.historical.orderCount} zleceń
             </p>
           </div>

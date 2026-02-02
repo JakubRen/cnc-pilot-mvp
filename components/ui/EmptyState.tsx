@@ -40,7 +40,7 @@ export default function EmptyState({
       {/* Icon */}
       <div
         className={cn(
-          'mb-4 text-slate-400 dark:text-slate-500',
+          'mb-4 text-muted-foreground',
           isCompact ? 'text-4xl' : 'text-6xl'
         )}
         role="img"
@@ -51,7 +51,7 @@ export default function EmptyState({
 
       {/* Title */}
       <h3 className={cn(
-        'font-bold text-slate-900 dark:text-white mb-2 text-center',
+        'font-bold text-foreground mb-2 text-center',
         isCompact ? 'text-lg' : 'text-xl'
       )}>
         {title}
@@ -59,7 +59,7 @@ export default function EmptyState({
 
       {/* Description */}
       <p className={cn(
-        'text-slate-500 dark:text-slate-400 text-center mb-6 leading-relaxed',
+        'text-muted-foreground text-center mb-6 leading-relaxed',
         isCompact ? 'text-sm max-w-xs' : 'text-base max-w-md'
       )}>
         {description}

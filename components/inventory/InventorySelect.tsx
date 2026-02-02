@@ -96,7 +96,7 @@ export default function InventorySelect({
   return (
     <div ref={wrapperRef} className="relative">
       {label && (
-        <label className="block text-slate-600 dark:text-slate-300 mb-2">
+        <label className="block text-muted-foreground mb-2">
           {label} {required && '*'}
         </label>
       )}
@@ -111,10 +111,10 @@ export default function InventorySelect({
           onBlur={handleInputBlur}
           placeholder={loading ? 'Ładowanie...' : placeholder}
           disabled={loading}
-          className={`w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border text-slate-900 dark:text-white focus:outline-none transition ${
+          className={`w-full px-4 py-3 rounded-lg bg-muted border text-foreground focus:outline-none transition ${
             error
               ? 'border-red-500 focus:border-red-500'
-              : 'border-slate-200 dark:border-slate-700 focus:border-blue-500'
+              : 'border-border focus:border-violet-500'
           } ${loading ? 'opacity-50 cursor-wait' : ''}`}
         />
 
@@ -122,7 +122,7 @@ export default function InventorySelect({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
         >
           <svg
             className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -139,14 +139,14 @@ export default function InventorySelect({
 
       {/* Dropdown */}
       {isOpen && !loading && (
-        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-xl max-h-60 overflow-y-auto">
           {filteredItems.length === 0 ? (
-            <div className="p-4 text-slate-500 dark:text-slate-400 text-center">
+            <div className="p-4 text-muted-foreground text-center">
               {search ? (
                 <>
                   Nie znaleziono &quot;{search}&quot;
                   {allowCustom && (
-                    <p className="text-xs mt-1 text-blue-400">
+                    <p className="text-xs mt-1 text-violet-400">
                       Możesz użyć tej nazwy jako nowej
                     </p>
                   )}
@@ -162,18 +162,18 @@ export default function InventorySelect({
                   <button
                     type="button"
                     onClick={() => handleSelect(item)}
-                    className={`w-full px-4 py-3 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition flex justify-between items-center ${
-                      inputValue === item.name ? 'bg-blue-600/20 text-blue-400' : 'text-slate-900 dark:text-white'
+                    className={`w-full px-4 py-3 text-left hover:bg-muted transition flex justify-between items-center ${
+                      inputValue === item.name ? 'bg-violet-600/20 text-violet-400' : 'text-foreground'
                     }`}
                   >
                     <div>
                       <div className="font-medium">{item.name}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                      <div className="text-xs text-muted-foreground">
                         SKU: {item.sku} | Stan: {item.quantity} {item.unit}
                       </div>
                     </div>
                     {inputValue === item.name && (
-                      <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-5 h-5 text-violet-400" fill="currentColor" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"

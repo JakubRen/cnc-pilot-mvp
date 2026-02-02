@@ -85,7 +85,7 @@ export function getComparisonBadgeColor(comparison: 'under' | 'on' | 'over'): st
     case 'under':
       return 'bg-green-600';
     case 'on':
-      return 'bg-blue-600';
+      return 'bg-violet-600';
     case 'over':
       return 'bg-red-600';
   }

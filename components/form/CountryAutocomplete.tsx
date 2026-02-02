@@ -133,29 +133,29 @@ export default function CountryAutocomplete({
         onChange={handleInputChange}
         onFocus={() => setIsOpen(true)}
         placeholder={placeholder}
-        className={`w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border ${
+        className={`w-full px-4 py-3 rounded-lg bg-muted border ${
           error
             ? 'border-red-500 focus:border-red-500'
-            : 'border-slate-200 dark:border-slate-700 focus:border-blue-500'
-        } text-slate-900 dark:text-white focus:outline-none`}
+            : 'border-border focus:border-violet-500'
+        } text-foreground focus:outline-none`}
         autoComplete="off"
       />
 
       {/* Dropdown */}
       {isOpen && filteredCountries.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg">
+        <div className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto bg-card border border-border rounded-lg shadow-lg">
           {filteredCountries.slice(0, 10).map((country) => (
             <button
               key={country}
               type="button"
               onClick={() => handleSelect(country)}
-              className="w-full px-4 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition"
+              className="w-full px-4 py-2 text-left hover:bg-muted text-foreground transition"
             >
               {country}
             </button>
           ))}
           {filteredCountries.length > 10 && (
-            <div className="px-4 py-2 text-sm text-slate-500 dark:text-slate-400 text-center border-t border-slate-200 dark:border-slate-700">
+            <div className="px-4 py-2 text-sm text-muted-foreground text-center border-t border-border">
               Pokaż więcej... (wpisz więcej znaków)
             </div>
           )}
@@ -164,7 +164,7 @@ export default function CountryAutocomplete({
 
       {/* No results */}
       {isOpen && searchTerm && filteredCountries.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg px-4 py-3 text-sm text-slate-500 dark:text-slate-400">
+        <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-lg px-4 py-3 text-sm text-muted-foreground">
           Nie znaleziono kraju. Możesz wpisać własną nazwę.
         </div>
       )}

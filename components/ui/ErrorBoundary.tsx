@@ -35,13 +35,15 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-6">
-          <div className="glass-panel rounded-xl p-8 max-w-lg w-full border border-slate-200 dark:border-border shadow-lg text-center">
-            <div className="text-6xl mb-4">⚠️</div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-foreground mb-3">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6">
+          <div className="bg-card rounded-lg p-8 max-w-lg w-full border border-border shadow-md text-center">
+            <div className="text-6xl mb-4 text-muted-foreground">
+              <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+            </div>
+            <h1 className="text-2xl font-bold text-foreground mb-3">
               Coś poszło nie tak
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">
+            <p className="text-muted-foreground mb-6">
               Wystąpił nieoczekiwany błąd. Spróbuj odświeżyć stronę lub wróć do strony głównej.
             </p>
 
@@ -56,15 +58,15 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="flex gap-3 justify-center">
               <button
                 onClick={() => window.location.reload()}
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium"
+                className="px-6 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition font-medium"
               >
-                🔄 Odśwież stronę
+                Odśwież stronę
               </button>
               <Link
                 href="/"
-                className="px-6 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-900 dark:text-white rounded-lg transition font-medium"
+                className="px-6 py-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground rounded-lg transition font-medium"
               >
-                🏠 Strona główna
+                Strona główna
               </Link>
             </div>
           </div>

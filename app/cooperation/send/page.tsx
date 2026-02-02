@@ -238,23 +238,23 @@ export default function SendToCooperationPage() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
-            <Link href="/cooperation" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <Link href="/cooperation" className="text-muted-foreground hover:text-foreground">
               ← {t('common', 'back')}
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{tCooperation('newShipment', lang)}</h1>
+            <h1 className="text-3xl font-bold text-foreground">{tCooperation('newShipment', lang)}</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
             {/* Cooperant & Type */}
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{tCooperation('shipmentData', lang)}</h2>
+            <div className="bg-card border border-border rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">{tCooperation('shipmentData', lang)}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{tCooperation('cooperants', lang)}</label>
+                  <label className="block text-foreground mb-2">{tCooperation('cooperants', lang)}</label>
                   <select
                     value={selectedCooperant}
                     onChange={(e) => setSelectedCooperant(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                   >
                     <option value="">{tCooperation('noCooperant', lang)}</option>
                     {cooperants.map(coop => (
@@ -265,18 +265,18 @@ export default function SendToCooperationPage() {
                   </select>
                   {cooperants.length === 0 && (
                     <p className="text-slate-500 text-sm mt-1">
-                      <Link href="/cooperation/cooperants/add" className="text-blue-400 hover:underline">
+                      <Link href="/cooperation/cooperants/add" className="text-violet-400 hover:underline">
                         Dodaj pierwszego kooperanta
                       </Link>
                     </p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Typ operacji *</label>
+                  <label className="block text-foreground mb-2">Typ operacji *</label>
                   <select
                     value={operationType}
                     onChange={(e) => setOperationType(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     required
                   >
                     <option value="">Wybierz typ</option>
@@ -286,7 +286,7 @@ export default function SendToCooperationPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{tCooperation('expectedReturn', lang)}</label>
+                  <label className="block text-foreground mb-2">{tCooperation('expectedReturn', lang)}</label>
                   <Input
                     type="date"
                     value={expectedReturnDate}
@@ -294,7 +294,7 @@ export default function SendToCooperationPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Numer przesyłki</label>
+                  <label className="block text-foreground mb-2">Numer przesyłki</label>
                   <Input
                     value={transportInfo}
                     onChange={(e) => setTransportInfo(e.target.value)}
@@ -302,12 +302,12 @@ export default function SendToCooperationPage() {
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">{t('common', 'notes')}</label>
+                  <label className="block text-foreground mb-2">{t('common', 'notes')}</label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Dodatkowe informacje o przesyłce..."
-                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     rows={2}
                   />
                 </div>
@@ -315,19 +315,19 @@ export default function SendToCooperationPage() {
             </div>
 
             {/* Items */}
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{tCooperation('items', lang)}</h2>
+            <div className="bg-card border border-border rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">{tCooperation('items', lang)}</h2>
 
               {/* Add from orders */}
               <div className="mb-4">
-                <label className="block text-slate-700 dark:text-slate-300 mb-2">{tCooperation('addFromOrder', lang)}</label>
+                <label className="block text-foreground mb-2">{tCooperation('addFromOrder', lang)}</label>
                 <select
                   onChange={(e) => {
                     const order = orders.find(o => o.id === e.target.value)
                     if (order) addOrderToItems(order)
                     e.target.value = ''
                   }}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 >
                   <option value="">{tCooperation('selectOrder', lang)}</option>
                   {orders.map(order => (
@@ -371,13 +371,13 @@ export default function SendToCooperationPage() {
                   {selectedItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-900 rounded-lg"
+                      className="flex justify-between items-center p-3 bg-muted rounded-lg"
                     >
                       <div>
-                        <span className="text-slate-900 dark:text-white font-medium">{item.part_name}</span>
-                        <span className="text-slate-500 dark:text-slate-400 ml-2">({item.quantity} {t('common', 'pcs')})</span>
+                        <span className="text-foreground font-medium">{item.part_name}</span>
+                        <span className="text-muted-foreground ml-2">({item.quantity} {t('common', 'pcs')})</span>
                         {item.order_number && (
-                          <span className="text-blue-400 ml-2 text-sm">• {item.order_number}</span>
+                          <span className="text-violet-400 ml-2 text-sm">• {item.order_number}</span>
                         )}
                       </div>
                       <button

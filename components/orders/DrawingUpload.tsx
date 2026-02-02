@@ -122,16 +122,16 @@ export default function DrawingUpload({ value, onChange, companyId, userId }: Dr
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+      <label className="block text-sm font-medium text-foreground">
         📐 Rysunek Techniczny
-        <span className="text-xs font-normal text-slate-500 dark:text-slate-400 ml-2">
+        <span className="text-xs font-normal text-muted-foreground ml-2">
           (PDF, DXF, PNG, JPG - max 10MB)
         </span>
       </label>
 
       {currentFile ? (
         // Preview existing file
-        <div className="bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-4">
+        <div className="bg-muted border-2 border-dashed border-border rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="text-3xl">
@@ -139,14 +139,14 @@ export default function DrawingUpload({ value, onChange, companyId, userId }: Dr
                  currentFile.name.toLowerCase().endsWith('.dxf') ? '📐' : '🖼️'}
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900 dark:text-white">
+                <p className="text-sm font-medium text-foreground">
                   {currentFile.name}
                 </p>
                 <a
                   href={currentFile.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                  className="text-xs text-primary hover:underline"
                 >
                   Otwórz w nowej karcie →
                 </a>
@@ -179,23 +179,23 @@ export default function DrawingUpload({ value, onChange, companyId, userId }: Dr
               block w-full px-4 py-8 border-2 border-dashed rounded-lg
               text-center cursor-pointer transition
               ${isUploading
-                ? 'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 cursor-not-allowed'
-                : 'border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400 bg-slate-50 dark:bg-slate-900'
+                ? 'border-border bg-muted cursor-not-allowed'
+                : 'border-border hover:border-violet-500 dark:hover:border-violet-400 bg-muted'
               }
             `}
           >
             <div className="text-4xl mb-2">📎</div>
-            <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <p className="text-sm font-medium text-foreground mb-1">
               {isUploading ? 'Przesyłanie...' : 'Kliknij aby wybrać rysunek'}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-muted-foreground">
               lub przeciągnij i upuść plik tutaj
             </p>
           </label>
         </div>
       )}
 
-      <p className="text-xs text-slate-500 dark:text-slate-400 italic">
+      <p className="text-xs text-muted-foreground italic">
         💡 Rysunek będzie dostępny dla operatora przy maszynie (widok na tablecie)
       </p>
     </div>

@@ -100,7 +100,7 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft': return 'bg-slate-600'
-      case 'sent': return 'bg-blue-600'
+      case 'sent': return 'bg-violet-600'
       case 'viewed': return 'bg-purple-600'
       case 'accepted': return 'bg-green-600'
       case 'rejected': return 'bg-red-600'
@@ -123,21 +123,21 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
+      <div className="min-h-screen bg-background p-8">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
               <Link
                 href="/quotes"
-                className="text-blue-600 dark:text-blue-400 hover:underline mb-2 inline-block"
+                className="text-primary hover:underline mb-2 inline-block"
               >
                 ← Wróć do listy ofert
               </Link>
-              <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
+              <h1 className="text-4xl font-bold text-foreground">
                 {quote.quote_number}
               </h1>
-              <p className="text-slate-500 dark:text-slate-400 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Utworzona {new Date(quote.created_at).toLocaleDateString('pl-PL')}
               </p>
             </div>
@@ -153,33 +153,33 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
             {/* Left Column - Quote Details */}
             <div className="lg:col-span-2 space-y-6">
               {/* Customer Info */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
+                <h2 className="text-xl font-semibold text-foreground mb-4">
                   Informacje o kliencie
                 </h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Nazwa klienta</p>
-                    <p className="text-slate-900 dark:text-white font-medium">{quote.customer_name}</p>
+                    <p className="text-muted-foreground text-sm">Nazwa klienta</p>
+                    <p className="text-foreground font-medium">{quote.customer_name}</p>
                   </div>
                   {quote.customer_email && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">Email</p>
-                      <p className="text-slate-900 dark:text-white font-medium">{quote.customer_email}</p>
+                      <p className="text-muted-foreground text-sm">Email</p>
+                      <p className="text-foreground font-medium">{quote.customer_email}</p>
                     </div>
                   )}
                   {quote.customer_phone && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">Telefon</p>
-                      <p className="text-slate-900 dark:text-white font-medium">{quote.customer_phone}</p>
+                      <p className="text-muted-foreground text-sm">Telefon</p>
+                      <p className="text-foreground font-medium">{quote.customer_phone}</p>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Product Details */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
+                <h2 className="text-xl font-semibold text-foreground mb-4">
                   {quoteItems.length > 0 ? `Pozycje oferty (${quoteItems.length})` : 'Szczegóły zlecenia'}
                 </h2>
 
@@ -187,23 +187,23 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
                 {quoteItems.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+                      <thead className="bg-muted border-b border-border">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Nazwa</th>
-                          <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Materiał</th>
-                          <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Ilość</th>
-                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Cena/szt.</th>
-                          <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Suma</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Nazwa</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Materiał</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Ilość</th>
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase">Cena/szt.</th>
+                          <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase">Suma</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                         {quoteItems.map((item) => (
-                          <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td className="px-4 py-3 text-slate-900 dark:text-white font-medium">{item.part_name}</td>
-                            <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{item.material || '-'}</td>
-                            <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{item.quantity} szt.</td>
-                            <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{item.unit_price?.toFixed(2)} PLN</td>
-                            <td className="px-4 py-3 text-right text-slate-900 dark:text-white font-semibold">{item.total_price?.toFixed(2)} PLN</td>
+                          <tr key={item.id} className="hover:bg-muted dark:hover:bg-slate-700/50">
+                            <td className="px-4 py-3 text-foreground font-medium">{item.part_name}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{item.material || '-'}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{item.quantity} szt.</td>
+                            <td className="px-4 py-3 text-right text-muted-foreground">{item.unit_price?.toFixed(2)} PLN</td>
+                            <td className="px-4 py-3 text-right text-foreground font-semibold">{item.total_price?.toFixed(2)} PLN</td>
                           </tr>
                         ))}
                       </tbody>
@@ -214,24 +214,24 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
                   <div className="grid grid-cols-2 gap-4">
                     {quote.part_name && (
                       <div>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm">Nazwa części</p>
-                        <p className="text-slate-900 dark:text-white font-medium">{quote.part_name}</p>
+                        <p className="text-muted-foreground text-sm">Nazwa części</p>
+                        <p className="text-foreground font-medium">{quote.part_name}</p>
                       </div>
                     )}
                     {quote.material && (
                       <div>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm">Materiał</p>
-                        <p className="text-slate-900 dark:text-white font-medium">{quote.material}</p>
+                        <p className="text-muted-foreground text-sm">Materiał</p>
+                        <p className="text-foreground font-medium">{quote.material}</p>
                       </div>
                     )}
                     <div>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm">Ilość</p>
-                      <p className="text-slate-900 dark:text-white font-medium">{quote.quantity} szt.</p>
+                      <p className="text-muted-foreground text-sm">Ilość</p>
+                      <p className="text-foreground font-medium">{quote.quantity} szt.</p>
                     </div>
                     {quote.deadline && (
                       <div>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm">Termin realizacji</p>
-                        <p className="text-slate-900 dark:text-white font-medium">
+                        <p className="text-muted-foreground text-sm">Termin realizacji</p>
+                        <p className="text-foreground font-medium">
                           {new Date(quote.deadline).toLocaleDateString('pl-PL')}
                         </p>
                       </div>
@@ -241,9 +241,9 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
 
                 {/* Deadline (if multi-item and has deadline) */}
                 {quoteItems.length > 0 && quote.deadline && (
-                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">Termin realizacji</p>
-                    <p className="text-slate-900 dark:text-white font-medium">
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <p className="text-muted-foreground text-sm">Termin realizacji</p>
+                    <p className="text-foreground font-medium">
                       {new Date(quote.deadline).toLocaleDateString('pl-PL')}
                     </p>
                   </div>
@@ -251,21 +251,21 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
               </div>
 
               {/* Pricing */}
-              <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border-2 border-green-500 rounded-lg p-6 shadow-xl">
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
+              <div className="bg-gradient-to-br from-green-50 to-violet-50 dark:from-green-900/20 dark:to-violet-900/20 border-2 border-green-500 rounded-lg p-6 shadow-xl">
+                <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
                   💰 Cena
                 </h2>
 
-                <div className="bg-white dark:bg-slate-800 rounded-lg p-6 mb-6">
+                <div className="bg-card rounded-lg p-6 mb-6">
                   <div className="text-center">
                     <div className="text-5xl font-bold text-green-600 dark:text-green-400 mb-2">
                       {quote.total_price.toFixed(2)} PLN
                     </div>
-                    <div className="text-slate-500 dark:text-slate-400">
+                    <div className="text-muted-foreground">
                       {quote.price_per_unit?.toFixed(2) || (quote.total_price / quote.quantity).toFixed(2)} PLN / szt.
                     </div>
                     <div className="mt-4 flex items-center justify-center gap-2">
-                      <span className="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                      <span className="px-3 py-1 bg-violet-600 text-white text-xs font-semibold rounded-full">
                         {quote.pricing_method === 'rule_based' ? 'Kalkulator' :
                          quote.pricing_method === 'historical' ? 'Historia' :
                          'Hybrid'}
@@ -282,27 +282,27 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
                 {/* Breakdown */}
                 {quote.breakdown && (
                   <div className="grid grid-cols-2 gap-3 mb-6 text-sm">
-                    <div className="bg-white dark:bg-slate-800 rounded p-3">
-                      <p className="text-slate-500 dark:text-slate-400">Materiał</p>
-                      <p className="text-slate-900 dark:text-white font-semibold">
+                    <div className="bg-card rounded p-3">
+                      <p className="text-muted-foreground">Materiał</p>
+                      <p className="text-foreground font-semibold">
                         {quote.breakdown.materialCost?.toFixed(2) || 0} PLN
                       </p>
                     </div>
-                    <div className="bg-white dark:bg-slate-800 rounded p-3">
-                      <p className="text-slate-500 dark:text-slate-400">Robocizna</p>
-                      <p className="text-slate-900 dark:text-white font-semibold">
+                    <div className="bg-card rounded p-3">
+                      <p className="text-muted-foreground">Robocizna</p>
+                      <p className="text-foreground font-semibold">
                         {quote.breakdown.laborCost?.toFixed(2) || 0} PLN
                       </p>
                     </div>
-                    <div className="bg-white dark:bg-slate-800 rounded p-3">
-                      <p className="text-slate-500 dark:text-slate-400">Setup</p>
-                      <p className="text-slate-900 dark:text-white font-semibold">
+                    <div className="bg-card rounded p-3">
+                      <p className="text-muted-foreground">Setup</p>
+                      <p className="text-foreground font-semibold">
                         {quote.breakdown.setupCost?.toFixed(2) || 0} PLN
                       </p>
                     </div>
-                    <div className="bg-white dark:bg-slate-800 rounded p-3">
-                      <p className="text-slate-500 dark:text-slate-400">Marża</p>
-                      <p className="text-slate-900 dark:text-white font-semibold">
+                    <div className="bg-card rounded p-3">
+                      <p className="text-muted-foreground">Marża</p>
+                      <p className="text-foreground font-semibold">
                         {quote.breakdown.marginPercentage || 0}%
                       </p>
                     </div>
@@ -311,8 +311,8 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
 
                 {/* Reasoning */}
                 {quote.reasoning && (
-                  <div className="bg-white/50 dark:bg-slate-900/50 rounded-lg p-4">
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
+                  <div className="bg-white/50/50 rounded-lg p-4">
+                    <p className="text-sm text-foreground">
                       <strong>Uzasadnienie:</strong> {quote.reasoning}
                     </p>
                   </div>
@@ -323,8 +323,8 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
             {/* Right Column - Actions */}
             <div className="space-y-6">
               {/* Convert to Order */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
                   📦 Zamówienie
                 </h2>
                 {quote.converted_order_id ? (
@@ -340,13 +340,13 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
                   </div>
                 ) : (
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                    <p className="text-sm text-muted-foreground mb-4">
                       Utwórz zamówienie na podstawie tej oferty.
                     </p>
                     <Button
                       onClick={handleConvertToOrder}
                       disabled={isConverting}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      className="w-full bg-violet-600 hover:bg-violet-700 text-white"
                     >
                       {isConverting ? 'Tworzenie...' : '➕ Utwórz zamówienie'}
                     </Button>
@@ -355,31 +355,31 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
               </div>
 
               {/* Portal Link */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
                   🔗 Link do portalu klienta
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Wyślij ten link klientowi, aby mógł zobaczyć ofertę i ją zaakceptować.
                 </p>
-                <div className="bg-slate-50 dark:bg-slate-900 rounded p-3 mb-4 break-all text-sm text-slate-700 dark:text-slate-300">
+                <div className="bg-muted rounded p-3 mb-4 break-all text-sm text-foreground">
                   {portalUrl}
                 </div>
                 <Button
                   onClick={handleCopyLink}
                   disabled={isCopying}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white"
                 >
                   {isCopying ? 'Kopiowanie...' : '📋 Kopiuj link'}
                 </Button>
               </div>
 
               {/* Email */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
                   📧 Wyślij email
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Otwórz Gmail/Outlook z gotowym mailem do klienta.
                 </p>
                 <a href={mailtoUrl}>
@@ -390,11 +390,11 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
               </div>
 
               {/* Print */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
                   🖨️ Drukuj ofertę
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Drukuj lub zapisz jako PDF (Ctrl+P).
                 </p>
                 <Button
@@ -406,35 +406,35 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
               </div>
 
               {/* Metadata */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 shadow-lg">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
                   ℹ️ Informacje
                 </h2>
                 <div className="space-y-3 text-sm">
                   <div>
-                    <p className="text-slate-500 dark:text-slate-400">Utworzył</p>
-                    <p className="text-slate-900 dark:text-white font-medium">
+                    <p className="text-muted-foreground">Utworzył</p>
+                    <p className="text-foreground font-medium">
                       {Array.isArray(quote.creator) ? quote.creator[0]?.full_name : quote.creator?.full_name}
                     </p>
                   </div>
                   <div>
-                    <p className="text-slate-500 dark:text-slate-400">Data utworzenia</p>
-                    <p className="text-slate-900 dark:text-white font-medium">
+                    <p className="text-muted-foreground">Data utworzenia</p>
+                    <p className="text-foreground font-medium">
                       {new Date(quote.created_at).toLocaleString('pl-PL')}
                     </p>
                   </div>
                   {quote.expires_at && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-400">Ważna do</p>
-                      <p className="text-slate-900 dark:text-white font-medium">
+                      <p className="text-muted-foreground">Ważna do</p>
+                      <p className="text-foreground font-medium">
                         {new Date(quote.expires_at).toLocaleDateString('pl-PL')}
                       </p>
                     </div>
                   )}
                   {quote.accepted_at && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-400">Zaakceptowana</p>
-                      <p className="text-slate-900 dark:text-white font-medium">
+                      <p className="text-muted-foreground">Zaakceptowana</p>
+                      <p className="text-foreground font-medium">
                         {new Date(quote.accepted_at).toLocaleString('pl-PL')}
                       </p>
                     </div>

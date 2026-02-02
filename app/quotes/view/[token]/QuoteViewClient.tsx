@@ -49,7 +49,7 @@ export default function QuoteViewClient({ quote, isExpired }: QuoteViewClientPro
   const isAccepted = quote.status === 'accepted' || acceptedLocally
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -132,7 +132,7 @@ export default function QuoteViewClient({ quote, isExpired }: QuoteViewClientPro
           </div>
 
           {/* Price - BIG */}
-          <div className="p-8 bg-gradient-to-br from-green-50 to-blue-50">
+          <div className="p-8 bg-gradient-to-br from-green-50 to-violet-50">
             <div className="text-center mb-6">
               <p className="text-slate-500 text-sm mb-2">Cena całkowita</p>
               <p className="text-5xl md:text-6xl font-bold text-green-600 mb-2">
@@ -235,7 +235,7 @@ export default function QuoteViewClient({ quote, isExpired }: QuoteViewClientPro
             Pytania? Skontaktuj się z firmą:{' '}
             <a
               href={`mailto:${quote.customer_email || 'kontakt@firma.pl'}`}
-              className="text-blue-600 hover:underline"
+              className="text-violet-600 hover:underline"
             >
               {quote.customer_email || 'kontakt@firma.pl'}
             </a>

@@ -17,13 +17,13 @@ export default async function AddCustomerPage() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
+      <div className="min-h-screen bg-background p-8">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               Dodaj nowego kontrahenta
             </h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Uzupełnij dane kontaktowe kontrahenta (klient, sprzedawca lub kooperant)
             </p>
           </div>

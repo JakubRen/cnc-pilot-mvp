@@ -76,17 +76,17 @@ export default function CustomerAutocomplete({
         onChange={handleInputChange}
         onFocus={() => setIsOpen(true)}
         placeholder={placeholder}
-        className={`w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border ${
+        className={`w-full px-4 py-3 rounded-lg bg-muted border ${
           error
             ? 'border-red-500 focus:border-red-500'
-            : 'border-slate-200 dark:border-slate-700 focus:border-blue-500'
-        } text-slate-900 dark:text-white focus:outline-none`}
+            : 'border-border focus:border-violet-500'
+        } text-foreground focus:outline-none`}
         autoComplete="off"
       />
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg">
+        <div className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto bg-card border border-border rounded-lg shadow-lg">
           {filteredCustomers.length > 0 ? (
             <>
               {filteredCustomers.map((customer) => (
@@ -94,19 +94,19 @@ export default function CustomerAutocomplete({
                   key={customer.id}
                   type="button"
                   onClick={() => handleSelect(customer.name)}
-                  className="w-full px-4 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                  className="w-full px-4 py-2 text-left hover:bg-muted transition"
                 >
-                  <div className="text-slate-900 dark:text-white font-medium">
+                  <div className="text-foreground font-medium">
                     {customer.name}
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                  <div className="text-xs text-muted-foreground">
                     {typeLabels[customer.type]}
                   </div>
                 </button>
               ))}
             </>
           ) : (
-            <div className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400">
+            <div className="px-4 py-3 text-sm text-muted-foreground">
               {searchTerm.length >= 2
                 ? 'Nie znaleziono kontrahenta. Możesz wpisać własną nazwę.'
                 : 'Wpisz przynajmniej 2 znaki aby wyszukać'}

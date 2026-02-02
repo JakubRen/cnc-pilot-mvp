@@ -65,8 +65,8 @@ export default async function DocumentsPage() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Wydania</h1>
-              <p className="text-slate-500 dark:text-slate-400">
+              <h1 className="text-4xl font-bold text-foreground mb-2">Wydania</h1>
+              <p className="text-muted-foreground">
                 Dokumenty magazynowe: PW (Przyjęcie), RW (Rozchód), WZ (Wydanie)
               </p>
             </div>
@@ -77,7 +77,7 @@ export default async function DocumentsPage() {
 
           {/* Documents Table or Empty State */}
           {(!documents || documents.length === 0) ? (
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-8">
+            <div className="bg-card rounded-lg border border-border p-8">
               <EmptyState
                 icon="📄"
                 title="Brak dokumentów magazynowych"
@@ -89,29 +89,29 @@ export default async function DocumentsPage() {
           ) : (
             <>
               {/* Desktop View - Table (hidden on mobile) */}
-              <div className="hidden md:block bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
+              <div className="hidden md:block bg-card rounded-lg border border-border overflow-x-auto">
                 <table className="w-full min-w-max">
-                  <thead className="bg-slate-100 dark:bg-slate-700">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         Typ
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         Numer
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         Kontrahent
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         Data
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         Utworzył
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         Akcje
                       </th>
                     </tr>
@@ -122,19 +122,19 @@ export default async function DocumentsPage() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             {getDocTypeBadge(doc.document_type)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-900 dark:text-white font-semibold">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-foreground font-semibold">
                             {doc.document_number}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                             {doc.contractor}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {getStatusBadge(doc.status)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {new Date(doc.created_at).toLocaleDateString('pl-PL')}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             -
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
@@ -158,13 +158,13 @@ export default async function DocumentsPage() {
                 {documents.map((doc) => (
                     <div
                       key={doc.id}
-                      className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+                      className="bg-card border border-border rounded-lg overflow-hidden"
                     >
                       {/* Card Header */}
-                      <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+                      <div className="flex items-center justify-between p-4 bg-muted border-b border-border">
                         <div className="flex items-center gap-2">
                           {getDocTypeBadge(doc.document_type)}
-                          <span className="text-base font-mono font-bold text-slate-900 dark:text-white">
+                          <span className="text-base font-mono font-bold text-foreground">
                             {doc.document_number}
                           </span>
                         </div>
@@ -175,26 +175,26 @@ export default async function DocumentsPage() {
                       <div className="p-4 space-y-3">
                         {/* Contractor */}
                         <div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                          <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                             Kontrahent
                           </p>
-                          <p className="text-base text-slate-900 dark:text-white font-medium">
+                          <p className="text-base text-foreground font-medium">
                             {doc.contractor}
                           </p>
                         </div>
 
                         {/* Date */}
                         <div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
+                          <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">
                             Data
                           </p>
-                          <p className="text-sm text-slate-900 dark:text-white">
+                          <p className="text-sm text-foreground">
                             {new Date(doc.created_at).toLocaleDateString('pl-PL')}
                           </p>
                         </div>
 
                         {/* Actions */}
-                        <div className="flex gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <div className="flex gap-2 pt-2 border-t border-border">
                           <Button
                             href={`/documents/${doc.id}`}
                             variant="primary"

@@ -32,23 +32,23 @@ export default async function ExternalServicesPage() {
         <div className="max-w-5xl mx-auto">
           {/* Breadcrumb */}
           <div className="mb-4">
-            <Link href="/settings" className="text-blue-500 hover:text-blue-400 text-sm">
+            <Link href="/settings" className="text-violet-500 hover:text-violet-400 text-sm">
               ← Powrót do ustawień
             </Link>
           </div>
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Usługi Kooperacyjne</h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">
+            <h1 className="text-4xl font-bold text-foreground">Usługi Kooperacyjne</h1>
+            <p className="text-muted-foreground mt-1">
               Zarządzanie usługami zewnętrznymi: anodowanie, hartowanie, malowanie proszkowe, itp.
             </p>
           </div>
 
           {/* Info Box */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/30 rounded-lg p-4 mb-8">
-            <h3 className="text-blue-700 dark:text-blue-300 font-semibold mb-2">Jak działają usługi kooperacyjne?</h3>
-            <p className="text-blue-600 dark:text-blue-400 text-sm">
+          <div className="bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700/30 rounded-lg p-4 mb-8">
+            <h3 className="text-violet-700 dark:text-violet-300 font-semibold mb-2">Jak działają usługi kooperacyjne?</h3>
+            <p className="text-primary text-sm">
               Usługi zewnętrzne są doliczane do wyceny oferty. Każda usługa ma cenę bazową oraz narzut za obsługę
               (handling fee) pokrywający transport, ryzyko i administrację. Całkowity koszt = cena_bazowa × ilość × (1 + handling_fee%).
             </p>

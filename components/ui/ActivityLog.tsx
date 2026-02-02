@@ -65,7 +65,7 @@ export function ActivityLog({ items, className, maxItems }: ActivityLogProps) {
   if (items.length === 0) {
     return (
       <div className={cn('text-center py-8', className)}>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">
+        <p className="text-muted-foreground text-sm">
           Brak aktywności do wyświetlenia
         </p>
       </div>
@@ -79,18 +79,18 @@ export function ActivityLog({ items, className, maxItems }: ActivityLogProps) {
           key={item.id}
           className={cn(
             'relative pl-8 pb-4',
-            index !== displayItems.length - 1 && 'border-l-2 border-slate-200 dark:border-slate-700'
+            index !== displayItems.length - 1 && 'border-l-2 border-border'
           )}
         >
           {/* Icon */}
-          <div className="absolute left-0 top-0 -ml-[9px] flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600">
-            <div className="text-slate-600 dark:text-slate-400">
+          <div className="absolute left-0 top-0 -ml-[9px] flex items-center justify-center w-5 h-5 rounded-full bg-card border-2 border-border">
+            <div className="text-muted-foreground">
               {item.type && activityIcons[item.type]}
             </div>
           </div>
 
           {/* Content */}
-          <div className="glass-panel rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+          <div className="bg-card rounded-lg p-3 border border-border">
             <div className="flex items-start justify-between gap-2 mb-1">
               <div className="flex items-center gap-2">
                 {item.user.avatar ? (
@@ -100,25 +100,25 @@ export function ActivityLog({ items, className, maxItems }: ActivityLogProps) {
                     className="w-6 h-6 rounded-full"
                   />
                 ) : (
-                  <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                  <div className="w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900 flex items-center justify-center">
+                    <span className="text-xs font-semibold text-primary">
                       {item.user.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
                 )}
-                <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                <span className="text-sm font-semibold text-foreground">
                   {item.user.name}
                 </span>
               </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
+              <span className="text-xs text-muted-foreground">
                 {formatTimeAgo(item.timestamp)}
               </span>
             </div>
-            <p className="text-sm text-slate-700 dark:text-slate-300">
+            <p className="text-sm text-foreground">
               {item.action}
             </p>
             {item.details && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {item.details}
               </p>
             )}

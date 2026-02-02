@@ -28,7 +28,7 @@ interface ProductionCalendarProps {
 // Status colors - Light theme
 const lightStatusColors: Record<string, { bg: string; border: string; text: string }> = {
   pending: { bg: '#fef3c7', border: '#f59e0b', text: '#92400e' },
-  in_progress: { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af' },
+  in_progress: { bg: '#ede9fe', border: '#8b5cf6', text: '#5b21b6' },
   completed: { bg: '#d1fae5', border: '#10b981', text: '#065f46' },
   delayed: { bg: '#fee2e2', border: '#ef4444', text: '#991b1b' },
   cancelled: { bg: '#e2e8f0', border: '#64748b', text: '#475569' },
@@ -37,7 +37,7 @@ const lightStatusColors: Record<string, { bg: string; border: string; text: stri
 // Status colors - Dark theme
 const darkStatusColors: Record<string, { bg: string; border: string; text: string }> = {
   pending: { bg: 'rgba(251, 191, 36, 0.2)', border: '#fbbf24', text: '#fef3c7' },
-  in_progress: { bg: 'rgba(59, 130, 246, 0.2)', border: '#60a5fa', text: '#dbeafe' },
+  in_progress: { bg: 'rgba(59, 130, 246, 0.2)', border: '#60a5fa', text: '#ede9fe' },
   completed: { bg: 'rgba(16, 185, 129, 0.2)', border: '#34d399', text: '#d1fae5' },
   delayed: { bg: 'rgba(239, 68, 68, 0.2)', border: '#f87171', text: '#fecaca' },
   cancelled: { bg: 'rgba(100, 116, 139, 0.2)', border: '#94a3b8', text: '#e2e8f0' },
@@ -94,15 +94,15 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
   return (
     <div className="flex gap-6">
       {/* Calendar */}
-      <div className="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+      <div className="flex-1 bg-card border border-border rounded-lg p-6">
         {/* View switcher */}
         <div className="flex gap-2 mb-4">
           <button
             onClick={() => setView('dayGridMonth')}
             className={`px-3 py-1.5 rounded-lg text-sm transition ${
               view === 'dayGridMonth'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                ? 'bg-violet-600 text-white'
+                : 'bg-muted text-foreground hover:bg-accent'
             }`}
           >
             Miesiąc
@@ -111,8 +111,8 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
             onClick={() => setView('dayGridWeek')}
             className={`px-3 py-1.5 rounded-lg text-sm transition ${
               view === 'dayGridWeek'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                ? 'bg-violet-600 text-white'
+                : 'bg-muted text-foreground hover:bg-accent'
             }`}
           >
             Tydzień
@@ -121,8 +121,8 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
             onClick={() => setView('timeGridWeek')}
             className={`px-3 py-1.5 rounded-lg text-sm transition ${
               view === 'timeGridWeek'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                ? 'bg-violet-600 text-white'
+                : 'bg-muted text-foreground hover:bg-accent'
             }`}
           >
             Oś czasu
@@ -159,8 +159,8 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
         </div>
 
         {/* Legend */}
-        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <p className="text-slate-500 dark:text-slate-400 text-xs mb-2">Legenda:</p>
+        <div className="mt-4 pt-4 border-t border-border">
+          <p className="text-muted-foreground text-xs mb-2">Legenda:</p>
           <div className="flex flex-wrap gap-3">
             {Object.entries(statusColors).map(([status, colors]) => (
               <div key={status} className="flex items-center gap-1.5">
@@ -168,7 +168,7 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
                   className="w-3 h-3 rounded"
                   style={{ backgroundColor: colors.bg, border: `2px solid ${colors.border}` }}
                 />
-                <span className="text-slate-500 dark:text-slate-400 text-xs">{statusLabels[status]}</span>
+                <span className="text-muted-foreground text-xs">{statusLabels[status]}</span>
               </div>
             ))}
           </div>
@@ -177,12 +177,12 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
 
       {/* Selected order details */}
       {selectedOrder && (
-        <div className="w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+        <div className="w-80 bg-card border border-border rounded-lg p-6">
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Szczegóły zamówienia</h3>
+            <h3 className="text-lg font-semibold text-foreground">Szczegóły zamówienia</h3>
             <button
               onClick={() => setSelectedOrder(null)}
-              className="text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              className="text-slate-400 hover:text-foreground"
             >
               ✕
             </button>
@@ -190,32 +190,32 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
 
           <div className="space-y-4">
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-xs">Numer zamówienia</p>
-              <p className="text-slate-900 dark:text-white font-semibold">{selectedOrder.order_number}</p>
+              <p className="text-muted-foreground text-xs">Numer zamówienia</p>
+              <p className="text-foreground font-semibold">{selectedOrder.order_number}</p>
             </div>
 
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-xs">Klient</p>
-              <p className="text-slate-900 dark:text-white">{selectedOrder.customer_name}</p>
+              <p className="text-muted-foreground text-xs">Klient</p>
+              <p className="text-foreground">{selectedOrder.customer_name}</p>
             </div>
 
             {selectedOrder.part_name && (
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-xs">Część</p>
-                <p className="text-slate-900 dark:text-white">{selectedOrder.part_name}</p>
+                <p className="text-muted-foreground text-xs">Część</p>
+                <p className="text-foreground">{selectedOrder.part_name}</p>
               </div>
             )}
 
             {selectedOrder.quantity && (
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-xs">Ilość</p>
-                <p className="text-slate-900 dark:text-white">{selectedOrder.quantity} szt.</p>
+                <p className="text-muted-foreground text-xs">Ilość</p>
+                <p className="text-foreground">{selectedOrder.quantity} szt.</p>
               </div>
             )}
 
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-xs">Termin</p>
-              <p className="text-slate-900 dark:text-white">
+              <p className="text-muted-foreground text-xs">Termin</p>
+              <p className="text-foreground">
                 {selectedOrder.deadline
                   ? new Date(selectedOrder.deadline).toLocaleDateString('pl-PL')
                   : '-'}
@@ -223,7 +223,7 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
             </div>
 
             <div>
-              <p className="text-slate-500 dark:text-slate-400 text-xs">Status</p>
+              <p className="text-muted-foreground text-xs">Status</p>
               <span
                 className="inline-block px-2 py-1 rounded text-xs font-medium mt-1"
                 style={{
@@ -237,14 +237,14 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
 
             {selectedOrder.assigned_operator && (
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-xs">Operator</p>
-                <p className="text-slate-900 dark:text-white">{selectedOrder.assigned_operator.name}</p>
+                <p className="text-muted-foreground text-xs">Operator</p>
+                <p className="text-foreground">{selectedOrder.assigned_operator.name}</p>
               </div>
             )}
 
             <Link
               href={`/orders/${selectedOrder.id}`}
-              className="block w-full text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition mt-4"
+              className="block w-full text-center px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition mt-4"
             >
               Zobacz zamówienie →
             </Link>
@@ -291,8 +291,8 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
         }
 
         .fc-light-theme .fc-button-primary:not(:disabled).fc-button-active {
-          background-color: #3b82f6;
-          border-color: #3b82f6;
+          background-color: #8b5cf6;
+          border-color: #8b5cf6;
           color: #ffffff;
         }
 
@@ -350,8 +350,8 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
         }
 
         .fc-dark-theme .fc-button-primary:not(:disabled).fc-button-active {
-          background-color: #3b82f6;
-          border-color: #3b82f6;
+          background-color: #8b5cf6;
+          border-color: #8b5cf6;
         }
 
         .fc-dark-theme .fc-toolbar-title {

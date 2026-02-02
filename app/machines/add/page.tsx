@@ -102,18 +102,18 @@ export default function AddMachinePage() {
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
-            <Link href="/machines" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <Link href="/machines" className="text-muted-foreground hover:text-foreground">
               ← Wróć
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Nowa maszyna</h1>
+            <h1 className="text-3xl font-bold text-foreground">Nowa maszyna</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Identyfikacja</h2>
+            <div className="bg-card border border-border rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">Identyfikacja</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Nazwa maszyny *</label>
+                  <label className="block text-foreground mb-2">Nazwa maszyny *</label>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -122,7 +122,7 @@ export default function AddMachinePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Kod wewnętrzny</label>
+                  <label className="block text-foreground mb-2">Kod wewnętrzny</label>
                   <Input
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
@@ -130,7 +130,7 @@ export default function AddMachinePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Numer seryjny</label>
+                  <label className="block text-foreground mb-2">Numer seryjny</label>
                   <Input
                     value={serialNumber}
                     onChange={(e) => setSerialNumber(e.target.value)}
@@ -138,7 +138,7 @@ export default function AddMachinePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Producent</label>
+                  <label className="block text-foreground mb-2">Producent</label>
                   <Input
                     value={manufacturer}
                     onChange={(e) => setManufacturer(e.target.value)}
@@ -146,7 +146,7 @@ export default function AddMachinePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Model</label>
+                  <label className="block text-foreground mb-2">Model</label>
                   <Input
                     value={model}
                     onChange={(e) => setModel(e.target.value)}
@@ -156,11 +156,11 @@ export default function AddMachinePage() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Lokalizacja i daty</h2>
+            <div className="bg-card border border-border rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">Lokalizacja i daty</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Lokalizacja</label>
+                  <label className="block text-foreground mb-2">Lokalizacja</label>
                   <Input
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
@@ -168,7 +168,7 @@ export default function AddMachinePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Data zakupu</label>
+                  <label className="block text-foreground mb-2">Data zakupu</label>
                   <Input
                     type="date"
                     value={purchaseDate}
@@ -176,7 +176,7 @@ export default function AddMachinePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Gwarancja do</label>
+                  <label className="block text-foreground mb-2">Gwarancja do</label>
                   <Input
                     type="date"
                     value={warrantyUntil}
@@ -186,11 +186,11 @@ export default function AddMachinePage() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Konserwacja</h2>
+            <div className="bg-card border border-border rounded-lg p-6 mb-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">Konserwacja</h2>
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Interwał przeglądów (dni)</label>
+                  <label className="block text-foreground mb-2">Interwał przeglądów (dni)</label>
                   <Input
                     type="number"
                     min="1"
@@ -198,17 +198,17 @@ export default function AddMachinePage() {
                     onChange={(e) => setMaintenanceInterval(e.target.value)}
                     placeholder="90"
                   />
-                  <p className="text-slate-500 dark:text-slate-500 text-xs mt-1">
+                  <p className="text-slate-500 dark:text-muted-foreground text-xs mt-1">
                     Co ile dni przypominać o przeglądzie (domyślnie 90 dni / kwartalnie)
                   </p>
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2">Notatki</label>
+                  <label className="block text-foreground mb-2">Notatki</label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Dodatkowe informacje o maszynie..."
-                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     rows={3}
                   />
                 </div>

@@ -7,10 +7,10 @@ export default function ReportsHeader() {
 
   return (
     <div className="mb-8">
-      <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
+      <h1 className="text-4xl font-bold text-foreground mb-2">
         {t('reports', 'titleAnalytics')}
       </h1>
-      <p className="text-slate-500 dark:text-slate-400">
+      <p className="text-muted-foreground">
         {t('reports', 'subtitle')}
       </p>
     </div>

@@ -322,20 +322,20 @@ export default function OrderQCClient({ orderId, orderNumber, plans, measurement
       {/* Stats */}
       {totalMeasurements > 0 && (
         <div className="grid grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-lg text-center">
-            <p className="text-slate-500 dark:text-slate-400 text-xs">Pomiary</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">{totalMeasurements}</p>
+          <div className="bg-card border border-border p-4 rounded-lg text-center">
+            <p className="text-muted-foreground text-xs">Pomiary</p>
+            <p className="text-3xl font-bold text-foreground">{totalMeasurements}</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 border border-green-200 dark:border-green-700/50 p-4 rounded-lg text-center">
-            <p className="text-slate-500 dark:text-slate-400 text-xs">Zgodne</p>
+          <div className="bg-card border border-green-200 dark:border-green-700/50 p-4 rounded-lg text-center">
+            <p className="text-muted-foreground text-xs">Zgodne</p>
             <p className="text-3xl font-bold text-green-600 dark:text-green-400">{passedCount}</p>
           </div>
-          <div className="bg-white dark:bg-slate-800 border border-red-200 dark:border-red-700/50 p-4 rounded-lg text-center">
-            <p className="text-slate-500 dark:text-slate-400 text-xs">Niezgodne</p>
+          <div className="bg-card border border-red-200 dark:border-red-700/50 p-4 rounded-lg text-center">
+            <p className="text-muted-foreground text-xs">Niezgodne</p>
             <p className="text-3xl font-bold text-red-600 dark:text-red-400">{failedCount}</p>
           </div>
-          <div className={`bg-white dark:bg-slate-800 p-4 rounded-lg text-center border ${passRate >= 95 ? 'border-green-200 dark:border-green-700/50' : passRate >= 80 ? 'border-yellow-200 dark:border-yellow-700/50' : 'border-red-200 dark:border-red-700/50'}`}>
-            <p className="text-slate-500 dark:text-slate-400 text-xs">Zgodność</p>
+          <div className={`bg-card p-4 rounded-lg text-center border ${passRate >= 95 ? 'border-green-200 dark:border-green-700/50' : passRate >= 80 ? 'border-yellow-200 dark:border-yellow-700/50' : 'border-red-200 dark:border-red-700/50'}`}>
+            <p className="text-muted-foreground text-xs">Zgodność</p>
             <p className={`text-3xl font-bold ${passRate >= 95 ? 'text-green-600 dark:text-green-400' : passRate >= 80 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
               {passRate}%
             </p>
@@ -344,16 +344,16 @@ export default function OrderQCClient({ orderId, orderNumber, plans, measurement
       )}
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-200 dark:border-slate-700">
+      <div className="flex gap-2 border-b border-border">
         <button
           onClick={() => setTab('measure')}
-          className={`px-4 py-2 text-sm font-semibold border-b-2 transition ${tab === 'measure' ? 'border-blue-600 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+          className={`px-4 py-2 text-sm font-semibold border-b-2 transition ${tab === 'measure' ? 'border-violet-600 text-primary' : 'border-transparent text-slate-500 hover:text-foreground'}`}
         >
           Wprowadź pomiary
         </button>
         <button
           onClick={() => setTab('create-plan')}
-          className={`px-4 py-2 text-sm font-semibold border-b-2 transition ${tab === 'create-plan' ? 'border-blue-600 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
+          className={`px-4 py-2 text-sm font-semibold border-b-2 transition ${tab === 'create-plan' ? 'border-violet-600 text-primary' : 'border-transparent text-slate-500 hover:text-foreground'}`}
         >
           + Nowy plan kontroli
         </button>

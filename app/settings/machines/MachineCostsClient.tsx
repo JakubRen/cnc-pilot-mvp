@@ -174,7 +174,7 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Machine List */}
       <div className="lg:col-span-1">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Wybierz maszynę</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">Wybierz maszynę</h2>
         <div className="space-y-2">
           {machines.map(machine => {
             const hasCosts = !!costsMap[machine.id]
@@ -184,15 +184,15 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                 onClick={() => handleMachineChange(machine.id)}
                 className={`w-full text-left p-3 rounded-lg border transition ${
                   selectedMachineId === machine.id
-                    ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500'
-                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                    ? 'bg-violet-50 dark:bg-violet-900/30 border-violet-500'
+                    : 'bg-card border-border hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="text-slate-900 dark:text-white font-medium">{machine.name}</span>
+                    <span className="text-foreground font-medium">{machine.name}</span>
                     {machine.code && (
-                      <span className="text-slate-500 dark:text-slate-400 text-sm ml-2">({machine.code})</span>
+                      <span className="text-muted-foreground text-sm ml-2">({machine.code})</span>
                     )}
                   </div>
                   {hasCosts ? (
@@ -202,7 +202,7 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   )}
                 </div>
                 {(machine.manufacturer || machine.model) && (
-                  <p className="text-slate-500 dark:text-slate-500 text-xs mt-1">
+                  <p className="text-slate-500 dark:text-muted-foreground text-xs mt-1">
                     {machine.manufacturer} {machine.model}
                   </p>
                 )}
@@ -217,7 +217,7 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
         {selectedMachine && (
           <>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-foreground">
                 {selectedMachine.name}
               </h2>
               {existingCosts && (
@@ -228,27 +228,27 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
             </div>
 
             {/* Preview Card */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 mb-6 text-white">
+            <div className="bg-gradient-to-r from-violet-600 to-violet-700 rounded-lg p-6 mb-6 text-white">
               <h3 className="text-lg font-semibold mb-4">Podgląd stawki godzinowej</h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div>
-                  <p className="text-blue-200 text-xs">Efektywne h/rok</p>
+                  <p className="text-violet-200 text-xs">Efektywne h/rok</p>
                   <p className="text-2xl font-bold">{preview.effectiveHours}</p>
                 </div>
                 <div>
-                  <p className="text-blue-200 text-xs">Koszty stałe/h</p>
+                  <p className="text-violet-200 text-xs">Koszty stałe/h</p>
                   <p className="text-2xl font-bold">{preview.fixedPerHour} <span className="text-sm">PLN</span></p>
                 </div>
                 <div>
-                  <p className="text-blue-200 text-xs">Koszty zmienne/h</p>
+                  <p className="text-violet-200 text-xs">Koszty zmienne/h</p>
                   <p className="text-2xl font-bold">{preview.variablePerHour} <span className="text-sm">PLN</span></p>
                 </div>
                 <div>
-                  <p className="text-blue-200 text-xs">Operator/h</p>
+                  <p className="text-violet-200 text-xs">Operator/h</p>
                   <p className="text-2xl font-bold">{preview.operatorPerMachine} <span className="text-sm">PLN</span></p>
                 </div>
                 <div className="bg-white/20 rounded-lg p-2">
-                  <p className="text-blue-100 text-xs">RAZEM</p>
+                  <p className="text-violet-100 text-xs">RAZEM</p>
                   <p className="text-3xl font-bold">{preview.totalRate} <span className="text-sm">PLN/h</span></p>
                 </div>
               </div>
@@ -256,17 +256,17 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Fixed Costs Section */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Koszty stałe (roczne)</h3>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Koszty stałe (roczne)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Wartość odtworzeniowa (PLN)
                     </label>
                     <input
                       type="number"
                       {...register('replacement_value', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="np. 250000"
                     />
                     <p className="text-slate-500 text-xs mt-1">Nie cena zakupu, a koszt zastąpienia</p>
@@ -276,13 +276,13 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Żywotność ekonomiczna (lata)
                     </label>
                     <input
                       type="number"
                       {...register('economic_life_years', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     {errors.economic_life_years && (
                       <p className="text-red-500 text-xs mt-1">{errors.economic_life_years.message}</p>
@@ -290,14 +290,14 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Powierzchnia (m²)
                     </label>
                     <input
                       type="number"
                       step="0.1"
                       {...register('floor_space_m2', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="np. 12"
                     />
                     {errors.floor_space_m2 && (
@@ -306,13 +306,13 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Koszt hali (PLN/m²/rok)
                     </label>
                     <input
                       type="number"
                       {...register('cost_per_m2_yearly', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="np. 200"
                     />
                     <p className="text-slate-500 text-xs mt-1">Czynsz, podatki, media wspólne</p>
@@ -322,26 +322,26 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Software/licencje (PLN/rok)
                     </label>
                     <input
                       type="number"
                       {...register('software_subscriptions_yearly', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="np. 5000"
                     />
                     <p className="text-slate-500 text-xs mt-1">CAD/CAM, monitoring, itp.</p>
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Koszty finansowania (PLN/rok)
                     </label>
                     <input
                       type="number"
                       {...register('financing_costs_yearly', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="np. 0"
                     />
                     <p className="text-slate-500 text-xs mt-1">Leasing, kredyt</p>
@@ -350,18 +350,18 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
               </div>
 
               {/* OEE & Working Time Section */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Czas pracy i OEE</h3>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Czas pracy i OEE</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Godziny/dzień
                     </label>
                     <input
                       type="number"
                       step="0.5"
                       {...register('shift_hours_per_day', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     {errors.shift_hours_per_day && (
                       <p className="text-red-500 text-xs mt-1">{errors.shift_hours_per_day.message}</p>
@@ -369,13 +369,13 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Dni robocze/rok
                     </label>
                     <input
                       type="number"
                       {...register('working_days_per_year', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     {errors.working_days_per_year && (
                       <p className="text-red-500 text-xs mt-1">{errors.working_days_per_year.message}</p>
@@ -383,13 +383,13 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       OEE (%)
                     </label>
                     <input
                       type="number"
                       {...register('oee_percentage', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     <p className="text-slate-500 text-xs mt-1">Typowe: 65-85%</p>
                     {errors.oee_percentage && (
@@ -400,18 +400,18 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
               </div>
 
               {/* Variable Costs Section */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Koszty zmienne (na godzinę)</h3>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Koszty zmienne (na godzinę)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Moc maszyny (kW)
                     </label>
                     <input
                       type="number"
                       step="0.1"
                       {...register('power_kw', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="np. 15"
                     />
                     {errors.power_kw && (
@@ -420,14 +420,14 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Współczynnik obciążenia (0-1)
                     </label>
                     <input
                       type="number"
                       step="0.05"
                       {...register('average_load_factor', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     <p className="text-slate-500 text-xs mt-1">Typowo 0.6-0.8</p>
                     {errors.average_load_factor && (
@@ -436,14 +436,14 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Zużywalne (PLN/h)
                     </label>
                     <input
                       type="number"
                       step="0.5"
                       {...register('consumables_rate_hour', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     <p className="text-slate-500 text-xs mt-1">Chłodziwo, oleje, filtry</p>
                     {errors.consumables_rate_hour && (
@@ -452,14 +452,14 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Rezerwa serwisowa (PLN/h)
                     </label>
                     <input
                       type="number"
                       step="0.5"
                       {...register('maintenance_reserve_hour', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     <p className="text-slate-500 text-xs mt-1">Na przeglądy i naprawy</p>
                     {errors.maintenance_reserve_hour && (
@@ -470,18 +470,18 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
               </div>
 
               {/* Operator Costs Section */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Koszty operatora</h3>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Koszty operatora</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Stawka operatora (PLN/h)
                     </label>
                     <input
                       type="number"
                       step="0.5"
                       {...register('operator_hourly_rate', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     <p className="text-slate-500 text-xs mt-1">Z narzutami pracodawcy</p>
                     {errors.operator_hourly_rate && (
@@ -490,14 +490,14 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Maszyn na operatora
                     </label>
                     <input
                       type="number"
                       step="0.5"
                       {...register('machines_per_operator', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     <p className="text-slate-500 text-xs mt-1">1 = dedykowany operator</p>
                     {errors.machines_per_operator && (
@@ -506,14 +506,14 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                    <label className="block text-foreground text-sm font-medium mb-1">
                       Stawka setupowca (PLN/h)
                     </label>
                     <input
                       type="number"
                       step="0.5"
                       {...register('setup_specialist_rate', { valueAsNumber: true })}
-                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     />
                     <p className="text-slate-500 text-xs mt-1">Do przezbrojenia</p>
                     {errors.setup_specialist_rate && (
@@ -528,14 +528,14 @@ export default function MachineCostsClient({ machines, costsMap, companyId }: Pr
                 <button
                   type="button"
                   onClick={() => reset(getDefaultValues(existingCosts))}
-                  className="px-6 py-3 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition font-semibold"
+                  className="px-6 py-3 bg-secondary text-foreground rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition font-semibold"
                 >
                   Resetuj
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50"
+                  className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold disabled:opacity-50"
                 >
                   {isSubmitting ? 'Zapisywanie...' : existingCosts ? 'Aktualizuj koszty' : 'Zapisz koszty'}
                 </button>

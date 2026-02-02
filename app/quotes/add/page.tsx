@@ -330,26 +330,26 @@ export default function AddQuotePage() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
+      <div className="min-h-screen bg-background p-8">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
               📋 Nowa Oferta
             </h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Dodaj wiele pozycji i wyceniaj każdą z osobna
             </p>
           </div>
 
           {/* Customer Section */}
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6 shadow-lg">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          <div className="bg-card border border-border rounded-lg p-6 mb-6 shadow-lg">
+            <h2 className="text-xl font-semibold text-foreground mb-4">
               Klient
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Wybierz klienta *
                 </label>
                 <CustomerSelect
@@ -371,8 +371,8 @@ export default function AddQuotePage() {
           </div>
 
           {/* Items Section */}
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6 shadow-lg">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          <div className="bg-card border border-border rounded-lg p-6 mb-6 shadow-lg">
+            <h2 className="text-xl font-semibold text-foreground mb-4">
               Pozycje oferty
             </h2>
 
@@ -413,7 +413,7 @@ export default function AddQuotePage() {
               <button
                 type="button"
                 onClick={addItem}
-                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-sm border-2 border-dashed border-blue-400 hover:border-blue-500"
+                className="flex-1 px-4 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold text-sm border-2 border-dashed border-violet-400 hover:border-violet-500"
               >
                 + Dodaj kolejną pozycję
               </button>
@@ -421,8 +421,8 @@ export default function AddQuotePage() {
           </div>
 
           {/* Notes */}
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6 shadow-lg">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+          <div className="bg-card border border-border rounded-lg p-6 mb-6 shadow-lg">
+            <h2 className="text-xl font-semibold text-foreground mb-4">
               Uwagi (opcjonalnie)
             </h2>
             <textarea
@@ -430,23 +430,23 @@ export default function AddQuotePage() {
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
               placeholder="Dodatkowe informacje dla klienta..."
-              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
             />
           </div>
 
           {/* Summary & Submit */}
-          <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border-2 border-green-500 rounded-lg p-6 shadow-xl">
+          <div className="bg-gradient-to-br from-green-50 to-violet-50 dark:from-green-900/20 dark:to-violet-900/20 border-2 border-green-500 rounded-lg p-6 shadow-xl">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                <h2 className="text-2xl font-bold text-foreground">
                   Podsumowanie
                 </h2>
-                <p className="text-slate-500 dark:text-slate-400">
+                <p className="text-muted-foreground">
                   {items.length} {items.length === 1 ? 'pozycja' : items.length < 5 ? 'pozycje' : 'pozycji'}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-slate-500 dark:text-slate-400">Suma</p>
+                <p className="text-sm text-muted-foreground">Suma</p>
                 <p className="text-4xl font-bold text-green-600 dark:text-green-400">
                   {calculateTotal().toFixed(2)} PLN
                 </p>
@@ -457,7 +457,7 @@ export default function AddQuotePage() {
               type="button"
               onClick={handleCreateQuote}
               disabled={isCreating || !allItemsHavePricing() || !customerId || !allItemsLinked()}
-              className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-4 text-lg"
+              className="w-full bg-gradient-to-r from-green-600 to-violet-600 hover:from-green-700 hover:to-violet-700 text-white font-bold py-4 text-lg"
             >
               {isCreating ? (
                 <>

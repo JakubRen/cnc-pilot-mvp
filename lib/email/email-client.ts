@@ -64,7 +64,7 @@ export function orderNotificationEmail(data: {
     .content { background: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px; }
     .badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; }
     .badge-pending { background: #fbbf24; color: #78350f; }
-    .badge-in-progress { background: #3b82f6; color: white; }
+    .badge-in-progress { background: #8b5cf6; color: white; }
     .badge-completed { background: #10b981; color: white; }
     .details { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; }
     .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #64748b; }
@@ -133,7 +133,7 @@ export function reportEmail(data: {
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
     .header { background: #1e293b; color: white; padding: 20px; border-radius: 8px 8px 0 0; }
     .content { background: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px; }
-    .summary { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+    .summary { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #8b5cf6; }
     .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #64748b; }
   </style>
 </head>

@@ -36,11 +36,11 @@ export default function QCCreatePlanForm({
   return (
     <form onSubmit={onSubmit}>
       {/* Basic info */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Informacje o planie</h3>
+      <div className="bg-card border border-border rounded-lg p-6 mb-6">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Informacje o planie</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm mb-1">Nazwa planu *</label>
+            <label className="block text-foreground text-sm mb-1">Nazwa planu *</label>
             <Input
               value={planName}
               onChange={(e) => onPlanNameChange(e.target.value)}
@@ -49,7 +49,7 @@ export default function QCCreatePlanForm({
             />
           </div>
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm mb-1">Nazwa części</label>
+            <label className="block text-foreground text-sm mb-1">Nazwa części</label>
             <Input
               value={planPartName}
               onChange={(e) => onPlanPartNameChange(e.target.value)}
@@ -57,12 +57,12 @@ export default function QCCreatePlanForm({
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-slate-700 dark:text-slate-300 text-sm mb-1">Opis</label>
+            <label className="block text-foreground text-sm mb-1">Opis</label>
             <textarea
               value={planDescription}
               onChange={(e) => onPlanDescriptionChange(e.target.value)}
               placeholder="Dodatkowe informacje o planie kontroli..."
-              className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none text-sm"
+              className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none text-sm"
               rows={2}
             />
           </div>
@@ -70,9 +70,9 @@ export default function QCCreatePlanForm({
       </div>
 
       {/* Dimensions */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
+      <div className="bg-card border border-border rounded-lg p-6 mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Wymiary do kontroli</h3>
+          <h3 className="text-lg font-semibold text-foreground">Wymiary do kontroli</h3>
           <Button type="button" onClick={onAddItem} variant="ghost" size="sm">
             + Dodaj wymiar
           </Button>
@@ -80,9 +80,9 @@ export default function QCCreatePlanForm({
 
         <div className="space-y-4">
           {newItems.map((item, index) => (
-            <div key={item.tempId} className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+            <div key={item.tempId} className="bg-muted border border-border rounded-lg p-4">
               <div className="flex justify-between items-start mb-3">
-                <span className="text-slate-500 dark:text-slate-400 text-sm">Wymiar #{index + 1}</span>
+                <span className="text-muted-foreground text-sm">Wymiar #{index + 1}</span>
                 {newItems.length > 1 && (
                   <button type="button" onClick={() => onRemoveItem(item.tempId)} className="text-red-500 dark:text-red-400 hover:text-red-700 text-sm">
                     Usuń
@@ -91,7 +91,7 @@ export default function QCCreatePlanForm({
               </div>
               <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
                 <div className="col-span-2">
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Nazwa wymiaru *</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Nazwa wymiaru *</label>
                   <Input
                     value={item.name}
                     onChange={(e) => onUpdateItem(item.tempId, 'name', e.target.value)}
@@ -100,7 +100,7 @@ export default function QCCreatePlanForm({
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Wartość nom. *</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Wartość nom. *</label>
                   <Input
                     type="number"
                     step="0.001"
@@ -111,7 +111,7 @@ export default function QCCreatePlanForm({
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tol. +</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Tol. +</label>
                   <Input
                     type="number"
                     step="0.001"
@@ -122,7 +122,7 @@ export default function QCCreatePlanForm({
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Tol. -</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Tol. -</label>
                   <Input
                     type="number"
                     step="0.001"
@@ -133,11 +133,11 @@ export default function QCCreatePlanForm({
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 text-xs mb-1">Jednostka</label>
+                  <label className="block text-muted-foreground text-xs mb-1">Jednostka</label>
                   <select
                     value={item.unit}
                     onChange={(e) => onUpdateItem(item.tempId, 'unit', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg bg-card border border-border text-foreground text-sm focus:border-violet-500 focus:outline-none"
                   >
                     <option value="mm">mm</option>
                     <option value="um">µm</option>
@@ -152,9 +152,9 @@ export default function QCCreatePlanForm({
                   id={`critical-${item.tempId}`}
                   checked={item.is_critical}
                   onChange={(e) => onUpdateItem(item.tempId, 'is_critical', e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-red-600 focus:ring-red-500"
+                  className="w-4 h-4 rounded border-border text-red-600 focus:ring-red-500"
                 />
-                <label htmlFor={`critical-${item.tempId}`} className="text-slate-500 dark:text-slate-400 text-sm">
+                <label htmlFor={`critical-${item.tempId}`} className="text-muted-foreground text-sm">
                   Wymiar krytyczny (100% kontroli)
                 </label>
               </div>

@@ -123,24 +123,24 @@ export default function OrderCostAnalysis({
   }
 
   const VarianceIndicator = ({ value, inverse = false }: { value: number; inverse?: boolean }) => {
-    if (Math.abs(value) < 0.01) return <span className="text-slate-500 dark:text-slate-400">—</span>
+    if (Math.abs(value) < 0.01) return <span className="text-muted-foreground">—</span>
     const isPositive = inverse ? value < 0 : value > 0
     const isNegative = inverse ? value > 0 : value < 0
     return (
-      <span className={`font-semibold ${isNegative ? 'text-red-600 dark:text-red-400' : isPositive ? 'text-green-600 dark:text-green-400' : 'text-slate-500 dark:text-slate-400'}`}>
+      <span className={`font-semibold ${isNegative ? 'text-red-600 dark:text-red-400' : isPositive ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}`}>
         {value > 0 ? '+' : ''}{value.toFixed(2)} PLN
       </span>
     )
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+    <div className="bg-card border border-border rounded-lg p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
           <span>📊</span> Analiza Kosztów i Rentowności
         </h2>
         {timeLogs.length > 0 && (
-          <span className="px-3 py-1 bg-blue-600/20 text-blue-400 text-sm rounded-full">
+          <span className="px-3 py-1 bg-violet-600/20 text-violet-400 text-sm rounded-full">
             {timeLogs.length} wpisów czasu pracy
           </span>
         )}
@@ -158,20 +158,20 @@ export default function OrderCostAnalysis({
           </p>
         </div>
 
-        <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
-          <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Koszt całkowity</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{actualTotalCost.toFixed(2)} PLN</p>
+        <div className="bg-muted/50 p-4 rounded-lg">
+          <p className="text-muted-foreground text-sm mb-1">Koszt całkowity</p>
+          <p className="text-2xl font-bold text-foreground">{actualTotalCost.toFixed(2)} PLN</p>
           <p className="text-slate-500 text-sm">{costPerUnit.toFixed(2)} PLN/szt</p>
         </div>
 
-        <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
-          <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Czas pracy</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{actualLabor.hours.toFixed(1)}h</p>
+        <div className="bg-muted/50 p-4 rounded-lg">
+          <p className="text-muted-foreground text-sm mb-1">Czas pracy</p>
+          <p className="text-2xl font-bold text-foreground">{actualLabor.hours.toFixed(1)}h</p>
           <p className="text-slate-500 text-sm">{actualLabor.cost.toFixed(2)} PLN</p>
         </div>
 
-        <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
-          <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Cena sprzedaży</p>
+        <div className="bg-muted/50 p-4 rounded-lg">
+          <p className="text-muted-foreground text-sm mb-1">Cena sprzedaży</p>
           {isEditing ? (
             <div className="flex gap-2">
               <Input
@@ -200,12 +200,12 @@ export default function OrderCostAnalysis({
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold text-blue-400">
+              <p className="text-2xl font-bold text-violet-400">
                 {sellingPrice > 0 ? `${sellingPrice.toFixed(2)} PLN` : '—'}
               </p>
               <button
                 onClick={() => setIsEditing(true)}
-                className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+                className="text-muted-foreground hover:text-foreground transition"
                 title="Edytuj cenę"
               >
                 ✏️
@@ -216,25 +216,25 @@ export default function OrderCostAnalysis({
       </div>
 
       {/* Tabela porównawcza: Szacowane vs Rzeczywiste */}
-      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg overflow-hidden mb-6">
+      <div className="bg-muted rounded-lg overflow-hidden mb-6">
         <table className="w-full">
-          <thead className="bg-slate-100 dark:bg-slate-700">
+          <thead className="bg-muted">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Kategoria</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Szacowane</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Rzeczywiste</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Odchylenie</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Kategoria</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase">Szacowane</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase">Rzeczywiste</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase">Odchylenie</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-            <tr className="hover:bg-slate-100 dark:hover:bg-slate-800/50">
+            <tr className="hover:bg-muted/50">
               <td className="px-4 py-3">
-                <span className="text-slate-900 dark:text-white">🔩 Materiał</span>
+                <span className="text-foreground">🔩 Materiał</span>
               </td>
-              <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400">
+              <td className="px-4 py-3 text-right text-muted-foreground">
                 {(estimatedMaterialCost || materialCost).toFixed(2)} PLN
               </td>
-              <td className="px-4 py-3 text-right text-slate-900 dark:text-white font-medium">
+              <td className="px-4 py-3 text-right text-foreground font-medium">
                 {materialCost.toFixed(2)} PLN
               </td>
               <td className="px-4 py-3 text-right">
@@ -242,20 +242,20 @@ export default function OrderCostAnalysis({
               </td>
             </tr>
 
-            <tr className="hover:bg-slate-100 dark:hover:bg-slate-800/50">
+            <tr className="hover:bg-muted/50">
               <td className="px-4 py-3">
-                <span className="text-slate-900 dark:text-white">⏱️ Praca</span>
+                <span className="text-foreground">⏱️ Praca</span>
                 {estimatedHours && (
                   <span className="text-slate-500 text-xs ml-2">
                     ({estimatedHours.toFixed(1)}h szac.)
                   </span>
                 )}
               </td>
-              <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400">
+              <td className="px-4 py-3 text-right text-muted-foreground">
                 {(estimatedLaborCost || laborCost).toFixed(2)} PLN
               </td>
               <td className="px-4 py-3 text-right">
-                <span className="text-slate-900 dark:text-white font-medium">{actualLabor.cost.toFixed(2)} PLN</span>
+                <span className="text-foreground font-medium">{actualLabor.cost.toFixed(2)} PLN</span>
                 <span className="text-slate-500 text-xs block">{actualLabor.hours.toFixed(1)}h</span>
               </td>
               <td className="px-4 py-3 text-right">
@@ -268,27 +268,27 @@ export default function OrderCostAnalysis({
               </td>
             </tr>
 
-            <tr className="hover:bg-slate-100 dark:hover:bg-slate-800/50">
+            <tr className="hover:bg-muted/50">
               <td className="px-4 py-3">
-                <span className="text-slate-900 dark:text-white">🏭 Koszty ogólne</span>
+                <span className="text-foreground">🏭 Koszty ogólne</span>
               </td>
-              <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400">
+              <td className="px-4 py-3 text-right text-muted-foreground">
                 {(estimatedOverheadCost || overheadCost).toFixed(2)} PLN
               </td>
-              <td className="px-4 py-3 text-right text-slate-900 dark:text-white font-medium">
+              <td className="px-4 py-3 text-right text-foreground font-medium">
                 {overheadCost.toFixed(2)} PLN
               </td>
-              <td className="px-4 py-3 text-right text-slate-500 dark:text-slate-400">—</td>
+              <td className="px-4 py-3 text-right text-muted-foreground">—</td>
             </tr>
 
-            <tr className="bg-slate-100 dark:bg-slate-700/50 font-semibold">
+            <tr className="bg-muted/50 font-semibold">
               <td className="px-4 py-3">
-                <span className="text-slate-900 dark:text-white">SUMA</span>
+                <span className="text-foreground">SUMA</span>
               </td>
-              <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">
+              <td className="px-4 py-3 text-right text-muted-foreground">
                 {((estimatedMaterialCost || materialCost) + (estimatedLaborCost || laborCost) + (estimatedOverheadCost || overheadCost)).toFixed(2)} PLN
               </td>
-              <td className="px-4 py-3 text-right text-slate-900 dark:text-white">
+              <td className="px-4 py-3 text-right text-foreground">
                 {actualTotalCost.toFixed(2)} PLN
               </td>
               <td className="px-4 py-3 text-right">
@@ -307,21 +307,21 @@ export default function OrderCostAnalysis({
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-slate-500 dark:text-slate-400">Przychód:</span>
-              <span className="text-slate-900 dark:text-white ml-2 font-medium">{sellingPrice.toFixed(2)} PLN</span>
+              <span className="text-muted-foreground">Przychód:</span>
+              <span className="text-foreground ml-2 font-medium">{sellingPrice.toFixed(2)} PLN</span>
             </div>
             <div>
-              <span className="text-slate-500 dark:text-slate-400">Koszt:</span>
-              <span className="text-slate-900 dark:text-white ml-2 font-medium">{actualTotalCost.toFixed(2)} PLN</span>
+              <span className="text-muted-foreground">Koszt:</span>
+              <span className="text-foreground ml-2 font-medium">{actualTotalCost.toFixed(2)} PLN</span>
             </div>
             <div>
-              <span className="text-slate-500 dark:text-slate-400">Zysk:</span>
+              <span className="text-muted-foreground">Zysk:</span>
               <span className={`ml-2 font-semibold ${isProfitable ? 'text-green-400' : 'text-red-400'}`}>
                 {marginAmount.toFixed(2)} PLN
               </span>
             </div>
             <div>
-              <span className="text-slate-500 dark:text-slate-400">Zysk na szt:</span>
+              <span className="text-muted-foreground">Zysk na szt:</span>
               <span className={`ml-2 font-semibold ${isProfitable ? 'text-green-400' : 'text-red-400'}`}>
                 {quantity > 0 ? (marginAmount / quantity).toFixed(2) : '0.00'} PLN
               </span>
@@ -332,8 +332,8 @@ export default function OrderCostAnalysis({
 
       {/* Wskazówka jeśli brak ceny sprzedaży */}
       {sellingPrice === 0 && (
-        <div className="p-4 bg-blue-900/20 border border-blue-700/50 rounded-lg">
-          <p className="text-blue-400 text-sm">
+        <div className="p-4 bg-violet-900/20 border border-violet-700/50 rounded-lg">
+          <p className="text-violet-400 text-sm">
             💡 <strong>Wskazówka:</strong> Dodaj cenę sprzedaży aby zobaczyć analizę rentowności zamówienia.
           </p>
         </div>

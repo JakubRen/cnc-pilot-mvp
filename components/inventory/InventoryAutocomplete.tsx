@@ -133,7 +133,7 @@ export default function InventoryAutocomplete({
   return (
     <div className="relative">
       {label && (
-        <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+        <label className="block text-foreground mb-2 font-medium">
           {label} {required && '*'}
         </label>
       )}
@@ -146,11 +146,11 @@ export default function InventoryAutocomplete({
         onFocus={() => setIsOpen(true)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className={`w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border ${
+        className={`w-full px-4 py-3 rounded-lg bg-muted border ${
           error
             ? 'border-red-500'
-            : 'border-slate-200 dark:border-slate-700'
-        } text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none`}
+            : 'border-border'
+        } text-foreground focus:border-violet-500 focus:outline-none`}
         autoComplete="off"
       />
 
@@ -162,14 +162,14 @@ export default function InventoryAutocomplete({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-h-64 overflow-y-auto"
+          className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-xl max-h-64 overflow-y-auto"
         >
           {loading ? (
-            <div className="px-4 py-3 text-slate-500 dark:text-slate-400">
+            <div className="px-4 py-3 text-muted-foreground">
               Ładowanie...
             </div>
           ) : filteredItems.length === 0 ? (
-            <div className="px-4 py-3 text-slate-500 dark:text-slate-400">
+            <div className="px-4 py-3 text-muted-foreground">
               {searchQuery ? (
                 allowCustom ? (
                   <>Brak wyników. Możesz użyć: &quot;{searchQuery}&quot;</>
@@ -186,18 +186,18 @@ export default function InventoryAutocomplete({
                 key={item.id}
                 type="button"
                 onClick={() => handleSelect(item)}
-                className={`w-full px-4 py-3 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${
+                className={`w-full px-4 py-3 text-left hover:bg-muted transition-colors ${
                   highlightedIndex === index
-                    ? 'bg-blue-50 dark:bg-slate-700'
+                    ? 'bg-violet-50 dark:bg-muted'
                     : ''
                 }`}
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="font-medium text-slate-900 dark:text-white">
+                    <div className="font-medium text-foreground">
                       🔍 {item.name}
                     </div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400">
+                    <div className="text-sm text-muted-foreground">
                       SKU: {item.sku}
                     </div>
                   </div>

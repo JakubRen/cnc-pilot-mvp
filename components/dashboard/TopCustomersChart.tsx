@@ -18,7 +18,7 @@ export default function TopCustomersChart({ data }: TopCustomersChartProps) {
         data={data}
         xKey="customer"
         yKey="revenue"
-        color="#3b82f6"
+        color="#8b5cf6"
       />
     </ChartCard>
   )

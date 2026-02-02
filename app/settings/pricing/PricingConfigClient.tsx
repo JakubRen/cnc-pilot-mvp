@@ -99,17 +99,17 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Energy Price */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Cena energii</h2>
+      <div className="bg-card border border-border rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-foreground mb-4">Cena energii</h2>
         <div className="max-w-md">
-          <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+          <label className="block text-foreground text-sm font-medium mb-1">
             Cena prądu (PLN/kWh)
           </label>
           <input
             type="number"
             step="0.01"
             {...register('electricity_price_kwh', { valueAsNumber: true })}
-            className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
           />
           <p className="text-slate-500 text-xs mt-1">
             Średnia cena energii elektrycznej w 2026 to ok. 0.85 PLN/kWh
@@ -121,18 +121,18 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
       </div>
 
       {/* Margin Settings */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Ustawienia marży</h2>
+      <div className="bg-card border border-border rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-foreground mb-4">Ustawienia marży</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+            <label className="block text-foreground text-sm font-medium mb-1">
               Domyślna marża (%)
             </label>
             <input
               type="number"
               {...register('default_margin_percent', { valueAsNumber: true })}
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
             />
             <p className="text-slate-500 text-xs mt-1">Stosowana gdy brak innych ustawień</p>
             {errors.default_margin_percent && (
@@ -141,13 +141,13 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
           </div>
 
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+            <label className="block text-foreground text-sm font-medium mb-1">
               Minimalna marża (%)
             </label>
             <input
               type="number"
               {...register('min_margin_percent', { valueAsNumber: true })}
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
             />
             <p className="text-slate-500 text-xs mt-1">System ostrzeże poniżej tej wartości</p>
             {errors.min_margin_percent && (
@@ -157,20 +157,20 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
         </div>
 
         {/* Volume Discounts */}
-        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-3">Rabaty ilościowe (volume discount)</h3>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
+        <h3 className="text-lg font-medium text-foreground mb-3">Rabaty ilościowe (volume discount)</h3>
+        <p className="text-muted-foreground text-sm mb-4">
           Marża zmniejsza się wraz ze wzrostem ilości zamówienia
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+            <label className="block text-foreground text-sm font-medium mb-1">
               1 szt (%)
             </label>
             <input
               type="number"
               {...register('margin_qty_1', { valueAsNumber: true })}
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
             />
             {errors.margin_qty_1 && (
               <p className="text-red-500 text-xs mt-1">{errors.margin_qty_1.message}</p>
@@ -178,13 +178,13 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
           </div>
 
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+            <label className="block text-foreground text-sm font-medium mb-1">
               2-10 szt (%)
             </label>
             <input
               type="number"
               {...register('margin_qty_10', { valueAsNumber: true })}
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
             />
             {errors.margin_qty_10 && (
               <p className="text-red-500 text-xs mt-1">{errors.margin_qty_10.message}</p>
@@ -192,13 +192,13 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
           </div>
 
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+            <label className="block text-foreground text-sm font-medium mb-1">
               11-50 szt (%)
             </label>
             <input
               type="number"
               {...register('margin_qty_50', { valueAsNumber: true })}
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
             />
             {errors.margin_qty_50 && (
               <p className="text-red-500 text-xs mt-1">{errors.margin_qty_50.message}</p>
@@ -206,13 +206,13 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
           </div>
 
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+            <label className="block text-foreground text-sm font-medium mb-1">
               50+ szt (%)
             </label>
             <input
               type="number"
               {...register('margin_qty_100_plus', { valueAsNumber: true })}
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
             />
             {errors.margin_qty_100_plus && (
               <p className="text-red-500 text-xs mt-1">{errors.margin_qty_100_plus.message}</p>
@@ -222,18 +222,18 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
       </div>
 
       {/* Material Settings */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Ustawienia materiałowe</h2>
+      <div className="bg-card border border-border rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-foreground mb-4">Ustawienia materiałowe</h2>
 
         <div className="max-w-md">
-          <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+          <label className="block text-foreground text-sm font-medium mb-1">
             Końcówka pręta - bar end waste (kg)
           </label>
           <input
             type="number"
             step="0.1"
             {...register('bar_end_waste_kg', { valueAsNumber: true })}
-            className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
           />
           <p className="text-slate-500 text-xs mt-1">
             Średnia waga końcówki pręta (bar remnant). Koszt jest amortyzowany na wszystkie części z pręta.
@@ -245,30 +245,30 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
       </div>
 
       {/* Tool Costs */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Koszty narzędzi</h2>
+      <div className="bg-card border border-border rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-foreground mb-4">Koszty narzędzi</h2>
 
         <div className="flex items-center gap-3 mb-4">
           <input
             type="checkbox"
             id="include_tool_costs"
             {...register('include_tool_costs')}
-            className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
+            className="w-5 h-5 rounded border-border text-violet-600 focus:ring-violet-500"
           />
-          <label htmlFor="include_tool_costs" className="text-slate-700 dark:text-slate-300 font-medium">
+          <label htmlFor="include_tool_costs" className="text-foreground font-medium">
             Doliczaj koszty narzędzi do wyceny
           </label>
         </div>
 
         {includeToolCosts && (
           <div className="max-w-md">
-            <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+            <label className="block text-foreground text-sm font-medium mb-1">
               Narzut za narzędzia (% od kosztu obróbki)
             </label>
             <input
               type="number"
               {...register('default_tool_cost_percent', { valueAsNumber: true })}
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
             />
             <p className="text-slate-500 text-xs mt-1">
               Typowo 3-8% kosztu obróbki
@@ -285,7 +285,7 @@ export default function PricingConfigClient({ pricingConfig, companyId }: Props)
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50"
+          className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold disabled:opacity-50"
         >
           {isSubmitting ? 'Zapisywanie...' : 'Zapisz konfigurację'}
         </button>

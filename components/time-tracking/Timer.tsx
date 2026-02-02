@@ -280,16 +280,16 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
   return (
     <>
       <ConfirmDialog />
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+      <div className="bg-card rounded-lg p-6 border border-border">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
         Time Tracking: Order #{orderNumber}
       </h3>
 
       <div className="text-center mb-6">
-        <div className="text-5xl font-mono font-bold text-slate-900 dark:text-white mb-2">
+        <div className="text-5xl font-mono font-bold text-foreground mb-2">
           {formatTime(elapsedSeconds)}
         </div>
-        <div className="text-sm text-slate-500 dark:text-slate-400">
+        <div className="text-sm text-muted-foreground">
           Cost: {currentCost.toFixed(2)} PLN | Rate: {hourlyRate} PLN/h
         </div>
       </div>
@@ -354,7 +354,7 @@ export default function Timer({ orderId, userId, companyId, hourlyRate, orderNum
           <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium text-white ${
             status === 'running' ? 'bg-green-600' :
             status === 'paused' ? 'bg-yellow-600' :
-            'bg-slate-400 dark:bg-slate-600'
+            'bg-muted-foreground'
           }`}>
             {status.toUpperCase()}
           </span>

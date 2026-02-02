@@ -148,33 +148,33 @@ export default function AddProductPage() {
     <AppLayout>
       <div className="p-8">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-8">
             📦 Dodaj Towar do Katalogu
           </h1>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* SKU */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+              <label className="block text-foreground mb-2 font-medium">
                 SKU (Symbol) *
               </label>
               <input
                 {...register('sku')}
                 placeholder="np. ALU-6061-FLAT"
-                className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none font-mono"
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none font-mono"
               />
               {errors.sku && <p className="text-red-500 text-sm mt-1">{errors.sku.message}</p>}
             </div>
 
             {/* Name */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+              <label className="block text-foreground mb-2 font-medium">
                 Nazwa *
               </label>
               <input
                 {...register('name')}
                 placeholder="np. Aluminium 6061 Płaskownik"
-                className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               />
               {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
             </div>
@@ -182,12 +182,12 @@ export default function AddProductPage() {
             {/* Category & Unit */}
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Kategoria *
                 </label>
                 <select
                   {...register('category')}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 >
                   {Object.entries(productCategoryLabels).map(([value, label]) => (
                     <option key={value} value={value}>{label}</option>
@@ -196,12 +196,12 @@ export default function AddProductPage() {
               </div>
 
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Jednostka *
                 </label>
                 <select
                   {...register('unit')}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 >
                   {Object.entries(productUnitLabels).map(([value, label]) => (
                     <option key={value} value={value}>{label}</option>
@@ -212,45 +212,45 @@ export default function AddProductPage() {
 
             {/* Description */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+              <label className="block text-foreground mb-2 font-medium">
                 Opis
               </label>
               <textarea
                 {...register('description')}
                 rows={4}
                 placeholder="Szczegółowy opis produktu, charakterystyka techniczna..."
-                className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none resize-none"
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none resize-none"
               />
             </div>
 
             {/* Manufacturer */}
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Producent
                 </label>
                 <input
                   {...register('manufacturer')}
                   placeholder="np. Alupol"
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   SKU Producenta
                 </label>
                 <input
                   {...register('manufacturer_sku')}
                   placeholder="Kod producenta"
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 />
               </div>
             </div>
 
             {/* Default Unit Cost */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+              <label className="block text-foreground mb-2 font-medium">
                 Domyślna Cena Jednostkowa (PLN)
               </label>
               <input
@@ -258,27 +258,27 @@ export default function AddProductPage() {
                 step="0.01"
                 {...register('default_unit_cost', { valueAsNumber: true })}
                 placeholder="np. 25.50"
-                className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
               />
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Cena może różnić się per partia w magazynie
               </p>
             </div>
 
             {/* ABC Pricing Fields - Only for finished goods */}
             {isFinishedGood && (
-              <div className="border-t border-slate-200 dark:border-slate-700 pt-6 mt-6">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="border-t border-border pt-6 mt-6">
+                <h2 className="text-xl font-semibold text-foreground mb-4">
                   Parametry wyceny ABC
                 </h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Pola do automatycznej kalkulacji kosztów produkcji (Activity-Based Costing)
                 </p>
 
                 {/* Cycle Time & Setup Time */}
                 <div className="grid grid-cols-2 gap-6 mb-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                    <label className="block text-foreground mb-2 font-medium">
                       Czas cyklu (min)
                     </label>
                     <input
@@ -286,15 +286,15 @@ export default function AddProductPage() {
                       step="0.1"
                       {...register('cycle_time_minutes', { valueAsNumber: true })}
                       placeholder="np. 15"
-                      className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Czas obróbki jednej sztuki z CAM
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                    <label className="block text-foreground mb-2 font-medium">
                       Czas przezbrojenia (min)
                     </label>
                     <input
@@ -302,9 +302,9 @@ export default function AddProductPage() {
                       step="1"
                       {...register('setup_time_minutes', { valueAsNumber: true })}
                       placeholder="np. 60"
-                      className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Czas przygotowania maszyny
                     </p>
                   </div>
@@ -313,7 +313,7 @@ export default function AddProductPage() {
                 {/* Efficiency Factor & Scrap Risk */}
                 <div className="grid grid-cols-2 gap-6 mb-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                    <label className="block text-foreground mb-2 font-medium">
                       Współczynnik wydajności
                     </label>
                     <input
@@ -321,20 +321,20 @@ export default function AddProductPage() {
                       step="0.05"
                       {...register('efficiency_factor', { valueAsNumber: true })}
                       placeholder="np. 1.15"
-                      className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Narzut na czas CAM (1.15 = +15%)
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                    <label className="block text-foreground mb-2 font-medium">
                       Ryzyko złomu
                     </label>
                     <select
                       {...register('scrap_risk_factor', { valueAsNumber: true })}
-                      className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     >
                       <option value={MATERIAL_RISK_FACTORS.aluminum}>Aluminium (1.0)</option>
                       <option value={MATERIAL_RISK_FACTORS.brass}>Mosiądz (1.02)</option>
@@ -344,7 +344,7 @@ export default function AddProductPage() {
                       <option value={MATERIAL_RISK_FACTORS.titanium}>Tytan (1.15)</option>
                       <option value={MATERIAL_RISK_FACTORS.inconel}>Inconel (1.20)</option>
                     </select>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Narzut za trudność obróbki materiału
                     </p>
                   </div>
@@ -353,7 +353,7 @@ export default function AddProductPage() {
                 {/* Material Weight & Markup */}
                 <div className="grid grid-cols-2 gap-6 mb-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                    <label className="block text-foreground mb-2 font-medium">
                       Waga materiału (kg/szt)
                     </label>
                     <input
@@ -361,15 +361,15 @@ export default function AddProductPage() {
                       step="0.001"
                       {...register('material_weight_kg', { valueAsNumber: true })}
                       placeholder="np. 0.250"
-                      className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Do kalkulacji bar end loss
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                    <label className="block text-foreground mb-2 font-medium">
                       Narzut materiałowy (%)
                     </label>
                     <input
@@ -377,9 +377,9 @@ export default function AddProductPage() {
                       step="1"
                       {...register('material_markup_percent', { valueAsNumber: true })}
                       placeholder="np. 15"
-                      className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                      className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                     />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Narzut na zakup materiału
                     </p>
                   </div>
@@ -387,12 +387,12 @@ export default function AddProductPage() {
 
                 {/* Default Machine */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                  <label className="block text-foreground mb-2 font-medium">
                     Domyślna maszyna
                   </label>
                   <select
                     {...register('default_machine_id')}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                   >
                     <option value="">-- Wybierz maszynę --</option>
                     {machines.map(machine => (
@@ -401,7 +401,7 @@ export default function AddProductPage() {
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Maszyna używana do wyceny tego produktu
                   </p>
                 </div>
@@ -422,7 +422,7 @@ export default function AddProductPage() {
                 type="button"
                 variant="secondary"
                 onClick={() => router.back()}
-                className="px-8 py-4 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 font-semibold transition"
+                className="px-8 py-4 bg-muted text-foreground rounded-lg hover:bg-accent font-semibold transition"
               >
                 Anuluj
               </Button>

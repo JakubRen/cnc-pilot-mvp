@@ -23,10 +23,10 @@ interface Props {
 export default function InventoryHistory({ history, unit }: Props) {
   if (history.length === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Historia Zmian</h2>
+      <div className="bg-card rounded-lg border border-border p-6">
+        <h2 className="text-xl font-semibold text-foreground mb-4">Historia Zmian</h2>
         <div className="text-center py-8">
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-muted-foreground">
             Brak historii zmian. Historia pojawi się po zatwierdzeniu dokumentów magazynowych.
           </p>
         </div>
@@ -37,7 +37,7 @@ export default function InventoryHistory({ history, unit }: Props) {
   const getDocumentTypeColor = (type: 'PW' | 'RW' | 'WZ') => {
     switch (type) {
       case 'PW': return 'bg-green-600'
-      case 'RW': return 'bg-blue-600'
+      case 'RW': return 'bg-violet-600'
       case 'WZ': return 'bg-orange-600'
       default: return 'bg-slate-600'
     }
@@ -53,12 +53,12 @@ export default function InventoryHistory({ history, unit }: Props) {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-      <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Historia Zmian</h2>
+    <div className="bg-card rounded-lg border border-border p-6">
+      <h2 className="text-xl font-semibold text-foreground mb-6">Historia Zmian</h2>
 
       <div className="relative">
         {/* Timeline line */}
-        <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-200 dark:bg-slate-700"></div>
+        <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-secondary"></div>
 
         <div className="space-y-6">
           {history.map((item) => {
@@ -77,22 +77,22 @@ export default function InventoryHistory({ history, unit }: Props) {
                   {item.documentType}
                 </div>
 
-                <div className="bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-4 hover:border-slate-300 dark:hover:border-slate-600 transition">
+                <div className="bg-muted rounded-lg border border-border p-4 hover:border-slate-300 dark:hover:border-slate-600 transition">
                   {/* Header */}
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <Link
                         href={`/documents/${item.documentId}`}
-                        className="text-blue-400 hover:text-blue-300 font-semibold transition"
+                        className="text-violet-400 hover:text-violet-300 font-semibold transition"
                       >
                         {item.documentNumber}
                       </Link>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+                      <p className="text-muted-foreground text-sm mt-1">
                         {getDocumentTypeName(item.documentType)}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-slate-500 dark:text-slate-500 text-sm">
+                      <p className="text-slate-500 dark:text-muted-foreground text-sm">
                         {new Date(item.changedAt).toLocaleDateString('pl-PL', {
                           day: 'numeric',
                           month: 'short',
@@ -118,23 +118,23 @@ export default function InventoryHistory({ history, unit }: Props) {
                       </p>
                     </div>
                     <div>
-                      <p className="text-slate-500 dark:text-slate-500 text-xs mb-1">Stan przed</p>
-                      <p className="text-slate-900 dark:text-white text-lg font-semibold">
+                      <p className="text-slate-500 dark:text-muted-foreground text-xs mb-1">Stan przed</p>
+                      <p className="text-foreground text-lg font-semibold">
                         {item.quantityBefore} {unit}
                       </p>
                     </div>
                     <div>
-                      <p className="text-slate-500 dark:text-slate-500 text-xs mb-1">Stan po</p>
-                      <p className="text-slate-900 dark:text-white text-lg font-semibold">
+                      <p className="text-slate-500 dark:text-muted-foreground text-xs mb-1">Stan po</p>
+                      <p className="text-foreground text-lg font-semibold">
                         {item.quantityAfter} {unit}
                       </p>
                     </div>
                   </div>
 
                   {/* Footer */}
-                  <div className="flex justify-between items-center text-sm border-t border-slate-200 dark:border-slate-700 pt-3">
-                    <p className="text-slate-500 dark:text-slate-400">
-                      Zatwierdził: <span className="text-slate-900 dark:text-white">{item.changerName}</span>
+                  <div className="flex justify-between items-center text-sm border-t border-border pt-3">
+                    <p className="text-muted-foreground">
+                      Zatwierdził: <span className="text-foreground">{item.changerName}</span>
                     </p>
                     {item.notes && (
                       <p className="text-slate-500 text-xs italic">&quot;{item.notes}&quot;</p>

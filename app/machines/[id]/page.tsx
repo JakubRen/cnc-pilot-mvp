@@ -66,7 +66,7 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
 
   const getMaintenanceTypeBadge = (type: string) => {
     const config: Record<string, { bg: string; label: string }> = {
-      scheduled: { bg: 'bg-blue-600', label: 'Planowy' },
+      scheduled: { bg: 'bg-violet-600', label: 'Planowy' },
       unscheduled: { bg: 'bg-orange-600', label: 'Nieplanowy' },
       repair: { bg: 'bg-red-600', label: 'Naprawa' },
       inspection: { bg: 'bg-purple-600', label: 'Inspekcja' }
@@ -78,7 +78,7 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
   const getLogStatusBadge = (status: string) => {
     const config: Record<string, { bg: string; label: string }> = {
       planned: { bg: 'bg-yellow-600', label: 'Zaplanowany' },
-      in_progress: { bg: 'bg-blue-600', label: 'W trakcie' },
+      in_progress: { bg: 'bg-violet-600', label: 'W trakcie' },
       completed: { bg: 'bg-green-600', label: 'Ukończony' },
       cancelled: { bg: 'bg-gray-600', label: 'Anulowany' }
     }
@@ -103,17 +103,17 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-2">
-            <Link href="/machines" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <Link href="/machines" className="text-muted-foreground hover:text-foreground">
               ← Wróć
             </Link>
           </div>
           <div className="flex justify-between items-start mb-8">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{machine.name}</h1>
+                <h1 className="text-3xl font-bold text-foreground">{machine.name}</h1>
                 {getStatusBadge(machine.status)}
               </div>
-              <div className="text-slate-700 dark:text-slate-400">
+              <div className="text-foreground">
                 {machine.code && <span className="mr-3">Kod: {machine.code}</span>}
                 {machine.manufacturer && <span className="mr-3">{machine.manufacturer}</span>}
                 {machine.model && <span>{machine.model}</span>}
@@ -121,7 +121,7 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
             </div>
             <Link
               href={`/machines/${id}/edit`}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+              className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-accent transition"
             >
               Edytuj
             </Link>
@@ -164,8 +164,8 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
             {/* Left Column */}
             <div className="lg:col-span-2 space-y-6">
               {/* Status Update */}
-              <div className="bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Zmień status</h2>
+              <div className="bg-card border border-violet-200 dark:border-violet-700 rounded-lg p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">Zmień status</h2>
                 <MachineStatusUpdate
                   machineId={machine.id}
                   currentStatus={machine.status}
@@ -173,8 +173,8 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
               </div>
 
               {/* Add Maintenance */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Dodaj wpis konserwacji</h2>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">Dodaj wpis konserwacji</h2>
                 <AddMaintenanceForm
                   machineId={machine.id}
                   companyId={user.company_id}
@@ -183,25 +183,25 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
               </div>
 
               {/* Maintenance History */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">
                   Historia konserwacji ({maintenanceLogs?.length || 0})
                 </h2>
                 {!maintenanceLogs || maintenanceLogs.length === 0 ? (
-                  <p className="text-slate-500 dark:text-slate-500 text-center py-8">Brak wpisów konserwacji</p>
+                  <p className="text-muted-foreground text-center py-8">Brak wpisów konserwacji</p>
                 ) : (
                   <div className="space-y-3">
                     {maintenanceLogs.map((log) => (
-                      <div key={log.id} className="p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
+                      <div key={log.id} className="p-4 bg-muted rounded-lg">
                         <div className="flex justify-between items-start mb-2">
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-slate-900 dark:text-white font-medium">{log.title}</span>
+                              <span className="text-foreground font-medium">{log.title}</span>
                               {getMaintenanceTypeBadge(log.type)}
                               {getLogStatusBadge(log.status)}
                             </div>
                             {log.description && (
-                              <p className="text-slate-700 dark:text-slate-400 text-sm">{log.description}</p>
+                              <p className="text-foreground text-sm">{log.description}</p>
                             )}
                           </div>
                           <div className="text-right text-sm">
@@ -210,7 +210,7 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
                             )}
                           </div>
                         </div>
-                        <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-500">
+                        <div className="flex justify-between items-center text-xs text-muted-foreground">
                           <div>
                             {log.performed_by_user?.full_name && (
                               <span>Wykonał: {log.performed_by_user.full_name}</span>
@@ -239,24 +239,24 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
             {/* Right Column - Info */}
             <div className="space-y-6">
               {/* Maintenance Schedule */}
-              <div className={`bg-white dark:bg-slate-800 border rounded-lg p-6 ${isMaintenanceOverdue ? 'border-red-200 dark:border-red-700' : 'border-slate-200 dark:border-slate-700'}`}>
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Harmonogram przeglądów</h3>
+              <div className={`bg-card border rounded-lg p-6 ${isMaintenanceOverdue ? 'border-red-200 dark:border-red-700' : 'border-border'}`}>
+                <h3 className="text-lg font-semibold text-foreground mb-4">Harmonogram przeglądów</h3>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-slate-500 dark:text-slate-500 text-xs">Interwał</p>
-                    <p className="text-slate-900 dark:text-white font-semibold">{machine.maintenance_interval_days} dni</p>
+                    <p className="text-muted-foreground text-xs">Interwał</p>
+                    <p className="text-foreground font-semibold">{machine.maintenance_interval_days} dni</p>
                   </div>
                   {machine.last_maintenance_date && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-500 text-xs">Ostatni przegląd</p>
-                      <p className="text-slate-900 dark:text-white">
+                      <p className="text-muted-foreground text-xs">Ostatni przegląd</p>
+                      <p className="text-foreground">
                         {new Date(machine.last_maintenance_date).toLocaleDateString('pl-PL')}
                       </p>
                     </div>
                   )}
                   {machine.next_maintenance_date && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-500 text-xs">Następny przegląd</p>
+                      <p className="text-muted-foreground text-xs">Następny przegląd</p>
                       <p className={`font-semibold ${isMaintenanceOverdue ? 'text-red-600 dark:text-red-400' : daysUntilMaintenance && daysUntilMaintenance <= 7 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
                         {new Date(machine.next_maintenance_date).toLocaleDateString('pl-PL')}
                         {daysUntilMaintenance !== null && (
@@ -271,33 +271,33 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
               </div>
 
               {/* Machine Details */}
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Szczegóły</h3>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Szczegóły</h3>
                 <div className="space-y-3">
                   {machine.serial_number && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-500 text-xs">Numer seryjny</p>
-                      <p className="text-slate-900 dark:text-white font-mono">{machine.serial_number}</p>
+                      <p className="text-muted-foreground text-xs">Numer seryjny</p>
+                      <p className="text-foreground font-mono">{machine.serial_number}</p>
                     </div>
                   )}
                   {machine.location && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-500 text-xs">Lokalizacja</p>
-                      <p className="text-slate-900 dark:text-white">{machine.location}</p>
+                      <p className="text-muted-foreground text-xs">Lokalizacja</p>
+                      <p className="text-foreground">{machine.location}</p>
                     </div>
                   )}
                   {machine.purchase_date && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-500 text-xs">Data zakupu</p>
-                      <p className="text-slate-900 dark:text-white">
+                      <p className="text-muted-foreground text-xs">Data zakupu</p>
+                      <p className="text-foreground">
                         {new Date(machine.purchase_date).toLocaleDateString('pl-PL')}
                       </p>
                     </div>
                   )}
                   {machine.warranty_until && (
                     <div>
-                      <p className="text-slate-500 dark:text-slate-500 text-xs">Gwarancja do</p>
-                      <p className={`${new Date(machine.warranty_until) < today ? 'text-slate-500 dark:text-slate-500' : 'text-green-600 dark:text-green-400'}`}>
+                      <p className="text-muted-foreground text-xs">Gwarancja do</p>
+                      <p className={`${new Date(machine.warranty_until) < today ? 'text-muted-foreground' : 'text-green-600 dark:text-green-400'}`}>
                         {new Date(machine.warranty_until).toLocaleDateString('pl-PL')}
                         {new Date(machine.warranty_until) < today && ' (wygasła)'}
                       </p>
@@ -308,9 +308,9 @@ export default async function MachineDetailPage({ params }: { params: Promise<{ 
 
               {/* Notes */}
               {machine.notes && (
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Notatki</h3>
-                  <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap text-sm">{machine.notes}</p>
+                <div className="bg-card border border-border rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Notatki</h3>
+                  <p className="text-foreground whitespace-pre-wrap text-sm">{machine.notes}</p>
                 </div>
               )}
             </div>

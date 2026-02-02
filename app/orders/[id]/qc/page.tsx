@@ -75,7 +75,7 @@ export default async function OrderQCPage({ params }: { params: Promise<{ id: st
     .limit(50)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
+    <div className="min-h-screen bg-background p-8">
       <div className="max-w-5xl mx-auto">
         <Breadcrumbs
           items={[
@@ -89,17 +89,17 @@ export default async function OrderQCPage({ params }: { params: Promise<{ id: st
 
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-1">
+            <h1 className="text-3xl font-bold text-foreground mb-1">
               Kontrola Jakości
             </h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Zamówienie #{order.order_number} — {order.customer_name}
               {order.part_name && ` — ${order.part_name}`}
             </p>
           </div>
           <Link
             href={`/orders/${id}`}
-            className="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition text-sm"
+            className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-accent transition text-sm"
           >
             ← Wróć do zamówienia
           </Link>

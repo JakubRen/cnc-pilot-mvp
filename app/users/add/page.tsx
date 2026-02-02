@@ -99,17 +99,17 @@ export default function AddUserPage() {
       <div className="p-8">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Dodaj Użytkownika</h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <h1 className="text-4xl font-bold text-foreground mb-2">Dodaj Użytkownika</h1>
+            <p className="text-muted-foreground">
               Utwórz nowe konto dla pracownika. Podaj email, hasło początkowe i rolę.
             </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+            <div className="bg-card rounded-lg border border-border p-6 space-y-6">
               {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-slate-700 dark:text-slate-300 mb-2 font-semibold">
+                <label htmlFor="email" className="block text-foreground mb-2 font-semibold">
                   Email <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -117,7 +117,7 @@ export default function AddUserPage() {
                   autoFocus
                   {...register('email')}
                   type="email"
-                  className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                  className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:outline-none transition"
                   placeholder="jan.kowalski@firma.pl"
                 />
                 {errors.email && (
@@ -127,14 +127,14 @@ export default function AddUserPage() {
 
               {/* Full Name */}
               <div>
-                <label htmlFor="full_name" className="block text-slate-700 dark:text-slate-300 mb-2 font-semibold">
+                <label htmlFor="full_name" className="block text-foreground mb-2 font-semibold">
                   Imię i Nazwisko <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="full_name"
                   {...register('full_name')}
                   type="text"
-                  className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                  className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:outline-none transition"
                   placeholder="Jan Kowalski"
                 />
                 {errors.full_name && (
@@ -144,7 +144,7 @@ export default function AddUserPage() {
 
               {/* Password */}
               <div>
-                <label htmlFor="password" className="block text-slate-700 dark:text-slate-300 mb-2 font-semibold">
+                <label htmlFor="password" className="block text-foreground mb-2 font-semibold">
                   Hasło początkowe <span className="text-red-400">*</span>
                 </label>
                 <div className="flex gap-2">
@@ -153,13 +153,13 @@ export default function AddUserPage() {
                       id="password"
                       {...register('password')}
                       type={showPassword ? 'text' : 'password'}
-                      className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition pr-12"
+                      className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:outline-none transition pr-12"
                       placeholder="Minimum 8 znaków"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition"
                     >
                       {showPassword ? '🙈' : '👁️'}
                     </button>
@@ -167,7 +167,7 @@ export default function AddUserPage() {
                   <button
                     type="button"
                     onClick={generatePassword}
-                    className="px-4 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition whitespace-nowrap"
+                    className="px-4 py-3 bg-muted text-foreground rounded-lg hover:bg-accent transition whitespace-nowrap"
                   >
                     🎲 Generuj
                   </button>
@@ -175,20 +175,20 @@ export default function AddUserPage() {
                 {errors.password && (
                   <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
                 )}
-                <p className="text-slate-500 dark:text-slate-500 text-sm mt-1">
+                <p className="text-slate-500 dark:text-muted-foreground text-sm mt-1">
                   Użytkownik może zmienić hasło po pierwszym logowaniu
                 </p>
               </div>
 
               {/* Role */}
               <div>
-                <label htmlFor="role" className="block text-slate-700 dark:text-slate-300 mb-2 font-semibold">
+                <label htmlFor="role" className="block text-foreground mb-2 font-semibold">
                   Rola <span className="text-red-400">*</span>
                 </label>
                 <select
                   id="role"
                   {...register('role')}
-                  className="w-full px-4 py-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                  className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:outline-none transition"
                 >
                   <option value="operator">Operator - wykonuje zlecenia, śledzi czas</option>
                   <option value="viewer">Przeglądający - tylko podgląd</option>
@@ -201,13 +201,13 @@ export default function AddUserPage() {
               </div>
 
               {/* Role descriptions */}
-              <div className="p-4 bg-blue-900/20 border border-blue-700/30 rounded-lg">
-                <h3 className="font-semibold text-blue-300 mb-2">Opis ról:</h3>
+              <div className="p-4 bg-violet-900/20 border border-violet-700/30 rounded-lg">
+                <h3 className="font-semibold text-violet-300 mb-2">Opis ról:</h3>
                 <ul className="text-sm text-slate-300 space-y-1">
                   <li><span className="text-green-400">Operator</span> - Wykonuje zlecenia, śledzi czas pracy</li>
                   <li><span className="text-slate-400">Przeglądający</span> - Tylko podgląd danych</li>
                   <li><span className="text-yellow-400">Manager</span> - Zarządza zamówieniami, magazynem, raportami</li>
-                  <li><span className="text-blue-400">Admin</span> - Pełne uprawnienia, zarządzanie użytkownikami</li>
+                  <li><span className="text-violet-400">Admin</span> - Pełne uprawnienia, zarządzanie użytkownikami</li>
                 </ul>
               </div>
             </div>
@@ -228,9 +228,9 @@ export default function AddUserPage() {
           </form>
 
           {/* Info */}
-          <div className="mt-6 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg">
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">💡 Co dalej?</h3>
-            <ul className="text-sm text-slate-500 dark:text-slate-400 space-y-1">
+          <div className="mt-6 p-4 bg-card border border-border rounded-lg">
+            <h3 className="font-semibold text-foreground mb-2">💡 Co dalej?</h3>
+            <ul className="text-sm text-muted-foreground space-y-1">
               <li>• Przekaż nowego użytkownikowi email i hasło</li>
               <li>• Użytkownik loguje się na stronie /login</li>
               <li>• Może zmienić hasło w ustawieniach profilu</li>

@@ -94,7 +94,7 @@ export default function NotificationsClient({ notifications: initialNotification
   return (
     <div>
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 mb-6">
+      <div className="bg-card rounded-lg border border-border p-4 mb-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           {/* Filter Tabs */}
           <div className="flex gap-2">
@@ -102,8 +102,8 @@ export default function NotificationsClient({ notifications: initialNotification
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded-lg font-semibold transition ${
                 filter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-muted text-foreground hover:bg-accent'
               }`}
             >
               Wszystkie ({notifications.length})
@@ -112,8 +112,8 @@ export default function NotificationsClient({ notifications: initialNotification
               onClick={() => setFilter('unread')}
               className={`px-4 py-2 rounded-lg font-semibold transition ${
                 filter === 'unread'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-muted text-foreground hover:bg-accent'
               }`}
             >
               Nieprzeczytane ({unreadCount})
@@ -135,8 +135,8 @@ export default function NotificationsClient({ notifications: initialNotification
       {/* Notifications List */}
       <div className="space-y-4">
         {filteredNotifications.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-12 text-center">
-            <p className="text-slate-500 dark:text-slate-400">
+          <div className="bg-card rounded-lg border border-border p-12 text-center">
+            <p className="text-muted-foreground">
               {filter === 'unread'
                 ? 'Brak nieprzeczytanych powiadomień'
                 : 'Brak powiadomień'}
@@ -146,10 +146,10 @@ export default function NotificationsClient({ notifications: initialNotification
           filteredNotifications.map((notification) => (
             <div
               key={notification.id}
-              className={`bg-white dark:bg-slate-800 rounded-lg border transition ${
+              className={`bg-card rounded-lg border transition ${
                 notification.read
-                  ? 'border-slate-200 dark:border-slate-700'
-                  : 'border-blue-600/50 bg-blue-50 dark:bg-slate-700/30'
+                  ? 'border-border'
+                  : 'border-violet-600/50 bg-violet-50 dark:bg-muted/30'
               }`}
             >
               <div className="p-6">
@@ -164,7 +164,7 @@ export default function NotificationsClient({ notifications: initialNotification
                     {/* Header */}
                     <div className="flex items-start justify-between gap-4 mb-2">
                       <div>
-                        <h3 className="text-slate-900 dark:text-white font-semibold text-lg">
+                        <h3 className="text-foreground font-semibold text-lg">
                           {notification.title}
                         </h3>
                         <div className="flex items-center gap-2 mt-1">
@@ -176,7 +176,7 @@ export default function NotificationsClient({ notifications: initialNotification
                                 ? 'bg-yellow-600 text-white'
                                 : notification.type === 'success'
                                 ? 'bg-green-600 text-white'
-                                : 'bg-blue-600 text-white'
+                                : 'bg-violet-600 text-white'
                             }`}
                           >
                             {getTypeLabel(notification.type)}
@@ -194,7 +194,7 @@ export default function NotificationsClient({ notifications: initialNotification
                       {!notification.read && (
                         <button
                           onClick={() => markAsRead(notification.id)}
-                          className="text-sm text-blue-400 hover:text-blue-300 transition flex-shrink-0"
+                          className="text-sm text-violet-400 hover:text-violet-300 transition flex-shrink-0"
                         >
                           Oznacz jako przeczytane
                         </button>
@@ -203,14 +203,14 @@ export default function NotificationsClient({ notifications: initialNotification
 
                     {/* Message */}
                     {notification.message && (
-                      <p className="text-slate-700 dark:text-slate-300 mb-3">{notification.message}</p>
+                      <p className="text-foreground mb-3">{notification.message}</p>
                     )}
 
                     {/* Link */}
                     {notification.link && (
                       <Link
                         href={notification.link}
-                        className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition"
+                        className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 transition"
                       >
                         <span>Przejdź do szczegółów</span>
                         <svg

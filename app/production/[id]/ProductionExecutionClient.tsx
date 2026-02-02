@@ -211,10 +211,10 @@ export default function ProductionExecutionClient({
   return (
     <>
       <ConfirmDialog />
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+      <div className="bg-card border border-border rounded-lg p-6">
         {/* Header with complete button */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">🔄 Routing Produkcyjny</h2>
+          <h2 className="text-xl font-bold text-foreground">🔄 Routing Produkcyjny</h2>
           {(planStatus === 'in_progress' || planStatus === 'active') && (
             <button
               onClick={() => handleCompleteProduction(orderId)}
@@ -223,7 +223,7 @@ export default function ProductionExecutionClient({
               className={`px-5 py-2.5 rounded-lg font-semibold text-sm transition ${
                 allOpsCompleted
                   ? 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'
-                  : 'bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                  : 'bg-muted text-muted-foreground cursor-not-allowed'
               }`}
             >
               ✅ Zakończ produkcję
@@ -233,7 +233,7 @@ export default function ProductionExecutionClient({
 
         {sortedOps.length === 0 ? (
           <div className="py-12 text-center">
-            <p className="text-slate-500 dark:text-slate-400">Brak operacji w planie produkcji</p>
+            <p className="text-muted-foreground">Brak operacji w planie produkcji</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -254,29 +254,29 @@ export default function ProductionExecutionClient({
                     isCompleted
                       ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
                       : isRunning
-                        ? 'bg-blue-50 dark:bg-blue-900/10 border-blue-300 dark:border-blue-700'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700'
+                        ? 'bg-violet-50 dark:bg-violet-900/10 border-violet-300 dark:border-violet-700'
+                        : 'bg-muted border-border'
                   }`}
                 >
                   {/* Operation Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start gap-4">
                       <div className={`flex items-center justify-center w-12 h-12 rounded-full font-bold text-xl text-white ${
-                        isCompleted ? 'bg-green-600' : isRunning ? 'bg-blue-600 animate-pulse' : 'bg-blue-600'
+                        isCompleted ? 'bg-green-600' : isRunning ? 'bg-violet-600 animate-pulse' : 'bg-violet-600'
                       }`}>
                         #{operation.operation_number}
                       </div>
                       <div>
                         <div className="flex items-center gap-3 mb-1">
-                          <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                          <h3 className="text-xl font-bold text-foreground">
                             {operation.operation_name}
                           </h3>
-                          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-sm font-semibold rounded">
+                          <span className="px-3 py-1 bg-violet-100 dark:bg-violet-900 text-violet-800 dark:text-violet-100 text-sm font-semibold rounded">
                             {operationTypeLabels[operation.operation_type as keyof typeof operationTypeLabels]}
                           </span>
                         </div>
                         {operation.description && (
-                          <p className="text-slate-600 dark:text-slate-400">{operation.description}</p>
+                          <p className="text-muted-foreground">{operation.description}</p>
                         )}
                       </div>
                     </div>
@@ -285,10 +285,10 @@ export default function ProductionExecutionClient({
                       {/* Timer display */}
                       {isRunning && timer && (
                         <div className="text-right mr-3">
-                          <div className="text-2xl font-mono font-bold text-blue-600 dark:text-blue-400">
+                          <div className="text-2xl font-mono font-bold text-primary">
                             {formatTime(timer.elapsedSeconds)}
                           </div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400">
+                          <div className="text-xs text-muted-foreground">
                             {((timer.elapsedSeconds / TIME.SECONDS_PER_HOUR) * hourlyRate).toFixed(2)} PLN
                           </div>
                         </div>
@@ -325,39 +325,39 @@ export default function ProductionExecutionClient({
                   </div>
 
                   {/* Operation Details Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-6 gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <div className="grid grid-cols-2 md:grid-cols-6 gap-4 p-4 bg-card rounded-lg border border-border">
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Setup Time</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs text-muted-foreground mb-1">Setup Time</p>
+                      <p className="text-lg font-bold text-foreground">
                         {formatDuration(operation.setup_time_minutes)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Run Time/szt</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs text-muted-foreground mb-1">Run Time/szt</p>
+                      <p className="text-lg font-bold text-foreground">
                         {formatDuration(operation.run_time_per_unit_minutes)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Stawka</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs text-muted-foreground mb-1">Stawka</p>
+                      <p className="text-lg font-bold text-foreground">
                         {operation.hourly_rate} PLN/h
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt setup</p>
+                      <p className="text-xs text-muted-foreground mb-1">Koszt setup</p>
                       <p className="text-lg font-bold text-green-600 dark:text-green-400">
                         {formatCost((operation.setup_time_minutes / TIME.MINUTES_PER_HOUR) * operation.hourly_rate)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt run</p>
+                      <p className="text-xs text-muted-foreground mb-1">Koszt run</p>
                       <p className="text-lg font-bold text-green-600 dark:text-green-400">
                         {formatCost((operation.run_time_per_unit_minutes * quantity / TIME.MINUTES_PER_HOUR) * operation.hourly_rate)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt całkowity</p>
+                      <p className="text-xs text-muted-foreground mb-1">Koszt całkowity</p>
                       <p className="text-xl font-bold text-green-600 dark:text-green-400">
                         {formatCost(operation.total_operation_cost || 0)}
                       </p>
@@ -366,19 +366,19 @@ export default function ProductionExecutionClient({
 
                   {/* Machine & Operator Info */}
                   {(machine || operator) && (
-                    <div className="flex gap-6 mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="flex gap-6 mt-4 p-4 bg-violet-50 dark:bg-violet-900/20 rounded-lg border border-violet-200 dark:border-violet-800">
                       {machine && (
                         <div>
-                          <p className="text-xs text-blue-600 dark:text-blue-400 mb-1">Maszyna</p>
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                          <p className="text-xs text-primary mb-1">Maszyna</p>
+                          <p className="text-sm font-semibold text-foreground">
                             🔧 {machine.name} ({machine.machine_type})
                           </p>
                         </div>
                       )}
                       {operator && (
                         <div>
-                          <p className="text-xs text-blue-600 dark:text-blue-400 mb-1">Operator</p>
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                          <p className="text-xs text-primary mb-1">Operator</p>
+                          <p className="text-sm font-semibold text-foreground">
                             👤 {operator.full_name}
                           </p>
                         </div>

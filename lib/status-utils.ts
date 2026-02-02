@@ -12,8 +12,8 @@ export const ORDER_STATUS_CONFIG = {
   in_progress: {
     label: 'W realizacji',
     labelEn: 'In Progress',
-    color: 'bg-blue-600',
-    textColor: 'text-blue-100',
+    color: 'bg-violet-600',
+    textColor: 'text-violet-100',
     icon: '🔄',
   },
   completed: {
@@ -59,8 +59,8 @@ export const QC_STATUS_CONFIG = {
   in_progress: {
     label: 'W trakcie',
     labelEn: 'In Progress',
-    color: 'bg-blue-600',
-    textColor: 'text-blue-100',
+    color: 'bg-violet-600',
+    textColor: 'text-violet-100',
     icon: '🔍',
   },
   passed: {
@@ -92,8 +92,8 @@ export const COOPERATION_STATUS_CONFIG = {
   sent: {
     label: 'Wysłane',
     labelEn: 'Sent',
-    color: 'bg-blue-600',
-    textColor: 'text-blue-100',
+    color: 'bg-violet-600',
+    textColor: 'text-violet-100',
     icon: '📤',
   },
   accepted: {

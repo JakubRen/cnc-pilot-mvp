@@ -54,9 +54,9 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
   const getStatusConfig = (status: string) => {
     const config: Record<string, { bg: string; text: string; label: string }> = {
       pending: { bg: 'bg-yellow-600', text: 'text-yellow-100', label: tCooperation('prepared', lang) },
-      sent: { bg: 'bg-blue-600', text: 'text-blue-100', label: tCooperation('btnSend', lang) },
+      sent: { bg: 'bg-violet-600', text: 'text-violet-100', label: tCooperation('btnSend', lang) },
       in_progress: { bg: 'bg-purple-600', text: 'text-purple-100', label: tCooperation('atCooperant', lang) },
-      returning: { bg: 'bg-cyan-600', text: 'text-cyan-100', label: tCooperation('onWayBack', lang) },
+      returning: { bg: 'bg-violet-600', text: 'text-violet-100', label: tCooperation('onWayBack', lang) },
       completed: { bg: 'bg-green-600', text: 'text-green-100', label: tCooperation('completed', lang) },
       delayed: { bg: 'bg-red-600', text: 'text-red-100', label: tCooperation('delayed', lang) },
     }
@@ -83,14 +83,14 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-2">
-          <Link href="/cooperation" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          <Link href="/cooperation" className="text-muted-foreground hover:text-foreground">
             ← {t('common', 'back')}
           </Link>
         </div>
         <div className="flex justify-between items-start mb-8">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{operation.operation_number}</h1>
+              <h1 className="text-3xl font-bold text-foreground">{operation.operation_number}</h1>
               <span className={`px-3 py-1 rounded-full text-sm font-semibold ${statusConfig.bg} ${statusConfig.text}`}>
                 {statusConfig.label}
               </span>
@@ -100,7 +100,7 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
                 </span>
               )}
             </div>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               {operation.operation_type}
               {operation.cooperants && <span> • {operation.cooperants.name}</span>}
             </p>
@@ -111,8 +111,8 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
           {/* Left Column - Main Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Status Update */}
-            <div className="bg-white dark:bg-slate-800 border border-blue-700 dark:border-blue-700 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{tCooperation('changeStatus', lang)}</h2>
+            <div className="bg-card border border-violet-700 dark:border-violet-700 rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">{tCooperation('changeStatus', lang)}</h2>
               <OperationStatusUpdate
                 operationId={operation.id}
                 currentStatus={operation.status}
@@ -121,8 +121,8 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
             </div>
 
             {/* Items */}
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+            <div className="bg-card border border-border rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">
                 {tCooperation('items', lang)} ({operation.external_operation_items?.length || 0})
               </h2>
               {!operation.external_operation_items || operation.external_operation_items.length === 0 ? (
@@ -132,14 +132,14 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
                   {operation.external_operation_items.map((item) => (
                     <div
                       key={item.id}
-                      className="p-4 bg-slate-50 dark:bg-slate-900 rounded-lg flex justify-between items-center"
+                      className="p-4 bg-muted rounded-lg flex justify-between items-center"
                     >
                       <div>
-                        <p className="text-slate-900 dark:text-white font-medium">{item.part_name}</p>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm">
+                        <p className="text-foreground font-medium">{item.part_name}</p>
+                        <p className="text-muted-foreground text-sm">
                           {item.quantity} {item.unit || t('common', 'pcs')}
                           {item.orders && (
-                            <span className="text-blue-400 ml-2">
+                            <span className="text-violet-400 ml-2">
                               • {item.orders.order_number} ({item.orders.customer_name})
                             </span>
                           )}
@@ -160,9 +160,9 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
 
             {/* Notes */}
             {operation.notes && (
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('common', 'notes')}</h2>
-                <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{operation.notes}</p>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">{t('common', 'notes')}</h2>
+                <p className="text-foreground whitespace-pre-wrap">{operation.notes}</p>
               </div>
             )}
           </div>
@@ -170,13 +170,13 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
           {/* Right Column - Details */}
           <div className="space-y-6">
             {/* Dates */}
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Daty</h3>
+            <div className="bg-card border border-border rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Daty</h3>
               <div className="space-y-3">
                 {operation.sent_date && (
                   <div>
                     <p className="text-slate-500 text-xs">{tCooperation('sendDate', lang)}</p>
-                    <p className="text-slate-900 dark:text-white">
+                    <p className="text-foreground">
                       {new Date(operation.sent_date).toLocaleDateString('pl-PL', {
                         day: 'numeric',
                         month: 'long',
@@ -188,7 +188,7 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
                 {operation.expected_return_date && (
                   <div>
                     <p className="text-slate-500 text-xs">{tCooperation('expectedReturn', lang)}</p>
-                    <p className={`font-semibold ${isOverdue ? 'text-red-400' : 'text-slate-900 dark:text-white'}`}>
+                    <p className={`font-semibold ${isOverdue ? 'text-red-400' : 'text-foreground'}`}>
                       {new Date(operation.expected_return_date).toLocaleDateString('pl-PL', {
                         day: 'numeric',
                         month: 'long',
@@ -215,20 +215,20 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
 
             {/* Cooperant */}
             {operation.cooperants && (
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Kooperant</h3>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Kooperant</h3>
                 <div className="space-y-2">
-                  <p className="text-slate-900 dark:text-white font-medium">{operation.cooperants.name}</p>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">{operation.cooperants.service_type}</p>
+                  <p className="text-foreground font-medium">{operation.cooperants.name}</p>
+                  <p className="text-muted-foreground text-sm">{operation.cooperants.service_type}</p>
                   {operation.cooperants.contact_person && (
-                    <p className="text-slate-500 dark:text-slate-400 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       Kontakt: {operation.cooperants.contact_person}
                     </p>
                   )}
                   {operation.cooperants.phone && (
                     <a
                       href={`tel:${operation.cooperants.phone}`}
-                      className="block text-blue-400 text-sm hover:underline"
+                      className="block text-violet-400 text-sm hover:underline"
                     >
                       📞 {operation.cooperants.phone}
                     </a>
@@ -236,7 +236,7 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
                   {operation.cooperants.email && (
                     <a
                       href={`mailto:${operation.cooperants.email}`}
-                      className="block text-blue-400 text-sm hover:underline"
+                      className="block text-violet-400 text-sm hover:underline"
                     >
                       ✉️ {operation.cooperants.email}
                     </a>
@@ -247,16 +247,16 @@ export default function OperationDetailClient({ operation, userId }: OperationDe
 
             {/* Transport */}
             {operation.transport_info && (
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Transport</h3>
-                <p className="text-slate-700 dark:text-slate-300">{operation.transport_info}</p>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Transport</h3>
+                <p className="text-foreground">{operation.transport_info}</p>
               </div>
             )}
 
             {/* Created by */}
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Utworzone przez</h3>
-              <p className="text-slate-700 dark:text-slate-300">
+            <div className="bg-card border border-border rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Utworzone przez</h3>
+              <p className="text-foreground">
                 {operation.sent_by_user?.full_name || 'Nieznany'}
               </p>
               <p className="text-slate-500 text-sm">

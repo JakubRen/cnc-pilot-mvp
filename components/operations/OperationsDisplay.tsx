@@ -32,8 +32,8 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
 
   if (!orderItems || orderItems.length === 0) {
     return (
-      <div className="bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-8 text-center">
-        <p className="text-slate-500 dark:text-slate-400">
+      <div className="bg-muted border-2 border-dashed border-border rounded-lg p-8 text-center">
+        <p className="text-muted-foreground">
           Brak pozycji w zleceniu. {editable && 'Dodaj pozycję aby określić operacje.'}
         </p>
       </div>
@@ -53,27 +53,27 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
   return (
     <div className="space-y-4">
       {/* Grand totals header */}
-      <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-2 border-blue-500/50 rounded-lg p-6">
+      <div className="bg-gradient-to-r from-violet-900/30 to-purple-900/30 border-2 border-violet-500/50 rounded-lg p-6">
         <h3 className="text-lg font-bold text-white mb-4">📊 Podsumowanie zlecenia</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
-            <p className="text-sm text-blue-300 mb-1">Pozycje</p>
+            <p className="text-sm text-violet-300 mb-1">Pozycje</p>
             <p className="text-2xl font-bold text-white">{orderItems.length}</p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-blue-300 mb-1">Setup Time</p>
+            <p className="text-sm text-violet-300 mb-1">Setup Time</p>
             <p className="text-2xl font-bold text-white">
               {formatDuration(grandTotals.setupTime)}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-blue-300 mb-1">Run Time</p>
+            <p className="text-sm text-violet-300 mb-1">Run Time</p>
             <p className="text-2xl font-bold text-white">
               {formatDuration(grandTotals.runTime)}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-blue-300 mb-1">Koszt całkowity</p>
+            <p className="text-sm text-violet-300 mb-1">Koszt całkowity</p>
             <p className="text-3xl font-bold text-green-400">
               {formatCost(grandTotals.cost)}
             </p>
@@ -89,7 +89,7 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
         return (
           <div
             key={item.id}
-            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+            className="bg-card border border-border rounded-lg overflow-hidden"
           >
             {/* Item header (collapsible) */}
             <button
@@ -99,10 +99,10 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
               <div className="flex items-center gap-4">
                 <span className="text-2xl">{isExpanded ? '📂' : '📁'}</span>
                 <div className="text-left">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {item.part_name}
                   </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <p className="text-sm text-muted-foreground">
                     Ilość: {item.quantity} szt.
                     {item.material && ` • Materiał: ${item.material}`}
                     {item.complexity && ` • Złożoność: ${item.complexity}`}
@@ -112,19 +112,19 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
 
               <div className="flex items-center gap-6">
                 <div className="text-right">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Operacje</p>
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">
+                  <p className="text-xs text-muted-foreground">Operacje</p>
+                  <p className="text-lg font-bold text-foreground">
                     {operations.length}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Czas</p>
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">
+                  <p className="text-xs text-muted-foreground">Czas</p>
+                  <p className="text-lg font-bold text-foreground">
                     {formatDuration((item.total_setup_time_minutes || 0) + (item.total_run_time_minutes || 0))}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Koszt</p>
+                  <p className="text-xs text-muted-foreground">Koszt</p>
                   <p className="text-lg font-bold text-green-600 dark:text-green-400">
                     {formatCost(item.total_cost || 0)}
                   </p>
@@ -137,9 +137,9 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
 
             {/* Operations list (expanded) */}
             {isExpanded && (
-              <div className="px-6 pb-6 border-t border-slate-200 dark:border-slate-700">
+              <div className="px-6 pb-6 border-t border-border">
                 {operations.length === 0 ? (
-                  <div className="py-8 text-center text-slate-500 dark:text-slate-400">
+                  <div className="py-8 text-center text-muted-foreground">
                     Brak operacji dla tej pozycji
                   </div>
                 ) : (
@@ -155,25 +155,25 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
                       return (
                         <div
                           key={operation.id}
-                          className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+                          className="bg-muted p-4 rounded-lg border border-border"
                         >
                           {/* Operation header */}
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-start gap-3">
-                              <span className="text-xl font-bold text-slate-900 dark:text-white">
+                              <span className="text-xl font-bold text-foreground">
                                 #{operation.operation_number}
                               </span>
                               <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                  <h4 className="text-base font-semibold text-slate-900 dark:text-white">
+                                  <h4 className="text-base font-semibold text-foreground">
                                     {operation.operation_name}
                                   </h4>
-                                  <span className="text-sm px-2 py-0.5 bg-blue-600 text-white rounded">
+                                  <span className="text-sm px-2 py-0.5 bg-violet-600 text-white rounded">
                                     {operationTypeLabels[operation.operation_type]}
                                   </span>
                                 </div>
                                 {operation.description && (
-                                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                                  <p className="text-sm text-muted-foreground">
                                     {operation.description}
                                   </p>
                                 )}
@@ -187,25 +187,25 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
                           {/* Operation details grid */}
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                             <div>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Setup Time</p>
-                              <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                              <p className="text-xs text-muted-foreground mb-1">Setup Time</p>
+                              <p className="text-sm font-semibold text-foreground">
                                 {formatDuration(operation.setup_time_minutes)}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Run Time/szt</p>
-                              <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                              <p className="text-xs text-muted-foreground mb-1">Run Time/szt</p>
+                              <p className="text-sm font-semibold text-foreground">
                                 {formatDuration(operation.run_time_per_unit_minutes)}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Stawka</p>
-                              <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                              <p className="text-xs text-muted-foreground mb-1">Stawka</p>
+                              <p className="text-sm font-semibold text-foreground">
                                 {operation.hourly_rate} PLN/h
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt</p>
+                              <p className="text-xs text-muted-foreground mb-1">Koszt</p>
                               <p className="text-sm font-bold text-green-600 dark:text-green-400">
                                 {formatCost(costs.totalCost)}
                               </p>
@@ -214,19 +214,19 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
 
                           {/* Machine & operator info */}
                           {(operation.machine || operation.assigned_operator) && (
-                            <div className="flex items-center gap-4 pt-3 border-t border-slate-200 dark:border-slate-700">
+                            <div className="flex items-center gap-4 pt-3 border-t border-border">
                               {operation.machine && (
                                 <div className="flex items-center gap-2 text-sm">
-                                  <span className="text-slate-500 dark:text-slate-400">🔧 Maszyna:</span>
-                                  <span className="text-slate-900 dark:text-white font-medium">
+                                  <span className="text-muted-foreground">🔧 Maszyna:</span>
+                                  <span className="text-foreground font-medium">
                                     {operation.machine.name}
                                   </span>
                                 </div>
                               )}
                               {operation.assigned_operator && (
                                 <div className="flex items-center gap-2 text-sm">
-                                  <span className="text-slate-500 dark:text-slate-400">👤 Operator:</span>
-                                  <span className="text-slate-900 dark:text-white font-medium">
+                                  <span className="text-muted-foreground">👤 Operator:</span>
+                                  <span className="text-foreground font-medium">
                                     {operation.assigned_operator.full_name}
                                   </span>
                                 </div>
@@ -236,7 +236,7 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
 
                           {/* Time tracking */}
                           {(operation.started_at || operation.completed_at) && (
-                            <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
+                            <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
                               {operation.started_at && (
                                 <p>Rozpoczęto: {new Date(operation.started_at).toLocaleString('pl-PL')}</p>
                               )}
@@ -252,22 +252,22 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
                 )}
 
                 {/* Item summary footer */}
-                <div className="mt-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                <div className="mt-4 p-4 bg-muted rounded-lg">
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Setup Time</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs text-muted-foreground mb-1">Setup Time</p>
+                      <p className="text-lg font-bold text-foreground">
                         {formatDuration(item.total_setup_time_minutes || 0)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Run Time</p>
-                      <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs text-muted-foreground mb-1">Run Time</p>
+                      <p className="text-lg font-bold text-foreground">
                         {formatDuration(item.total_run_time_minutes || 0)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Koszt pozycji</p>
+                      <p className="text-xs text-muted-foreground mb-1">Koszt pozycji</p>
                       <p className="text-xl font-bold text-green-600 dark:text-green-400">
                         {formatCost(item.total_cost || 0)}
                       </p>
@@ -281,9 +281,9 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
       })}
 
       {/* Info box */}
-      <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4 text-sm text-blue-200">
+      <div className="bg-violet-900/20 border border-violet-700/50 rounded-lg p-4 text-sm text-violet-200">
         <p className="font-semibold mb-2">💡 Jak czytać strukturę operacyjną:</p>
-        <ul className="list-disc list-inside space-y-1 text-blue-300 text-xs">
+        <ul className="list-disc list-inside space-y-1 text-violet-300 text-xs">
           <li><strong>Pozycje:</strong> Każda pozycja to osobny detal do wykonania (np. Flansza, Wałek)</li>
           <li><strong>Operacje:</strong> Kolejne kroki obróbki (#1, #2, #3...) tworzą routing produkcyjny</li>
           <li><strong>Setup Time:</strong> Czas przygotowania maszyny (jednorazowy)</li>

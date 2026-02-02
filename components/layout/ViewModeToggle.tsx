@@ -23,12 +23,12 @@ export default function ViewModeToggle({ interfaceMode }: ViewModeToggleProps) {
   }
 
   return (
-    <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+    <div className="p-4 border-t border-border">
       <Link
         href={isKioskMode ? '/' : '/kiosk'}
         className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-colors ${
           isKioskMode
-            ? 'bg-blue-600 text-white hover:bg-blue-700'
+            ? 'bg-violet-600 text-white hover:bg-violet-700'
             : 'bg-green-600 text-white hover:bg-green-700'
         }`}
       >

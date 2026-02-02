@@ -192,13 +192,13 @@ export default function ProductsTable({ products }: ProductsTableProps) {
     switch (columnId) {
       case 'name':
         return (
-          <span className="font-semibold text-slate-900 dark:text-white">
+          <span className="font-semibold text-foreground">
             {product.name}
           </span>
         )
       case 'sku':
         return (
-          <code className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm rounded font-mono">
+          <code className="px-2 py-1 bg-muted text-foreground text-sm rounded font-mono">
             {product.sku}
           </code>
         )
@@ -212,7 +212,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
         )
       case 'unit':
         return (
-          <span className="text-slate-600 dark:text-slate-300">
+          <span className="text-muted-foreground">
             {product.unit
               ? (productUnitLabels[product.unit as keyof typeof productUnitLabels] || product.unit)
               : '-'
@@ -221,13 +221,13 @@ export default function ProductsTable({ products }: ProductsTableProps) {
         )
       case 'stock':
         return (
-          <span className="font-semibold text-slate-900 dark:text-white">
+          <span className="font-semibold text-foreground">
             {totalStock.toFixed(0)}
           </span>
         )
       case 'locations':
         return (
-          <span className="text-slate-600 dark:text-slate-300">
+          <span className="text-muted-foreground">
             {product.locations?.length || 0}
           </span>
         )
@@ -237,7 +237,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
             <Button href={`/products/${product.id}`} variant="ghost" size="sm">
               Podgląd
             </Button>
-            <Button href={`/products/${product.id}/edit`} variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">
+            <Button href={`/products/${product.id}/edit`} variant="ghost" size="sm" className="text-violet-400 hover:text-violet-300">
               Edytuj
             </Button>
           </div>
@@ -260,8 +260,8 @@ export default function ProductsTable({ products }: ProductsTableProps) {
             onClick={() => setIsFilterOpen(true)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
               activeFilterCount > 0
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
+                ? 'bg-violet-600 text-white hover:bg-violet-700'
+                : 'bg-card text-foreground border border-border hover:bg-slate-50 dark:hover:bg-slate-700'
             }`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,7 +276,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
           </button>
 
           {/* Results count */}
-          <span className="text-sm text-slate-500 dark:text-slate-400">
+          <span className="text-sm text-muted-foreground">
             {filteredProducts.length === products.length
               ? `${products.length} towarów`
               : `${filteredProducts.length} z ${products.length} towarów`}
@@ -302,12 +302,12 @@ export default function ProductsTable({ products }: ProductsTableProps) {
           {activeFilterLabels.map(({ key, label }) => (
             <span
               key={key}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm"
+              className="inline-flex items-center gap-1 px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-full text-sm"
             >
               {label}
               <button
                 onClick={() => removeFilter(key)}
-                className="ml-1 hover:text-blue-900 dark:hover:text-blue-100"
+                className="ml-1 hover:text-violet-900 dark:hover:text-violet-100"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -317,7 +317,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
           ))}
           <button
             onClick={resetFilters}
-            className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+            className="text-sm text-slate-500 hover:text-slate-700 dark:text-muted-foreground dark:hover:text-slate-200"
           >
             Wyczyść wszystkie
           </button>
@@ -352,9 +352,9 @@ export default function ProductsTable({ products }: ProductsTableProps) {
       )}
 
       {/* Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-x-auto">
+      <div className="bg-card rounded-lg border border-border overflow-x-auto">
         <table className="w-full min-w-max">
-          <thead className="bg-slate-100 dark:bg-slate-700">
+          <thead className="bg-muted">
             <tr>
               {visibleColumns.map((column) => (
                 <th
@@ -365,10 +365,10 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                   onDragLeave={handleHeaderDragLeave}
                   onDrop={(e) => handleHeaderDrop(e, column.id)}
                   onDragEnd={handleHeaderDragEnd}
-                  className={`px-6 py-3 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-grab active:cursor-grabbing select-none hover:bg-slate-200 dark:hover:bg-slate-600/50 transition ${
+                  className={`px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-grab active:cursor-grabbing select-none hover:bg-accent/50 transition ${
                     column.id === 'actions' ? 'text-right' : 'text-left'
                   } ${draggingHeader === column.id ? 'opacity-50' : ''} ${
-                    dragOverHeader === column.id ? 'bg-blue-100 dark:bg-blue-900/30 border-l-2 border-blue-500' : ''
+                    dragOverHeader === column.id ? 'bg-violet-100 dark:bg-violet-900/30 border-l-2 border-violet-500' : ''
                   }`}
                   title="Przeciągnij aby zmienić kolejność lub w górę aby ukryć"
                 >
@@ -386,7 +386,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
             {filteredProducts.length === 0 ? (
               <tr>
                 <td colSpan={visibleColumns.length} className="px-6 py-12 text-center">
-                  <div className="text-slate-400 dark:text-slate-500">
+                  <div className="text-muted-foreground">
                     <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -395,7 +395,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                     {activeFilterCount > 0 && (
                       <button
                         onClick={resetFilters}
-                        className="mt-3 text-blue-500 hover:text-blue-400 text-sm font-medium"
+                        className="mt-3 text-violet-500 hover:text-violet-400 text-sm font-medium"
                       >
                         Wyczyść filtry
                       </button>
@@ -405,7 +405,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
               </tr>
             ) : (
               filteredProducts.map((product) => (
-                <tr key={product.id} className="hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                <tr key={product.id} className="hover:bg-muted/50 transition">
                   {visibleColumns.map((column) => (
                     <td
                       key={column.id}

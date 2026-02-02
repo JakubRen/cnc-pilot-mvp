@@ -68,7 +68,7 @@ export const orderStatusLabels: Record<OrderStatus, string> = {
 
 export const orderStatusColors: Record<OrderStatus, string> = {
   pending: 'bg-yellow-600',
-  in_progress: 'bg-blue-600',
+  in_progress: 'bg-violet-600',
   external_processing: 'bg-purple-600',
   completed: 'bg-green-600',
   delayed: 'bg-red-600',
@@ -78,7 +78,7 @@ export const orderStatusColors: Record<OrderStatus, string> = {
 
 export const orderStatusTextColors: Record<OrderStatus, string> = {
   pending: 'text-yellow-100',
-  in_progress: 'text-blue-100',
+  in_progress: 'text-violet-100',
   external_processing: 'text-purple-100',
   completed: 'text-green-100',
   delayed: 'text-red-100',

@@ -25,15 +25,15 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-6">
+    <div className="bg-card border border-border rounded-lg p-4 mb-6">
       <div className="flex flex-wrap gap-4 items-center">
         {/* Status Filter */}
         <div>
-          <label className="text-slate-700 dark:text-slate-400 text-sm mr-2">{t('common', 'status')}:</label>
+          <label className="text-slate-700 dark:text-muted-foreground text-sm mr-2">{t('common', 'status')}:</label>
           <select
             value={currentStatus}
             onChange={(e) => updateFilter('status', e.target.value)}
-            className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="px-3 py-2 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
           >
             <option value="all">{t('common', 'all')}</option>
             <option value="pending">{t('orderStatus', 'pending')}</option>
@@ -46,11 +46,11 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
 
         {/* Profitability Filter */}
         <div>
-          <label className="text-slate-700 dark:text-slate-400 text-sm mr-2">{t('costs', 'profitability')}:</label>
+          <label className="text-slate-700 dark:text-muted-foreground text-sm mr-2">{t('costs', 'profitability')}:</label>
           <select
             value={currentProfitable}
             onChange={(e) => updateFilter('profitable', e.target.value)}
-            className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="px-3 py-2 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
           >
             <option value="all">{t('common', 'all')}</option>
             <option value="profitable">{t('costs', 'profitable')}</option>
@@ -60,11 +60,11 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
 
         {/* Days Filter */}
         <div>
-          <label className="text-slate-700 dark:text-slate-400 text-sm mr-2">{t('costs', 'period')}:</label>
+          <label className="text-slate-700 dark:text-muted-foreground text-sm mr-2">{t('costs', 'period')}:</label>
           <select
             value={currentDays}
             onChange={(e) => updateFilter('days', e.target.value)}
-            className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+            className="px-3 py-2 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
           >
             <option value="7">{t('costs', 'days7')}</option>
             <option value="14">{t('costs', 'days14')}</option>
@@ -79,7 +79,7 @@ export default function CostFilters({ currentStatus, currentProfitable, currentD
         {(currentStatus !== 'all' || currentProfitable !== 'all' || currentDays !== 30) && (
           <button
             onClick={() => router.push('/reports/costs')}
-            className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+            className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition"
           >
             ✕ {t('costs', 'clearFilters')}
           </button>

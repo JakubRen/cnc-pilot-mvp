@@ -175,7 +175,7 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
       <div className="flex justify-end mb-6">
         <button
           onClick={openAddForm}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
         >
           + Dodaj usługę
         </button>
@@ -183,15 +183,15 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
 
       {/* Services List */}
       {services.length === 0 ? (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-12 text-center">
+        <div className="bg-card border border-border rounded-lg p-12 text-center">
           <div className="text-6xl mb-4">🔗</div>
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Brak usług kooperacyjnych</h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-6">
+          <h2 className="text-xl font-semibold text-foreground mb-2">Brak usług kooperacyjnych</h2>
+          <p className="text-muted-foreground mb-6">
             Dodaj usługi zewnętrzne takie jak anodowanie, hartowanie czy malowanie proszkowe.
           </p>
           <button
             onClick={openAddForm}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+            className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
           >
             Dodaj pierwszą usługę
           </button>
@@ -201,37 +201,37 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
           {services.map(service => (
             <div
               key={service.id}
-              className={`bg-white dark:bg-slate-800 border rounded-lg p-4 ${
+              className={`bg-card border rounded-lg p-4 ${
                 service.is_active
-                  ? 'border-slate-200 dark:border-slate-700'
-                  : 'border-slate-300 dark:border-slate-600 opacity-60'
+                  ? 'border-border'
+                  : 'border-border opacity-60'
               }`}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">
-                    <span className="text-slate-900 dark:text-white font-semibold text-lg">{service.name}</span>
+                    <span className="text-foreground font-semibold text-lg">{service.name}</span>
                     {!service.is_active && (
-                      <span className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 text-xs rounded">
+                      <span className="px-2 py-0.5 bg-secondary text-muted-foreground text-xs rounded">
                         Nieaktywna
                       </span>
                     )}
                   </div>
                   {service.description && (
-                    <p className="text-slate-500 dark:text-slate-400 text-sm mb-2">{service.description}</p>
+                    <p className="text-muted-foreground text-sm mb-2">{service.description}</p>
                   )}
                   <div className="flex flex-wrap gap-4 text-sm">
-                    <span className="text-slate-700 dark:text-slate-300">
+                    <span className="text-foreground">
                       <strong>{service.base_price.toFixed(2)} PLN</strong> {priceUnitLabels[service.price_unit]}
                     </span>
-                    <span className="text-slate-500 dark:text-slate-500">
+                    <span className="text-slate-500 dark:text-muted-foreground">
                       +{service.handling_fee_percent}% handling
                     </span>
-                    <span className="text-slate-500 dark:text-slate-500">
+                    <span className="text-slate-500 dark:text-muted-foreground">
                       Lead time: {service.lead_time_days} dni
                     </span>
                     {service.vendor_name && (
-                      <span className="text-slate-500 dark:text-slate-500">
+                      <span className="text-slate-500 dark:text-muted-foreground">
                         Dostawca: {service.vendor_name}
                       </span>
                     )}
@@ -251,7 +251,7 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
                   </button>
                   <button
                     onClick={() => openEditForm(service)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition"
+                    className="p-2 text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-lg transition"
                     title="Edytuj"
                   >
                     ✏️
@@ -273,10 +273,10 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
       {/* Modal Form */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+          <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-border">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                <h2 className="text-2xl font-bold text-foreground">
                   {editingService ? 'Edytuj usługę' : 'Dodaj usługę'}
                 </h2>
                 <button
@@ -291,13 +291,13 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
             <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
               {/* Name */}
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                <label className="block text-foreground text-sm font-medium mb-1">
                   Nazwa usługi *
                 </label>
                 <input
                   {...register('name')}
                   type="text"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                   placeholder="np. Anodowanie czarne"
                 />
                 {errors.name && (
@@ -307,13 +307,13 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
 
               {/* Description */}
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                <label className="block text-foreground text-sm font-medium mb-1">
                   Opis
                 </label>
                 <textarea
                   {...register('description')}
                   rows={2}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                   placeholder="Krótki opis usługi..."
                 />
               </div>
@@ -321,14 +321,14 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
               {/* Price */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                  <label className="block text-foreground text-sm font-medium mb-1">
                     Cena bazowa (PLN) *
                   </label>
                   <input
                     {...register('base_price', { valueAsNumber: true })}
                     type="number"
                     step="0.01"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                   />
                   {errors.base_price && (
                     <p className="text-red-500 text-xs mt-1">{errors.base_price.message}</p>
@@ -336,12 +336,12 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                  <label className="block text-foreground text-sm font-medium mb-1">
                     Jednostka
                   </label>
                   <select
                     {...register('price_unit')}
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                   >
                     <option value="szt">za sztukę</option>
                     <option value="kg">za kg</option>
@@ -354,13 +354,13 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
               {/* Handling Fee & Lead Time */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                  <label className="block text-foreground text-sm font-medium mb-1">
                     Handling fee (%)
                   </label>
                   <input
                     {...register('handling_fee_percent', { valueAsNumber: true })}
                     type="number"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                   />
                   <p className="text-slate-500 text-xs mt-1">Narzut za transport i obsługę</p>
                   {errors.handling_fee_percent && (
@@ -369,13 +369,13 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                  <label className="block text-foreground text-sm font-medium mb-1">
                     Lead time (dni)
                   </label>
                   <input
                     {...register('lead_time_days', { valueAsNumber: true })}
                     type="number"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                   />
                   {errors.lead_time_days && (
                     <p className="text-red-500 text-xs mt-1">{errors.lead_time_days.message}</p>
@@ -385,13 +385,13 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
 
               {/* Min Order Value */}
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                <label className="block text-foreground text-sm font-medium mb-1">
                   Minimalna wartość zamówienia (PLN)
                 </label>
                 <input
                   {...register('min_order_value', { valueAsNumber: true })}
                   type="number"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                   placeholder="np. 100"
                 />
                 <p className="text-slate-500 text-xs mt-1">Opcjonalne - pozostaw puste jeśli brak minimum</p>
@@ -400,25 +400,25 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
               {/* Vendor Info */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                  <label className="block text-foreground text-sm font-medium mb-1">
                     Nazwa dostawcy
                   </label>
                   <input
                     {...register('vendor_name')}
                     type="text"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     placeholder="np. Galwanizernia ABC"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-1">
+                  <label className="block text-foreground text-sm font-medium mb-1">
                     Kontakt
                   </label>
                   <input
                     {...register('vendor_contact')}
                     type="text"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-foreground focus:border-violet-500 focus:outline-none"
                     placeholder="np. jan@galwanizernia.pl"
                   />
                 </div>
@@ -430,26 +430,26 @@ export default function ExternalServicesClient({ services, companyId }: Props) {
                   type="checkbox"
                   id="is_active"
                   {...register('is_active')}
-                  className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
+                  className="w-5 h-5 rounded border-border text-violet-600 focus:ring-violet-500"
                 />
-                <label htmlFor="is_active" className="text-slate-700 dark:text-slate-300 font-medium">
+                <label htmlFor="is_active" className="text-foreground font-medium">
                   Usługa aktywna
                 </label>
               </div>
 
               {/* Buttons */}
-              <div className="flex justify-end gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex justify-end gap-4 pt-4 border-t border-border">
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="px-6 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
+                  className="px-6 py-2 text-foreground hover:bg-muted rounded-lg transition"
                 >
                   Anuluj
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50"
+                  className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold disabled:opacity-50"
                 >
                   {isSubmitting ? 'Zapisywanie...' : editingService ? 'Zapisz zmiany' : 'Dodaj usługę'}
                 </button>

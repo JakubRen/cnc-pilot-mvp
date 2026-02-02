@@ -189,28 +189,28 @@ export default function AddOrderItemPage() {
 
   if (!companyId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8 flex items-center justify-center">
-        <p className="text-slate-500 dark:text-slate-400">Ładowanie...</p>
+      <div className="min-h-screen bg-background p-8 flex items-center justify-center">
+        <p className="text-muted-foreground">Ładowanie...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
+    <div className="min-h-screen bg-background p-8">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
               Dodaj Pozycję do Zlecenia
             </h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Zlecenie: <strong>#{orderNumber}</strong>
             </p>
           </div>
           <Link
             href={`/orders/${orderId}`}
-            className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+            className="px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-accent transition"
           >
             Anuluj
           </Link>
@@ -218,15 +218,15 @@ export default function AddOrderItemPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info Card */}
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700 space-y-6">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-3">
+          <div className="bg-card p-8 rounded-lg border border-border space-y-6">
+            <h2 className="text-xl font-semibold text-foreground border-b border-border pb-3">
               📦 Informacje o pozycji
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Part Name */}
               <div className="md:col-span-2">
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Nazwa części *
                 </label>
                 <input
@@ -234,14 +234,14 @@ export default function AddOrderItemPage() {
                   value={partName}
                   onChange={(e) => setPartName(e.target.value)}
                   placeholder="np. Flansza Ø100, Wałek Ø50x300"
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                   required
                 />
               </div>
 
               {/* Quantity */}
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Ilość sztuk *
                 </label>
                 <input
@@ -250,14 +250,14 @@ export default function AddOrderItemPage() {
                   step="1"
                   value={quantity}
                   onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                   required
                 />
               </div>
 
               {/* Material */}
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Materiał
                 </label>
                 <input
@@ -265,19 +265,19 @@ export default function AddOrderItemPage() {
                   value={material}
                   onChange={(e) => setMaterial(e.target.value)}
                   placeholder="np. Stal nierdzewna, Aluminium"
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 />
               </div>
 
               {/* Complexity */}
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Złożoność
                 </label>
                 <select
                   value={complexity}
                   onChange={(e) => setComplexity(e.target.value as Complexity)}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                 >
                   {Object.entries(complexityLabels).map(([value, label]) => (
                     <option key={value} value={value}>{label}</option>
@@ -287,7 +287,7 @@ export default function AddOrderItemPage() {
 
               {/* Dimensions */}
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Wymiary (opcjonalnie)
                 </label>
                 <div className="flex gap-2">
@@ -297,7 +297,7 @@ export default function AddOrderItemPage() {
                     value={length || ''}
                     onChange={(e) => setLength(parseFloat(e.target.value) || undefined)}
                     placeholder="D (mm)"
-                    className="w-1/3 px-3 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-1/3 px-3 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                   />
                   <input
                     type="number"
@@ -305,7 +305,7 @@ export default function AddOrderItemPage() {
                     value={width || ''}
                     onChange={(e) => setWidth(parseFloat(e.target.value) || undefined)}
                     placeholder="S (mm)"
-                    className="w-1/3 px-3 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-1/3 px-3 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                   />
                   <input
                     type="number"
@@ -313,14 +313,14 @@ export default function AddOrderItemPage() {
                     value={height || ''}
                     onChange={(e) => setHeight(parseFloat(e.target.value) || undefined)}
                     placeholder="W (mm)"
-                    className="w-1/3 px-3 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none"
+                    className="w-1/3 px-3 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Notes */}
               <div className="md:col-span-2">
-                <label className="block text-slate-700 dark:text-slate-300 mb-2 font-medium">
+                <label className="block text-foreground mb-2 font-medium">
                   Notatki
                 </label>
                 <textarea
@@ -328,14 +328,14 @@ export default function AddOrderItemPage() {
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
                   placeholder="Dodatkowe informacje o pozycji..."
-                  className="w-full px-4 py-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none resize-none"
+                  className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none resize-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Drawing Upload */}
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-card p-8 rounded-lg border border-border">
             <DrawingUpload
               value={drawingFileId}
               onChange={setDrawingFileId}
@@ -345,7 +345,7 @@ export default function AddOrderItemPage() {
           </div>
 
           {/* Operations */}
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-card p-8 rounded-lg border border-border">
             <OperationForm
               operations={operations}
               onChange={setOperations}
@@ -357,7 +357,7 @@ export default function AddOrderItemPage() {
 
           {/* Summary Card */}
           {operations.length > 0 && (
-            <div className="bg-gradient-to-r from-green-900/30 to-blue-900/30 border-2 border-green-500/50 rounded-lg p-8">
+            <div className="bg-gradient-to-r from-green-900/30 to-violet-900/30 border-2 border-green-500/50 rounded-lg p-8">
               <h3 className="text-2xl font-bold text-white mb-6 text-center">
                 💰 Podsumowanie pozycji
               </h3>
@@ -393,7 +393,7 @@ export default function AddOrderItemPage() {
             </button>
             <Link
               href={`/orders/${orderId}`}
-              className="px-8 py-4 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 font-semibold transition"
+              className="px-8 py-4 bg-muted text-foreground rounded-lg hover:bg-accent font-semibold transition"
             >
               Anuluj
             </Link>

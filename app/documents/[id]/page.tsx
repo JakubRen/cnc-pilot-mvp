@@ -63,7 +63,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
   // Kolory dla typów
   const docTypeColors: Record<string, string> = {
     PW: 'bg-green-600',
-    RW: 'bg-blue-600',
+    RW: 'bg-violet-600',
     WZ: 'bg-orange-600'
   }
   const docTypeColor = docTypeColors[document.document_type] || 'bg-slate-600'
@@ -74,7 +74,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8">
+      <div className="min-h-screen bg-background p-8">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumbs */}
           <Breadcrumbs
@@ -91,11 +91,11 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
             <div>
               <Link
                 href="/documents"
-                className="text-blue-400 hover:text-blue-300 text-sm mb-2 inline-block"
+                className="text-violet-400 hover:text-violet-300 text-sm mb-2 inline-block"
               >
                 ← Powrót do listy
               </Link>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+              <h1 className="text-3xl font-bold text-foreground mb-2">
                 Dokument {document.document_number}
               </h1>
               <div className="flex gap-3 items-center">
@@ -112,7 +112,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
               <div className="flex gap-3">
                 <Link
                   href={`/documents/${id}/edit`}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                  className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
                 >
                   Edytuj
                 </Link>
@@ -128,47 +128,47 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
           </div>
 
           {/* Document Info */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-6">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Informacje o dokumencie</h2>
+          <div className="bg-card rounded-lg border border-border p-6 mb-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Informacje o dokumencie</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Kontrahent</p>
-                <p className="text-slate-900 dark:text-white font-medium">{document.contractor}</p>
+                <p className="text-muted-foreground text-sm mb-1">Kontrahent</p>
+                <p className="text-foreground font-medium">{document.contractor}</p>
               </div>
 
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Data utworzenia</p>
-                <p className="text-slate-900 dark:text-white font-medium">
+                <p className="text-muted-foreground text-sm mb-1">Data utworzenia</p>
+                <p className="text-foreground font-medium">
                   {new Date(document.created_at).toLocaleString('pl-PL')}
                 </p>
               </div>
 
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Utworzył</p>
-                <p className="text-slate-900 dark:text-white font-medium">{creatorName || '-'}</p>
+                <p className="text-muted-foreground text-sm mb-1">Utworzył</p>
+                <p className="text-foreground font-medium">{creatorName || '-'}</p>
               </div>
 
               <div>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Status</p>
-                <p className="text-slate-900 dark:text-white font-medium">
+                <p className="text-muted-foreground text-sm mb-1">Status</p>
+                <p className="text-foreground font-medium">
                   {document.status === 'confirmed' ? 'Zatwierdzony (wpłynął na stany)' : 'Szkic (nie wpłynął na stany)'}
                 </p>
               </div>
             </div>
 
             {document.description && (
-              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Opis</p>
-                <p className="text-slate-900 dark:text-white">{document.description}</p>
+              <div className="mt-4 pt-4 border-t border-border">
+                <p className="text-muted-foreground text-sm mb-1">Opis</p>
+                <p className="text-foreground">{document.description}</p>
               </div>
             )}
           </div>
 
           {/* Document Items */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-            <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+          <div className="bg-card rounded-lg border border-border overflow-hidden">
+            <div className="p-6 border-b border-border">
+              <h2 className="text-xl font-semibold text-foreground">
                 Pozycje dokumentu ({items?.length || 0})
               </h2>
             </div>
@@ -176,21 +176,21 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
             {items && items.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-slate-100 dark:bg-slate-700">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                         Lp.
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                         SKU
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                         Nazwa
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                         Ilość
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">
                         Notatka
                       </th>
                     </tr>
@@ -201,24 +201,24 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
 
                       return (
                         <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                             {index + 1}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-900 dark:text-white font-semibold">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-foreground font-semibold">
                             {inventory?.sku || '-'}
                           </td>
-                          <td className="px-6 py-4 text-sm text-slate-700 dark:text-slate-300">
+                          <td className="px-6 py-4 text-sm text-foreground">
                             <Link
                               href={`/inventory/${inventory?.id}`}
-                              className="text-blue-400 hover:text-blue-300"
+                              className="text-violet-400 hover:text-violet-300"
                             >
                               {inventory?.name || '-'}
                             </Link>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white font-medium">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground font-medium">
                             {item.quantity} {inventory?.unit || ''}
                           </td>
-                          <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
+                          <td className="px-6 py-4 text-sm text-muted-foreground">
                             {item.notes || '-'}
                           </td>
                         </tr>
@@ -228,7 +228,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
                 </table>
               </div>
             ) : (
-              <div className="p-8 text-center text-slate-500 dark:text-slate-400">
+              <div className="p-8 text-center text-muted-foreground">
                 Brak pozycji w dokumencie
               </div>
             )}

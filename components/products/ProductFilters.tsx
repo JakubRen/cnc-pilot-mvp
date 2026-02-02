@@ -40,7 +40,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
     <div className="space-y-6">
       {/* Search */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           🔍 Szukaj
         </label>
         <div className="relative">
@@ -49,7 +49,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
             placeholder="Nazwa lub SKU..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-muted border border-border text-foreground placeholder-slate-400 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
           />
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
@@ -74,13 +74,13 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
 
       {/* Category */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           📁 Kategoria
         </label>
         <select
           value={filters.category}
           onChange={(e) => updateFilter('category', e.target.value as ProductCategory | 'all')}
-          className="w-full px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
         >
           <option value="all">Wszystkie kategorie</option>
           {Object.entries(productCategoryLabels).map(([value, label]) => (
@@ -93,13 +93,13 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
 
       {/* Unit */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           📏 Jednostka
         </label>
         <select
           value={filters.unit}
           onChange={(e) => updateFilter('unit', e.target.value as ProductUnit | 'all')}
-          className="w-full px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
         >
           <option value="all">Wszystkie jednostki</option>
           {Object.entries(productUnitLabels).map(([value, label]) => (
@@ -112,7 +112,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
 
       {/* Sort */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           ↕️ Sortowanie
         </label>
         <div className="space-y-2">
@@ -121,8 +121,8 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
               key={option.value}
               className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition ${
                 filters.sortBy === option.value
-                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                  ? 'border-violet-500 bg-violet-50 dark:bg-violet-900/20'
+                  : 'border-border hover:bg-slate-50 dark:hover:bg-slate-700/50'
               }`}
             >
               <input
@@ -131,9 +131,9 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
                 value={option.value}
                 checked={filters.sortBy === option.value}
                 onChange={(e) => updateFilter('sortBy', e.target.value as ProductFilterState['sortBy'])}
-                className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                className="w-4 h-4 text-violet-600 focus:ring-violet-500"
               />
-              <span className="flex-1 text-slate-700 dark:text-slate-300">
+              <span className="flex-1 text-foreground">
                 {option.label}
               </span>
               <span className="text-slate-400 text-lg">{option.icon}</span>

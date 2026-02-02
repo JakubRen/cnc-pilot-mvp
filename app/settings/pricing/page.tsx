@@ -32,15 +32,15 @@ export default async function PricingConfigPage() {
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <div className="mb-4">
-            <Link href="/settings" className="text-blue-500 hover:text-blue-400 text-sm">
+            <Link href="/settings" className="text-violet-500 hover:text-violet-400 text-sm">
               ← Powrót do ustawień
             </Link>
           </div>
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Konfiguracja Wyceny</h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">
+            <h1 className="text-4xl font-bold text-foreground">Konfiguracja Wyceny</h1>
+            <p className="text-muted-foreground mt-1">
               Globalne ustawienia cen energii, marż i rabatów ilościowych
             </p>
           </div>

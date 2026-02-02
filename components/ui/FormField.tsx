@@ -28,7 +28,7 @@ export function FormField({
   return (
     <div className={cn('space-y-2', className)}>
       {/* Label */}
-      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+      <label className="block text-sm font-medium text-foreground">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
@@ -82,7 +82,7 @@ export function FormField({
 
       {/* Hint text */}
       {hint && !hasError && (
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className="text-xs text-muted-foreground">
           {hint}
         </p>
       )}

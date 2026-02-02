@@ -36,10 +36,10 @@ export default function QCMeasurementForm({
 }: Props) {
   if (plans.length === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-8 text-center">
+      <div className="bg-card border border-border rounded-lg p-8 text-center">
         <div className="text-5xl mb-4">📋</div>
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Brak planów kontroli</h3>
-        <p className="text-slate-500 dark:text-slate-400 mb-4">
+        <h3 className="text-lg font-bold text-foreground mb-2">Brak planów kontroli</h3>
+        <p className="text-muted-foreground mb-4">
           Najpierw utwórz plan kontroli z wymiarami do sprawdzenia
         </p>
         <Button variant="primary" onClick={onSwitchToCreatePlan}>
@@ -51,15 +51,15 @@ export default function QCMeasurementForm({
 
   return (
     <form onSubmit={onSubmit}>
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
+      <div className="bg-card border border-border rounded-lg p-6">
         {/* Plan selector + batch/sample */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm mb-1">Plan kontroli</label>
+            <label className="block text-foreground text-sm mb-1">Plan kontroli</label>
             <select
               value={selectedPlanId}
               onChange={(e) => onPlanChange(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground text-sm focus:border-violet-500 focus:outline-none"
             >
               <option value="">-- Wybierz plan --</option>
               {plans.map(plan => (
@@ -70,7 +70,7 @@ export default function QCMeasurementForm({
             </select>
           </div>
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm mb-1">Nr partii</label>
+            <label className="block text-foreground text-sm mb-1">Nr partii</label>
             <Input
               value={batchNumber}
               onChange={(e) => onBatchNumberChange(e.target.value)}
@@ -79,7 +79,7 @@ export default function QCMeasurementForm({
             />
           </div>
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 text-sm mb-1">Nr próbki</label>
+            <label className="block text-foreground text-sm mb-1">Nr próbki</label>
             <Input
               type="number"
               min="1"
@@ -91,7 +91,7 @@ export default function QCMeasurementForm({
         </div>
 
         {loadingItems && (
-          <p className="text-slate-500 dark:text-slate-400 text-sm py-6 text-center">Ładowanie wymiarów...</p>
+          <p className="text-muted-foreground text-sm py-6 text-center">Ładowanie wymiarów...</p>
         )}
 
         {/* Measurement inputs */}
@@ -99,19 +99,19 @@ export default function QCMeasurementForm({
           <div className="space-y-3">
             {planItems.map((item) => {
               const status = getStatus(item, values[item.id] || '')
-              const borderColor = status === 'ok' ? 'border-green-500' : status === 'nok' ? 'border-red-500' : 'border-slate-200 dark:border-slate-700'
-              const bgColor = status === 'ok' ? 'bg-green-50 dark:bg-green-900/20' : status === 'nok' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-slate-50 dark:bg-slate-900'
+              const borderColor = status === 'ok' ? 'border-green-500' : status === 'nok' ? 'border-red-500' : 'border-border'
+              const bgColor = status === 'ok' ? 'bg-green-50 dark:bg-green-900/20' : status === 'nok' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-muted'
 
               return (
                 <div key={item.id} className={`p-4 rounded-lg border ${borderColor} ${bgColor} transition-colors`}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-900 dark:text-white font-medium">{item.name}</span>
+                      <span className="text-foreground font-medium">{item.name}</span>
                       {item.is_critical && (
                         <span className="px-1.5 py-0.5 bg-red-600/30 text-red-600 dark:text-red-400 text-[10px] rounded font-semibold">KRYTYCZNY</span>
                       )}
                     </div>
-                    <span className="text-slate-500 dark:text-slate-400 text-sm font-mono">
+                    <span className="text-muted-foreground text-sm font-mono">
                       {item.nominal_value} ±{Math.max(item.tolerance_plus, item.tolerance_minus)} {item.unit}
                     </span>
                   </div>
@@ -139,7 +139,7 @@ export default function QCMeasurementForm({
                         <span>{item.nominal_value}</span>
                         <span>{(item.nominal_value + item.tolerance_plus).toFixed(3)}</span>
                       </div>
-                      <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full relative">
+                      <div className="h-2 bg-secondary rounded-full relative">
                         <div className="absolute h-full bg-green-500/30 rounded-full" style={{ left: '0%', right: '0%' }} />
                         {(() => {
                           const min = item.nominal_value - item.tolerance_minus * 2
@@ -169,11 +169,11 @@ export default function QCMeasurementForm({
         )}
 
         {selectedPlanId && !loadingItems && planItems.length === 0 && (
-          <p className="text-slate-500 dark:text-slate-400 text-sm text-center py-6">Ten plan nie ma zdefiniowanych wymiarów</p>
+          <p className="text-muted-foreground text-sm text-center py-6">Ten plan nie ma zdefiniowanych wymiarów</p>
         )}
 
         {!selectedPlanId && (
-          <p className="text-slate-500 dark:text-slate-400 text-sm text-center py-6">Wybierz plan kontroli aby rozpocząć pomiary</p>
+          <p className="text-muted-foreground text-sm text-center py-6">Wybierz plan kontroli aby rozpocząć pomiary</p>
         )}
       </div>
     </form>

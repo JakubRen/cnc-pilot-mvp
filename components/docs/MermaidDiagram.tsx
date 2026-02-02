@@ -57,11 +57,11 @@ export default function MermaidDiagram({ chart }: MermaidDiagramProps) {
   }, [chart])
 
   return (
-    <div className="my-6 p-4 bg-white dark:bg-slate-800 rounded-lg overflow-x-auto">
+    <div className="my-6 p-4 bg-card rounded-lg overflow-x-auto">
       {isLoading && (
         <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-          <span className="ml-3 text-slate-500 dark:text-slate-400">Ładowanie diagramu...</span>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-500"></div>
+          <span className="ml-3 text-muted-foreground">Ładowanie diagramu...</span>
         </div>
       )}
       <div ref={containerRef} />

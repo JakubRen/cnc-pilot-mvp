@@ -45,23 +45,23 @@ export default async function MachineCostsPage() {
         <div className="max-w-6xl mx-auto">
           {/* Breadcrumb */}
           <div className="mb-4">
-            <Link href="/settings" className="text-blue-500 hover:text-blue-400 text-sm">
+            <Link href="/settings" className="text-violet-500 hover:text-violet-400 text-sm">
               ← Powrót do ustawień
             </Link>
           </div>
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Koszty Maszyn (ABC)</h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">
+            <h1 className="text-4xl font-bold text-foreground">Koszty Maszyn (ABC)</h1>
+            <p className="text-muted-foreground mt-1">
               Konfiguracja kosztów operacyjnych do kalkulacji stawki godzinowej (Real Hourly Rate)
             </p>
           </div>
 
           {/* Info Box */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/30 rounded-lg p-4 mb-8">
-            <h3 className="text-blue-700 dark:text-blue-300 font-semibold mb-2">Jak działa wycena ABC?</h3>
-            <p className="text-blue-600 dark:text-blue-400 text-sm">
+          <div className="bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-700/30 rounded-lg p-4 mb-8">
+            <h3 className="text-violet-700 dark:text-violet-300 font-semibold mb-2">Jak działa wycena ABC?</h3>
+            <p className="text-primary text-sm">
               Stawka godzinowa maszyny = (Koszty stałe roczne / Efektywne godziny pracy) + Koszty zmienne na godzinę.
               Efektywne godziny = Godziny pracy × Dni robocze × OEE%. Wprowadź dane poniżej aby system automatycznie
               obliczał rzeczywiste koszty produkcji.
@@ -69,15 +69,15 @@ export default async function MachineCostsPage() {
           </div>
 
           {!machines || machines.length === 0 ? (
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-12 text-center">
+            <div className="bg-card border border-border rounded-lg p-12 text-center">
               <div className="text-6xl mb-4">🔧</div>
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Brak aktywnych maszyn</h2>
-              <p className="text-slate-500 dark:text-slate-400 mb-6">
+              <h2 className="text-xl font-semibold text-foreground mb-2">Brak aktywnych maszyn</h2>
+              <p className="text-muted-foreground mb-6">
                 Najpierw dodaj maszyny do systemu, aby skonfigurować ich koszty operacyjne.
               </p>
               <Link
                 href="/machines/add"
-                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                className="inline-block px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
               >
                 Dodaj maszynę
               </Link>

@@ -85,7 +85,7 @@ export default function PermissionGuard({
 
   // Podczas ładowania
   if (loading && showLoading) {
-    return <span className="animate-pulse bg-slate-200 dark:bg-slate-700 rounded h-4 w-16 inline-block" />;
+    return <span className="animate-pulse bg-secondary rounded h-4 w-16 inline-block" />;
   }
 
   if (loading) {
