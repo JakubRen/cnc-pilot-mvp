@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
+import { useUserProfile } from '@/hooks/useUserProfile'
 
 export interface InventoryItem {
   id: string
@@ -19,6 +20,7 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
   const [items, setItems] = useState<InventoryItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { profile } = useUserProfile()
 
   // Stabilize the filter for useEffect dependency
   const categoryFilterString = Array.isArray(categoryFilter)
@@ -31,45 +33,22 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
   )
 
   useEffect(() => {
+    if (!profile?.company_id) {
+      setItems([])
+      setLoading(false)
+      return
+    }
+
     async function fetchItems() {
       try {
         setLoading(true)
         setError(null)
 
-        // Get user's company_id
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) {
-          logger.debug('[useInventoryItems] No user found')
-          setItems([])
-          setLoading(false)
-          return
-        }
-
-        const { data: userProfile, error: profileError } = await supabase
-          .from('users')
-          .select('company_id')
-          .eq('auth_id', user.id)
-          .single()
-
-        if (profileError) {
-          logger.error('[useInventoryItems] Profile error', { error: profileError })
-          setItems([])
-          setLoading(false)
-          return
-        }
-
-        if (!userProfile?.company_id) {
-          logger.debug('[useInventoryItems] No company_id')
-          setItems([])
-          setLoading(false)
-          return
-        }
-
         // Query inventory table (this is where PW documents add stock)
         let query = supabase
           .from('inventory')
           .select('id, name, sku, category, quantity, unit')
-          .eq('company_id', userProfile.company_id)
+          .eq('company_id', profile!.company_id!)
           .gt('quantity', 0) // Only items with stock
           .order('name')
 
@@ -101,7 +80,7 @@ export function useInventoryItems(categoryFilter: CategoryFilter | CategoryFilte
     }
 
     fetchItems()
-  }, [filterKey])  // Only filterKey - it already includes categoryFilter changes
+  }, [filterKey, profile?.company_id])
 
   return { items, loading, error }
 }

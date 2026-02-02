@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
+import { useUserProfile } from '@/hooks/useUserProfile'
 
 export interface UploadedFile {
   id: string
@@ -23,9 +24,15 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
   const [currentFile, setCurrentFile] = useState<string | null>(null)
   const [totalFiles, setTotalFiles] = useState(0)
   const [completedFiles, setCompletedFiles] = useState(0)
+  const { profile: userProfile } = useUserProfile()
 
   const uploadFiles = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return
+
+    if (!userProfile?.company_id) {
+      toast.error('Musisz być zalogowany aby przesłać pliki')
+      return
+    }
 
     setUploading(true)
     setTotalFiles(acceptedFiles.length)
@@ -33,25 +40,6 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
     const uploadedFiles: UploadedFile[] = []
 
     try {
-      // Get user's company_id
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) {
-        toast.error('Musisz być zalogowany aby przesłać pliki')
-        return
-      }
-
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('id, company_id')
-        .eq('auth_id', user.id)
-        .single()
-
-      if (!userProfile?.company_id) {
-        toast.error('Błąd: Brak company_id')
-        return
-      }
 
       // Upload each file
       for (let i = 0; i < acceptedFiles.length; i++) {
@@ -144,7 +132,7 @@ export const useFileUpload = ({ entityType, entityId, onUploadComplete }: UseFil
         setCompletedFiles(0)
       }, 1500)
     }
-  }, [entityType, entityId, onUploadComplete])
+  }, [entityType, entityId, onUploadComplete, userProfile])
 
   return {
     uploading,

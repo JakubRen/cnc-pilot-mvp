@@ -4,52 +4,31 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import type { Customer } from '@/types/customers'
+import { useUserProfile } from '@/hooks/useUserProfile'
 
 export function useCustomers() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { profile } = useUserProfile()
 
   useEffect(() => {
+    if (!profile?.company_id) {
+      setCustomers([])
+      setLoading(false)
+      return
+    }
+
     async function fetchCustomers() {
       try {
         setLoading(true)
         setError(null)
 
-        // Get user's company_id
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) {
-          logger.debug('[useCustomers] No user found')
-          setCustomers([])
-          setLoading(false)
-          return
-        }
-
-        const { data: userProfile, error: profileError } = await supabase
-          .from('users')
-          .select('company_id')
-          .eq('auth_id', user.id)
-          .single()
-
-        if (profileError) {
-          logger.error('[useCustomers] Profile error', { error: profileError })
-          setCustomers([])
-          setLoading(false)
-          return
-        }
-
-        if (!userProfile?.company_id) {
-          logger.debug('[useCustomers] No company_id')
-          setCustomers([])
-          setLoading(false)
-          return
-        }
-
         // Fetch customers for company
         const { data, error: queryError } = await supabase
           .from('customers')
           .select('*')
-          .eq('company_id', userProfile.company_id)
+          .eq('company_id', profile!.company_id!)
           .order('name')
 
         if (queryError) {
@@ -69,7 +48,7 @@ export function useCustomers() {
     }
 
     fetchCustomers()
-  }, [])
+  }, [profile?.company_id])
 
   return { customers, loading, error }
 }
