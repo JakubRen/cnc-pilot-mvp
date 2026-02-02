@@ -228,7 +228,7 @@ export default function OperationForm({
 
             return (
               <div
-                key={(operation as any)._id || `op-${index}`}
+                key={`op-${index}`}
                 data-testid={`operation-${index + 1}`}
                 className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border-2 border-slate-200 dark:border-slate-700"
               >

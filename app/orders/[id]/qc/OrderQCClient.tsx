@@ -11,7 +11,7 @@ import { sanitizeText } from '@/lib/sanitization'
 
 // ─── Types ───────────────────────────────────────────────
 
-interface QCItem {
+export interface QCItem {
   id: string
   name: string
   nominal_value: number
@@ -22,7 +22,7 @@ interface QCItem {
   sort_order: number
 }
 
-interface QCPlan {
+export interface QCPlan {
   id: string
   name: string
   part_name: string | null
@@ -30,7 +30,7 @@ interface QCPlan {
   quality_control_items: QCItem[]
 }
 
-interface Measurement {
+export interface Measurement {
   id: string
   is_pass: boolean
   measured_value: number

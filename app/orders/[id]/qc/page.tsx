@@ -3,7 +3,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
-import OrderQCClient from './OrderQCClient'
+import OrderQCClient, { type QCPlan, type Measurement } from './OrderQCClient'
 
 export default async function OrderQCPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -49,8 +49,6 @@ export default async function OrderQCPage({ params }: { params: Promise<{ id: st
     .eq('company_id', user.company_id)
     .eq('is_active', true)
     .order('created_at', { ascending: false })
-
-  console.log('[QC DEBUG] user.company_id:', user.company_id, 'plans:', plans?.length, 'error:', plansError)
 
   // Fetch measurements for this order
   const { data: measurements } = await supabase
@@ -110,8 +108,8 @@ export default async function OrderQCPage({ params }: { params: Promise<{ id: st
         <OrderQCClient
           orderId={id}
           orderNumber={order.order_number}
-          plans={(plans as any) || []}
-          measurements={(measurements as any) || []}
+          plans={(plans ?? []) as QCPlan[]}
+          measurements={(measurements ?? []) as Measurement[]}
           userId={user.id}
           companyId={user.company_id}
           orderDimensions={{
