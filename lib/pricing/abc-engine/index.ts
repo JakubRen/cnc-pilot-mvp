@@ -1,11 +1,8 @@
 // =====================================================
-// ABC PRICING ENGINE - Re-export from modular structure
+// ABC PRICING ENGINE - Public API
 // =====================================================
-// This file is kept for backward compatibility.
-// The engine has been split into:
-//   - abc-engine/calculations.ts  (pure cost functions)
-//   - abc-engine/orchestration.ts (async DB functions)
-//   - abc-engine/index.ts         (public API)
+// Re-exports all public functions from the abc-engine module.
+// Import from '@/lib/pricing/abc-engine' to use.
 // =====================================================
 
 export {
@@ -17,7 +14,10 @@ export {
   calculateExternalServicesCost,
   calculateMargin,
   checkDataCompleteness,
+} from './calculations'
+
+export {
   calculateABCPricing,
   getOrCreatePricingConfig,
   seedExternalServices,
-} from './abc-engine/index'
+} from './orchestration'
