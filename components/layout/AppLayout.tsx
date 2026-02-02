@@ -1,16 +1,16 @@
 ﻿'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import CommandPalette from '@/components/ui/CommandPalette';
 import MobileBottomNav from './MobileBottomNav';
-import { supabase } from '@/lib/supabase';
 import InterfaceModeGuard from './InterfaceModeGuard';
 import type { InterfaceMode } from '@/lib/auth';
 import { LiveRegionProvider } from '@/components/ui/LiveRegion';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -19,30 +19,13 @@ interface AppLayoutProps {
 export default function AppLayout({ children }: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
-  const [userRole, setUserRole] = useState<string | undefined>();
-  const [interfaceMode, setInterfaceMode] = useState<InterfaceMode | undefined>();
+  const { profile } = useUserProfile();
+  const userRole = profile?.role;
+  const interfaceMode = profile?.interface_mode as InterfaceMode | undefined;
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
-  // Fetch user role and interface_mode for CommandPalette and ViewModeToggle
-  useEffect(() => {
-    async function fetchUserData() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { data: userProfile } = await supabase
-          .from('users')
-          .select('role, interface_mode')
-          .eq('auth_id', user.id)
-          .single()
-
-        setUserRole(userProfile?.role)
-        setInterfaceMode(userProfile?.interface_mode as InterfaceMode | undefined)        
-      }
-    }
-    fetchUserData()
-  }, [])
 
   // Enable global keyboard shortcuts
   useKeyboardShortcuts({

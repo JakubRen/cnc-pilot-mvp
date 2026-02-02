@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import NotificationBell from './NotificationBell';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import { useTranslation } from '@/hooks/useTranslation';
-import { logger } from '@/lib/logger';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 interface HeaderProps {
   isSidebarOpen?: boolean;
@@ -16,45 +15,10 @@ interface HeaderProps {
 export default function Header({ isSidebarOpen = true, onToggleSidebar }: HeaderProps) {
   const { t } = useTranslation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [userName, setUserName] = useState<string>('');
-  const [userRole, setUserRole] = useState<string>('');
+  const { profile } = useUserProfile();
+  const userName = profile?.full_name || profile?.email || 'User';
+  const userRole = profile?.role || 'operator';
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data: profile, error } = await supabase
-            .from('users')
-            .select('full_name, role')
-            .eq('auth_id', user.id)
-            .single();
-
-          if (error) {
-            logger.error('Error fetching profile', { error });
-            setUserName(user.email || 'User');
-            setUserRole('operator');
-            return;
-          }
-
-          if (profile) {
-            setUserName(profile.full_name || user.email || 'User');
-            setUserRole(profile.role || 'operator');
-          } else {
-            setUserName(user.email || 'User');
-            setUserRole('operator');
-          }
-        }
-      } catch (error) {
-        logger.error('Error in fetchUserProfile', { error });
-        setUserName('User');
-        setUserRole('operator');
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

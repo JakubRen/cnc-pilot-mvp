@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import type { Notification } from '@/lib/notifications';
 import { useRealtimeNotifications } from '@/lib/realtime/hooks';
-import { supabase } from '@/lib/supabase';
+import { useUserProfile } from '@/hooks/useUserProfile';
 import { logger } from '@/lib/logger';
 
 export default function NotificationBell() {
@@ -12,27 +12,9 @@ export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [userId, setUserId] = useState<number | null>(null);
+  const { profile } = useUserProfile();
+  const userId = profile?.id ?? null;
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Get user ID on mount
-  useEffect(() => {
-    const getUserId = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: userProfile } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_id', user.id)
-          .single();
-
-        if (userProfile) {
-          setUserId(userProfile.id);
-        }
-      }
-    };
-    getUserId();
-  }, []);
 
   // Real-time notifications (only subscribe when we have userId)
   const newNotifications = useRealtimeNotifications(userId || 0);
