@@ -84,6 +84,37 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Simplified QC Flow + Order Item Tolerances Bug Fix (2026-02-03)
+
+**Feature:** Quick Measure - uproszczony flow kontroli jakości bez tworzenia planów QC.
+
+**Bug Fixes (Critical - Silent Data Loss):**
+- 🐛 **order_items missing tolerance columns** - UI zbierało tolerancje ale baza ich nie miała
+- 🐛 **INSERT ignorował tolerancje** - `app/orders/add/page.tsx` nie przekazywało tolerance_* do bazy
+- 🐛 **UPDATE ignorował tolerancje** - `EditOrderForm.tsx` nie obsługiwało tolerancji przy edycji
+
+**New Feature - Quick Measure:**
+- `components/qc/QuickMeasureForm.tsx` - Formularz szybkiego pomiaru z real-time pass/fail
+- `components/qc/QuickMeasureModal.tsx` - Modal opakowujący formularz
+- Przycisk "Szybki pomiar" na stronie zamówienia (sekcja Kontrola Jakości)
+- Wymiary i tolerancje pobierane automatycznie z `order_items`
+- Pass/fail feedback w czasie rzeczywistym (zielone/czerwone obramowania)
+- Zapis bezpośrednio do `quality_measurements` (bez tworzenia planu QC)
+
+**Database Migrations:**
+- `migrations/add_tolerances_to_order_items.sql` - 3 nowe kolumny tolerancji
+- `migrations/quick_measure_support.sql` - Rozszerzenie `quality_measurements` dla quick measure
+
+**Flow po zmianach:**
+```
+STARY: Zamówienie → "Dodaj pomiar" → MUSISZ stworzyć plan QC → pomiary
+NOWY: Zamówienie → "Szybki pomiar" → modal z wymiarami → zapis (bez planu!)
+```
+
+**Files Modified:** 8 files (+400 lines)
+
+---
+
 ### ✅ Design System Overhaul: Violet/Gray Palette + Geist Sans (2026-02-02)
 
 **Feature:** Complete color palette migration from blue/slate to violet/gray across the entire application.

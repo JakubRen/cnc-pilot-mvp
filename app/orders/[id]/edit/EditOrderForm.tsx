@@ -54,6 +54,9 @@ interface OrderItemEntry {
   length: number | null
   width: number | null
   height: number | null
+  tolerance_length: number | null
+  tolerance_width: number | null
+  tolerance_height: number | null
   complexity: string
   drawing_file_id: string | null
   notes: string
@@ -70,6 +73,9 @@ const createEmptyItem = (): OrderItemEntry => ({
   length: null,
   width: null,
   height: null,
+  tolerance_length: null,
+  tolerance_width: null,
+  tolerance_height: null,
   complexity: 'medium',
   drawing_file_id: null,
   notes: '',
@@ -193,6 +199,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
           length: item.length,
           width: item.width,
           height: item.height,
+          tolerance_length: item.tolerance_length,
+          tolerance_width: item.tolerance_width,
+          tolerance_height: item.tolerance_height,
           complexity: item.complexity || 'medium',
           drawing_file_id: item.drawing_file_id,
           notes: item.notes || '',
@@ -293,6 +302,9 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
         length: cleanNum(item.length),
         width: cleanNum(item.width),
         height: cleanNum(item.height),
+        tolerance_length: cleanNum(item.tolerance_length) ?? 0.1,
+        tolerance_width: cleanNum(item.tolerance_width) ?? 0.1,
+        tolerance_height: cleanNum(item.tolerance_height) ?? 0.1,
         complexity: item.complexity || null,
         drawing_file_id: item.drawing_file_id || null,
         notes: item.notes ? sanitizeText(item.notes) : null,
@@ -461,22 +473,42 @@ export default function EditOrderForm({ order }: EditOrderFormProps) {
                     onChange={(value) => updateOrderItem(index, { complexity: String(value) })}
                   />
                 </div>
-                {/* Dimensions */}
-                <div className="col-span-2 grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-muted-foreground text-xs mb-1">Dlugosc (mm)</label>
-                    <Input type="number" step="0.01" value={item.length ?? ''}
-                      onChange={(e) => updateOrderItem(index, { length: e.target.value ? Number(e.target.value) : null })} />
+                {/* Dimensions + Tolerances */}
+                <div className="col-span-2 bg-muted/50 p-3 rounded-lg border border-violet-200 dark:border-violet-500/30">
+                  <h5 className="text-xs font-semibold text-foreground mb-2">Wymiary detalu (L x W x H)</h5>
+                  <div className="grid grid-cols-3 gap-2 mb-2">
+                    <div>
+                      <label className="block text-muted-foreground text-xs mb-1">Dlugosc (mm)</label>
+                      <Input type="number" step="0.01" value={item.length ?? ''}
+                        onChange={(e) => updateOrderItem(index, { length: e.target.value ? Number(e.target.value) : null })} />
+                    </div>
+                    <div>
+                      <label className="block text-muted-foreground text-xs mb-1">Szerokosc (mm)</label>
+                      <Input type="number" step="0.01" value={item.width ?? ''}
+                        onChange={(e) => updateOrderItem(index, { width: e.target.value ? Number(e.target.value) : null })} />
+                    </div>
+                    <div>
+                      <label className="block text-muted-foreground text-xs mb-1">Wysokosc (mm)</label>
+                      <Input type="number" step="0.01" value={item.height ?? ''}
+                        onChange={(e) => updateOrderItem(index, { height: e.target.value ? Number(e.target.value) : null })} />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-muted-foreground text-xs mb-1">Szerokosc (mm)</label>
-                    <Input type="number" step="0.01" value={item.width ?? ''}
-                      onChange={(e) => updateOrderItem(index, { width: e.target.value ? Number(e.target.value) : null })} />
-                  </div>
-                  <div>
-                    <label className="block text-muted-foreground text-xs mb-1">Wysokosc (mm)</label>
-                    <Input type="number" step="0.01" value={item.height ?? ''}
-                      onChange={(e) => updateOrderItem(index, { height: e.target.value ? Number(e.target.value) : null })} />
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
+                      <Input type="number" step="0.001" placeholder="0.1" value={item.tolerance_length ?? ''}
+                        onChange={(e) => updateOrderItem(index, { tolerance_length: e.target.value ? Number(e.target.value) : null })} />
+                    </div>
+                    <div>
+                      <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
+                      <Input type="number" step="0.001" placeholder="0.1" value={item.tolerance_width ?? ''}
+                        onChange={(e) => updateOrderItem(index, { tolerance_width: e.target.value ? Number(e.target.value) : null })} />
+                    </div>
+                    <div>
+                      <label className="block text-muted-foreground text-xs mb-1">Tolerancja +/- (mm)</label>
+                      <Input type="number" step="0.001" placeholder="0.1" value={item.tolerance_height ?? ''}
+                        onChange={(e) => updateOrderItem(index, { tolerance_height: e.target.value ? Number(e.target.value) : null })} />
+                    </div>
                   </div>
                 </div>
                 {/* Notes */}

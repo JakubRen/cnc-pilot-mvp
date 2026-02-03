@@ -1,17 +1,42 @@
 import Link from 'next/link'
+import { QuickMeasureModal } from '@/components/qc'
 
 interface QCMeasurement {
   id: string
   is_pass: boolean
 }
 
+interface OrderItem {
+  id: string
+  part_name: string
+  length: number | null
+  width: number | null
+  height: number | null
+  tolerance_length: number | null
+  tolerance_width: number | null
+  tolerance_height: number | null
+}
+
 interface Props {
   orderId: string
   orderStatus: string
   qcMeasurements: QCMeasurement[] | null
+  orderItems?: OrderItem[]
+  companyId?: string
+  userId?: number
 }
 
-export default function OrderQCSummary({ orderId, orderStatus, qcMeasurements }: Props) {
+export default function OrderQCSummary({
+  orderId,
+  orderStatus,
+  qcMeasurements,
+  orderItems,
+  companyId,
+  userId,
+}: Props) {
+  const canAddMeasurement = ['in_progress', 'completed', 'ready_to_ship'].includes(orderStatus)
+  const hasOrderItems = orderItems && orderItems.length > 0 && companyId && userId
+
   return (
     <div className="col-span-2 bg-card p-6 rounded-lg border border-border">
       <div className="flex justify-between items-center mb-4">
@@ -19,12 +44,20 @@ export default function OrderQCSummary({ orderId, orderStatus, qcMeasurements }:
           <span>✅</span> Kontrola Jakości
         </h2>
         <div className="flex gap-2">
-          {['in_progress', 'completed', 'ready_to_ship'].includes(orderStatus) && (
+          {canAddMeasurement && hasOrderItems && (
+            <QuickMeasureModal
+              orderId={orderId}
+              orderItems={orderItems}
+              companyId={companyId}
+              userId={userId}
+            />
+          )}
+          {canAddMeasurement && (
             <Link
               href={`/orders/${orderId}/qc`}
               className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition font-semibold"
             >
-              + Dodaj pomiar
+              Zaawansowane QC
             </Link>
           )}
         </div>
@@ -35,7 +68,7 @@ export default function OrderQCSummary({ orderId, orderStatus, qcMeasurements }:
           <div className="text-5xl mb-4">📏</div>
           <p className="text-muted-foreground mb-2">Brak pomiarów dla tego zamówienia</p>
           <p className="text-muted-foreground text-sm">
-            Kliknij &quot;Dodaj pomiar&quot; aby przejść do modułu kontroli jakości
+            Kliknij &quot;Szybki pomiar&quot; aby wprowadzić pomiary bezpośrednio
           </p>
         </div>
       ) : (

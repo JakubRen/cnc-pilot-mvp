@@ -255,6 +255,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                       <th className="text-left py-2 px-3 text-muted-foreground font-medium">Material</th>
                       <th className="text-right py-2 px-3 text-muted-foreground font-medium">Ilosc</th>
                       <th className="text-left py-2 px-3 text-muted-foreground font-medium">Wymiary (mm)</th>
+                      <th className="text-left py-2 px-3 text-muted-foreground font-medium">Tolerancje</th>
                       <th className="text-left py-2 px-3 text-muted-foreground font-medium">Zlozonosc</th>
                       <th className="text-left py-2 px-3 text-muted-foreground font-medium">Notatki</th>
                     </tr>
@@ -270,6 +271,11 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                           {item.length || item.width || item.height
                             ? `${item.length || '-'} x ${item.width || '-'} x ${item.height || '-'}`
                             : '-'}
+                        </td>
+                        <td className="py-2 px-3 text-violet-500 text-xs">
+                          {item.tolerance_length || item.tolerance_width || item.tolerance_height
+                            ? `±${item.tolerance_length ?? 0.1} / ±${item.tolerance_width ?? 0.1} / ±${item.tolerance_height ?? 0.1}`
+                            : '±0.1'}
                         </td>
                         <td className="py-2 px-3 text-muted-foreground">
                           {item.complexity === 'simple' ? 'Prosty' : item.complexity === 'medium' ? 'Sredni' : item.complexity === 'complex' ? 'Zlozony' : '-'}
@@ -463,7 +469,14 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           </div>
 
           {/* Quality Control Section (Full Width) */}
-          <OrderQCSummary orderId={id} orderStatus={order.status} qcMeasurements={qcMeasurements} />
+          <OrderQCSummary
+            orderId={id}
+            orderStatus={order.status}
+            qcMeasurements={qcMeasurements}
+            orderItems={orderItems as any}
+            companyId={user.company_id}
+            userId={user.id}
+          />
           {/* Carbon Footprint Section (Full Width) */}
           {(order.status === 'completed' || order.status === 'ready_to_ship') && (
             <div className="col-span-2 bg-card p-6 rounded-lg border border-border">
