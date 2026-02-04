@@ -40,7 +40,7 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
 
     // Sprawdź czy sidebar highlightuje aktywny link
     const activeLink = page.locator('nav a:has-text("Pierwsze kroki")')
-    await expect(activeLink).toHaveClass(/bg-blue-600/)
+    await expect(activeLink).toHaveClass(/bg-violet-600/)
   })
 
   test('wszystkie główne sekcje są dostępne', async ({ page }) => {
@@ -109,9 +109,9 @@ test.describe('Portal Wiedzy - Smoke Tests', () => {
   test('aktywna strona jest podświetlona w sidebar', async ({ page }) => {
     await page.goto('/docs/faq')
 
-    // Link FAQ powinien mieć klasę aktywną (bg-blue-600)
+    // Link FAQ powinien mieć klasę aktywną (bg-violet-600)
     const faqLink = page.locator('a:has-text("FAQ")')
-    await expect(faqLink).toHaveClass(/bg-blue-600/)
+    await expect(faqLink).toHaveClass(/bg-violet-600/)
   })
 
   test('responsive - sidebar widoczna na desktop', async ({ page }) => {

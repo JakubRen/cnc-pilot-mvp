@@ -253,7 +253,7 @@ describe('getComparisonBadgeColor', () => {
   })
 
   it('should return blue for on', () => {
-    expect(getComparisonBadgeColor('on')).toBe('bg-blue-600')
+    expect(getComparisonBadgeColor('on')).toBe('bg-violet-600')
   })
 
   it('should return red for over', () => {

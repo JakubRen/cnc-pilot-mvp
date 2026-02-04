@@ -297,7 +297,7 @@ describe('getStatusBadgeColor', () => {
 
   it('should return blue for in_progress', () => {
     const result = getStatusBadgeColor('in_progress')
-    expect(result.bgColor).toBe('bg-blue-600')
+    expect(result.bgColor).toBe('bg-violet-600')
     expect(result.label).toBe('W realizacji')
   })
 
@@ -341,7 +341,7 @@ describe('getActivityIcon', () => {
 // ============================================
 describe('getActivityColor', () => {
   it('should return correct colors for known types', () => {
-    expect(getActivityColor('order_created')).toBe('text-blue-600')
+    expect(getActivityColor('order_created')).toBe('text-violet-600')
     expect(getActivityColor('order_completed')).toBe('text-green-600')
     expect(getActivityColor('low_stock_alert')).toBe('text-yellow-600')
   })

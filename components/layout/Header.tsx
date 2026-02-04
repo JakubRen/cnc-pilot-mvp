@@ -55,7 +55,7 @@ export default function Header({ isSidebarOpen = true, onToggleSidebar }: Header
   };
 
   return (
-    <header className="bg-card sticky top-0 z-50 border-b border-border px-6 py-4 flex items-center justify-between shadow-sm">
+    <header className="bg-card/80 backdrop-blur-sm sticky top-0 z-50 border-b border-border px-6 py-4 flex items-center justify-between shadow-sm">
       {onToggleSidebar && (
         <button
           onClick={onToggleSidebar}
