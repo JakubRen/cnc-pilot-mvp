@@ -27,8 +27,9 @@ export async function updateOrderStatus(orderId: string, newStatus: string): Pro
     return { success: false, error: error.message }
   }
 
-  revalidatePath('/orders')
-  revalidatePath(`/orders/${orderId}`)
+  // Revalidate both list and detail pages
+  revalidatePath('/orders', 'page')
+  revalidatePath(`/orders/${orderId}`, 'page')
 
   return { success: true }
 }

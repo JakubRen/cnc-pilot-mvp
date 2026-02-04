@@ -6,6 +6,9 @@ import AppLayout from '@/components/layout/AppLayout'
 import OrdersClient from './OrdersClient'
 import { Button } from '@/components/ui/Button'
 
+// Disable router cache - always fetch fresh data
+export const dynamic = 'force-dynamic'
+
 export default async function OrdersPage() {
   const userProfile = await getUserProfile()
 
