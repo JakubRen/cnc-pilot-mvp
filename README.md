@@ -84,6 +84,37 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Order Details Tabbed Interface (2026-02-04)
+
+**Feature:** Complete UI refactor of order details page — from single-page scroll to organized tabbed interface.
+
+**New Components:**
+- `app/orders/[id]/OrderDetailsTabs.tsx` - Client component with 5 tabs
+- `app/orders/[id]/DrawingButton.tsx` - Compact drawing button for header
+
+**5 Tabs:**
+| Tab | Content |
+|-----|---------|
+| 📋 Podstawowe | Dane klienta, oś czasu, operator, tabela pozycji |
+| 📝 Opis | Notatki zamówienia z przyciskiem edycji |
+| ⚙️ Produkcja | Plany produkcji + Time Tracking |
+| 💰 Finanse | Analiza kosztów i rentowności |
+| ✅ Jakość | Kontrola jakości + Ślad węglowy |
+
+**UX Improvements:**
+- **Sticky header** — numer zamówienia, status badges i akcje zawsze widoczne
+- **Drawing button** — kompaktowy przycisk zamiast inline preview
+- **Fade-in animations** — płynne przełączanie między tabami
+- **Fallback for legacy orders** — jeśli brak `order_items`, wyświetla dane z głównego zamówienia
+
+**Bug Fixes:**
+- 🐛 **Cache refresh** — `force-dynamic` na `/orders` zapewnia świeże dane po zmianie statusu
+- 🐛 **Server→Client function passing** — `formatDate` przeniesiona do Client Component
+
+**Files:** 5 files changed, 450 insertions, 347 deletions | Commit: `40f987a`
+
+---
+
 ### ✅ Simplified QC Flow + Order Item Tolerances Bug Fix (2026-02-03)
 
 **Feature:** Quick Measure - uproszczony flow kontroli jakości bez tworzenia planów QC.
