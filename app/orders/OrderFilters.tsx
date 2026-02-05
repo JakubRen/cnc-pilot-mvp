@@ -15,15 +15,16 @@ export interface FilterState {
 
 interface OrderFiltersProps {
   onFilterChange: (filters: FilterState) => void
+  initialSearch?: string
 }
 
-export default function OrderFilters({ onFilterChange }: OrderFiltersProps) {
+export default function OrderFilters({ onFilterChange, initialSearch = '' }: OrderFiltersProps) {
   const { t } = useTranslation()
 
   const [filters, setFilters] = useState<FilterState>({
     status: 'all',
     deadline: 'all',
-    search: '',
+    search: initialSearch,
     sortBy: 'deadline',
   })
 

@@ -115,7 +115,7 @@ export default async function OrdersPage() {
             </Button>
           </div>
 
-          <OrdersClient orders={ordersWithTags} currentUserRole={userProfile.role} />
+          <OrdersClient orders={ordersWithTags} currentUserRole={userProfile.role} companyId={userProfile.company_id || ''} userId={userProfile.id} />
         </div>
       </div>
     </AppLayout>

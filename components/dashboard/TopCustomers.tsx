@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link';
 import { usePermissions } from '@/hooks/usePermissions';
 import { PriceDisplay } from '@/components/permissions';
 
@@ -46,7 +47,11 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
 
       <div className="space-y-4 stagger-fade-in">
         {customers.map((customer, index) => (
-          <div key={customer.name} className="space-y-2">
+          <Link
+            key={customer.name}
+            href={`/orders?search=${encodeURIComponent(customer.name)}`}
+            className="block space-y-2 rounded-lg p-2 -m-2 hover:bg-accent transition group"
+          >
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <span className={`font-bold text-sm w-7 h-7 rounded-full flex items-center justify-center ${
@@ -57,7 +62,7 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
                 }`}>
                   #{index + 1}
                 </span>
-                <span className="font-semibold text-foreground truncate max-w-[180px]">
+                <span className="font-semibold text-foreground truncate max-w-[180px] group-hover:text-primary transition-colors">
                   {customer.name}
                 </span>
               </div>
@@ -89,7 +94,7 @@ export default function TopCustomers({ customers }: TopCustomersProps) {
                 />
               </div>
             )}
-          </div>
+          </Link>
         ))}
       </div>
     </div>

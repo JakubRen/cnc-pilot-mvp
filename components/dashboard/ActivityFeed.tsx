@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { formatRelativeTime, getActivityIcon, getActivityColor } from '@/lib/dashboard-utils';
 
 interface Activity {
@@ -6,6 +7,7 @@ interface Activity {
   subtitle: string;
   actor: string;
   timestamp: string;
+  href?: string;
 }
 
 interface ActivityFeedProps {
@@ -46,11 +48,8 @@ export default function ActivityFeed({ recentActivity }: ActivityFeedProps) {
           const icon = getActivityIcon(activity.type);
           const colorClass = getActivityColor(activity.type);
 
-          return (
-            <div
-              key={index}
-              className="flex items-start gap-3 p-3 bg-muted rounded-md hover:bg-accent transition"
-            >
+          const content = (
+            <div className="flex items-start gap-3">
               {/* Icon */}
               <div className="flex-shrink-0 mt-0.5">
                 <span className="text-xl">{icon}</span>
@@ -74,6 +73,23 @@ export default function ActivityFeed({ recentActivity }: ActivityFeedProps) {
                   </span>
                 </div>
               </div>
+            </div>
+          );
+
+          return activity.href ? (
+            <Link
+              key={index}
+              href={activity.href}
+              className="block p-3 bg-muted rounded-md hover:bg-accent transition group"
+            >
+              {content}
+            </Link>
+          ) : (
+            <div
+              key={index}
+              className="p-3 bg-muted rounded-md hover:bg-accent transition"
+            >
+              {content}
             </div>
           );
         })}

@@ -42,7 +42,7 @@ interface DashboardData {
     assigned_operator?: { name: string };
     total_cost?: string | number;
   }>
-  recentActivity: Array<{ type: string; title: string; subtitle: string; actor: string; timestamp: string }>
+  recentActivity: Array<{ type: string; title: string; subtitle: string; actor: string; timestamp: string; href?: string }>
   topCustomers: Array<{ name: string; revenue: number; count: number }>
   ordersChartData: Array<{ date: string; orders: number }>
   revenueChartData: Array<{ date: string; revenue: number }>

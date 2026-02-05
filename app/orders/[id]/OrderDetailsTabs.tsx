@@ -6,6 +6,7 @@ import OrderTimeTracking from './OrderTimeTracking'
 import OrderProductionPlans from './OrderProductionPlans'
 import OrderQCSummary from './OrderQCSummary'
 import OrderCostAnalysis from '@/components/orders/OrderCostAnalysis'
+import OrderTimeline from '@/components/orders/OrderTimeline'
 
 // Type definitions
 interface OrderItem {
@@ -131,6 +132,9 @@ export default function OrderDetailsTabs({
         </TabsTrigger>
         <TabsTrigger value="jakosc" className="px-4 py-2">
           ✅ Jakość
+        </TabsTrigger>
+        <TabsTrigger value="historia" className="px-4 py-2">
+          🕐 Historia
         </TabsTrigger>
       </TabsList>
 
@@ -355,6 +359,11 @@ export default function OrderDetailsTabs({
             </div>
           )}
         </div>
+      </TabsContent>
+
+      {/* TAB: Historia */}
+      <TabsContent value="historia" className="animate-fade-in">
+        <OrderTimeline orderId={order.id} companyId={companyId} />
       </TabsContent>
     </Tabs>
   )

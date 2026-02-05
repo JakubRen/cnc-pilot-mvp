@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { exportOrdersToCSV } from '@/lib/csv-export'
 import OrderFilters, { FilterState } from './OrderFilters'
@@ -10,9 +11,11 @@ import { Button } from '@/components/ui/Button'
 import { useOrderFiltering } from '@/hooks/useOrderFiltering'
 import { useOrderSelection } from '@/hooks/useOrderSelection'
 import { useOptimisticOrders } from '@/hooks/useOptimisticOrders'
+import { useRealtimeOrders } from '@/lib/realtime/hooks'
 import { logger } from '@/lib/logger'
 import PageTransition from '@/components/ui/PageTransition'
 import { useConfirmation } from '@/components/ui/ConfirmationDialog'
+import QuickOrderModal from '@/components/orders/QuickOrderModal'
 
 interface OrderWithTags {
   id: string
@@ -33,14 +36,20 @@ interface OrderWithTags {
 interface OrdersClientProps {
   orders: OrderWithTags[]
   currentUserRole: string
+  companyId: string
+  userId: number
 }
 
-export default function OrdersClient({ orders: initialOrders, currentUserRole }: OrdersClientProps) {
+export default function OrdersClient({ orders: initialOrders, currentUserRole, companyId, userId }: OrdersClientProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const initialSearch = searchParams.get('search') || ''
   const { confirm, ConfirmDialog } = useConfirmation()
+  const [isQuickOrderOpen, setIsQuickOrderOpen] = useState(false)
   const [filters, setFilters] = useState<FilterState>({
     status: 'all',
     deadline: 'all',
-    search: '',
+    search: initialSearch,
     sortBy: 'deadline',
   })
 
@@ -51,6 +60,18 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole }:
     isPending,
     hasPendingUpdates
   } = useOptimisticOrders(initialOrders)
+
+  // Realtime subscription — refresh server data on external changes
+  const realtimeUpdates = useRealtimeOrders(companyId)
+  const prevUpdatesLen = useRef(realtimeUpdates.length)
+
+  useEffect(() => {
+    if (realtimeUpdates.length > prevUpdatesLen.current) {
+      prevUpdatesLen.current = realtimeUpdates.length
+      // Refresh server data so optimistic hook picks up new initialOrders
+      router.refresh()
+    }
+  }, [realtimeUpdates.length, router])
 
   // Custom Hooks
   const filteredOrders = useOrderFiltering(orders, filters, [], 'OR')
@@ -100,7 +121,7 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole }:
     <PageTransition className="space-y-4">
       <ConfirmDialog />
       {/* FILTERS ROW */}
-      <OrderFilters onFilterChange={setFilters} />
+      <OrderFilters onFilterChange={setFilters} initialSearch={initialSearch} />
 
       {/* Results Count & Export Button */}
       <div className="flex justify-between items-center">
@@ -109,16 +130,27 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole }:
             <span>Wyświetlanie {filteredOrders.length} z {orders.length} zamówień</span>
           )}
         </div>
-        <Button
-          onClick={handleExportCSV}
-          disabled={filteredOrders.length === 0}
-          variant="primary"
-          size="sm"
-          className="flex items-center gap-2"
-        >
-          <span>📥</span>
-          Eksportuj CSV ({filteredOrders.length})
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setIsQuickOrderOpen(true)}
+            variant="primary"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <span>⚡</span>
+            Szybkie Zamówienie
+          </Button>
+          <Button
+            onClick={handleExportCSV}
+            disabled={filteredOrders.length === 0}
+            variant="primary"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <span>📥</span>
+            Eksportuj CSV ({filteredOrders.length})
+          </Button>
+        </div>
       </div>
 
       {/* Bulk Actions Bar */}
@@ -185,6 +217,13 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole }:
           isPending={isPending}
         />
       )}
+      {/* Quick Order Modal */}
+      <QuickOrderModal
+        isOpen={isQuickOrderOpen}
+        onClose={() => setIsQuickOrderOpen(false)}
+        companyId={companyId}
+        userId={userId}
+      />
     </PageTransition>
   )
 }

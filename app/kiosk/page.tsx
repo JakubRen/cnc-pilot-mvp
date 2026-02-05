@@ -35,6 +35,34 @@ export default async function KioskPage() {
     // Handle error gracefully
   }
 
+  // Fetch assigned operations for work queue
+  const { data: assignedOperations } = await supabase
+    .from('operations')
+    .select(`
+      id,
+      operation_number,
+      operation_type,
+      operation_name,
+      status,
+      production_plans!inner (
+        id,
+        plan_number,
+        order_items:order_item_id (
+          part_name,
+          quantity,
+          drawing_file:files!order_items_drawing_file_id_fkey (
+            id,
+            url,
+            name
+          )
+        )
+      )
+    `)
+    .eq('assigned_operator_id', userProfile.id)
+    .in('status', ['pending', 'in_progress'])
+    .order('operation_number', { ascending: true })
+    .limit(10)
+
   let currentOrder = null
   let currentOrderStatus: 'idle' | 'running' | 'paused' = 'idle'
 
@@ -73,13 +101,12 @@ export default async function KioskPage() {
         <p className="text-xl text-muted-foreground">Panel operatora {userProfile.full_name}</p>
       </div>
 
-      <div className="bg-card rounded-2xl shadow-2xl p-10 w-full max-w-2xl text-center border-4 border-violet-500 dark:border-violet-500">
-        <KioskClient
-          currentOrder={currentOrder}
-          activeTimeLogId={activeTimeLog?.id || null}
-          currentOrderStatus={currentOrderStatus}
-        />
-      </div>
+      <KioskClient
+        currentOrder={currentOrder}
+        activeTimeLogId={activeTimeLog?.id || null}
+        currentOrderStatus={currentOrderStatus}
+        assignedOperations={assignedOperations || []}
+      />
 
       <p className="mt-8 text-slate-500 dark:text-muted-foreground text-sm">Zalogowany jako: {userProfile.email} | <Link href="/logout" className="text-violet-400 hover:underline">Wyloguj</Link></p>
     </div>

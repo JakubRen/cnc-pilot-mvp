@@ -84,6 +84,27 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Phase 1 Feature Plan — 5 Features (2026-02-05)
+
+**Scope:** Implemented all 5 Phase 1 features from Feature Plan, adding realtime capabilities, quick actions, and enhanced operator experience.
+
+**New Components:**
+- `components/orders/QuickOrderModal.tsx` — 5-field quick order creation with Zod validation + auto order number
+- `components/orders/OrderTimeline.tsx` — Chronological timeline merging audit_logs, time_logs, and QC measurements
+
+**5 Features Implemented:**
+| Feature | Description |
+|---------|------------|
+| 🔄 Realtime Order List | `useRealtimeOrders()` wired into OrdersClient — auto-refreshes on DB changes |
+| 🎯 Smart Dashboard CTAs | ActivityFeed links to `/orders/[id]`, TopCustomers links to `/orders?search=NAME` |
+| ⚡ Quick Order Modal | "Szybkie Zamówienie" button — customer select, part name, quantity, material, deadline |
+| 🕐 Order Timeline (6th Tab) | "Historia" tab with audit trail + time logs + QC measurements in chronological order |
+| 🏭 Kiosk Work Queue | Operators see assigned operations with drawing previews, type badges, and status indicators |
+
+**Files Changed:** 10 modified + 2 new files (12 total)
+
+---
+
 ### ✅ Order Details Tabbed Interface (2026-02-04)
 
 **Feature:** Complete UI refactor of order details page — from single-page scroll to organized tabbed interface.

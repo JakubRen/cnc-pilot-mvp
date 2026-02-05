@@ -260,6 +260,7 @@ export async function getRecentActivity(companyId: string, limit = 10) {
       subtitle: `Customer: ${order.customer_name}`,
       actor: creatorName || 'Unknown',
       timestamp: order.created_at,
+      href: `/orders/${order.id}`,
     };
   });
 }
