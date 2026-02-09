@@ -19,6 +19,9 @@ import { Select } from '@/components/ui/Select'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/Button'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useSmartPricing } from '@/hooks/useSmartPricing'
+import SmartEstimateCard from '@/components/orders/SmartEstimateCard'
+import SimilarOrdersWidget from '@/components/orders/SimilarOrdersWidget'
 import { useOperators } from '@/hooks/useOperators'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { sanitizeText } from '@/lib/sanitization'
@@ -84,6 +87,13 @@ export default function AddOrderPage() {
   const { operators, loading: operatorsLoading } = useOperators()
 
   const totalCost = materialCost + laborCost + overheadCost
+
+  // Smart pricing from historical data (debounced, based on first item)
+  const firstItem = items[0]
+  const { estimate: smartEstimate, similarOrders, loading: smartLoading } = useSmartPricing(
+    firstItem?.part_name || '',
+    firstItem?.material || ''
+  )
 
   // Auto-generate order number
   useEffect(() => {
@@ -478,10 +488,29 @@ export default function AddOrderPage() {
             </Button>
           </div>
 
-          {/* === COST SECTION === */}
+          {/* === SMART ESTIMATE + COST SECTION === */}
           <Card className="mb-6 bg-card border-border">
             <CardContent className="p-8">
               <h3 className="text-lg font-semibold text-foreground mb-4">{t('orders', 'costCalculationTitle')}</h3>
+
+              {/* Smart Estimate from historical data */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <SmartEstimateCard
+                  estimate={smartEstimate}
+                  loading={smartLoading}
+                  onApplyPrice={(price) => {
+                    const breakdown = smartEstimate
+                    if (breakdown) {
+                      setMaterialCost(Math.round(price * 0.3 * 100) / 100)
+                      setLaborCost(Math.round(price * 0.5 * 100) / 100)
+                      setOverheadCost(Math.round(price * 0.2 * 100) / 100)
+                    }
+                    toast.success('Wycena historyczna zastosowana!')
+                  }}
+                />
+                <SimilarOrdersWidget orders={similarOrders} loading={smartLoading} />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-foreground mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
