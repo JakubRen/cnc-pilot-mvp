@@ -11,6 +11,7 @@ export interface DashboardPreferences {
   topCustomersAnalyticsChart: boolean
   productivityChart: boolean
   profitabilityWidget: boolean
+  aiInsights: boolean
 }
 
 export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
@@ -24,6 +25,7 @@ export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
   topCustomersAnalyticsChart: true,
   productivityChart: true,
   profitabilityWidget: true,
+  aiInsights: true,
 }
 
 export interface DashboardWidget {
@@ -93,5 +95,11 @@ export const DASHBOARD_WIDGETS: DashboardWidget[] = [
     label: 'Rentowność',
     description: 'Analiza zysków i marży (30 dni)',
     icon: '💰',
+  },
+  {
+    key: 'aiInsights',
+    label: 'AI Insights',
+    description: 'Spostrzeżenia AI z danych produkcyjnych',
+    icon: '🧠',
   },
 ]

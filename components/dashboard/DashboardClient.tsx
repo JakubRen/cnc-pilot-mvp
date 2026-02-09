@@ -14,7 +14,9 @@ import RevenueChart from './RevenueChart'
 import TopCustomersChart from './TopCustomersChart'
 import ProductivityChart from './ProductivityChart'
 import ProfitabilityWidget from './ProfitabilityWidget'
+import AIInsightsWidget from './AIInsightsWidget'
 import PageTransition from '@/components/ui/PageTransition'
+import type { AIInsightsData } from '@/types/ai-insights'
 
 interface DashboardData {
   metrics: {
@@ -66,16 +68,20 @@ interface Props {
   userId: number
   userName: string
   companyName: string
+  companyId: string
   initialPreferences: DashboardPreferences
   dashboardData: DashboardData
+  aiInsights: AIInsightsData
 }
 
 export default function DashboardClient({
   userId,
   userName,
   companyName,
+  companyId,
   initialPreferences,
   dashboardData,
+  aiInsights,
 }: Props) {
   const { t } = useTranslation()
   const [preferences, setPreferences] = useState<DashboardPreferences>(
@@ -145,7 +151,14 @@ export default function DashboardClient({
         </div>
 
         {/* Metric Cards */}
-        {preferences.metricCards && <MetricCards metrics={dashboardData.metrics} />}      
+        {preferences.metricCards && <MetricCards metrics={dashboardData.metrics} />}
+
+        {/* AI Insights Widget */}
+        {preferences.aiInsights && (
+          <div className="mb-6">
+            <AIInsightsWidget initialInsights={aiInsights} companyId={companyId} />
+          </div>
+        )}
 
         {/* Main Content Grid */}
         {(preferences.urgentTasks || preferences.productionPlan || preferences.topCustomers) && (

@@ -5,6 +5,7 @@ import { canAccessModule } from '@/lib/permissions-server';
 import AppLayout from '@/components/layout/AppLayout';
 import DashboardClient from '@/components/dashboard/DashboardClient';
 import { DashboardPreferences, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard';
+import { getOrGenerateInsights } from '@/lib/ai/insights-generator';
 import { logger } from '@/lib/logger';
 
 export default async function HomePage() {
@@ -43,8 +44,11 @@ export default async function HomePage() {
     redirect('/no-access');
   }
 
-  // Fetch dashboard data
-  const dashboardData = await getDashboardSummary(currentUser.company_id);
+  // Fetch dashboard data + AI insights in parallel
+  const [dashboardData, aiInsights] = await Promise.all([
+    getDashboardSummary(currentUser.company_id),
+    getOrGenerateInsights(currentUser.company_id),
+  ]);
 
   // Get user's dashboard preferences
   const preferences: DashboardPreferences =
@@ -56,8 +60,10 @@ export default async function HomePage() {
         userId={currentUser.id}
         userName={currentUser.full_name}
         companyName={currentUser.company?.name || 'N/A'}
+        companyId={currentUser.company_id}
         initialPreferences={preferences}
         dashboardData={dashboardData}
+        aiInsights={aiInsights}
       />
     </AppLayout>
   );
