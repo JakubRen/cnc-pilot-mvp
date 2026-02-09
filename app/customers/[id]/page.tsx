@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect, notFound } from 'next/navigation'
+import { scoreCustomer } from '@/lib/customer-scoring'
 import CustomerDetailsClient from './CustomerDetailsClient'
 
 interface CustomerDetailsPageProps {
@@ -36,19 +37,30 @@ export default async function CustomerDetailsPage({ params }: CustomerDetailsPag
     .eq('customer_id', id)
     .order('created_at', { ascending: false })
 
-  // Fetch related orders
+  // Fetch related orders (include selling_price for scoring)
   const { data: orders } = await supabase
     .from('orders')
-    .select('id, order_number, status, deadline, created_at')
+    .select('id, order_number, status, deadline, created_at, selling_price')
     .eq('customer_id', id)
     .order('created_at', { ascending: false })
+
+  // Compute customer score from orders
+  const orderList = orders || []
+  const totalRevenue = orderList.reduce((sum, o) => sum + (o.selling_price || 0), 0)
+  const customerScore = scoreCustomer({
+    customerName: customer.name,
+    orderCount: orderList.length,
+    totalRevenue,
+    lastOrderDate: orderList[0]?.created_at || null,
+  })
 
   return (
     <CustomerDetailsClient
       customer={customer}
       quotes={quotes || []}
-      orders={orders || []}
+      orders={orderList}
       currentUserRole={userProfile.role}
+      customerScore={{ tier: customerScore.tier, label: customerScore.label, icon: customerScore.icon, color: customerScore.color, orderCount: customerScore.orderCount, totalRevenue: customerScore.totalRevenue }}
     />
   )
 }

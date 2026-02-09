@@ -5,9 +5,11 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { EventClickArg, DateSelectArg } from '@fullcalendar/core'
+import { EventClickArg, DateSelectArg, EventDropArg } from '@fullcalendar/core'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
 import { useTheme } from '@/components/theme/ThemeProvider'
+import { updateOrderDeadline } from '@/lib/actions/update-order-deadline'
 import { logger } from '@/lib/logger'
 
 interface Order {
@@ -83,6 +85,21 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
     logger.debug('Calendar date selected', { startStr: info.startStr, endStr: info.endStr })
   }
 
+  const handleEventDrop = async (info: EventDropArg) => {
+    const orderId = info.event.id
+    const newDeadline = info.event.startStr
+    const order = info.event.extendedProps.order as Order
+
+    const result = await updateOrderDeadline(orderId, newDeadline)
+
+    if (result.error) {
+      info.revert()
+      toast.error(result.error)
+    } else {
+      toast.success(`${order.order_number} — nowy termin: ${new Date(newDeadline).toLocaleDateString('pl-PL')}`)
+    }
+  }
+
   const statusLabels: Record<string, string> = {
     pending: 'Oczekujące',
     in_progress: 'W realizacji',
@@ -137,6 +154,8 @@ export default function ProductionCalendar({ orders }: ProductionCalendarProps) 
             key={view}
             events={events}
             eventClick={handleEventClick}
+            editable={true}
+            eventDrop={handleEventDrop}
             selectable={true}
             select={handleDateSelect}
             locale="pl"

@@ -6,6 +6,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import DashboardClient from '@/components/dashboard/DashboardClient';
 import { DashboardPreferences, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard';
 import { getOrGenerateInsights } from '@/lib/ai/insights-generator';
+import { getAnomalyAlerts } from '@/lib/anomaly-alerts';
 import { logger } from '@/lib/logger';
 
 export default async function HomePage() {
@@ -44,10 +45,11 @@ export default async function HomePage() {
     redirect('/no-access');
   }
 
-  // Fetch dashboard data + AI insights in parallel
-  const [dashboardData, aiInsights] = await Promise.all([
+  // Fetch dashboard data + AI insights + anomalies in parallel
+  const [dashboardData, aiInsights, anomalyAlerts] = await Promise.all([
     getDashboardSummary(currentUser.company_id),
     getOrGenerateInsights(currentUser.company_id),
+    getAnomalyAlerts(currentUser.company_id),
   ]);
 
   // Get user's dashboard preferences
@@ -64,6 +66,7 @@ export default async function HomePage() {
         initialPreferences={preferences}
         dashboardData={dashboardData}
         aiInsights={aiInsights}
+        anomalyAlerts={anomalyAlerts}
       />
     </AppLayout>
   );

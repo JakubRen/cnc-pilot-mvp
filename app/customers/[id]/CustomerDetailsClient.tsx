@@ -13,11 +13,21 @@ import toast from 'react-hot-toast'
 import { useConfirmation } from '@/components/ui/ConfirmationDialog'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
+interface CustomerScoreInfo {
+  tier: string
+  label: string
+  icon: string
+  color: string
+  orderCount: number
+  totalRevenue: number
+}
+
 interface CustomerDetailsClientProps {
   customer: Customer
   quotes: any[]
   orders: any[]
   currentUserRole: string
+  customerScore: CustomerScoreInfo
 }
 
 const typeLabels: Record<ContractorType, { label: string; icon: string; color: string }> = {
@@ -31,6 +41,7 @@ export default function CustomerDetailsClient({
   quotes,
   orders,
   currentUserRole,
+  customerScore,
 }: CustomerDetailsClientProps) {
   const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
@@ -104,6 +115,9 @@ export default function CustomerDetailsClient({
                 <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${typeLabels[customer.type].color}`}>
                   {typeLabels[customer.type].icon} {typeLabels[customer.type].label}
                 </span>
+                <span className={`px-3 py-1 rounded-full text-sm font-bold ${customerScore.color}`}>
+                  {customerScore.icon} {customerScore.label}
+                </span>
               </div>
               <p className="text-muted-foreground">
                 Szczegóły kontrahenta
@@ -131,7 +145,7 @@ export default function CustomerDetailsClient({
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card>
               <CardContent className="p-6">
                 <div className="text-muted-foreground text-sm mb-1">
@@ -159,6 +173,16 @@ export default function CustomerDetailsClient({
                 </div>
                 <div className="text-3xl font-bold text-foreground">
                   {orders.length}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6">
+                <div className="text-muted-foreground text-sm mb-1">
+                  Przychód z zamówień
+                </div>
+                <div className="text-3xl font-bold text-foreground">
+                  {customerScore.totalRevenue.toFixed(0)} PLN
                 </div>
               </CardContent>
             </Card>

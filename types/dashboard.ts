@@ -12,6 +12,7 @@ export interface DashboardPreferences {
   productivityChart: boolean
   profitabilityWidget: boolean
   aiInsights: boolean
+  anomalyAlerts: boolean
 }
 
 export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
@@ -26,6 +27,7 @@ export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
   productivityChart: true,
   profitabilityWidget: true,
   aiInsights: true,
+  anomalyAlerts: true,
 }
 
 export interface DashboardWidget {
@@ -101,5 +103,11 @@ export const DASHBOARD_WIDGETS: DashboardWidget[] = [
     label: 'AI Insights',
     description: 'Spostrzeżenia AI z danych produkcyjnych',
     icon: '🧠',
+  },
+  {
+    key: 'anomalyAlerts',
+    label: 'Anomalie Produkcyjne',
+    description: 'Wykrywanie przekroczeń czasu, kosztów i deadline',
+    icon: '🚨',
   },
 ]

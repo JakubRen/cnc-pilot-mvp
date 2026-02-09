@@ -7,9 +7,19 @@ import { Card, CardContent } from '@/components/ui/card'
 import type { Customer, ContractorType } from '@/types/customers'
 import AppLayout from '@/components/layout/AppLayout'
 
+interface CustomerScoreInfo {
+  tier: string
+  label: string
+  icon: string
+  color: string
+  orderCount: number
+  totalRevenue: number
+}
+
 interface CustomersPageClientProps {
   customers: Customer[]
   currentUserRole: string
+  customerScores: Record<string, CustomerScoreInfo>
 }
 
 const typeLabels: Record<ContractorType, { label: string; icon: string; color: string }> = {
@@ -18,7 +28,7 @@ const typeLabels: Record<ContractorType, { label: string; icon: string; color: s
   cooperator: { label: 'Kooperant', icon: '🤝', color: 'bg-green-600' },
 }
 
-export default function CustomersPageClient({ customers, currentUserRole }: CustomersPageClientProps) {
+export default function CustomersPageClient({ customers, currentUserRole, customerScores }: CustomersPageClientProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [typeFilter, setTypeFilter] = useState<ContractorType | 'all'>('all')
 
@@ -198,6 +208,11 @@ export default function CustomersPageClient({ customers, currentUserRole }: Cust
                             <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${typeLabels[customer.type].color}`}>
                               {typeLabels[customer.type].icon} {typeLabels[customer.type].label}
                             </span>
+                            {customerScores[customer.id] && (
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${customerScores[customer.id].color}`}>
+                                {customerScores[customer.id].icon} {customerScores[customer.id].label}
+                              </span>
+                            )}
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                             {customer.email && (

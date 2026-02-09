@@ -15,8 +15,10 @@ import TopCustomersChart from './TopCustomersChart'
 import ProductivityChart from './ProductivityChart'
 import ProfitabilityWidget from './ProfitabilityWidget'
 import AIInsightsWidget from './AIInsightsWidget'
+import AnomalyAlertsWidget from './AnomalyAlertsWidget'
 import PageTransition from '@/components/ui/PageTransition'
 import type { AIInsightsData } from '@/types/ai-insights'
+import type { AnomalyAlertsData } from '@/types/anomaly-alerts'
 
 interface DashboardData {
   metrics: {
@@ -72,6 +74,7 @@ interface Props {
   initialPreferences: DashboardPreferences
   dashboardData: DashboardData
   aiInsights: AIInsightsData
+  anomalyAlerts: AnomalyAlertsData
 }
 
 export default function DashboardClient({
@@ -82,6 +85,7 @@ export default function DashboardClient({
   initialPreferences,
   dashboardData,
   aiInsights,
+  anomalyAlerts,
 }: Props) {
   const { t } = useTranslation()
   const [preferences, setPreferences] = useState<DashboardPreferences>(
@@ -157,6 +161,13 @@ export default function DashboardClient({
         {preferences.aiInsights && (
           <div className="mb-6">
             <AIInsightsWidget initialInsights={aiInsights} companyId={companyId} />
+          </div>
+        )}
+
+        {/* Anomaly Alerts Widget */}
+        {preferences.anomalyAlerts && (
+          <div className="mb-6">
+            <AnomalyAlertsWidget data={anomalyAlerts} />
           </div>
         )}
 

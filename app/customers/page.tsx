@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
+import { getCustomerOrderStats, scoreCustomer } from '@/lib/customer-scoring'
 import CustomersPageClient from './CustomersPageClient'
 
 export default async function CustomersPage() {
@@ -20,5 +21,23 @@ export default async function CustomersPage() {
     .eq('company_id', userProfile.company_id)
     .order('name')
 
-  return <CustomersPageClient customers={customers || []} currentUserRole={userProfile.role} />
+  // Fetch order stats for scoring
+  const orderStats = await getCustomerOrderStats(userProfile.company_id)
+
+  // Compute scores for all customers
+  const customerScores: Record<string, { tier: string; label: string; icon: string; color: string; orderCount: number; totalRevenue: number }> = {}
+  for (const customer of customers || []) {
+    const stats = orderStats.get(customer.name)
+    const score = scoreCustomer(stats)
+    customerScores[customer.id] = {
+      tier: score.tier,
+      label: score.label,
+      icon: score.icon,
+      color: score.color,
+      orderCount: score.orderCount,
+      totalRevenue: score.totalRevenue,
+    }
+  }
+
+  return <CustomersPageClient customers={customers || []} currentUserRole={userProfile.role} customerScores={customerScores} />
 }

@@ -22,6 +22,7 @@ import { useTranslation } from '@/hooks/useTranslation'
 import { useSmartPricing } from '@/hooks/useSmartPricing'
 import SmartEstimateCard from '@/components/orders/SmartEstimateCard'
 import SimilarOrdersWidget from '@/components/orders/SimilarOrdersWidget'
+import DeadlineSuggestion from '@/components/orders/DeadlineSuggestion'
 import { useOperators } from '@/hooks/useOperators'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { sanitizeText } from '@/lib/sanitization'
@@ -414,6 +415,11 @@ export default function AddOrderPage() {
                     required
                     minDate={new Date()}
                     placeholder="Wybierz termin..."
+                  />
+                  <DeadlineSuggestion
+                    estimate={smartEstimate}
+                    loading={smartLoading}
+                    onApplyDeadline={setDeadline}
                   />
                 </div>
 
