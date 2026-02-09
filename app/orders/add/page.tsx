@@ -5,6 +5,8 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import { useEffect, useState } from 'react'
 import type { UnifiedPricingResult } from '@/types/quotes'
+import type { PriceEstimateResult } from '@/lib/ai/openai-client'
+import { estimatePriceAction } from '@/lib/ai/estimate-price-action'
 import type { Customer } from '@/types/customers'
 import { logger } from '@/lib/logger'
 import UnifiedPricingCard from '@/components/pricing/UnifiedPricingCard'
@@ -76,6 +78,11 @@ export default function AddOrderPage() {
   const [pricingResult, setPricingResult] = useState<UnifiedPricingResult | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
   const [pricingItemIndex, setPricingItemIndex] = useState<number>(0)
+
+  // AI Estimate
+  const [aiEstimate, setAiEstimate] = useState<PriceEstimateResult | null>(null)
+  const [isAIEstimating, setIsAIEstimating] = useState(false)
+  const [aiEstimateItemIndex, setAiEstimateItemIndex] = useState<number>(0)
 
   // Inventory hooks
   const { items: materialItems, loading: materialsLoading } = useMaterials()
@@ -171,6 +178,50 @@ export default function AddOrderPage() {
     setOverheadCost(Math.round(breakdown.setupCost * 100) / 100)
     setPricingResult(null)
     toast.success('Wycena zastosowana!')
+  }
+
+  // --- AI Estimate ---
+  const handleAIEstimate = async (itemIndex: number) => {
+    const item = items[itemIndex]
+    if (!item.material) {
+      toast.error('Podaj materiał aby użyć AI wyceny')
+      return
+    }
+    setIsAIEstimating(true)
+    setAiEstimateItemIndex(itemIndex)
+    setAiEstimate(null)
+    try {
+      const dimensions = [item.length, item.width, item.height]
+        .filter(Boolean)
+        .join('x')
+
+      const result = await estimatePriceAction({
+        material: item.material,
+        dimensions: dimensions ? `${dimensions}mm` : undefined,
+        complexity: item.complexity === 'simple' ? 'low' : item.complexity === 'complex' ? 'high' : 'medium',
+        quantity: item.quantity || 1,
+        additionalNotes: item.notes || undefined,
+      })
+
+      if ('error' in result && result.error) {
+        toast.error(result.error)
+      } else {
+        setAiEstimate(result)
+        toast.success('AI wycena gotowa!')
+      }
+    } catch {
+      toast.error('Błąd AI wyceny')
+    } finally {
+      setIsAIEstimating(false)
+    }
+  }
+
+  const handleApplyAICosts = (material: number, labor: number, overhead: number) => {
+    setMaterialCost(Math.round(material * 100) / 100)
+    setLaborCost(Math.round(labor * 100) / 100)
+    setOverheadCost(Math.round(overhead * 100) / 100)
+    setAiEstimate(null)
+    toast.success('Koszty AI zastosowane!')
   }
 
   // --- Customer handlers ---
@@ -454,8 +505,18 @@ export default function AddOrderPage() {
               onUpdate={updateItem}
               onRemove={removeItem}
               onCalculatePricing={handleCalculatePricing}
+              onAIEstimate={handleAIEstimate}
               isCalculating={isCalculating}
               isPricingTarget={pricingItemIndex === index}
+              isAIEstimating={isAIEstimating}
+              isAIEstimateTarget={aiEstimateItemIndex === index}
+              aiEstimate={aiEstimateItemIndex === index ? aiEstimate : null}
+              onApplyAICosts={handleApplyAICosts}
+              onApplyAIPrice={(price) => {
+                toast.success(`Cena ${price.toFixed(2)} PLN — ustaw ją jako cenę sprzedaży po zapisaniu zamówienia`)
+                setAiEstimate(null)
+              }}
+              onDismissAIEstimate={() => setAiEstimate(null)}
               materialItems={materialItems}
               materialsLoading={materialsLoading}
               partItems={partItems}
