@@ -15,7 +15,6 @@ import { useRealtimeOrders } from '@/lib/realtime/hooks'
 import { logger } from '@/lib/logger'
 import PageTransition from '@/components/ui/PageTransition'
 import { useConfirmation } from '@/components/ui/ConfirmationDialog'
-import QuickOrderModal from '@/components/orders/QuickOrderModal'
 
 interface OrderWithTags {
   id: string
@@ -45,7 +44,6 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole, c
   const searchParams = useSearchParams()
   const initialSearch = searchParams.get('search') || ''
   const { confirm, ConfirmDialog } = useConfirmation()
-  const [isQuickOrderOpen, setIsQuickOrderOpen] = useState(false)
   const [filters, setFilters] = useState<FilterState>({
     status: 'all',
     deadline: 'all',
@@ -132,15 +130,6 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole, c
         </div>
         <div className="flex gap-2">
           <Button
-            onClick={() => setIsQuickOrderOpen(true)}
-            variant="primary"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <span>⚡</span>
-            Szybkie Zamówienie
-          </Button>
-          <Button
             onClick={handleExportCSV}
             disabled={filteredOrders.length === 0}
             variant="primary"
@@ -217,13 +206,6 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole, c
           isPending={isPending}
         />
       )}
-      {/* Quick Order Modal */}
-      <QuickOrderModal
-        isOpen={isQuickOrderOpen}
-        onClose={() => setIsQuickOrderOpen(false)}
-        companyId={companyId}
-        userId={userId}
-      />
     </PageTransition>
   )
 }
