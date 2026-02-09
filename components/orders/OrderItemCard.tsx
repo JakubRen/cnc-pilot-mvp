@@ -8,8 +8,6 @@ import InventorySelect from '@/components/inventory/InventorySelect'
 import DrawingUpload from '@/components/orders/DrawingUpload'
 import type { InventoryItem } from '@/hooks/useInventoryItems'
 import { useTranslation } from '@/hooks/useTranslation'
-import AIEstimateCard from '@/components/orders/AIEstimateCard'
-import type { PriceEstimateResult } from '@/lib/ai/openai-client'
 
 export interface OrderItemEntry {
   tempId: string
@@ -36,15 +34,8 @@ interface OrderItemCardProps {
   onUpdate: (index: number, updates: Partial<OrderItemEntry>) => void
   onRemove: (index: number) => void
   onCalculatePricing: (index: number) => void
-  onAIEstimate: (index: number) => void
   isCalculating: boolean
   isPricingTarget: boolean
-  isAIEstimating: boolean
-  isAIEstimateTarget: boolean
-  aiEstimate: PriceEstimateResult | null
-  onApplyAICosts: (material: number, labor: number, overhead: number) => void
-  onApplyAIPrice: (price: number) => void
-  onDismissAIEstimate: () => void
   materialItems: InventoryItem[]
   materialsLoading: boolean
   partItems: InventoryItem[]
@@ -60,15 +51,8 @@ export default function OrderItemCard({
   onUpdate,
   onRemove,
   onCalculatePricing,
-  onAIEstimate,
   isCalculating,
   isPricingTarget,
-  isAIEstimating,
-  isAIEstimateTarget,
-  aiEstimate,
-  onApplyAICosts,
-  onApplyAIPrice,
-  onDismissAIEstimate,
   materialItems,
   materialsLoading,
   partItems,
@@ -242,46 +226,17 @@ export default function OrderItemCard({
             />
           </div>
 
-          {/* Pricing buttons */}
-          <div className="sm:col-span-2 flex gap-3">
+          {/* Pricing calculator button */}
+          <div className="sm:col-span-2">
             <Button
               type="button"
               onClick={() => onCalculatePricing(index)}
               disabled={isCalculating}
-              className="flex-1 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 border-0"
+              className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 border-0"
             >
-              {isCalculating && isPricingTarget ? 'Obliczam...' : 'Oblicz cene'}
-            </Button>
-            <Button
-              type="button"
-              onClick={() => onAIEstimate(index)}
-              disabled={isAIEstimating}
-              variant="secondary"
-              className="flex-1 border-violet-400 dark:border-violet-500/50 hover:bg-violet-50 dark:hover:bg-violet-900/20"
-            >
-              {isAIEstimating && isAIEstimateTarget ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  AI myśli...
-                </span>
-              ) : '✨ AI Wycena'}
+              {isCalculating && isPricingTarget ? 'Obliczam...' : 'Oblicz cene dla tej pozycji'}
             </Button>
           </div>
-
-          {/* AI Estimate Result */}
-          {aiEstimate && (
-            <div className="sm:col-span-2">
-              <AIEstimateCard
-                estimate={aiEstimate}
-                onApplyPrice={onApplyAIPrice}
-                onApplyCosts={onApplyAICosts}
-                onDismiss={onDismissAIEstimate}
-              />
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>
