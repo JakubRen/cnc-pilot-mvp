@@ -84,6 +84,37 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ AI & Intelligence Features Session (2026-02-09)
+
+**Scope:** Full AI migration to Gemini 2.5 Flash (free tier), dashboard intelligence, production anomaly detection, calendar drag & drop, customer scoring, and predictive deadlines.
+
+**8 Commits — 3 Phases:**
+
+**Phase 1: AI Foundation**
+| Feature | Description |
+|---------|------------|
+| 🧠 AI Dashboard Insights | Gemini-powered insights widget with 6h cache, heuristic fallback, company-scoped RLS |
+| 🔄 OpenAI → Gemini Migration | Complete AI layer rewrite from GPT-4 ($$$) to Gemini 2.5 Flash (free) |
+| 📊 Smart Historical Estimation | Wired existing `get_similar_orders_stats` RPC to order form UI |
+
+**Phase 2: Cleanup**
+| Change | Description |
+|--------|------------|
+| 🗑️ Removed Quick Order Modal | Unnecessary feature removed |
+| 🗑️ Removed AI Price Estimation | Pricing is algorithm-based, not AI-based |
+
+**Phase 3: Intelligence Features** (`c560c18`)
+| Feature | Description |
+|---------|------------|
+| 🚨 Anomaly Alerts | Dashboard widget detecting time overrun, deadline risk, stale orders, cost overrun |
+| 🖱️ Drag & Drop Calendar | Drag orders on production calendar to change deadlines with optimistic UI |
+| ⭐ Customer Scoring | Auto-tier customers (VIP/Regular/New/Inactive/One-time) from order history |
+| 📅 Predictive Deadlines | Suggest deadline based on avg duration of similar past orders |
+
+**New Files:** 10 | **Modified Files:** 18 | **Removed Files:** 2 | **Zero new npm dependencies**
+
+---
+
 ### ✅ Phase 1 Feature Plan — 5 Features (2026-02-05)
 
 **Scope:** Implemented all 5 Phase 1 features from Feature Plan, adding realtime capabilities, quick actions, and enhanced operator experience.
