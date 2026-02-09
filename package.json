@@ -56,7 +56,6 @@
     "next": "^16.1.6",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.10",
-    "openai": "^6.17.0",
     "papaparse": "^5.5.3",
     "react": "19.2.0",
     "react-day-picker": "^9.13.0",

@@ -1,11 +1,6 @@
-// OpenAI Client for AI-powered features
-import OpenAI from 'openai'
+// Gemini Client for AI-powered features (migrated from OpenAI)
+import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai'
 import { logger } from '@/lib/logger'
-
-// Initialize OpenAI client (will use OPENAI_API_KEY from env)
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-})
 
 export interface PriceEstimateParams {
   material: string
@@ -51,93 +46,98 @@ export async function estimatePrice(
     plastik: 30,
   }
 
-  // Build prompt for GPT-4
-  const prompt = `
-You are an expert CNC machining cost estimator. Based on the following project details, provide a detailed cost estimate.
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
+  if (!apiKey) {
+    logger.warn('[estimatePrice] No GOOGLE_GENERATIVE_AI_API_KEY — using heuristic fallback')
+    return heuristicEstimate(params, hourlyRate, materialCosts)
+  }
 
-**Project Details:**
-- Material: ${material}
-- Dimensions: ${dimensions || 'Not specified'}
-- Complexity: ${complexity}
-- Quantity: ${quantity}
-- Additional notes: ${additionalNotes || 'None'}
+  const prompt = `Jesteś ekspertem od wyceny obróbki CNC. Na podstawie danych podaj szczegółową wycenę.
 
-**Company Context:**
-- Hourly labor rate: ${hourlyRate} PLN
-- Typical material costs: ${JSON.stringify(materialCosts, null, 2)}
+**Szczegóły zlecenia:**
+- Materiał: ${material}
+- Wymiary: ${dimensions || 'Nie podano'}
+- Złożoność: ${complexity}
+- Ilość sztuk: ${quantity}
+- Uwagi: ${additionalNotes || 'Brak'}
 
-**Please provide:**
-1. Estimated total price (in PLN)
-2. Estimated machine/labor hours
-3. Confidence score (0-100%)
-4. Breakdown of costs (material, labor, machine time, overhead)
-5. Brief reasoning for your estimate
+**Kontekst firmy:**
+- Stawka godzinowa: ${hourlyRate} PLN
+- Typowe koszty materiałów (PLN/kg): ${JSON.stringify(materialCosts)}
 
-Respond ONLY with valid JSON in this exact format:
-{
-  "estimatedPrice": <number>,
-  "estimatedHours": <number>,
-  "confidence": <number 0-100>,
-  "breakdown": {
-    "materialCost": <number>,
-    "laborCost": <number>,
-    "machineTimeCost": <number>,
-    "overhead": <number>
-  },
-  "reasoning": "<string>"
-}
-`
+Podaj wycenę w PLN. Reasoning po polsku.`
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4-turbo',
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are an expert CNC machining cost estimator. Always respond with valid JSON only.',
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.5-flash',
+      generationConfig: {
+        temperature: 0.3,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: SchemaType.OBJECT,
+          properties: {
+            estimatedPrice: { type: SchemaType.NUMBER, description: 'Szacowana cena całkowita w PLN' },
+            estimatedHours: { type: SchemaType.NUMBER, description: 'Szacowane godziny pracy' },
+            confidence: { type: SchemaType.NUMBER, description: 'Pewność wyceny 0-100' },
+            breakdown: {
+              type: SchemaType.OBJECT,
+              properties: {
+                materialCost: { type: SchemaType.NUMBER },
+                laborCost: { type: SchemaType.NUMBER },
+                machineTimeCost: { type: SchemaType.NUMBER },
+                overhead: { type: SchemaType.NUMBER },
+              },
+              required: ['materialCost', 'laborCost', 'machineTimeCost', 'overhead'],
+            },
+            reasoning: { type: SchemaType.STRING, description: 'Uzasadnienie wyceny po polsku' },
+          },
+          required: ['estimatedPrice', 'estimatedHours', 'confidence', 'breakdown', 'reasoning'],
         },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      temperature: 0.3, // Lower temperature for more consistent estimates
-      max_tokens: 500,
+      },
     })
 
-    const content = response.choices[0]?.message?.content || '{}'
-    const result = JSON.parse(content) as PriceEstimateResult
+    const result = await model.generateContent(prompt)
+    const text = result.response.text()
+    const parsed = JSON.parse(text) as PriceEstimateResult
 
-    return result
+    return parsed
   } catch (error) {
-    logger.error('OpenAI API error', { error })
+    logger.error('[estimatePrice] Gemini API error, using fallback', { error })
+    return heuristicEstimate(params, hourlyRate, materialCosts)
+  }
+}
 
-    // Fallback to simple heuristic estimation
-    const complexityMultiplier = {
-      low: 1.0,
-      medium: 1.5,
-      high: 2.5,
-    }[complexity]
+function heuristicEstimate(
+  params: PriceEstimateParams,
+  hourlyRate: number,
+  materialCosts: Record<string, number>
+): PriceEstimateResult {
+  const { material, complexity = 'medium', quantity = 1 } = params
 
-    const materialCost = materialCosts[material.toLowerCase()] || 50
-    const estimatedHours = 2 * complexityMultiplier
-    const laborCost = estimatedHours * hourlyRate
-    const machineTimeCost = estimatedHours * 50 // Machine time rate
-    const overhead = (materialCost + laborCost + machineTimeCost) * 0.2 // 20% overhead
+  const complexityMultiplier = {
+    low: 1.0,
+    medium: 1.5,
+    high: 2.5,
+  }[complexity]
 
-    return {
-      estimatedPrice: (materialCost + laborCost + machineTimeCost + overhead) * quantity,
-      estimatedHours: estimatedHours * quantity,
-      confidence: 50, // Low confidence for fallback
-      breakdown: {
-        materialCost: materialCost * quantity,
-        laborCost: laborCost * quantity,
-        machineTimeCost: machineTimeCost * quantity,
-        overhead: overhead * quantity,
-      },
-      reasoning: 'Fallback heuristic estimate used due to API error or unavailability.',
-    }
+  const materialCost = materialCosts[material.toLowerCase()] || 50
+  const estimatedHours = 2 * complexityMultiplier
+  const laborCost = estimatedHours * hourlyRate
+  const machineTimeCost = estimatedHours * 50
+  const overhead = (materialCost + laborCost + machineTimeCost) * 0.2
+
+  return {
+    estimatedPrice: (materialCost + laborCost + machineTimeCost + overhead) * quantity,
+    estimatedHours: estimatedHours * quantity,
+    confidence: 50,
+    breakdown: {
+      materialCost: materialCost * quantity,
+      laborCost: laborCost * quantity,
+      machineTimeCost: machineTimeCost * quantity,
+      overhead: overhead * quantity,
+    },
+    reasoning: 'Wycena heurystyczna — brak połączenia z AI.',
   }
 }
 
@@ -151,40 +151,32 @@ export interface OrderDetails {
 }
 
 export async function generateOrderSummary(orderId: string, orderDetails: OrderDetails): Promise<string> {
-  const prompt = `
-Generate a professional order summary for this CNC manufacturing order:
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
+  if (!apiKey) {
+    return `Zamówienie #${orderId} dla ${orderDetails.customerName}: ${orderDetails.partName} (${orderDetails.material}, szt: ${orderDetails.quantity}). Termin: ${orderDetails.deadline}.`
+  }
 
-**Order #${orderId}**
-- Customer: ${orderDetails.customerName}
-- Part: ${orderDetails.partName}
-- Material: ${orderDetails.material}
-- Quantity: ${orderDetails.quantity}
+  const prompt = `Napisz profesjonalne podsumowanie zlecenia CNC (2-3 zdania po polsku):
+
+**Zlecenie #${orderId}**
+- Klient: ${orderDetails.customerName}
+- Detal: ${orderDetails.partName}
+- Materiał: ${orderDetails.material}
+- Ilość: ${orderDetails.quantity}
 - Status: ${orderDetails.status}
-- Deadline: ${orderDetails.deadline}
-
-Write a concise 2-3 sentence summary suitable for email or export.
-`
+- Termin: ${orderDetails.deadline}`
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4-turbo',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a professional technical writer for manufacturing.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      temperature: 0.5,
-      max_tokens: 150,
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.5-flash',
+      generationConfig: { temperature: 0.5 },
     })
 
-    return response.choices[0]?.message?.content || 'Order summary unavailable.'
+    const result = await model.generateContent(prompt)
+    return result.response.text()
   } catch (error) {
-    logger.error('OpenAI API error', { error })
-    return `Order #${orderId} for ${orderDetails.customerName}: ${orderDetails.partName} (${orderDetails.material}, qty: ${orderDetails.quantity}). Due by ${orderDetails.deadline}.`
+    logger.error('[generateOrderSummary] Gemini API error', { error })
+    return `Zamówienie #${orderId} dla ${orderDetails.customerName}: ${orderDetails.partName} (${orderDetails.material}, szt: ${orderDetails.quantity}). Termin: ${orderDetails.deadline}.`
   }
 }
