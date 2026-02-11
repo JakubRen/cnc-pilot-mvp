@@ -86,25 +86,25 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ### ✅ AI Expansion Sprint (2026-02-11)
 
-**Scope:** Full AI feature expansion using 4-agent team (architect, backend-dev, frontend-dev, test-dev). 4 new AI-powered features with unified Gemini infrastructure, 126 new tests, clean build.
+**Scope:** Full AI feature expansion using 4-agent team (architect, backend-dev, frontend-dev, test-dev). 3 AI-powered features with unified Gemini infrastructure, tested and deployed.
 
 **Infrastructure:**
 | Component | Description |
 |-----------|------------|
 | 🔧 Unified Gemini Client | `gemini-client.ts` singleton wrapper with `callGemini<T>()`, structured JSON output, rate-limit detection |
 | 💾 Generic AI Cache | `cache-utils.ts` + `ai_cache` table with RLS, configurable TTL per feature, company-scoped |
+| 🔑 Schema Types | `schema-types.ts` — separated from `'use server'` (Next.js 16 only allows async exports) |
 
-**4 AI Features:**
+**3 AI Features:**
 | Feature | Description |
 |---------|------------|
-| 📝 Smart Form Suggestions | Material autocomplete from inventory+AI, quantity suggestion from order history, price sanity check vs historical margins. `FormSuggestionsPanel.tsx` + `useFormSuggestions.ts` hook (500ms debounce). Gated: Gemini only when ≥3 historical orders |
-| 📊 Report AI Summaries | `AIReportSummary.tsx` button-triggered component on 4 report pages (costs, orders, inventory, time). 4h cache, Polish summaries with findings + recommendations + trend badge |
-| 👥 Customer Intelligence | Churn risk scoring (high/medium/low), inactive customer alerts (>30 days), buying pattern analysis. `CustomerIntelligencePanel.tsx` + `CustomerRiskBadge.tsx`. 12h cache |
+| 📊 Report AI Summaries | `AIReportSummary.tsx` button-triggered component on 4 report pages (costs, orders, inventory, time). Real report data passed to Gemini. 4h cache, Polish summaries with findings + recommendations + trend badge |
+| 👥 Customer Intelligence | Churn risk scoring (high/medium/low), inactive customer alerts (>30 days), buying pattern analysis. `CustomerIntelligencePanel.tsx` replaces static stat cards on /customers page. 12h cache |
 | 📦 Inventory Predictions | Usage velocity calculation, stockout date forecasting, reorder alerts. `InventoryPredictionsPanel.tsx` + `StockoutAlert.tsx`. 8h cache |
 
-**Quality:** 369 unit tests (126 new), 0 TypeScript errors, clean Turbopack build | **Rate budget:** ~2.3% of Gemini free tier
+**Quality:** 345 unit tests, 0 TypeScript errors, clean Turbopack build | **Rate budget:** ~2.3% of Gemini free tier
 
-**New Files:** 24 | **Modified Files:** 11 | **Commits:** `f4c8859`, `a485444`
+**Commits:** `f4c8859`, `a485444`, `b965bbb`
 
 ---
 
@@ -777,7 +777,7 @@ npx playwright test  # Expected: 48/48 PASS ✅
 - **API:** Next.js API Routes
 
 ### Testing & CI/CD
-- **Unit Tests:** Vitest (369 tests)
+- **Unit Tests:** Vitest (345 tests)
 - **E2E Tests:** Playwright
 - **CI/CD:** GitHub Actions
 - **Deployment:** Vercel
@@ -975,7 +975,7 @@ npm run test:watch        # Watch mode
 npm run test:ui           # Vitest UI
 ```
 
-**Coverage:** 369 unit tests covering critical business logic
+**Coverage:** 345 unit tests covering critical business logic
 
 ### E2E Tests (Playwright)
 ```bash
