@@ -1,31 +1,6 @@
-// Types for AI Expansion features (Form Suggestions, Report Summaries, Customer Intelligence, Inventory Predictions)
+// Types for AI Expansion features (Report Summaries, Customer Intelligence, Inventory Predictions)
 
-// ─── Feature 1: Smart Form Suggestions ───
-
-export interface MaterialSuggestion {
-  name: string
-  matchScore: number // 0-100
-  source: 'history' | 'inventory'
-}
-
-export interface QuantitySuggestion {
-  value: number
-  label: string // e.g. "Najczesciej zamawiane"
-}
-
-export interface PriceSanityResult {
-  status: 'ok' | 'warning' | 'high' | 'low'
-  message: string
-  suggestedRange?: { min: number; max: number }
-}
-
-export interface FormSuggestionsData {
-  materials: MaterialSuggestion[]
-  quantities: QuantitySuggestion[]
-  priceSanity: PriceSanityResult | null
-}
-
-// ─── Feature 2: Report AI Summaries ───
+// ─── Report AI Summaries ───
 
 export type TrendDirection = 'improving' | 'stable' | 'declining' | 'mixed'
 

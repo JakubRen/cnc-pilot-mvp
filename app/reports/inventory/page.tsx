@@ -32,7 +32,7 @@ export default async function InventoryReportPage() {
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
-        <AIReportSummary reportType="inventory" companyId={user.company_id} />
+        <AIReportSummary reportType="inventory" companyId={user.company_id} data={safeSummary} />
         <InventoryPredictionsPanel companyId={user.company_id} />
         <div className="mt-6">
           <InventoryReportClient

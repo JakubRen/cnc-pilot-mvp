@@ -32,7 +32,7 @@ export default async function TimeReportPage() {
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
-        <AIReportSummary reportType="time" companyId={user.company_id} />
+        <AIReportSummary reportType="time" companyId={user.company_id} data={safeSummary} />
         <TimeReportClient logs={logs} summary={safeSummary} users={users} />
       </div>
     </div>

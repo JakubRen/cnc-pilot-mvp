@@ -89,7 +89,7 @@ export default async function CostsReportPage({
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
-        <AIReportSummary reportType="costs" companyId={user.company_id} />
+        <AIReportSummary reportType="costs" companyId={user.company_id} data={stats} />
         <CostsReportClient stats={stats} orders={filteredOrders}>
           <CostFilters
             currentStatus={statusFilter}

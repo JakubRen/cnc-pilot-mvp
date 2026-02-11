@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/card'
 import type { Customer, ContractorType } from '@/types/customers'
 import AppLayout from '@/components/layout/AppLayout'
+import CustomerIntelligencePanel from '@/components/customers/CustomerIntelligencePanel'
 
 interface CustomerScoreInfo {
   tier: string
@@ -20,6 +21,7 @@ interface CustomersPageClientProps {
   customers: Customer[]
   currentUserRole: string
   customerScores: Record<string, CustomerScoreInfo>
+  companyId: string
 }
 
 const typeLabels: Record<ContractorType, { label: string; icon: string; color: string }> = {
@@ -28,7 +30,7 @@ const typeLabels: Record<ContractorType, { label: string; icon: string; color: s
   cooperator: { label: 'Kooperant', icon: '🤝', color: 'bg-green-600' },
 }
 
-export default function CustomersPageClient({ customers, currentUserRole, customerScores }: CustomersPageClientProps) {
+export default function CustomersPageClient({ customers, currentUserRole, customerScores, companyId }: CustomersPageClientProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [typeFilter, setTypeFilter] = useState<ContractorType | 'all'>('all')
 
@@ -126,48 +128,9 @@ export default function CustomersPageClient({ customers, currentUserRole, custom
             </CardContent>
           </Card>
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-muted-foreground text-sm mb-1">
-                  👤 Klienci
-                </div>
-                <div className="text-3xl font-bold text-primary">
-                  {customers.filter(c => c.type === 'client').length}
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-muted-foreground text-sm mb-1">
-                  📦 Sprzedawcy
-                </div>
-                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                  {customers.filter(c => c.type === 'supplier').length}
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-muted-foreground text-sm mb-1">
-                  🤝 Kooperanci
-                </div>
-                <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                  {customers.filter(c => c.type === 'cooperator').length}
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-muted-foreground text-sm mb-1">
-                  Wyniki
-                </div>
-                <div className="text-3xl font-bold text-foreground">
-                  {filteredCustomers.length}
-                </div>
-              </CardContent>
-            </Card>
+          {/* AI Customer Intelligence */}
+          <div className="mb-8">
+            <CustomerIntelligencePanel companyId={companyId} />
           </div>
 
           {/* Customers List */}

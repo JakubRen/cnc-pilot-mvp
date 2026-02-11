@@ -1,6 +1,7 @@
 'use server'
 
-import { callGemini, SchemaType } from '@/lib/ai/gemini-client'
+import { callGemini } from '@/lib/ai/gemini-client'
+import { SchemaType } from '@/lib/ai/schema-types'
 import { readCache, writeCache } from '@/lib/ai/cache-utils'
 import { logger } from '@/lib/logger'
 
@@ -271,12 +272,20 @@ function resultToFrontendFormat(result: ReportSummaryResult): AIReportSummaryDat
  */
 export async function getReportSummary(
   reportType: FrontendReportType,
-  companyId: string
+  companyId: string,
+  data?: Record<string, unknown>
 ): Promise<AIReportSummaryData> {
-  const result = await generateReportSummary({
-    reportType,
-    companyId,
-    data: {},
-  })
-  return resultToFrontendFormat(result)
+  try {
+    const result = await generateReportSummary({
+      reportType,
+      companyId,
+      data: data || {},
+    })
+    return resultToFrontendFormat(result)
+  } catch (error) {
+    logger.error('[getReportSummary] Error', { error: error instanceof Error ? error.message : String(error) })
+    // Return heuristic fallback on any error
+    const fallback = generateHeuristicSummary({ reportType, companyId, data: data || {} })
+    return resultToFrontendFormat(fallback)
+  }
 }

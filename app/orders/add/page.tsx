@@ -20,11 +20,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/Button'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useSmartPricing } from '@/hooks/useSmartPricing'
-import { useFormSuggestions } from '@/hooks/useFormSuggestions'
 import SmartEstimateCard from '@/components/orders/SmartEstimateCard'
 import SimilarOrdersWidget from '@/components/orders/SimilarOrdersWidget'
 import DeadlineSuggestion from '@/components/orders/DeadlineSuggestion'
-import FormSuggestionsPanel from '@/components/orders/FormSuggestionsPanel'
 import { useOperators } from '@/hooks/useOperators'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { sanitizeText } from '@/lib/sanitization'
@@ -96,13 +94,6 @@ export default function AddOrderPage() {
   const { estimate: smartEstimate, similarOrders, loading: smartLoading } = useSmartPricing(
     firstItem?.part_name || '',
     firstItem?.material || ''
-  )
-
-  // AI form suggestions (debounced)
-  const { materials: suggestedMaterials, quantities: suggestedQuantities, priceSanity, isLoading: suggestionsLoading } = useFormSuggestions(
-    firstItem?.part_name || '',
-    firstItem?.material || '',
-    totalCost > 0 ? totalCost : null
   )
 
   // Auto-generate order number
@@ -502,15 +493,6 @@ export default function AddOrderPage() {
               + Dodaj kolejna pozycje
             </Button>
 
-            {/* AI Form Suggestions */}
-            <FormSuggestionsPanel
-              materials={suggestedMaterials}
-              quantities={suggestedQuantities}
-              priceSanity={priceSanity}
-              isLoading={suggestionsLoading}
-              onSelectMaterial={(material) => updateItem(0, { material })}
-              onSelectQuantity={(quantity) => updateItem(0, { quantity })}
-            />
           </div>
 
           {/* === SMART ESTIMATE + COST SECTION === */}

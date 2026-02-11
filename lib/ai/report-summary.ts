@@ -1,6 +1,7 @@
 'use server'
 
-import { callGemini, SchemaType } from '@/lib/ai/gemini-client'
+import { callGemini } from '@/lib/ai/gemini-client'
+import { SchemaType } from '@/lib/ai/schema-types'
 import { readCache, writeCache } from '@/lib/ai/cache-utils'
 import { logger } from '@/lib/logger'
 import type {

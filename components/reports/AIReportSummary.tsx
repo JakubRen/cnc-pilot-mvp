@@ -9,6 +9,7 @@ import type { AIReportSummaryData, ReportType, TrendDirection, ReportFinding, Re
 interface Props {
   reportType: ReportType
   companyId: string
+  data?: Record<string, unknown>
 }
 
 const TREND_STYLES: Record<TrendDirection, { label: string; color: string; icon: string }> = {
@@ -108,7 +109,7 @@ function timeAgo(dateString: string): string {
   return `${Math.floor(diffHours / 24)}d temu`
 }
 
-export default function AIReportSummary({ reportType, companyId }: Props) {
+export default function AIReportSummary({ reportType, companyId, data: reportData }: Props) {
   const [data, setData] = useState<AIReportSummaryData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isExpanded, setIsExpanded] = useState(true)
@@ -126,11 +127,12 @@ export default function AIReportSummary({ reportType, companyId }: Props) {
 
     setIsLoading(true)
     try {
-      const result = await getReportSummary(reportType, companyId)
+      const result = await getReportSummary(reportType, companyId, reportData)
       setData(result)
       setLastGenerated(Date.now())
       setIsExpanded(true)
-    } catch {
+    } catch (err) {
+      console.error('[AIReportSummary] Error:', err)
       toast.error('Blad generowania podsumowania AI')
     } finally {
       setIsLoading(false)

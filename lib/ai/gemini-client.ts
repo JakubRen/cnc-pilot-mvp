@@ -1,10 +1,7 @@
 'use server'
 
-import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import { logger } from '@/lib/logger'
-
-// Re-export SchemaType for consumers
-export { SchemaType }
 
 function getGenAI(): GoogleGenerativeAI | null {
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY

@@ -29,7 +29,7 @@ export default async function OrdersReportPage() {
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
-        <AIReportSummary reportType="orders" companyId={user.company_id} />
+        <AIReportSummary reportType="orders" companyId={user.company_id} data={safeSummary} />
         <OrdersReportClient orders={orders} summary={safeSummary} />
       </div>
     </div>
