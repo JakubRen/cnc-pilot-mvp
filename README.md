@@ -84,6 +84,44 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ AI Expansion Sprint (2026-02-11)
+
+**Scope:** Full AI feature expansion using 4-agent team (architect, backend-dev, frontend-dev, test-dev). 4 new AI-powered features with unified Gemini infrastructure, 126 new tests, clean build.
+
+**Infrastructure:**
+| Component | Description |
+|-----------|------------|
+| 🔧 Unified Gemini Client | `gemini-client.ts` singleton wrapper with `callGemini<T>()`, structured JSON output, rate-limit detection |
+| 💾 Generic AI Cache | `cache-utils.ts` + `ai_cache` table with RLS, configurable TTL per feature, company-scoped |
+
+**4 AI Features:**
+| Feature | Description |
+|---------|------------|
+| 📝 Smart Form Suggestions | Material autocomplete from inventory+AI, quantity suggestion from order history, price sanity check vs historical margins. `FormSuggestionsPanel.tsx` + `useFormSuggestions.ts` hook (500ms debounce). Gated: Gemini only when ≥3 historical orders |
+| 📊 Report AI Summaries | `AIReportSummary.tsx` button-triggered component on 4 report pages (costs, orders, inventory, time). 4h cache, Polish summaries with findings + recommendations + trend badge |
+| 👥 Customer Intelligence | Churn risk scoring (high/medium/low), inactive customer alerts (>30 days), buying pattern analysis. `CustomerIntelligencePanel.tsx` + `CustomerRiskBadge.tsx`. 12h cache |
+| 📦 Inventory Predictions | Usage velocity calculation, stockout date forecasting, reorder alerts. `InventoryPredictionsPanel.tsx` + `StockoutAlert.tsx`. 8h cache |
+
+**Quality:** 369 unit tests (126 new), 0 TypeScript errors, clean Turbopack build | **Rate budget:** ~2.3% of Gemini free tier
+
+**New Files:** 24 | **Modified Files:** 11 | **Commits:** `f4c8859`, `a485444`
+
+---
+
+### ✅ Kanban & Swimlanes Views (2026-02-11)
+
+**Scope:** 3-way view toggle (Table|Kanban|Swimlanes) for orders page with drag & drop status changes.
+
+| Feature | Description |
+|---------|------------|
+| 🗂️ Kanban Board | Responsive CSS grid (4/2/1 cols) with @dnd-kit drag & drop for status changes |
+| 🏊 Swimlanes Board | Collapsible customer rows with PLN totals, auto-expand on drop |
+| 🔀 View Toggle | Table/Kanban/Swimlanes with localStorage persistence |
+
+**New Files:** 5 | **Modified Files:** 3 | **Commit:** `f4c8859`
+
+---
+
 ### ✅ AI & Intelligence Features Session (2026-02-09)
 
 **Scope:** Full AI migration to Gemini 2.5 Flash (free tier), dashboard intelligence, production anomaly detection, calendar drag & drop, customer scoring, and predictive deadlines.
@@ -739,7 +777,7 @@ npx playwright test  # Expected: 48/48 PASS ✅
 - **API:** Next.js API Routes
 
 ### Testing & CI/CD
-- **Unit Tests:** Vitest (243 tests)
+- **Unit Tests:** Vitest (369 tests)
 - **E2E Tests:** Playwright
 - **CI/CD:** GitHub Actions
 - **Deployment:** Vercel
@@ -937,7 +975,7 @@ npm run test:watch        # Watch mode
 npm run test:ui           # Vitest UI
 ```
 
-**Coverage:** 243 unit tests covering critical business logic
+**Coverage:** 369 unit tests covering critical business logic
 
 ### E2E Tests (Playwright)
 ```bash
