@@ -3,6 +3,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import { getCustomerOrderStats, scoreCustomer } from '@/lib/customer-scoring'
 import CustomersPageClient from './CustomersPageClient'
+import CustomerIntelligencePanel from '@/components/customers/CustomerIntelligencePanel'
 
 export default async function CustomersPage() {
   const userProfile = await getUserProfile()
@@ -39,5 +40,12 @@ export default async function CustomersPage() {
     }
   }
 
-  return <CustomersPageClient customers={customers || []} currentUserRole={userProfile.role} customerScores={customerScores} />
+  return (
+    <>
+      <div className="px-8 pt-8 max-w-7xl mx-auto">
+        <CustomerIntelligencePanel companyId={userProfile.company_id} />
+      </div>
+      <CustomersPageClient customers={customers || []} currentUserRole={userProfile.role} customerScores={customerScores} />
+    </>
+  )
 }

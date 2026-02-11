@@ -3,6 +3,7 @@ import { getUserProfile } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
 import CostsReportClient from './CostsReportClient'
 import CostFilters from './CostFilters'
+import AIReportSummary from '@/components/reports/AIReportSummary'
 
 export default async function CostsReportPage({
   searchParams,
@@ -88,6 +89,7 @@ export default async function CostsReportPage({
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
+        <AIReportSummary reportType="costs" companyId={user.company_id} />
         <CostsReportClient stats={stats} orders={filteredOrders}>
           <CostFilters
             currentStatus={statusFilter}

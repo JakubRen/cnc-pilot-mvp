@@ -6,6 +6,7 @@ import {
   getTimeTrackingUsers,
 } from '@/lib/reports/time-report';
 import TimeReportClient from './TimeReportClient';
+import AIReportSummary from '@/components/reports/AIReportSummary';
 
 export default async function TimeReportPage() {
   const user = await getUserProfile();
@@ -29,8 +30,11 @@ export default async function TimeReportPage() {
   };
 
   return (
-    <div>
-      <TimeReportClient logs={logs} summary={safeSummary} users={users} />
+    <div className="p-8">
+      <div className="max-w-7xl mx-auto">
+        <AIReportSummary reportType="time" companyId={user.company_id} />
+        <TimeReportClient logs={logs} summary={safeSummary} users={users} />
+      </div>
     </div>
   );
 }

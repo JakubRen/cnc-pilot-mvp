@@ -2,6 +2,7 @@ import { getUserProfile } from '@/lib/auth-server';
 import { redirect } from 'next/navigation';
 import { getOrdersReport, getOrdersReportSummary } from '@/lib/reports/orders-report';
 import OrdersReportClient from './OrdersReportClient';
+import AIReportSummary from '@/components/reports/AIReportSummary';
 
 export default async function OrdersReportPage() {
   const user = await getUserProfile();
@@ -26,8 +27,11 @@ export default async function OrdersReportPage() {
   };
 
   return (
-    <div>
-      <OrdersReportClient orders={orders} summary={safeSummary} />
+    <div className="p-8">
+      <div className="max-w-7xl mx-auto">
+        <AIReportSummary reportType="orders" companyId={user.company_id} />
+        <OrdersReportClient orders={orders} summary={safeSummary} />
+      </div>
     </div>
   );
 }

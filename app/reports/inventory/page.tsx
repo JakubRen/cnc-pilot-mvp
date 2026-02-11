@@ -6,6 +6,8 @@ import {
   getInventoryCategories,
 } from '@/lib/reports/inventory-report';
 import InventoryReportClient from './InventoryReportClient';
+import AIReportSummary from '@/components/reports/AIReportSummary';
+import InventoryPredictionsPanel from '@/components/inventory/InventoryPredictionsPanel';
 
 export default async function InventoryReportPage() {
   const user = await getUserProfile();
@@ -28,12 +30,18 @@ export default async function InventoryReportPage() {
   };
 
   return (
-    <div>
-      <InventoryReportClient
-        items={items}
-        summary={safeSummary}
-        categories={categories}
-      />
+    <div className="p-8">
+      <div className="max-w-7xl mx-auto">
+        <AIReportSummary reportType="inventory" companyId={user.company_id} />
+        <InventoryPredictionsPanel companyId={user.company_id} />
+        <div className="mt-6">
+          <InventoryReportClient
+            items={items}
+            summary={safeSummary}
+            categories={categories}
+          />
+        </div>
+      </div>
     </div>
   );
 }
