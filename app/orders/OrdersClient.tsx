@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { exportOrdersToCSV } from '@/lib/csv-export'
 import OrderFilters, { FilterState } from './OrderFilters'
 import { ResponsiveOrderList } from '@/components/orders/ResponsiveOrderList'
+import { KanbanBoard } from '@/components/orders/KanbanBoard'
+import { SwimlanesBoard } from '@/components/orders/SwimlanesBoard'
 import EmptyState from '@/components/ui/EmptyState'
 import { Button } from '@/components/ui/Button'
 import { useOrderFiltering } from '@/hooks/useOrderFiltering'
@@ -54,10 +56,32 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole, c
   // Optimistic Updates Hook
   const {
     orders,
+    updateOrderStatus,
     bulkUpdateStatus,
     isPending,
     hasPendingUpdates
   } = useOptimisticOrders(initialOrders)
+
+  // View toggle with localStorage persistence
+  const [view, setView] = useState<'table' | 'kanban' | 'swimlanes'>('table')
+
+  useEffect(() => {
+    const saved = localStorage.getItem('orders-view')
+    if (saved === 'kanban' || saved === 'table' || saved === 'swimlanes') {
+      setView(saved)
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('orders-view', view)
+  }, [view])
+
+  const handleKanbanStatusChange = useCallback(
+    (orderId: string, newStatus: string) => {
+      updateOrderStatus(orderId, newStatus)
+    },
+    [updateOrderStatus]
+  )
 
   // Realtime subscription — refresh server data on external changes
   const realtimeUpdates = useRealtimeOrders(companyId)
@@ -128,7 +152,40 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole, c
             <span>Wyświetlanie {filteredOrders.length} z {orders.length} zamówień</span>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {/* View toggle */}
+          <div className="flex rounded-lg overflow-hidden border border-border">
+            <button
+              onClick={() => setView('table')}
+              className={`px-3 py-1.5 text-sm transition ${
+                view === 'table'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-muted text-foreground hover:bg-accent'
+              }`}
+            >
+              Tabela
+            </button>
+            <button
+              onClick={() => setView('kanban')}
+              className={`px-3 py-1.5 text-sm transition ${
+                view === 'kanban'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-muted text-foreground hover:bg-accent'
+              }`}
+            >
+              Kanban
+            </button>
+            <button
+              onClick={() => setView('swimlanes')}
+              className={`px-3 py-1.5 text-sm transition ${
+                view === 'swimlanes'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-muted text-foreground hover:bg-accent'
+              }`}
+            >
+              Swimlanes
+            </button>
+          </div>
           <Button
             onClick={handleExportCSV}
             disabled={filteredOrders.length === 0}
@@ -142,8 +199,8 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole, c
         </div>
       </div>
 
-      {/* Bulk Actions Bar */}
-      {selectedOrders.size > 0 && (
+      {/* Bulk Actions Bar (hidden in kanban view) */}
+      {view === 'table' && selectedOrders.size > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-card border-2 border-violet-500 rounded-lg shadow-2xl p-4 flex items-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-200">
           <span className="text-foreground font-semibold">
             {selectedOrders.size} zaznaczono
@@ -184,7 +241,7 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole, c
         </div>
       )}
 
-      {/* Orders List or Empty State */}
+      {/* Orders List / Kanban / Empty State */}
       {filteredOrders.length === 0 ? (
         <div className="bg-card rounded-lg border border-border p-8">
           <EmptyState
@@ -195,6 +252,18 @@ export default function OrdersClient({ orders: initialOrders, currentUserRole, c
             actionHref="/orders/add"
           />
         </div>
+      ) : view === 'kanban' ? (
+        <KanbanBoard
+          orders={filteredOrders}
+          onStatusChange={handleKanbanStatusChange}
+          isPending={isPending}
+        />
+      ) : view === 'swimlanes' ? (
+        <SwimlanesBoard
+          orders={filteredOrders}
+          onStatusChange={handleKanbanStatusChange}
+          isPending={isPending}
+        />
       ) : (
         <ResponsiveOrderList
           orders={filteredOrders}

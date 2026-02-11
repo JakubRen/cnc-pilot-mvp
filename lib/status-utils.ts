@@ -44,7 +44,24 @@ export const ORDER_STATUS_CONFIG = {
     textColor: 'text-indigo-100',
     icon: '📦',
   },
+  external_processing: {
+    label: 'U Kooperanta',
+    labelEn: 'External Processing',
+    color: 'bg-purple-600',
+    textColor: 'text-purple-100',
+    icon: '🏭',
+  },
 } as const
+
+export const KANBAN_COLUMN_ORDER: (keyof typeof ORDER_STATUS_CONFIG)[] = [
+  'pending',
+  'in_progress',
+  'external_processing',
+  'ready_to_ship',
+  'completed',
+  'delayed',
+  'cancelled',
+]
 
 export type OrderStatus = keyof typeof ORDER_STATUS_CONFIG
 
