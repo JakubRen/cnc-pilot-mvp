@@ -45,6 +45,16 @@ function AlertItem({ alert }: { alert: AnomalyAlert }) {
           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
             {alert.description}
           </p>
+          {alert.aiExplanation && (
+            <div className="mt-2 pt-2 border-t border-border/50 space-y-1">
+              <p className="text-xs text-muted-foreground">
+                <span className="font-semibold">Przyczyna:</span> {alert.aiExplanation.cause}
+              </p>
+              <p className="text-xs text-foreground/90 font-medium">
+                Rekomendacja: {alert.aiExplanation.action}
+              </p>
+            </div>
+          )}
         </div>
         <span className={`text-[10px] uppercase font-bold ${styles.badge} px-2 py-1 rounded whitespace-nowrap`}>
           {typeLabels[alert.type] || alert.type}

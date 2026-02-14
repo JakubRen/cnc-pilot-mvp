@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { getReportSummary } from '@/lib/ai/report-summaries'
@@ -47,6 +47,8 @@ const PRIORITY_STYLES: Record<string, string> = {
   medium: 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800/30',
   low: 'bg-slate-50 dark:bg-slate-800/30 border-slate-200 dark:border-slate-700/30',
 }
+
+const STALE_THRESHOLD_MS = 4 * 60 * 60 * 1000 // 4 hours
 
 function TrendBadge({ trend }: { trend: TrendDirection }) {
   const style = TREND_STYLES[trend]
@@ -109,17 +111,23 @@ function timeAgo(dateString: string): string {
   return `${Math.floor(diffHours / 24)}d temu`
 }
 
+function isStale(dateString: string): boolean {
+  return Date.now() - new Date(dateString).getTime() > STALE_THRESHOLD_MS
+}
+
 export default function AIReportSummary({ reportType, companyId, data: reportData }: Props) {
   const [data, setData] = useState<AIReportSummaryData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isExpanded, setIsExpanded] = useState(true)
   const [lastGenerated, setLastGenerated] = useState<number>(0)
+  const hasAutoLoaded = useRef(false)
 
   const COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
 
   const canRefresh = Date.now() - lastGenerated > COOLDOWN_MS
 
   const handleGenerate = async () => {
+    if (!companyId) return
     if (!canRefresh && data) {
       toast.error('Odczekaj 2 minuty przed kolejnym odswiezeniem')
       return
@@ -139,31 +147,19 @@ export default function AIReportSummary({ reportType, companyId, data: reportDat
     }
   }
 
-  // Not yet generated — show trigger button
-  if (!data && !isLoading) {
-    return (
-      <div className="bg-card border border-border rounded-lg p-4 mb-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">&#x1F9E0;</span>
-            <h3 className="text-sm font-semibold text-foreground">Podsumowanie AI</h3>
-          </div>
-          <button
-            onClick={handleGenerate}
-            className="px-3 py-1.5 text-xs font-medium bg-violet-600 hover:bg-violet-500 text-white rounded-md transition flex items-center gap-1.5"
-          >
-            Generuj podsumowanie
-          </button>
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          AI przeanalizuje dane z raportu i poda kluczowe wnioski oraz rekomendacje.
-        </p>
-      </div>
-    )
-  }
+  // Auto-load on mount when companyId is available
+  useEffect(() => {
+    if (companyId && !hasAutoLoaded.current) {
+      hasAutoLoaded.current = true
+      handleGenerate()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId])
+
+  const hasContent = data && (data.findings.length > 0 || data.recommendations.length > 0)
 
   // Loading state
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="bg-card border border-border rounded-lg mb-6 overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -180,7 +176,7 @@ export default function AIReportSummary({ reportType, companyId, data: reportDat
     )
   }
 
-  // Data loaded
+  // No data yet (companyId not ready or failed silently)
   if (!data) return null
 
   return (
@@ -196,12 +192,17 @@ export default function AIReportSummary({ reportType, companyId, data: reportDat
           <span className="text-[10px] text-muted-foreground">
             {timeAgo(data.generatedAt)}
           </span>
+          {isStale(data.generatedAt) && (
+            <span className="text-[10px] font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded">
+              nieaktualne
+            </span>
+          )}
           <button
             onClick={handleGenerate}
-            disabled={!canRefresh}
+            disabled={!canRefresh || isLoading}
             className="px-2 py-1 text-[10px] font-medium bg-primary/10 hover:bg-primary/20 text-primary rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Odswiez
+            {isLoading ? 'Laduje...' : 'Odswiez'}
           </button>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
@@ -209,7 +210,7 @@ export default function AIReportSummary({ reportType, companyId, data: reportDat
             aria-label={isExpanded ? 'Zwi\u0144' : 'Rozwi\u0144'}
           >
             <svg
-              className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              className={`h-4 w-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -221,43 +222,58 @@ export default function AIReportSummary({ reportType, companyId, data: reportDat
         </div>
       </div>
 
-      {/* Collapsible content */}
-      {isExpanded && (
-        <div className="p-4 space-y-4">
-          {/* Summary text */}
-          <p className="text-sm text-foreground leading-relaxed">
-            {data.summary}
-          </p>
+      {/* Animated collapsible content */}
+      <div
+        className={`transition-all duration-300 overflow-hidden ${
+          isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        {hasContent ? (
+          <div className="p-4 space-y-4">
+            {/* Summary text */}
+            <p className="text-sm text-foreground leading-relaxed">
+              {data.summary}
+            </p>
 
-          {/* Key Findings */}
-          {data.findings.length > 0 && (
-            <div>
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                Kluczowe ustalenia
-              </h4>
-              <ul className="space-y-1.5">
-                {data.findings.map((finding, i) => (
-                  <FindingItem key={i} finding={finding} />
-                ))}
-              </ul>
-            </div>
-          )}
+            {/* Key Findings */}
+            {data.findings.length > 0 && (
+              <div>
+                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  Kluczowe ustalenia
+                </h4>
+                <ul className="space-y-1.5">
+                  {data.findings.map((finding, i) => (
+                    <FindingItem key={i} finding={finding} />
+                  ))}
+                </ul>
+              </div>
+            )}
 
-          {/* Recommendations */}
-          {data.recommendations.length > 0 && (
-            <div>
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                Rekomendacje
-              </h4>
-              <ul className="space-y-2">
-                {data.recommendations.map((rec, i) => (
-                  <RecommendationItem key={i} rec={rec} />
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
+            {/* Recommendations */}
+            {data.recommendations.length > 0 && (
+              <div>
+                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  Rekomendacje
+                </h4>
+                <ul className="space-y-2">
+                  {data.recommendations.map((rec, i) => (
+                    <RecommendationItem key={i} rec={rec} />
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="p-4 text-center">
+            <p className="text-sm text-muted-foreground">
+              {data.summary}
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Brak danych do analizy. Dodaj wiecej zlecen aby zobaczyc wnioski AI.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

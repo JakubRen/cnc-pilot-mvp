@@ -12,6 +12,8 @@ import { usePermissions } from '@/hooks/usePermissions'
 import { PriceDisplay } from '@/components/permissions'
 import { duplicateOrder } from '@/app/orders/actions'
 import { useConfirmation } from '@/components/ui/ConfirmationDialog'
+import CompletionLikelihoodBadge from '@/components/orders/CompletionLikelihoodBadge'
+import QualityRiskBadge from '@/components/orders/QualityRiskBadge'
 
 interface Order {
   id: string
@@ -24,6 +26,13 @@ interface Order {
   assigned_operator_name?: string | null
   part_name?: string | null
   tags?: Array<{ id: string; name: string; color: string }>
+  /** AI-predicted on-time completion likelihood (0-100), populated by smart-deadline CRON */
+  completion_likelihood?: number | null
+  completion_recommendation?: string | null
+  /** AI-predicted quality defect risk (0-100) */
+  quality_risk?: number | null
+  quality_risk_level?: 'low' | 'medium' | 'high' | null
+  quality_risk_factors?: Array<{ factor: string; weight: number }>
 }
 
 interface OrderListProps {
@@ -187,6 +196,12 @@ export default function OrderList({
                 <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('orders', 'deadline')}
                 </th>
+                <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col" title="Prawdopodobienstwo terminowej realizacji (AI)">
+                  AI %
+                </th>
+                <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col" title="Ryzyko wad jakosciowych (AI)">
+                  Jakosc
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('common', 'status')}
                 </th>
@@ -258,6 +273,19 @@ export default function OrderList({
                         <Badge variant="danger" size="sm" className="w-fit">{t('orderStatus', 'overdue')}</Badge>
                       )}
                     </div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
+                    <CompletionLikelihoodBadge
+                      likelihood={order.completion_likelihood}
+                      recommendation={order.completion_recommendation || undefined}
+                    />
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-center">
+                    <QualityRiskBadge
+                      risk={order.quality_risk}
+                      riskLevel={order.quality_risk_level}
+                      riskFactors={order.quality_risk_factors}
+                    />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {getStatusBadge(order.status)}

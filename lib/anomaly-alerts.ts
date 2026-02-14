@@ -1,9 +1,15 @@
 // Anomaly detection for production orders
-// Pure SQL — no AI, no external API calls
+// Heuristic detection (pure SQL) + optional AI explanations
 
 import { createClient } from '@/lib/supabase-server'
+import { callGemini } from '@/lib/ai/gemini-client'
+import { SchemaType } from '@/lib/ai/schema-types'
 import { logger } from '@/lib/logger'
 import type { AnomalyAlert, AnomalyAlertsData } from '@/types/anomaly-alerts'
+
+// ============================================
+// HEURISTIC ANOMALY DETECTION (always runs)
+// ============================================
 
 export async function getAnomalyAlerts(companyId: string): Promise<AnomalyAlertsData> {
   const alerts: AnomalyAlert[] = []
@@ -121,4 +127,82 @@ export async function getAnomalyAlerts(companyId: string): Promise<AnomalyAlerts
     alerts,
     generatedAt: new Date().toISOString(),
   }
+}
+
+// ============================================
+// AI ENRICHMENT (optional, additive)
+// ============================================
+
+/**
+ * Enrich anomaly alerts with AI-generated explanations.
+ * Batch call — sends all alerts to Gemini in one request.
+ * If AI fails, alerts are returned unchanged (aiExplanation stays undefined).
+ */
+export async function enrichAlertsWithAI(
+  alerts: AnomalyAlert[]
+): Promise<AnomalyAlert[]> {
+  if (alerts.length === 0) return alerts
+
+  const alertSummaries = alerts.map((a, i) => ({
+    index: i,
+    type: a.type,
+    severity: a.severity,
+    title: a.title,
+    description: a.description,
+    metric: a.metric,
+  }))
+
+  const result = await callGemini<{
+    explanations: Array<{ index: number; cause: string; action: string }>
+  }>({
+    label: 'anomaly-explanations',
+    prompt: `Jestes ekspertem produkcji CNC. Dla kazdego alertu anomalii podaj po polsku:
+- cause: co moze byc przyczyna problemu (1 zdanie, max 80 znakow)
+- action: co konkretnie zrobic (1 zdanie, max 80 znakow)
+
+ALERTY:
+${JSON.stringify(alertSummaries, null, 2)}
+
+ZASADY:
+- Jeden obiekt {cause, action} na alert
+- Konkretne, praktyczne porady
+- Jezyk polski
+- Nie powtarzaj opisu alertu — dodaj NOWA wartosc`,
+    responseSchema: {
+      type: SchemaType.OBJECT,
+      properties: {
+        explanations: {
+          type: SchemaType.ARRAY,
+          items: {
+            type: SchemaType.OBJECT,
+            properties: {
+              index: { type: SchemaType.NUMBER, description: 'Index alertu (0-based)' },
+              cause: { type: SchemaType.STRING, description: 'Przyczyna problemu, max 80 znakow' },
+              action: { type: SchemaType.STRING, description: 'Rekomendowana akcja, max 80 znakow' },
+            },
+            required: ['index', 'cause', 'action'],
+          },
+        },
+      },
+      required: ['explanations'],
+    },
+    temperature: 0.3,
+  })
+
+  if (!result) {
+    logger.warn('[anomaly-alerts] AI enrichment failed — returning alerts without explanations')
+    return alerts
+  }
+
+  // Merge explanations into alerts
+  for (const exp of result.data.explanations) {
+    if (exp.index >= 0 && exp.index < alerts.length) {
+      alerts[exp.index].aiExplanation = {
+        cause: exp.cause,
+        action: exp.action,
+      }
+    }
+  }
+
+  return alerts
 }

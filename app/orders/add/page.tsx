@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import type { UnifiedPricingResult } from '@/types/quotes'
 import type { Customer } from '@/types/customers'
 import { logger } from '@/lib/logger'
@@ -26,6 +26,9 @@ import DeadlineSuggestion from '@/components/orders/DeadlineSuggestion'
 import { useOperators } from '@/hooks/useOperators'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { sanitizeText } from '@/lib/sanitization'
+import { feedbackLoggers } from '@/lib/ai/feedback-logger'
+import { useOrderAutofill } from '@/hooks/useOrderAutofill'
+import { useDynamicPricing } from '@/hooks/useDynamicPricing'
 
 const generateTempId = () => Math.random().toString(36).substr(2, 9)
 
@@ -82,6 +85,10 @@ export default function AddOrderPage() {
   const [pricingItemIndex, setPricingItemIndex] = useState<number>(0)
 
 
+  // --- AI feedback tracking refs ---
+  const aiAppliedPrice = useRef<{ material: number; labor: number; overhead: number } | null>(null)
+  const aiAppliedDeadline = useRef<string | null>(null)
+
   // Inventory hooks
   const { items: materialItems, loading: materialsLoading } = useMaterials()
   const { items: partItems, loading: partsLoading } = useParts()
@@ -95,6 +102,38 @@ export default function AddOrderPage() {
     firstItem?.part_name || '',
     firstItem?.material || ''
   )
+
+  // Auto-fill from past orders (debounced search on first item's part_name)
+  const { matches: autofillMatches, loading: autofillLoading, isOpen: autofillOpen, close: closeAutofill, getAutofillFields } = useOrderAutofill(
+    firstItem?.part_name || ''
+  )
+
+  // Dynamic pricing from AI (debounced, based on first item)
+  const { dynamicPricing, dynamicPricingLoading } = useDynamicPricing({
+    partName: firstItem?.part_name || '',
+    material: firstItem?.material || '',
+    quantity: firstItem?.quantity || 1,
+    complexity: firstItem?.complexity || 'medium',
+  })
+
+  const handleAutofillSelect = (matchId: string) => {
+    const match = autofillMatches.find(m => m.id === matchId)
+    if (!match) return
+    const fields = getAutofillFields(match)
+    const updated = [...items]
+    updated[0] = {
+      ...updated[0],
+      material: fields.material,
+      quantity: fields.quantity,
+      length: fields.length,
+      width: fields.width,
+      height: fields.height,
+      complexity: fields.complexity,
+    }
+    setItems(updated)
+    closeAutofill()
+    toast.success(`Uzupelniono z zlecenia #${match.order_number}`)
+  }
 
   // Auto-generate order number
   useEffect(() => {
@@ -411,7 +450,16 @@ export default function AddOrderPage() {
                   <DatePicker
                     label={`${t('orders', 'deadline')}`}
                     value={deadline}
-                    onChange={setDeadline}
+                    onChange={(date: string) => {
+                      setDeadline(date)
+                      if (aiAppliedDeadline.current) {
+                        feedbackLoggers.deadline.log(
+                          aiAppliedDeadline.current,
+                          date,
+                          { partName: firstItem?.part_name, material: firstItem?.material }
+                        )
+                      }
+                    }}
                     required
                     minDate={new Date()}
                     placeholder="Wybierz termin..."
@@ -419,7 +467,11 @@ export default function AddOrderPage() {
                   <DeadlineSuggestion
                     estimate={smartEstimate}
                     loading={smartLoading}
-                    onApplyDeadline={setDeadline}
+                    currentDeadline={deadline || undefined}
+                    onApplyDeadline={(date) => {
+                      setDeadline(date)
+                      aiAppliedDeadline.current = date
+                    }}
                   />
                 </div>
 
@@ -463,23 +515,65 @@ export default function AddOrderPage() {
 
           {/* === ORDER ITEMS === */}
           {items.map((item, index) => (
-            <OrderItemCard
-              key={item.tempId}
-              item={item}
-              index={index}
-              itemCount={items.length}
-              onUpdate={updateItem}
-              onRemove={removeItem}
-              onCalculatePricing={handleCalculatePricing}
-              isCalculating={isCalculating}
-              isPricingTarget={pricingItemIndex === index}
-              materialItems={materialItems}
-              materialsLoading={materialsLoading}
-              partItems={partItems}
-              partsLoading={partsLoading}
-              companyId={companyId}
-              userId={userId}
-            />
+            <div key={item.tempId} className="relative">
+              <OrderItemCard
+                item={item}
+                index={index}
+                itemCount={items.length}
+                onUpdate={updateItem}
+                onRemove={removeItem}
+                onCalculatePricing={handleCalculatePricing}
+                isCalculating={isCalculating}
+                isPricingTarget={pricingItemIndex === index}
+                materialItems={materialItems}
+                materialsLoading={materialsLoading}
+                partItems={partItems}
+                partsLoading={partsLoading}
+                companyId={companyId}
+                userId={userId}
+              />
+              {/* Autofill dropdown — shown below first item's part_name */}
+              {index === 0 && autofillOpen && autofillMatches.length > 0 && (
+                <div className="absolute left-0 right-0 top-full z-30 mt-1 mx-6">
+                  <div className="bg-card border border-border rounded-lg shadow-lg overflow-hidden">
+                    <div className="px-3 py-1.5 border-b border-border bg-muted/50">
+                      <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                        Podobne zlecenia — kliknij aby uzupelnic
+                      </span>
+                    </div>
+                    {autofillMatches.map((match) => (
+                      <button
+                        key={match.id}
+                        type="button"
+                        onClick={() => handleAutofillSelect(match.id)}
+                        className="w-full text-left px-3 py-2 hover:bg-muted/80 transition border-b border-border/50 last:border-0"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div className="min-w-0">
+                            <span className="text-sm font-medium text-foreground truncate block">
+                              {match.part_name}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              #{match.order_number} {match.material ? `• ${match.material}` : ''} • {match.quantity} szt.
+                            </span>
+                          </div>
+                          <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
+                            {new Date(match.created_at).toLocaleDateString('pl-PL')}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={closeAutofill}
+                      className="w-full text-center text-[10px] text-muted-foreground py-1 hover:bg-muted/50 transition"
+                    >
+                      Zamknij
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
 
           {/* Add item button */}
@@ -505,14 +599,18 @@ export default function AddOrderPage() {
                 <SmartEstimateCard
                   estimate={smartEstimate}
                   loading={smartLoading}
+                  dynamicPricing={dynamicPricing}
+                  dynamicPricingLoading={dynamicPricingLoading}
+                  currentPrice={totalCost > 0 ? totalCost : null}
                   onApplyPrice={(price) => {
-                    const breakdown = smartEstimate
-                    if (breakdown) {
-                      setMaterialCost(Math.round(price * 0.3 * 100) / 100)
-                      setLaborCost(Math.round(price * 0.5 * 100) / 100)
-                      setOverheadCost(Math.round(price * 0.2 * 100) / 100)
-                    }
-                    toast.success('Wycena historyczna zastosowana!')
+                    const aiMaterial = Math.round(price * 0.3 * 100) / 100
+                    const aiLabor = Math.round(price * 0.5 * 100) / 100
+                    const aiOverhead = Math.round(price * 0.2 * 100) / 100
+                    setMaterialCost(aiMaterial)
+                    setLaborCost(aiLabor)
+                    setOverheadCost(aiOverhead)
+                    aiAppliedPrice.current = { material: aiMaterial, labor: aiLabor, overhead: aiOverhead }
+                    toast.success('Wycena zastosowana!')
                   }}
                 />
                 <SimilarOrdersWidget orders={similarOrders} loading={smartLoading} />
@@ -521,15 +619,57 @@ export default function AddOrderPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-foreground mb-2 text-sm">{t('orders', 'materialCostLabel')}</label>
-                  <Input type="number" step="0.01" value={materialCost} onChange={(e) => setMaterialCost(Number(e.target.value) || 0)} />
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={materialCost}
+                    onChange={(e) => setMaterialCost(Number(e.target.value) || 0)}
+                    onBlur={() => {
+                      if (aiAppliedPrice.current) {
+                        feedbackLoggers.price.log(
+                          aiAppliedPrice.current.material,
+                          materialCost,
+                          { field: 'material_cost', material: firstItem?.material }
+                        )
+                      }
+                    }}
+                  />
                 </div>
                 <div>
                   <label className="block text-foreground mb-2 text-sm">{t('orders', 'laborCostLabel')}</label>
-                  <Input type="number" step="0.01" value={laborCost} onChange={(e) => setLaborCost(Number(e.target.value) || 0)} />
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={laborCost}
+                    onChange={(e) => setLaborCost(Number(e.target.value) || 0)}
+                    onBlur={() => {
+                      if (aiAppliedPrice.current) {
+                        feedbackLoggers.price.log(
+                          aiAppliedPrice.current.labor,
+                          laborCost,
+                          { field: 'labor_cost', material: firstItem?.material }
+                        )
+                      }
+                    }}
+                  />
                 </div>
                 <div>
                   <label className="block text-foreground mb-2 text-sm">{t('orders', 'overheadCostLabel')}</label>
-                  <Input type="number" step="0.01" value={overheadCost} onChange={(e) => setOverheadCost(Number(e.target.value) || 0)} />
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={overheadCost}
+                    onChange={(e) => setOverheadCost(Number(e.target.value) || 0)}
+                    onBlur={() => {
+                      if (aiAppliedPrice.current) {
+                        feedbackLoggers.price.log(
+                          aiAppliedPrice.current.overhead,
+                          overheadCost,
+                          { field: 'overhead_cost', material: firstItem?.material }
+                        )
+                      }
+                    }}
+                  />
                 </div>
               </div>
               <div className="mt-4 flex justify-between items-center border-t border-border pt-4">

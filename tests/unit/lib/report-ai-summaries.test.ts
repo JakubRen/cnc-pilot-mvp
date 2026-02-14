@@ -63,10 +63,10 @@ vi.mock('@/lib/supabase-server', () => ({
 }))
 
 // ============================================
-// ORDER SUMMARY (existing feature in openai-client.ts)
+// ORDER SUMMARY (renamed from openai-client.ts → price-estimator.ts in Phase 0)
 // ============================================
 
-import { generateOrderSummary, type OrderDetails } from '@/lib/ai/openai-client'
+import { generateOrderSummary, type OrderDetails } from '@/lib/ai/price-estimator'
 
 describe('Report AI Summaries — generateOrderSummary', () => {
   const orderDetails: OrderDetails = {

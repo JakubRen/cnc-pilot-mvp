@@ -16,6 +16,8 @@ import ProductivityChart from './ProductivityChart'
 import ProfitabilityWidget from './ProfitabilityWidget'
 import AIInsightsWidget from './AIInsightsWidget'
 import AnomalyAlertsWidget from './AnomalyAlertsWidget'
+import DemandForecastWidget from './DemandForecastWidget'
+import RevenueForecastWidget from './RevenueForecastWidget'
 import PageTransition from '@/components/ui/PageTransition'
 import type { AIInsightsData } from '@/types/ai-insights'
 import type { AnomalyAlertsData } from '@/types/anomaly-alerts'
@@ -237,6 +239,18 @@ export default function DashboardClient({
               <div className="lg:col-span-1">
                 <ProfitabilityWidget data={dashboardData.profitabilitySummary} />
               </div>
+            )}
+          </div>
+        )}
+
+        {/* AI Forecast Widgets (2 columns) */}
+        {(preferences.demandForecast || preferences.revenueForecast) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {preferences.demandForecast && (
+              <DemandForecastWidget companyId={companyId} />
+            )}
+            {preferences.revenueForecast && (
+              <RevenueForecastWidget companyId={companyId} />
             )}
           </div>
         )}

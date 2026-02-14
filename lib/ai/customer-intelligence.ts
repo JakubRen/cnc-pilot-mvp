@@ -7,6 +7,7 @@ import { readCache, writeCache } from '@/lib/ai/cache-utils'
 import { logger } from '@/lib/logger'
 import type {
   BuyingPattern,
+  CLVPrediction,
   CustomerRiskProfile,
   CustomerIntelligenceData as InternalCustomerIntelligenceData,
 } from '@/types/ai-customer-intelligence'
@@ -91,10 +92,60 @@ function calculateChurnRisk(daysSinceLastOrder: number): ChurnRisk {
   return 'low'
 }
 
-function computeDaysSince(dateStr: string): number {
+function computeDaysSince(dateStr: string | null): number {
+  if (!dateStr) return 0
   const d = new Date(dateStr)
   const now = new Date()
   return Math.ceil((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24))
+}
+
+// ============================================
+// CLV PREDICTION (pure heuristic)
+// ============================================
+
+/**
+ * Calculate Customer Lifetime Value prediction.
+ * Formula: annualValue = avgOrderValue * (365 / orderFrequencyDays)
+ * lifetimeValue = annualValue * expectedLifetimeYears
+ * expectedLifetimeYears is based on churn risk: low=3, medium=1.5, high=0.5
+ */
+function calculateCLV(
+  buyingPattern: BuyingPattern,
+  churnRisk: ChurnRisk
+): CLVPrediction {
+  const { avgOrderValue, orderFrequencyDays, totalOrders } = buyingPattern
+
+  // Can't predict without frequency data
+  if (orderFrequencyDays <= 0 || avgOrderValue <= 0) {
+    return {
+      annualValue: 0,
+      expectedLifetimeYears: 0,
+      lifetimeValue: 0,
+      confidence: 'low',
+    }
+  }
+
+  const ordersPerYear = 365 / orderFrequencyDays
+  const annualValue = Math.round(avgOrderValue * ordersPerYear)
+
+  const expectedLifetimeYears: Record<ChurnRisk, number> = {
+    low: 3,
+    medium: 1.5,
+    high: 0.5,
+  }
+  const lifetime = expectedLifetimeYears[churnRisk]
+  const lifetimeValue = Math.round(annualValue * lifetime)
+
+  let confidence: CLVPrediction['confidence'] = 'low'
+  if (totalOrders >= 5) confidence = 'high'
+  else if (totalOrders >= 2) confidence = 'medium'
+
+  return {
+    annualValue,
+    expectedLifetimeYears: lifetime,
+    lifetimeValue,
+    confidence,
+  }
 }
 
 // ============================================
@@ -120,18 +171,21 @@ function generateHeuristicIntelligence(
       recommendation = `Aktywny klient. Utrzymuj relacje i rozważ oferte upsellowa.`
     }
 
+    const buyingPattern: BuyingPattern = {
+      avgOrderValue: c.orderCount > 0 ? Math.round(c.totalRevenue / c.orderCount) : 0,
+      orderFrequencyDays: frequencyDays,
+      preferredMaterials: c.materials.slice(0, 3),
+      totalOrders: c.orderCount,
+      totalRevenue: Math.round(c.totalRevenue),
+    }
+
     return {
       customerName: c.customerName,
       churnRisk,
       daysSinceLastOrder: daysSince,
-      buyingPattern: {
-        avgOrderValue: c.orderCount > 0 ? Math.round(c.totalRevenue / c.orderCount) : 0,
-        orderFrequencyDays: frequencyDays,
-        preferredMaterials: c.materials.slice(0, 3),
-        totalOrders: c.orderCount,
-        totalRevenue: Math.round(c.totalRevenue),
-      },
+      buyingPattern,
       aiRecommendation: recommendation,
+      clv: calculateCLV(buyingPattern, churnRisk),
     }
   })
 

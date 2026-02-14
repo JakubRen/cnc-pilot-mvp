@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
+import { feedbackLoggers } from '@/lib/ai/feedback-logger'
 import {
   OperationType,
   OperationFormData,
@@ -42,6 +43,7 @@ export default function OperationForm({
   const [machines, setMachines] = useState<Machine[]>([])
   const [isLoadingMachines, setIsLoadingMachines] = useState(true)
   const [estimatingIndex, setEstimatingIndex] = useState<number | null>(null)
+  const aiEstimatedTimes = useRef<Map<number, { setup: number; run: number }>>(new Map())
 
   // Load machines
   useEffect(() => {
@@ -140,6 +142,7 @@ export default function OperationForm({
         const estimate = data[0]
         updateOperation(index, 'setup_time_minutes', estimate.setup_time_minutes)
         updateOperation(index, 'run_time_per_unit_minutes', estimate.run_time_per_unit_minutes)
+        aiEstimatedTimes.current.set(index, { setup: estimate.setup_time_minutes, run: estimate.run_time_per_unit_minutes })
 
         toast.dismiss(loadingToast)
         toast.success('Czasy oszacowane!')
@@ -152,6 +155,7 @@ export default function OperationForm({
 
         updateOperation(index, 'setup_time_minutes', fallbackSetup)
         updateOperation(index, 'run_time_per_unit_minutes', fallbackRun)
+        aiEstimatedTimes.current.set(index, { setup: fallbackSetup, run: fallbackRun })
 
         toast.dismiss(loadingToast)
         toast.success('Czasy oszacowane (wartości domyślne)')
@@ -361,6 +365,16 @@ export default function OperationForm({
                         })
                         updateOperation(index, 'setup_time_minutes', finalValue)
                       }}
+                      onBlur={() => {
+                        const aiTimes = aiEstimatedTimes.current.get(index)
+                        if (aiTimes) {
+                          feedbackLoggers.time.log(
+                            aiTimes.setup,
+                            operation.setup_time_minutes,
+                            { field: 'setup_time', operation_type: operation.operation_type, complexity }
+                          )
+                        }
+                      }}
                       data-testid={`setup-time-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"
                       placeholder="Czas przygotowania (jednorazowy)"
@@ -390,6 +404,16 @@ export default function OperationForm({
                           final: finalValue
                         })
                         updateOperation(index, 'run_time_per_unit_minutes', finalValue)
+                      }}
+                      onBlur={() => {
+                        const aiTimes = aiEstimatedTimes.current.get(index)
+                        if (aiTimes) {
+                          feedbackLoggers.time.log(
+                            aiTimes.run,
+                            operation.run_time_per_unit_minutes,
+                            { field: 'run_time', operation_type: operation.operation_type, complexity }
+                          )
+                        }
                       }}
                       data-testid={`run-time-${index + 1}`}
                       className="w-full px-4 py-2 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:outline-none"

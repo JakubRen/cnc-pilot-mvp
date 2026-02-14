@@ -7,8 +7,7 @@ import { logger } from '@/lib/logger'
 
 import type { AIReportSummaryData, ReportType as FrontendReportType, ReportFinding, ReportRecommendation } from '@/types/ai-expansion'
 
-// NOTE: The old 3-arg backend API is in @/lib/ai/report-summary
-// This file provides the 2-arg frontend-compatible API
+// Unified report summaries API (frontend 2-arg + backend 3-arg)
 
 // ============================================
 // TYPES (matching test expectations)

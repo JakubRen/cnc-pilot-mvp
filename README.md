@@ -84,6 +84,47 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ AI Master Plan — Phases 0-3 (2026-02-13)
+
+**Scope:** Comprehensive AI roadmap execution using 4-agent team (architect, backend-dev, frontend-dev, test-dev). 20 AI features implemented across 4 phases with unified architecture, 681+ unit tests.
+
+**Phase 0 — Architecture Cleanup (3 features):**
+| Feature | Description |
+|---------|------------|
+| 🔧 callGemini() Migration | All AI files unified under `gemini-client.ts` wrapper — zero standalone `new GoogleGenerativeAI()` |
+| 📝 Report Summary Dedup | Merged `report-summary.ts` + `report-summaries.ts` → single `report-summaries.ts` |
+| 🛡️ Prompt Injection Sanitizer | `lib/ai/security/sanitizer.ts` — injection pattern detection, HTML/XSS stripping, field length limits |
+
+**Phase 1 — Quick Wins (4 features):**
+| Feature | Description |
+|---------|------------|
+| 🧠 Smart Anomaly Explanations | AI-enriched alerts with root cause + recommended action per anomaly |
+| 💎 Customer Lifetime Value (CLV) | 6-month revenue prediction with trend analysis per customer |
+| 🔄 Feedback Loop Activation | `feedback-logger.ts` wired to SmartEstimateCard + OperationForm for golden dataset |
+| 🏷️ Auto-Tagging | AI suggests tags (material, complexity, machine, urgency) on order creation |
+
+**Phase 2 — Production AI + Smart Orders (6 features):**
+| Feature | Description |
+|---------|------------|
+| ⭐ AI Production Plan Generator | One-click operation list generation with historical few-shot examples + heuristic fallback |
+| 📅 Predictive Deadlines v2 | Complexity × material × quantity + machine load analysis for deadline feasibility |
+| 📋 Order Auto-Fill v2 | Fuzzy search past orders by part name + recency scoring (<300 LOC) |
+| 📄 PDF/Image Quote Import | Multimodal Gemini (PDF/JPG/PNG) + customer auto-matching + sanitization |
+| ⏰ Smart Deadline Manager | Completion likelihood scoring for all active orders (green/amber/red badges) |
+| 🔄 Auto-Reorder Materials | EOQ (Wilson formula) + supplier grouping + urgency detection |
+
+**Phase 3 — Intelligent Analytics (4 features):**
+| Feature | Description |
+|---------|------------|
+| 💰 Dynamic Pricing Engine | 5-factor multiplicative pricing (tier × urgency × load × win_rate × volume) |
+| 📈 Demand Forecasting | SMA-3 with trend detection + seasonality (12+ months), 30/60/90d projections |
+| 🔬 Quality Defect Prediction | Weighted 5-factor risk model (operator 30%, machine 25%, material 20%, complexity 15%, quantity 10%) |
+| 📊 Revenue Forecasting | Monthly revenue/cost/profit aggregation, cost overrun detection, optimization suggestions |
+
+**New Files:** ~50 (lib features + components + hooks + API routes + tests) | **Test Count:** 681+ unit tests | **TS Errors:** 0
+
+---
+
 ### ✅ AI Expansion Sprint (2026-02-11)
 
 **Scope:** Full AI feature expansion using 4-agent team (architect, backend-dev, frontend-dev, test-dev). 3 AI-powered features with unified Gemini infrastructure, tested and deployed.
@@ -102,7 +143,7 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 | 👥 Customer Intelligence | Churn risk scoring (high/medium/low), inactive customer alerts (>30 days), buying pattern analysis. `CustomerIntelligencePanel.tsx` replaces static stat cards on /customers page. 12h cache |
 | 📦 Inventory Predictions | Usage velocity calculation, stockout date forecasting, reorder alerts. `InventoryPredictionsPanel.tsx` + `StockoutAlert.tsx`. 8h cache |
 
-**Quality:** 345 unit tests, 0 TypeScript errors, clean Turbopack build | **Rate budget:** ~2.3% of Gemini free tier
+**Quality:** 345 unit tests (now 681+ after AI Master Plan), 0 TypeScript errors, clean Turbopack build | **Rate budget:** ~2.3% of Gemini free tier
 
 **Commits:** `f4c8859`, `a485444`, `b965bbb`
 
@@ -777,7 +818,7 @@ npx playwright test  # Expected: 48/48 PASS ✅
 - **API:** Next.js API Routes
 
 ### Testing & CI/CD
-- **Unit Tests:** Vitest (345 tests)
+- **Unit Tests:** Vitest (681+ tests)
 - **E2E Tests:** Playwright
 - **CI/CD:** GitHub Actions
 - **Deployment:** Vercel

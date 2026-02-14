@@ -7,6 +7,7 @@ import {
 } from '@google/generative-ai'
 import { createClient } from '@/lib/supabase-server'
 import { getUserProfile } from '@/lib/auth-server'
+import { sanitizeUserInput, sanitizeField, FIELD_LIMITS } from '@/lib/ai/security/sanitizer'
 
 // =====================================================
 // Parse Quote Email → JSON (Google Gemini 2.5 Flash)
@@ -252,6 +253,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Sanitize user input before sending to AI
+    const sanitized = sanitizeUserInput(emailText, {
+      maxLength: FIELD_LIMITS.LONG,
+      checkInjection: true,
+      stripHtml: true,
+    })
+
+    if (sanitized.injectionDetected) {
+      console.warn('[parse-quote] Potential prompt injection detected', {
+        originalLength: sanitized.originalLength,
+        wasTruncated: sanitized.wasTruncated,
+      })
+    }
+
+    const sanitizedText = sanitized.text
+
     // =====================================================
     // Agent Loop with Function Calling
     // =====================================================
@@ -266,12 +283,12 @@ export async function POST(request: NextRequest) {
       generationConfig: { temperature: 0.1 },
     })
 
-    // Step 1: Send email text to model
+    // Step 1: Send sanitized email text to model
     let response
     try {
       response = await chat.sendMessage([
         SYSTEM_PROMPT,
-        `\n\n--- EMAIL TEXT ---\n${emailText}\n--- END ---`,
+        `\n\n--- EMAIL TEXT ---\n${sanitizedText}\n--- END ---`,
       ])
     } catch (aiError: unknown) {
       return handleAIError(aiError)
@@ -361,22 +378,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate & sanitize
+    parsed.customer_name = parsed.customer_name ? sanitizeField(parsed.customer_name, FIELD_LIMITS.SHORT) : null
+    parsed.customer_email = parsed.customer_email ? sanitizeField(parsed.customer_email, FIELD_LIMITS.SHORT) : null
+    parsed.raw_summary = sanitizeField(parsed.raw_summary, FIELD_LIMITS.MEDIUM) || ''
+
     if (!Array.isArray(parsed.items)) {
       parsed.items = []
     }
 
     parsed.items = parsed.items.map((item) => ({
-      part_name: String(item.part_name || 'Unknown part'),
-      material: item.material ?? null,
+      part_name: sanitizeField(item.part_name, FIELD_LIMITS.SHORT) || 'Unknown part',
+      material: item.material ? sanitizeField(item.material, FIELD_LIMITS.SHORT) : null,
       quantity: Math.max(1, Math.floor(Number(item.quantity) || 1)),
       unit_price: item.unit_price != null ? Number(item.unit_price) : null,
-      dimensions: item.dimensions ?? null,
+      dimensions: item.dimensions ? sanitizeField(item.dimensions, FIELD_LIMITS.DIMENSIONS) : null,
       complexity: ['simple', 'medium', 'complex'].includes(item.complexity as string)
         ? item.complexity
         : null,
-      notes: item.notes ?? null,
+      notes: item.notes ? sanitizeField(item.notes, FIELD_LIMITS.MEDIUM) : null,
       product_id: item.product_id ?? null,
-      product_name: item.product_name ?? null,
+      product_name: item.product_name ? sanitizeField(item.product_name, FIELD_LIMITS.SHORT) : null,
       available_quantity: item.available_quantity != null ? Number(item.available_quantity) : null,
       inventory_status: ['in_stock', 'out_of_stock', 'not_found'].includes(item.inventory_status)
         ? item.inventory_status

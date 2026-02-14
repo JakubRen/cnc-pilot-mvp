@@ -1,7 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase-server'
-import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai'
+import { callGemini } from '@/lib/ai/gemini-client'
+import { SchemaType } from '@/lib/ai/schema-types'
 import { logger } from '@/lib/logger'
 import type { AIInsight, AIInsightsData, InsightsDataSnapshot } from '@/types/ai-insights'
 
@@ -272,37 +273,7 @@ function generateHeuristicInsights(snapshot: InsightsDataSnapshot): AIInsight[] 
 // ============================================
 
 async function generateInsightsWithAI(snapshot: InsightsDataSnapshot): Promise<AIInsight[]> {
-  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-  if (!apiKey) {
-    logger.warn('[ai-insights] No GOOGLE_GENERATIVE_AI_API_KEY — using heuristic fallback')
-    return generateHeuristicInsights(snapshot)
-  }
-
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
-      generationConfig: {
-        temperature: 0.3,
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: SchemaType.ARRAY,
-          items: {
-            type: SchemaType.OBJECT,
-            properties: {
-              type: { type: SchemaType.STRING, description: 'Typ: revenue_trend, machine_utilization, customer_activity, margin_analysis, deadline_risk, inventory_alert, productivity' },
-              severity: { type: SchemaType.STRING, description: 'Severity: positive, warning, critical, info' },
-              icon: { type: SchemaType.STRING, description: 'Emoji icon' },
-              title: { type: SchemaType.STRING, description: 'Krótki tytuł po polsku (max 60 znaków)' },
-              description: { type: SchemaType.STRING, description: 'Opis po polsku z konkretną rekomendacją (max 150 znaków)' },
-            },
-            required: ['type', 'severity', 'icon', 'title', 'description'],
-          },
-        },
-      },
-    })
-
-    const prompt = `Jesteś analitykiem produkcji CNC. Na podstawie danych wygeneruj 3-5 KONKRETNYCH spostrzeżeń po polsku dla właściciela warsztatu CNC.
+  const prompt = `Jesteś analitykiem produkcji CNC. Na podstawie danych wygeneruj 3-5 KONKRETNYCH spostrzeżeń po polsku dla właściciela warsztatu CNC.
 
 DANE PRODUKCYJNE:
 - Przychód ten tydzień: ${snapshot.revenueThisWeek} PLN
@@ -326,21 +297,39 @@ ZASADY:
 - Nie wymyślaj danych — opieraj się TYLKO na podanych liczbach
 - Jeśli wartość = 0, nie generuj insightu o tym temacie`
 
-    const result = await model.generateContent(prompt)
-    const text = result.response.text()
-    const parsed = JSON.parse(text) as AIInsight[]
+  const result = await callGemini<AIInsight[]>({
+    label: 'ai-insights',
+    prompt,
+    responseSchema: {
+      type: SchemaType.ARRAY,
+      items: {
+        type: SchemaType.OBJECT,
+        properties: {
+          type: { type: SchemaType.STRING, description: 'Typ: revenue_trend, machine_utilization, customer_activity, margin_analysis, deadline_risk, inventory_alert, productivity' },
+          severity: { type: SchemaType.STRING, description: 'Severity: positive, warning, critical, info' },
+          icon: { type: SchemaType.STRING, description: 'Emoji icon' },
+          title: { type: SchemaType.STRING, description: 'Krótki tytuł po polsku (max 60 znaków)' },
+          description: { type: SchemaType.STRING, description: 'Opis po polsku z konkretną rekomendacją (max 150 znaków)' },
+        },
+        required: ['type', 'severity', 'icon', 'title', 'description'],
+      },
+    },
+    temperature: 0.3,
+  })
 
-    // Validate and sanitize
-    const validTypes: string[] = ['revenue_trend', 'machine_utilization', 'customer_activity', 'margin_analysis', 'deadline_risk', 'inventory_alert', 'productivity']
-    const validSeverities: string[] = ['positive', 'warning', 'critical', 'info']
-
-    return parsed
-      .filter(i => validTypes.includes(i.type) && validSeverities.includes(i.severity))
-      .slice(0, 5)
-  } catch (error) {
-    logger.error('[ai-insights] Gemini error, falling back to heuristics', { error })
+  if (!result) {
+    logger.warn('[ai-insights] callGemini returned null — using heuristic fallback')
     return generateHeuristicInsights(snapshot)
   }
+
+  // Validate and sanitize
+  const validTypes: string[] = ['revenue_trend', 'machine_utilization', 'customer_activity', 'margin_analysis', 'deadline_risk', 'inventory_alert', 'productivity']
+  const validSeverities: string[] = ['positive', 'warning', 'critical', 'info']
+
+  const insights = Array.isArray(result.data) ? result.data : []
+  return insights
+    .filter(i => validTypes.includes(i.type) && validSeverities.includes(i.severity))
+    .slice(0, 5)
 }
 
 // ============================================

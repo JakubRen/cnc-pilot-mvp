@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import toast from 'react-hot-toast'
+import { logAiCorrection } from '@/lib/ai/feedback-logger'
 import OperationForm from '@/components/operations/OperationForm'
+import AIGenerateButton from '@/components/production/AIGenerateButton'
 import DrawingUpload from '@/components/orders/DrawingUpload'
 import AppLayout from '@/components/layout/AppLayout'
 import {
@@ -43,6 +45,7 @@ export default function CreateProductionPlanPage() {
   const [operations, setOperations] = useState<OperationFormData[]>([])
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const prefilledMaterial = useRef<string | null>(null)
 
   // Load order info when profile is ready
   useEffect(() => {
@@ -74,7 +77,10 @@ export default function CreateProductionPlanPage() {
       // Pre-fill from order if available
       if (order.part_name) setPartName(order.part_name)
       if (order.quantity) setQuantity(order.quantity)
-      if (order.material) setMaterial(order.material)
+      if (order.material) {
+        setMaterial(order.material)
+        prefilledMaterial.current = order.material
+      }
     }
 
     loadOrder()
@@ -336,6 +342,17 @@ export default function CreateProductionPlanPage() {
                   type="text"
                   value={material}
                   onChange={(e) => setMaterial(e.target.value)}
+                  onBlur={() => {
+                    if (prefilledMaterial.current) {
+                      logAiCorrection({
+                        feature: 'material_selection',
+                        aiValue: prefilledMaterial.current,
+                        userValue: material,
+                        context: { material: prefilledMaterial.current, quantity },
+                        metadata: { source: 'prefill', confidence: 'low' },
+                      })
+                    }
+                  }}
                   placeholder="np. Stal nierdzewna, Aluminium"
                   data-testid="material-input"
                   className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
@@ -420,6 +437,20 @@ export default function CreateProductionPlanPage() {
               userId={userId}
             />
           </div>
+
+          {/* AI Plan Generator */}
+          {operations.length === 0 && (
+            <AIGenerateButton
+              partName={partName}
+              material={material}
+              quantity={quantity}
+              complexity={complexity}
+              dimensions={{ length, width, height }}
+              notes={notes}
+              companyId={companyId}
+              onApplyOperations={setOperations}
+            />
+          )}
 
           {/* Operations */}
           <div className="bg-card p-8 rounded-lg border border-border">

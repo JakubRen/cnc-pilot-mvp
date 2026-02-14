@@ -13,6 +13,8 @@ export interface DashboardPreferences {
   profitabilityWidget: boolean
   aiInsights: boolean
   anomalyAlerts: boolean
+  demandForecast: boolean
+  revenueForecast: boolean
 }
 
 export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
@@ -28,6 +30,8 @@ export const DEFAULT_DASHBOARD_PREFERENCES: DashboardPreferences = {
   profitabilityWidget: true,
   aiInsights: true,
   anomalyAlerts: true,
+  demandForecast: true,
+  revenueForecast: true,
 }
 
 export interface DashboardWidget {
@@ -109,5 +113,17 @@ export const DASHBOARD_WIDGETS: DashboardWidget[] = [
     label: 'Anomalie Produkcyjne',
     description: 'Wykrywanie przekroczeń czasu, kosztów i deadline',
     icon: '🚨',
+  },
+  {
+    key: 'demandForecast',
+    label: 'Prognoza Popytu',
+    description: 'AI prognoza zamówień na 30/60/90 dni',
+    icon: '📊',
+  },
+  {
+    key: 'revenueForecast',
+    label: 'Prognoza Przychodów',
+    description: 'Projekcja przychodów, kosztów i sugestie optymalizacji',
+    icon: '💰',
   },
 ]

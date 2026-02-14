@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import toast from 'react-hot-toast'
+import QuoteFileUpload, { type FileParseResult } from '@/components/quotes/QuoteFileUpload'
 
 interface ParsedItem {
   part_name: string
@@ -47,12 +48,34 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   },
 }
 
+type ImportTab = 'text' | 'file'
+
 export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDialogProps) {
   const [text, setText] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [preview, setPreview] = useState<ParseQuoteResult | null>(null)
+  const [activeTab, setActiveTab] = useState<ImportTab>('text')
 
   if (!isOpen) return null
+
+  const handleFileImport = (data: FileParseResult) => {
+    // Map FileParseResult → ParseQuoteResult (add default inventory fields)
+    const mapped: ParseQuoteResult = {
+      items: data.items.map(item => ({
+        ...item,
+        product_id: null,
+        product_name: null,
+        available_quantity: null,
+        inventory_status: 'not_found' as const,
+      })),
+      customer_name: data.customer_name,
+      customer_email: data.customer_email,
+      deadline: data.deadline,
+      raw_summary: data.raw_summary,
+    }
+    onImport(mapped)
+    handleClose()
+  }
 
   const handleAnalyze = async () => {
     if (!text.trim()) {
@@ -124,10 +147,10 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
             <h2 className="text-xl font-bold text-foreground">
-              AI Import z maila
+              AI Import
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Wklej treść maila - AI wyciągnie pozycje i sprawdzi magazyn
+              Wklej tekst lub przeslij plik — AI wyciagnie pozycje
             </p>
           </div>
           <button
@@ -138,8 +161,38 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
           </button>
         </div>
 
+        {/* Tab switcher */}
+        <div className="flex border-b border-border">
+          <button
+            type="button"
+            onClick={() => setActiveTab('text')}
+            className={`flex-1 px-4 py-2.5 text-sm font-medium transition ${
+              activeTab === 'text'
+                ? 'text-violet-600 dark:text-violet-400 border-b-2 border-violet-500'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Tekst / Email
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('file')}
+            className={`flex-1 px-4 py-2.5 text-sm font-medium transition ${
+              activeTab === 'file'
+                ? 'text-violet-600 dark:text-violet-400 border-b-2 border-violet-500'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Plik (PDF / JPG / PNG)
+          </button>
+        </div>
+
         {/* Body */}
         <div className="p-6 space-y-4">
+          {activeTab === 'file' ? (
+            <QuoteFileUpload onImport={handleFileImport} onClose={handleClose} />
+          ) : (
+          <>
           {/* Input */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
@@ -274,6 +327,8 @@ export default function AIImportDialog({ isOpen, onClose, onImport }: AIImportDi
                 </Button>
               </div>
             </div>
+          )}
+          </>
           )}
         </div>
       </div>
