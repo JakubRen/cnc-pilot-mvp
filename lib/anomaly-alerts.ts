@@ -70,10 +70,11 @@ export async function getAnomalyAlerts(companyId: string): Promise<AnomalyAlerts
             metric: `${daysLeft} dni`,
           })
         }
+
       }
 
-      // 3. STALE ORDER — in_progress for 14+ days, no significant time logged recently
-      if (order.status === 'in_progress' && order.created_at) {
+      // 3. STALE ORDER — pending/in_progress for 14+ days, no significant time logged
+      if ((order.status === 'in_progress' || order.status === 'pending') && order.created_at) {
         const created = new Date(order.created_at)
         const daysSinceCreated = Math.ceil((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24))
 
