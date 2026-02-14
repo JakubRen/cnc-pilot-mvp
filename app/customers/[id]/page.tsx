@@ -37,10 +37,10 @@ export default async function CustomerDetailsPage({ params }: CustomerDetailsPag
     .eq('customer_id', id)
     .order('created_at', { ascending: false })
 
-  // Fetch related orders (include selling_price for scoring)
+  // Fetch related orders (include fields for scoring + predictions)
   const { data: orders } = await supabase
     .from('orders')
-    .select('id, order_number, status, deadline, created_at, selling_price')
+    .select('id, order_number, status, deadline, created_at, selling_price, material, quantity, margin_percent')
     .eq('customer_id', id)
     .order('created_at', { ascending: false })
 
