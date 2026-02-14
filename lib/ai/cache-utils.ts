@@ -34,7 +34,7 @@ function l1Key(companyId: string, cacheKey: string): string {
 }
 
 /** Clear L1 cache — exposed for test isolation only */
-export function clearL1Cache(): void {
+export async function clearL1Cache(): Promise<void> {
   l1Cache.clear()
 }
 
