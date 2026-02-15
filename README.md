@@ -84,6 +84,14 @@ CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC
 
 ## 📅 Recent Updates
 
+### ✅ Customer Detail Page Redesign + CLV Panel + Manual Testing Phase 1-2 (2026-02-14)
+
+- **Tabbed interface** for customer detail page — 4 tabs: Ogólne, Oferty, Zamówienia, Predykcje
+- **Full CLV Predictions Panel** with 8 metrics: annual value, lifetime value, confidence, trend, avg order value, order frequency, churn risk, status distribution, preferred materials, seasonality histogram, avg margin, production type
+- **Extended orders query** with material, quantity, margin_percent for richer analytics
+- **Bug fix:** SmartEstimateCard `<button>` missing `type="button"` caused form submission
+- **Manual testing Phase 1-2:** 5/17 features verified, 2 bugs found (1 fixed, 1 planned)
+
 ### ✅ AI Master Plan — Phases 0-3 (2026-02-13)
 
 **Scope:** Comprehensive AI roadmap execution using 4-agent team (architect, backend-dev, frontend-dev, test-dev). 20 AI features implemented across 4 phases with unified architecture, 681+ unit tests.

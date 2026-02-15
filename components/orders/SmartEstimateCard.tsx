@@ -287,6 +287,7 @@ export default function SmartEstimateCard({
         <div className="space-y-2">
           {hasDynamic && (
             <button
+              type="button"
               onClick={() => onApplyPrice(dynamicPricing.suggested_price)}
               className="w-full py-2 bg-green-600 hover:bg-green-500 text-white rounded-md text-sm font-semibold transition flex items-center justify-center gap-2"
             >
@@ -295,6 +296,7 @@ export default function SmartEstimateCard({
           )}
           {hasEstimate && (
             <button
+              type="button"
               onClick={() => onApplyPrice(estimate.avgPrice)}
               className={`w-full py-2 rounded-md text-sm font-semibold transition flex items-center justify-center gap-2 ${
                 hasDynamic
