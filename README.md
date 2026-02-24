@@ -1,845 +1,75 @@
-# 🏭 CNC-Pilot MVP
+# CNC-Pilot MVP
 
 > Modern production management system for CNC manufacturing workshops
 
 [![Deployment Status](https://img.shields.io/badge/deployment-live-brightgreen)](https://cnc-pilot-mvp.vercel.app)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e)](https://supabase.com/)
+[![Tests](https://img.shields.io/badge/tests-681%2B%20unit%20%2B%2047%20E2E-green)](.)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**[🚀 Live Demo](https://cnc-pilot-mvp.vercel.app)** | **[📚 Documentation](https://cnc-pilot-mvp.vercel.app/docs)**
+**[Live Demo](https://cnc-pilot-mvp.vercel.app)** | **[Documentation](https://cnc-pilot-mvp.vercel.app/docs)** | **[Changelog](./CHANGELOG.md)**
 
 ---
 
-## 📋 About The Project
+## About
 
-CNC-Pilot is a comprehensive **multi-tenant SaaS solution** designed for small and medium-sized CNC manufacturing companies. It provides complete production management from order creation to delivery, with real-time tracking, inventory management, and detailed reporting.
-
----
-
-## 🎯 Problem & Solution
-
-### The Problem
-Small and medium-sized CNC manufacturing workshops face critical operational challenges:
-- 📊 **Manual order tracking** - Spreadsheets become chaotic with 50+ concurrent orders
-- 👁️ **No production visibility** - Management has no real-time insight into shop floor status
-- 📦 **Inventory chaos** - Stock levels tracked manually, leading to material shortages or overstock
-- ⏱️ **Time tracking failures** - Operators forget to log hours, causing inaccurate costing
-- 💰 **Pricing guesswork** - No historical data to base quotes on, leading to lost margins
-- 🔒 **Data security** - Shared spreadsheets with no access control or audit trails
-
-**Impact:** Lost productivity, missed deadlines, pricing errors costing 15-20% of revenue.
-
-### Our Solution
-CNC-Pilot provides an **all-in-one platform** that digitizes every aspect of CNC workshop operations:
-- ✅ **Centralized order management** with real-time status tracking
-- ✅ **Live production dashboard** showing exactly what's happening on the shop floor
-- ✅ **Automated inventory tracking** with low-stock alerts and material consumption
-- ✅ **Built-in time tracking** with one-click timers tied directly to orders
-- ✅ **AI-powered pricing** using historical data and OpenAI for accurate quotes
-- ✅ **Enterprise security** with Row Level Security and role-based access control
-
-**Result:** 30% faster order processing, 25% reduction in material waste, accurate costing on 100% of quotes.
-
-### ✨ Key Features
-
-- 🎯 **Multi-Tenancy** - Complete data isolation with Row Level Security (RLS)
-- 📦 **Order Management** - Full lifecycle from quote to completion
-- ⏱️ **Time Tracking** - Built-in timer with automatic cost calculation
-- 🏭 **Inventory Management** - Stock levels, materials tracking, low-stock alerts
-- 📊 **Dashboard** - Real-time metrics and KPIs
-- 📈 **Reports & Analytics** - Export to CSV/Excel/PDF
-- 👥 **User Management** - Role-based access control (Owner/Admin/Manager/Operator/Viewer)
-- 📚 **Knowledge Portal** - Interactive documentation with Mermaid diagrams
-- 🌍 **Multi-language** - Polish & English support
-- 🌓 **Dark Mode** - Full dark theme support
-- ⚙️ **Production Planning** - Operations routing with Setup/Run Time calculation
-- 🔢 **Auto Document Numbering** - Automatic numbering for orders, inventory, and reports
+CNC-Pilot is a multi-tenant SaaS solution for small and medium-sized CNC manufacturing companies. It covers the full production lifecycle — from order creation and quoting, through production planning and execution, to delivery and cost analysis. Built with AI-powered features using Gemini 2.5 Flash for intelligent automation at zero API cost.
 
 ---
 
-## 👥 Who Should Use This?
+## Key Features
 
-### Perfect For:
-- **CNC Machine Shops** (3-50 employees) - Milling, turning, 5-axis operations
-- **Metal Fabrication Workshops** - Sheet metal, welding, assembly
-- **Prototype & Short-Run Manufacturers** - Custom parts, small batches
-- **Contract Manufacturers** - Serving multiple clients with varying requirements
-
-### Roles Supported:
-- 👔 **Shop Owners** - Complete visibility into operations and finances
-- 📋 **Production Managers** - Real-time shop floor monitoring and planning
-- 🔧 **Machine Operators** - Simple kiosk mode for time tracking and work instructions
-- 📞 **Sales/Quoting** - Fast, accurate pricing based on historical data
-- 📊 **Quality Control** - Track measurements and compliance
-
-### Use Cases:
-1. **Order-to-Cash Flow** - Customer inquiry → Quote → Order → Production → Delivery → Invoice
-2. **Production Scheduling** - Assign operators, track setup/run times, monitor progress
-3. **Inventory Management** - Auto-deduct materials, trigger reorders, track batch numbers
-4. **Cost Analysis** - Real labor hours + material costs = accurate job costing
-5. **Quality Assurance** - Measurement plans, inspection reports, non-conformance tracking
+- **Order Management** — Full lifecycle from quote to completion with multi-item orders
+- **Production Planning** — Operations routing with setup/run time calculation and interactive execution
+- **Kanban & Swimlanes** — Drag-and-drop board views with @dnd-kit
+- **Time Tracking** — Built-in timers with automatic cost calculation
+- **Inventory Management** — Stock levels, batch tracking, low-stock alerts, auto-reorder
+- **AI Features** — 20 Gemini-powered features (see [AI Features](#ai-features) below)
+- **Quality Control** — Quick Measure flow, tolerance tracking, defect prediction
+- **Dashboard** — Real-time metrics, anomaly alerts, AI insights
+- **Quotes & Pricing** — AI quote import (PDF/email), dynamic pricing engine, ABC costing
+- **Customer Intelligence** — CLV predictions, churn risk scoring, auto-tiering
+- **Reports & Analytics** — AI summaries, revenue/demand forecasting, export to CSV/Excel/PDF
+- **Knowledge Portal** — Interactive documentation with Mermaid diagrams
+- **Multi-tenancy** — Row Level Security with email domain-based isolation
+- **Role-based Access** — Owner / Admin / Manager / Operator / Viewer
+- **Multi-language** — Polish & English
+- **Dark Mode** — Full dark theme support
 
 ---
 
-## 📅 Recent Updates
-
-### ✅ Customer Detail Page Redesign + CLV Panel + Manual Testing Phase 1-2 (2026-02-14)
-
-- **Tabbed interface** for customer detail page — 4 tabs: Ogólne, Oferty, Zamówienia, Predykcje
-- **Full CLV Predictions Panel** with 8 metrics: annual value, lifetime value, confidence, trend, avg order value, order frequency, churn risk, status distribution, preferred materials, seasonality histogram, avg margin, production type
-- **Extended orders query** with material, quantity, margin_percent for richer analytics
-- **Bug fix:** SmartEstimateCard `<button>` missing `type="button"` caused form submission
-- **Manual testing Phase 1-2:** 5/17 features verified, 2 bugs found (1 fixed, 1 planned)
-
-### ✅ AI Master Plan — Phases 0-3 (2026-02-13)
-
-**Scope:** Comprehensive AI roadmap execution using 4-agent team (architect, backend-dev, frontend-dev, test-dev). 20 AI features implemented across 4 phases with unified architecture, 681+ unit tests.
-
-**Phase 0 — Architecture Cleanup (3 features):**
-| Feature | Description |
-|---------|------------|
-| 🔧 callGemini() Migration | All AI files unified under `gemini-client.ts` wrapper — zero standalone `new GoogleGenerativeAI()` |
-| 📝 Report Summary Dedup | Merged `report-summary.ts` + `report-summaries.ts` → single `report-summaries.ts` |
-| 🛡️ Prompt Injection Sanitizer | `lib/ai/security/sanitizer.ts` — injection pattern detection, HTML/XSS stripping, field length limits |
-
-**Phase 1 — Quick Wins (4 features):**
-| Feature | Description |
-|---------|------------|
-| 🧠 Smart Anomaly Explanations | AI-enriched alerts with root cause + recommended action per anomaly |
-| 💎 Customer Lifetime Value (CLV) | 6-month revenue prediction with trend analysis per customer |
-| 🔄 Feedback Loop Activation | `feedback-logger.ts` wired to SmartEstimateCard + OperationForm for golden dataset |
-| 🏷️ Auto-Tagging | AI suggests tags (material, complexity, machine, urgency) on order creation |
-
-**Phase 2 — Production AI + Smart Orders (6 features):**
-| Feature | Description |
-|---------|------------|
-| ⭐ AI Production Plan Generator | One-click operation list generation with historical few-shot examples + heuristic fallback |
-| 📅 Predictive Deadlines v2 | Complexity × material × quantity + machine load analysis for deadline feasibility |
-| 📋 Order Auto-Fill v2 | Fuzzy search past orders by part name + recency scoring (<300 LOC) |
-| 📄 PDF/Image Quote Import | Multimodal Gemini (PDF/JPG/PNG) + customer auto-matching + sanitization |
-| ⏰ Smart Deadline Manager | Completion likelihood scoring for all active orders (green/amber/red badges) |
-| 🔄 Auto-Reorder Materials | EOQ (Wilson formula) + supplier grouping + urgency detection |
-
-**Phase 3 — Intelligent Analytics (4 features):**
-| Feature | Description |
-|---------|------------|
-| 💰 Dynamic Pricing Engine | 5-factor multiplicative pricing (tier × urgency × load × win_rate × volume) |
-| 📈 Demand Forecasting | SMA-3 with trend detection + seasonality (12+ months), 30/60/90d projections |
-| 🔬 Quality Defect Prediction | Weighted 5-factor risk model (operator 30%, machine 25%, material 20%, complexity 15%, quantity 10%) |
-| 📊 Revenue Forecasting | Monthly revenue/cost/profit aggregation, cost overrun detection, optimization suggestions |
-
-**New Files:** ~50 (lib features + components + hooks + API routes + tests) | **Test Count:** 681+ unit tests | **TS Errors:** 0
-
----
-
-### ✅ AI Expansion Sprint (2026-02-11)
-
-**Scope:** Full AI feature expansion using 4-agent team (architect, backend-dev, frontend-dev, test-dev). 3 AI-powered features with unified Gemini infrastructure, tested and deployed.
-
-**Infrastructure:**
-| Component | Description |
-|-----------|------------|
-| 🔧 Unified Gemini Client | `gemini-client.ts` singleton wrapper with `callGemini<T>()`, structured JSON output, rate-limit detection |
-| 💾 Generic AI Cache | `cache-utils.ts` + `ai_cache` table with RLS, configurable TTL per feature, company-scoped |
-| 🔑 Schema Types | `schema-types.ts` — separated from `'use server'` (Next.js 16 only allows async exports) |
-
-**3 AI Features:**
-| Feature | Description |
-|---------|------------|
-| 📊 Report AI Summaries | `AIReportSummary.tsx` button-triggered component on 4 report pages (costs, orders, inventory, time). Real report data passed to Gemini. 4h cache, Polish summaries with findings + recommendations + trend badge |
-| 👥 Customer Intelligence | Churn risk scoring (high/medium/low), inactive customer alerts (>30 days), buying pattern analysis. `CustomerIntelligencePanel.tsx` replaces static stat cards on /customers page. 12h cache |
-| 📦 Inventory Predictions | Usage velocity calculation, stockout date forecasting, reorder alerts. `InventoryPredictionsPanel.tsx` + `StockoutAlert.tsx`. 8h cache |
-
-**Quality:** 345 unit tests (now 681+ after AI Master Plan), 0 TypeScript errors, clean Turbopack build | **Rate budget:** ~2.3% of Gemini free tier
-
-**Commits:** `f4c8859`, `a485444`, `b965bbb`
-
----
-
-### ✅ Kanban & Swimlanes Views (2026-02-11)
-
-**Scope:** 3-way view toggle (Table|Kanban|Swimlanes) for orders page with drag & drop status changes.
-
-| Feature | Description |
-|---------|------------|
-| 🗂️ Kanban Board | Responsive CSS grid (4/2/1 cols) with @dnd-kit drag & drop for status changes |
-| 🏊 Swimlanes Board | Collapsible customer rows with PLN totals, auto-expand on drop |
-| 🔀 View Toggle | Table/Kanban/Swimlanes with localStorage persistence |
-
-**New Files:** 5 | **Modified Files:** 3 | **Commit:** `f4c8859`
-
----
-
-### ✅ AI & Intelligence Features Session (2026-02-09)
-
-**Scope:** Full AI migration to Gemini 2.5 Flash (free tier), dashboard intelligence, production anomaly detection, calendar drag & drop, customer scoring, and predictive deadlines.
-
-**8 Commits — 3 Phases:**
-
-**Phase 1: AI Foundation**
-| Feature | Description |
-|---------|------------|
-| 🧠 AI Dashboard Insights | Gemini-powered insights widget with 6h cache, heuristic fallback, company-scoped RLS |
-| 🔄 OpenAI → Gemini Migration | Complete AI layer rewrite from GPT-4 ($$$) to Gemini 2.5 Flash (free) |
-| 📊 Smart Historical Estimation | Wired existing `get_similar_orders_stats` RPC to order form UI |
-
-**Phase 2: Cleanup**
-| Change | Description |
-|--------|------------|
-| 🗑️ Removed Quick Order Modal | Unnecessary feature removed |
-| 🗑️ Removed AI Price Estimation | Pricing is algorithm-based, not AI-based |
-
-**Phase 3: Intelligence Features** (`c560c18`)
-| Feature | Description |
-|---------|------------|
-| 🚨 Anomaly Alerts | Dashboard widget detecting time overrun, deadline risk, stale orders, cost overrun |
-| 🖱️ Drag & Drop Calendar | Drag orders on production calendar to change deadlines with optimistic UI |
-| ⭐ Customer Scoring | Auto-tier customers (VIP/Regular/New/Inactive/One-time) from order history |
-| 📅 Predictive Deadlines | Suggest deadline based on avg duration of similar past orders |
-
-**New Files:** 10 | **Modified Files:** 18 | **Removed Files:** 2 | **Zero new npm dependencies**
-
----
-
-### ✅ Phase 1 Feature Plan — 5 Features (2026-02-05)
-
-**Scope:** Implemented all 5 Phase 1 features from Feature Plan, adding realtime capabilities, quick actions, and enhanced operator experience.
-
-**New Components:**
-- `components/orders/QuickOrderModal.tsx` — 5-field quick order creation with Zod validation + auto order number
-- `components/orders/OrderTimeline.tsx` — Chronological timeline merging audit_logs, time_logs, and QC measurements
-
-**5 Features Implemented:**
-| Feature | Description |
-|---------|------------|
-| 🔄 Realtime Order List | `useRealtimeOrders()` wired into OrdersClient — auto-refreshes on DB changes |
-| 🎯 Smart Dashboard CTAs | ActivityFeed links to `/orders/[id]`, TopCustomers links to `/orders?search=NAME` |
-| ⚡ Quick Order Modal | "Szybkie Zamówienie" button — customer select, part name, quantity, material, deadline |
-| 🕐 Order Timeline (6th Tab) | "Historia" tab with audit trail + time logs + QC measurements in chronological order |
-| 🏭 Kiosk Work Queue | Operators see assigned operations with drawing previews, type badges, and status indicators |
-
-**Files Changed:** 10 modified + 2 new files (12 total)
-
----
-
-### ✅ Order Details Tabbed Interface (2026-02-04)
-
-**Feature:** Complete UI refactor of order details page — from single-page scroll to organized tabbed interface.
-
-**New Components:**
-- `app/orders/[id]/OrderDetailsTabs.tsx` - Client component with 5 tabs
-- `app/orders/[id]/DrawingButton.tsx` - Compact drawing button for header
-
-**5 Tabs:**
-| Tab | Content |
-|-----|---------|
-| 📋 Podstawowe | Dane klienta, oś czasu, operator, tabela pozycji |
-| 📝 Opis | Notatki zamówienia z przyciskiem edycji |
-| ⚙️ Produkcja | Plany produkcji + Time Tracking |
-| 💰 Finanse | Analiza kosztów i rentowności |
-| ✅ Jakość | Kontrola jakości + Ślad węglowy |
-
-**UX Improvements:**
-- **Sticky header** — numer zamówienia, status badges i akcje zawsze widoczne
-- **Drawing button** — kompaktowy przycisk zamiast inline preview
-- **Fade-in animations** — płynne przełączanie między tabami
-- **Fallback for legacy orders** — jeśli brak `order_items`, wyświetla dane z głównego zamówienia
-
-**Bug Fixes:**
-- 🐛 **Cache refresh** — `force-dynamic` na `/orders` zapewnia świeże dane po zmianie statusu
-- 🐛 **Server→Client function passing** — `formatDate` przeniesiona do Client Component
-
-**Files:** 5 files changed, 450 insertions, 347 deletions | Commit: `40f987a`
-
----
-
-### ✅ Simplified QC Flow + Order Item Tolerances Bug Fix (2026-02-03)
-
-**Feature:** Quick Measure - uproszczony flow kontroli jakości bez tworzenia planów QC.
-
-**Bug Fixes (Critical - Silent Data Loss):**
-- 🐛 **order_items missing tolerance columns** - UI zbierało tolerancje ale baza ich nie miała
-- 🐛 **INSERT ignorował tolerancje** - `app/orders/add/page.tsx` nie przekazywało tolerance_* do bazy
-- 🐛 **UPDATE ignorował tolerancje** - `EditOrderForm.tsx` nie obsługiwało tolerancji przy edycji
-
-**New Feature - Quick Measure:**
-- `components/qc/QuickMeasureForm.tsx` - Formularz szybkiego pomiaru z real-time pass/fail
-- `components/qc/QuickMeasureModal.tsx` - Modal opakowujący formularz
-- Przycisk "Szybki pomiar" na stronie zamówienia (sekcja Kontrola Jakości)
-- Wymiary i tolerancje pobierane automatycznie z `order_items`
-- Pass/fail feedback w czasie rzeczywistym (zielone/czerwone obramowania)
-- Zapis bezpośrednio do `quality_measurements` (bez tworzenia planu QC)
-
-**Database Migrations:**
-- `migrations/add_tolerances_to_order_items.sql` - 3 nowe kolumny tolerancji
-- `migrations/quick_measure_support.sql` - Rozszerzenie `quality_measurements` dla quick measure
-
-**Flow po zmianach:**
-```
-STARY: Zamówienie → "Dodaj pomiar" → MUSISZ stworzyć plan QC → pomiary
-NOWY: Zamówienie → "Szybki pomiar" → modal z wymiarami → zapis (bez planu!)
-```
-
-**Files Modified:** 8 files (+400 lines)
-
----
-
-### ✅ Design System Overhaul: Violet/Gray Palette + Geist Sans (2026-02-02)
-
-**Feature:** Complete color palette migration from blue/slate to violet/gray across the entire application.
-
-- **globals.css:** New CSS variables — dark theme (gray-950 base, violet-600 primary), light theme (white/gray/violet). Chart colors updated. Scrollbar styled gray + violet hover.
-- **Font:** Switched from Geist Mono to Geist Sans for modern SaaS feel.
-- **Bulk replace:** ~130 `.tsx` files updated: all `blue-*` Tailwind classes → `violet-*` (including hover/dark/focus/ring/gradient variants).
-- **Hardcoded hex:** `#2563eb→#7c3aed`, `#3b82f6→#8b5cf6`, `#1e40af→#5b21b6`, `#dbeafe→#ede9fe`, `#06b6d4→#8b5cf6`.
-- **Cyan cleanup:** 2 cooperation files `cyan-*` → `violet-*`.
-- **Auth pages untouched** (login, register, forgot-password, reset-password) — branding exception.
-- **Verification:** 0 TypeScript errors, 267/267 unit tests passed, Next.js build successful.
-
-### ✅ Multi-Item Orders + Module Reorganization (2026-02-01)
-
-**Feature:** Multi-position order form — one order can now have multiple items (parts), each with its own name, material, quantity, dimensions, complexity, drawing, and notes.
-
-- **Add Order (`/orders/add`):** Refactored to multi-item form with "+ Dodaj kolejna pozycje" button. Order header (customer, deadline, status, costs) separate from per-item fields. DatePicker calendar for deadline. Summary fields on `orders` table auto-populated for backwards compatibility.
-- **Edit Order (`/orders/[id]/edit`):** Loads `order_items` — if items exist shows multi-item editor, if not shows flat form (old orders). "+ Przejdz na tryb wielu pozycji" button to convert.
-- **Order Details (`/orders/[id]`):** Shows items table when `order_items` exist.
-- **RLS Migration:** `FIX_ORDER_ITEMS_RLS.sql` — added SELECT/INSERT/UPDATE/DELETE policies for `order_items`.
-- **QC DB Fix:** Added missing PRIMARY KEY on `quality_control_plans.id` + FK from `quality_control_items.plan_id`.
-- **Module Reorganization:** Moved carbon, costs, quality-control to `app/reports/`. Removed standalone time-tracking pages. Updated sidebar.
-- Commits: `566c484`, `8aa276a`, `c368722`
-
-### ✅ Order Dimensions with Tolerances + Auto QC Plan (2026-01-30)
-
-**Feature:** L×W×H dimensions with tolerances saved to orders, auto-generated QC control plans from order dimensions.
-
-- Migration: `length`, `width`, `height`, `tolerance_length`, `tolerance_width`, `tolerance_height` columns added to `orders` table
-- Add order form: Dedicated "Wymiary detalu" section with dimension + tolerance inputs (moved from pricing calculator)
-- Edit order form: New dimensions section with tolerance fields
-- QC page: Auto-fills plan name (`Kontrola: {partName}`), part name, and generates dimension items (Długość/Szerokość/Wysokość) with tolerances from order data
-- Users can edit/delete auto-generated items and add custom dimensions before saving
-- Commit: `3e0a842`
-
-### ✅ Production Execution Flow + Ready to Ship Status (2026-01-30)
-
-**Feature:** Interactive production execution with per-operation Start/Stop timers, operation completion dialogs, and new `ready_to_ship` order status.
-
-**Production Execution (`/production/[id]`):**
-- `ProductionExecutionClient.tsx` - Interactive client component replacing static operations listing
-- Per-operation Start/Stop buttons with inline real-time timer (HH:MM:SS + cost)
-- On Stop: confirmation dialog "Czy operacja zakonczona?" (uses existing `useConfirmation` hook)
-- On completing last operation: dialog "Zakonczyc produkcje?" → auto-sets plan to `completed` and order to `ready_to_ship`
-- "Zakoncz produkcje" button: disabled (grayed out) until ALL operations are `completed`
-- Time logs saved to `time_logs` table with duration and cost
-
-**Server Actions (`lib/production-actions.ts`):**
-- `updateOperationStatus()` - Updates operation status + timestamps, auto-promotes plan to `in_progress`
-- `completeProductionPlan()` - Guard: checks all ops completed, sets plan `completed`, order `ready_to_ship`
-
-**New Order Status: `ready_to_ship` ("Do wysylki"):**
-- Added to `types/orders.ts` (OrderStatus, labels, colors)
-- Added to `lib/status-utils.ts` (ORDER_STATUS_CONFIG with indigo-600 color)
-- Added to `StatusDropdown.tsx` (option + color)
-- Added to `app/orders/[id]/page.tsx` (getStatusColor + label)
-- Added to `app/production/[id]/page.tsx` (order status badge)
-
-**Flow:** Production completed → Order = `ready_to_ship` → manually change to `completed` after shipping
-
-**Commit:** `4163159` - feat(production): add interactive production execution with timer and ready_to_ship status
-
----
-
-### ✅ AI Quote Parsing with Function Calling + Form Fixes (2026-01-30)
-
-**Feature:** AI-powered email parsing agent with Gemini Function Calling for real inventory search, plus product form validation fixes.
-
-**AI Quote Parsing (Protocol #12 + #13):**
-- `app/api/agents/parse-quote/route.ts` - Gemini 2.5 Flash endpoint with Function Calling
-- `searchInventory()` tool queries real `products` + `inventory_locations` tables
-- Agent loop (max 10 rounds) - AI calls `search_inventory` for every part/material mentioned
-- Returns `product_id`, `product_name`, `available_quantity`, `inventory_status` per item
-- Installed `@google/generative-ai` SDK
-
-**Frontend AIImportDialog:**
-- `components/quotes/AIImportDialog.tsx` - Modal for pasting email text
-- Preview table with inventory status badges (in_stock/out_of_stock/not_found)
-- Integrated into `/quotes/add` with purple "Importuj z AI" button
-
-**Inventory Validation:**
-- All products/materials in quotes must come from inventory database
-- `productLinked`/`materialLinked` tracking on each quote item
-- `InventoryAutocomplete` replaced `ProductsAutocomplete` for part_name field
-
-**Product Form Fixes:**
-- Fixed Zod validation blocking submit on empty optional number fields
-- `z.preprocess()` wrappers convert `NaN`/empty to `null`/`undefined`
-- Fixed `default_machine_id` empty string failing UUID validation
-- Fixed `useKeyboardShortcut` crash when `event.key` is undefined
-
-**Error Handling:**
-- `handleAIError()` catches 429/quota/rate limit with Polish error messages
-- Markdown code fence stripping from AI JSON responses
-- Safe text extraction with try/catch
-
-**Commits:**
-- `8601c09` - feat(quotes): add AI-powered email parsing and inventory-linked validation
-- `a944d17` - feat(ai): upgrade parse-quote to Gemini Function Calling with inventory search
-- `f034a7e` - fix(products): fix zodResolver type mismatch from z.preprocess
-- `11b574a` - fix(ai): handle rate limit (429) and invalid JSON errors gracefully
-
----
-
-### ✅ Smart Migration System (2026-01-27)
-
-**Feature:** Zero-memory database migration tracking system.
-
-**Problem Solved:**
-- Developers couldn't remember which migrations were applied
-- TEST and PROD databases drifted out of sync
-- No systematic way to track schema changes
-
-**Solution:**
-- `schema_migrations` table auto-tracks applied migrations
-- Smart check scripts show exactly what's applied vs pending
-- Compare TEST vs PROD with one command
-- Auto-tracking built into all new migrations
-
-**New Files:**
-- `SMART_MIGRATIONS.md` - Full tutorial
-- `MIGRATION_WORKFLOW.md` - Detailed workflow
-- `MIGRATION_SETUP_COMPLETE.md` - Quick reference
-- `MIGRATION_DOCS_SUMMARY.md` - Documentation map
-- `scripts/migration-check.js` - Status check script
-- `scripts/migration-helper.js` - Updated with auto-tracking
-- `supabase/migrations/00000000_create_schema_migrations.sql` - Tracking table
-
-**New Commands:**
-```bash
-npm run migrate:status       # Check what's applied/pending
-npm run migrate:diff         # Compare TEST vs PROD
-npm run migration:new <name> # Create migration (with auto-tracking)
-npm run migration:show <name> # Display SQL to copy
-```
-
-**Documentation Updated:**
-- `README.md` - Database Migrations section
-- `CLAUDE.md` (CTO & Project) - Migration protocol added
-
-**Impact:**
-- Zero manual tracking required
-- Instant visibility into migration status
-- Prevents database drift between environments
-- Team-ready (anyone can see status)
-
-**Commit:** [pending] - feat(db): add smart migration tracking system
-
----
-
-### 🔧 ABC Pricing Schema - IN PROGRESS (2026-01-13)
-
-**Feature:** Activity-Based Costing (ABC) infrastructure for precise part pricing.
-
-**Database Schema:**
-- `machine_costs` table - Machine operating costs (replacement value, OEE, energy)
-- `external_services` table - Cooperation services (anodizing, hardening, etc.)
-- `pricing_config` table - Global pricing settings (electricity, margins)
-- `quote_services` table - Quote-service linking
-- Extended `products` table with cycle_time, setup_time, efficiency_factor
-
-**New Files:**
-- `lib/pricing/abc-engine.ts` - Complete ABC calculation engine
-- `types/abc-pricing.ts` - TypeScript types (~450 lines)
-- `app/settings/machines/` - Machine costs configuration
-- `app/settings/pricing/` - Pricing settings
-- `app/settings/services/` - External services CRUD
-
-**UI Improvements:**
-- Warning banner on machine detail page when costs not configured
-- ABC fields in product form (for finished goods)
-
-**Status:** Schema implemented, awaiting UX simplification decision.
-User feedback suggests reducing ~15 fields to 3-4 core fields (RBH maszyny, RBH operatora).
-
-**Migration:** `migrations/ABC_PRICING_SCHEMA.sql`
-
----
-
-### ✅ Unified Quote Form + Document Workflow Fixes (2026-01-12)
-
-**Feature:** Merged Express Quote into single multi-item "Nowa Oferta" form with quick pricing.
-
-**Quote System:**
-- Unified quote form at `/quotes/add` with multi-item support
-- `ProductsAutocomplete.tsx` for finished goods (wyroby gotowe) search
-- `?customer_id=` URL param for customer pre-selection
-- Individual pricing calculation per item (rule-based + historical hybrid)
-- Quote detail page displays multiple items in table format
-
-**Document Workflow Fixes:**
-- Fixed warehouse trigger timing: draft → items → confirm (trigger now fires with items present)
-- Fixed `useInventoryItems` hook to query `inventory` table with stock > 0
-- Fixed DatePicker CSS for react-day-picker v9
-
-**Database:**
-- `FIX_WAREHOUSE_RLS.sql` - RLS policies using auth.uid()
-
-**Files Modified:** 13 files (+1163 / -544 lines)
-
-**Commit:** `31c6f1b` - feat(quotes): unify quote forms and fix document workflow
-
----
-
-### ✅ UX Polish Batch 3 - ConfirmationDialog, Breadcrumbs, SearchInput (2026-01-11)
-
-**Feature:** Professional confirmation dialogs, navigation breadcrumbs, and enhanced search UX.
-
-**New Components:**
-- `ConfirmationDialog.tsx` - HeadlessUI-based modal with `useConfirmation` hook for async confirmations
-- `SearchInput.tsx` - Search input with clear button (X) and search icon
-- Variants: danger (red), warning (yellow), info (blue)
-
-**Improvements:**
-- Replaced 13 `window.confirm()` calls with styled ConfirmationDialog across the app
-- Added Breadcrumbs navigation to 5 detail pages (Orders, Inventory, Customers, Documents, Products)
-- Enhanced OrderFilters with SearchInput component for better search UX
-- Added @headlessui/react dependency for accessible dialog implementation
-
-**Files Modified:** 24 files (+1096 / -94 lines)
-
-**Commit:** `56b302e` - feat(ux): add ConfirmationDialog, Breadcrumbs, and SearchInput components
-
----
-
-### ✅ Inventory Table Enhancement + Documents Fix (2026-01-07)
-
-**Feature:** Full Filter Drawer + column config for /inventory, plus Documents module fix.
-
-**Documents Module:**
-- PW (Przyjęcie) now selects from `products` catalog (not inventory)
-- RW/WZ still select from `inventory` (existing stock)
-- New `ProductAutocomplete.tsx` component for PW documents
-- Fallback document number generation when RPC fails
-- Fixed broken JOIN to users table in documents list
-
-**Inventory Module:**
-- `InventoryTable.tsx` with Filter Drawer (search, category, status, sort)
-- Column config with drag-to-reorder on table headers
-- Active filter badges with click-to-remove
-- Uses `productCategoryLabels` for consistent naming (Półprodukt, Materiał Surowy, etc.)
-- Drop zone to hide columns (drag header up)
-
-**Database Migrations:**
-- `FIX_WAREHOUSE_DOCUMENTS_RLS.sql` - RLS policies with auth.uid()
-- `FIX_WAREHOUSE_COMPLETE.sql` - Complete RLS fix
-- `FIX_GENERATE_DOCUMENT_NUMBER.sql` - Document number RPC fix
-
-**Commit:** `cc4f09a` - feat(inventory): add Filter Drawer + column config + PW document flow
-
----
-
-### ✅ Filter Drawer for Products (2026-01-07)
-
-**Feature:** Advanced filtering system for /products page with slide-in drawer.
-
-**New Components:**
-- `FilterDrawer.tsx` - Reusable slide-in drawer from right side (ESC closes, backdrop click closes)
-- `ProductFilters.tsx` - Filter content with search, category, unit, and sorting options
-
-**Functionality:**
-- 🔍 Search by name/SKU
-- 📁 Category filter (dropdown)
-- 📏 Unit filter (dropdown)
-- ↕️ Sort: Name A-Z/Z-A, Stock ascending/descending
-- 🏷️ Active filter badges (click to remove)
-- 🧹 "Wyczyść wszystkie" (clear all) button
-- Polish locale support for sorting (localeCompare 'pl')
-
-**Commit:** `b7868a7` - feat(products): add Filter Drawer with advanced filtering system
-
----
-
-### ✅ Manual Testing Session - Products Table Fixed (2026-01-07)
-
-**Session Goal:** Full flow test: Kontrahent → Produkt → Zamówienie → Plan Produkcji
-
-**Fixes Implemented:**
-
-1. **Customers RLS Policies** - Added missing SELECT, UPDATE, DELETE policies
-2. **Products Table Schema** - Added columns: description, manufacturer_sku, unit, is_active
-3. **Products RLS Policies** - Added INSERT, UPDATE, DELETE policies
-4. **Products FK Constraint** - inventory_locations.product_id → products.id (required for JOINs)
-5. **Products UI Overhaul:**
-   - Created `ProductsTable.tsx` Client Component
-   - Integrated `useTableColumns` + `TableColumnConfig`
-   - Added drag-to-reorder on table headers (not just config panel)
-   - Visual feedback: blue highlight when dragging over column
-
-**Key Learning:** "Nie chcę żebyś kiedykolwiek cokolwiek usuwał bez mojej zgody" - Never remove existing functionality without user permission.
-
-**Next:** Continue with Orders → Production Plans flow testing.
-
----
-
-### ✅ E2E Test FIXED - Split Query Solution (2026-01-06)
-
-**Problem SOLVED:** "should link back to order from production plan details" test now PASSES!
-
-**ACTUAL Root Cause:**
-Complex nested JOIN query was silently failing in TEST environment:
-```typescript
-// OLD: Complex nested JOINs - FAILED SILENTLY
-.select(`*, order:orders(...), operations(..., machine:machines(...)), drawing_file:files(...)`)
-```
-
-**Solution (commit d2f47e2):**
-Split into 3 separate sequential queries:
-1. `select('*')` - Get production plan
-2. Separate query for order data
-3. Separate query for operations
-
-**Results:**
-- **Before:** 44/48 passing (91.7%)
-- **After:** 46/48 passing (95.8%) ✅
-- Test "link back to order" now **passes consistently**
-
-**Additional:**
-- Created `TESTING.md` - Manual testing checklist (20 sections, ~100 test cases)
-- Created `testing/screenshots/` folder for bug screenshots
-
-**Next:** Manual testing session planned for 2026-01-07
-
----
-
-### 🚨 CRITICAL: E2E Test Fix - ROOT CAUSE IDENTIFIED (2026-01-04 Evening)
-
-**Problem:** 1/48 tests failing - "should link back to order from production plan details"
-
-**ROOT CAUSE (100% CONFIRMED):**
-**TEST i PROD databases NIE SĄ ZSYNCHRONIZOWANE!**
-
-**Konkretne braki w TEST:**
-- ❌ RPC function `generate_production_plan_number()` - test nie może tworzyć planów produkcji
-- ❌ Prawdopodobnie więcej functions, triggers, sequences
-- ❌ Ręczna synchronizacja migrations = niewykonalne
-
-**Commits wykonane (wszystkie NIE naprawiły problemu):**
-- bd504e4: Query optimization (explicit order_id selection)
-- cfd1e56: Client-side diagnostic logging
-- de65a6c: Remove explicit order_id conflict
-
-**Weryfikacje (wszystkie PASSED):**
-- ✅ Schema: 23 kolumny, order_id exists
-- ✅ Data: production plan ma order_id w bazie
-- ✅ RLS: company_id matching (00000000-0000-0000-0000-000000000001)
-
-**ROZWIĄZANIE NA JUTRO:**
-```bash
-# pg_dump PROD → restore do TEST (1:1 kopia)
-pg_dump "postgresql://postgres.pbkajsjbsyuvpqpqsalc:..." --schema=public -f PROD_FULL_DUMP.sql
-psql "postgresql://postgres.vvetjctdjswgwebhgbpd:..." -f PROD_FULL_DUMP.sql
-npx playwright test  # Expected: 48/48 PASS ✅
-```
-
-**Czas:** ~10 minut | **Confidence:** 100% | **ETA:** Jutro rano
-
-**Plan files:**
-- Plan mode: `C:\Users\jakub\.claude\plans\jaunty-splashing-thompson.md`
-- Protokół: `C:\Users\jakub\Desktop\Bulls on Parade\Claude\Plan\E2E_TEST_FIX_PROTOCOL.md`
-
----
-
-### Latest Update: E2E Test Reliability - Phase 5: Validation Fix & Logging Discovery (2026-01-04)
-
-**🎯 Breakthrough: 97.9% Test Success Rate - Highest Yet!**
-- **Achievement:** 47/48 tests passing (97.9%) - only 1 remaining failure!
-- **VALIDATION TEST FIXED!** ✅ (commit f854126)
-  - **Problem:** Test used `.evaluate()` to set input value, which bypassed React's synthetic event system
-  - **Solution:** Changed to `.fill()` which properly triggers React onChange events
-  - **Result:** Validation logic now executes correctly, test passes consistently
-  - **Technical Detail:** React forms need synthetic events, not direct DOM manipulation
-- **Debug Logging Infrastructure Added** (commit 1720448)
-  - **Test-side logging:** 15+ console.log statements tracking form interactions
-  - **Server-side logging:** console.error in production pages (list & details)
-  - **Goal:** Diagnose why "Zlecenie" link doesn't render in remaining failing test
-- **CRITICAL DISCOVERY: Server-Side Log Capture Issue** 🔍
-  - **Finding:** `page.on('console')` only captures CLIENT-side browser logs
-  - **Impact:** Server Component logs (`app/production/page.tsx`, `app/production/[id]/page.tsx`) NOT visible in CI
-  - **Missing Data:** Cannot see if order data loads via JOIN, or why link fails to render
-  - **Next Step:** Need alternative approach (check CI terminal logs, client component wrapper, or direct DOM inspection)
-- **Remaining Test:** 1 failing - "should link back to order from production plan details"
-  - Production plan created successfully ✅
-  - Navigation to /production works ✅
-  - Navigation to /production/[id] works ✅
-  - Page title renders ✅
-  - "Zlecenie" link NOT visible ❌ - investigation needed
-- **Progress from Phase 4:** 38/48 stable (79.2%) → **47/48 (97.9%)** = +18.7% improvement
-- **Commits:** f854126 (validation fix), 1720448 (debug logging), 3734195, f6e78aa, 3b30f9c
-- **Learnings:**
-  - React synthetic events are critical for form testing
-  - `.fill()` > `.evaluate()` for input field interactions
-  - Server Component logs require different capture strategy than browser console
-- **Next Phase:** Server-side investigation to diagnose link rendering logic
-
-### TEST/PROD Database Workflow & Permissions Sync (2026-01-03)
-
-**🗄️ Database Workflow Standardization**
-- **Achievement:** Established and documented proper TEST/PROD workflow
-- **Problem Solved:** Localhost missing 6 modules (Quality Control, Cooperation, Machines, Carbon, Costs, Calendar)
-- **Root Cause:** TEST database had incomplete permissions (9 modules vs 15 on PROD)
-- **Solution:** Synchronized 24 permissions for 6 modules from PROD to TEST
-  - Added UNIQUE constraints to permission tables
-  - Ran `migrations/add_missing_permissions.sql` on TEST database
-  - Verified all modules now visible on localhost
-- **Documentation Added:**
-  - TEST/PROD workflow diagram in CLAUDE.md (local)
-  - Database sync procedure in PROMPT_CTOnew.md
-  - Key rules: Always code on TEST → tests pass → push to PROD
-- **Git Changes:**
-  - Removed CLAUDE.md from git tracking (now local-only)
-  - Added CLAUDE.md to .gitignore for project-specific workflow
-- **Commits:** 6f9c4e9 (docs: remove CLAUDE.md from git tracking)
-
-### E2E Test Reliability - Phase 4: Advanced Strategies (2026-01-02)
-
-**🎯 Revolutionary Testing Approach - Behavior Over UI**
-- **Achievement:** 38/48 stable tests (79.2%) + 6 flaky = 41/48 total attempts (85.4%)
-- **CRITICAL FIX:** 3 major tests repaired with new strategy
-  - ✅ Validation tests (2) - Changed from toast checking to behavior verification
-  - ✅ Show production plans in order details - Added intelligent error detection
-  - ✅ Cost calculation - Fixed React state timing (500ms + 1000ms waits)
-- **Paradigm Shift:** Tests now verify BEHAVIOR instead of UI feedback
-  - Old: Wait for toast → timeout if not visible
-  - New: Check if redirect happened → form stays = validation worked!
-- **Technical improvements:**
-  - Removed `networkidle` waits (pages have active connections)
-  - Element-based waiting with 30s timeout for database queries
-  - Better selectors: `h2:has-text("Plany Produkcji")` instead of `text=`
-  - Smart error detection before redirects (prevents false timeouts)
-- **Commits:** ec6296c, 93a4303, e4af3ff, fd3eb90 (4 commits, ~100 lines modified)
-- **Insight:** Behavior verification is more reliable than UI feedback in React apps
-- **Status:** 79.2% stable ✅, ready for production
-
-### E2E Test Reliability Improvements - Phase 3 (2026-01-02)
-
-**🧪 Advanced Error Handling & Test Stability**
-- **Achievement:** 40/48 tests passing (83.3%) - up from 38/48
-- Added error toast detection before assuming success (production plan creation)
-- Flexible auto-estimate validation (handles TEST DB without RPC function)
-- Fixed multiple operations verification (text search → toHaveValue on data-testid)
-- Enhanced form validation testing (disabled HTML5, test React validation)
-- Fixed strict mode violations (added .first() to multiple selectors)
-- Increased timeouts for React state updates (1s → 2s for data fetch)
-- Better error diagnostics (captures and throws descriptive errors)
-- Files modified: `tests/e2e/operations.spec.ts` (+679 lines of improvements)
-- Commit: c28f5df
-- **Status:** 83% pass rate ✅, 7 failing tests identified, 1 flaky (performance threshold)
-
-**Remaining Issues:**
-- 2x validation messages not appearing (form validation logic needs fix)
-- 1x auto-estimate returns 0 (TEST DB missing generate_operation_times RPC)
-- 2x strict mode violations (need .first() added)
-- 1x link back navigation timeout
-- 1x performance threshold exceeded (flaky - 9.1s vs 8s)
-
-### Previous Update: E2E Test Compilation Fixes & CI/CD Pipeline (2025-12-31)
-
-**🔧 TypeScript Compilation & Pipeline Fixes**
-- Fixed 32 TypeScript syntax errors in E2E tests (extra parentheses in `page.fill()` calls)
-- Fixed 2 TypeScript type errors (missing `hourly_rate` property in Machine interface)
-- Fixed undefined variable reference (`operationNames`)
-- Removed legacy scaffolding script causing 3 ESLint errors
-- Enabled E2E tests in CI/CD pipeline (temporary for verification)
-- Files modified: `tests/e2e/operations.spec.ts`, `components/operations/OperationForm.tsx`, `.github/workflows/ci.yml`
-- Commits: 8b731a0, ce09cb6, a8b54da
-- **Status:** All compilation errors eliminated ✅, CI/CD pipeline running
-
-### Previous Update: Test Infrastructure Fix (2025-12-30)
-
-**🧪 E2E Test Critical Race Condition Eliminated**
-- Fixed navigation race condition in 14 test locations
-- Root cause: orderId extracted from URL before navigation completed
-- Solution: Added `waitForURL()` after clicking order links
-- Impact: Test infrastructure bugs → 0, genuine app bugs now visible
-- Test reliability significantly improved (38/48 passing, all failures now real app issues)
-- Files modified: `tests/e2e/operations.spec.ts` (14 fixes), `app/production/create/page.tsx` (debug cleanup)
-
-### Latest Release: v2.2.0 (2025-12-19)
-
-**🎨 UX/UI Improvements** - Enhanced user experience and accessibility
-- Optimistic UI updates with visual pending indicators
-- Desktop table view matches mobile card UX (spinner overlay, disabled state)
-- Comprehensive accessibility implementation (WCAG 2.1 AA compliant)
-- Skip link for keyboard navigation
-- LiveRegion system for screen reader announcements
-- Complete ARIA labels (role="table", role="menu", role="gridcell", etc.)
-- Future Plan 8: 100% complete (Weeks 3, 4, 5)
-
-**📦 Products Module** - Inventory architecture refactoring
-- New /products module for product catalog management
-- Separated inventory into Products (definitions) + Locations (stock levels)
-- Database migration: 4 new tables (products, inventory_locations, inventory_batches, inventory_movements)
-- ProductCard component for catalog view
-- Enhanced EmptyState with contextual actions and descriptions
-- 11 new loading states for improved UX across all modules
-- Batch tracking and movement history for warehouse management
-
-### Previous Release: v2.1.0 (2025-12-16)
-
-**🎯 Code Quality & Type Safety** - Achieved 100% code quality standards
-- Type coverage increased from 80% to 95%
-- Eliminated 98% of dangerous `as any` type assertions
-- Created comprehensive type system with utility functions
-
-**🔢 Auto Document Numbering** - Workflow documents auto-numbered
-- Orders: ORD-2025-0001
-- Quality Reports: QC-2025-0001
-- Warehouse Documents: PZ-2025-0001, WZ-2025-0001
-
-**📦 New Modules** - Customers & Quotes management
-- Full CRUD for customers with quick-add modal
-- Unified pricing engine with AI-powered estimates
-
-### Previous Release: v2.0.0 (2025-12-15)
-
-**⚙️ Production Module Refactoring** - Proper separation of concerns
-- Created dedicated `/production` module for technical workflows
-- Separated commercial (Orders) from execution (Production Plans)
-- Rewrote 23 E2E tests for new architecture
-
-**📜 [View Full Changelog](./CHANGELOG.md)** for detailed release notes and migration guides.
-
----
-
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 - **Framework:** Next.js 16 (App Router, Turbopack)
 - **Language:** TypeScript 5
 - **Styling:** Tailwind CSS 4 + shadcn/ui
-- **State Management:** React 19 + Server Components
+- **State:** React 19 + Server Components
 - **Forms:** React Hook Form + Zod validation
 
 ### Backend & Database
 - **Database:** Supabase (PostgreSQL)
 - **Authentication:** Supabase Auth
-- **Security:** Row Level Security (RLS)
+- **Security:** Row Level Security (RLS) on all tables
 - **API:** Next.js API Routes
+- **AI:** Gemini 2.5 Flash (free tier)
 
 ### Testing & CI/CD
 - **Unit Tests:** Vitest (681+ tests)
-- **E2E Tests:** Playwright
+- **E2E Tests:** Playwright (47/48 passing)
 - **CI/CD:** GitHub Actions
 - **Deployment:** Vercel
 - **Monitoring:** UptimeRobot
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- npm/yarn/pnpm
 - Supabase account ([free tier available](https://supabase.com))
 
 ### Installation
@@ -869,162 +99,35 @@ npx playwright test  # Expected: 48/48 PASS ✅
 4. **Set up the database**
    - Create a new Supabase project
    - Run the SQL migration: `migrations/DAY_10_COMPLETE_SETUP.sql`
-   - This creates all tables, RLS policies, and default data
 
 5. **Run the development server**
    ```bash
    npm run dev
    ```
 
-   Open [http://localhost:3000](http://localhost:3000) in your browser
+   Open [http://localhost:3000](http://localhost:3000)
 
 ### Database Migrations
 
-**📚 Full documentation:** See [SMART_MIGRATIONS.md](./SMART_MIGRATIONS.md) for complete migration workflow.
-
-**Quick commands:**
-```bash
-# Check migration status (what's applied, what's pending)
-npm run migrate:status
-
-# Compare TEST vs PROD
-npm run migrate:diff
-
-# Create new migration
-npm run migration:new add_feature_name
-
-# Display migration SQL
-npm run migration:show feature_name
-```
-
-**One-time setup:**
-```bash
-npm run migration:show 00000000_create_schema_migrations
-# → Copy SQL → Supabase SQL Editor → RUN (both TEST and PROD)
-```
-
-**Features:**
-- ✨ Auto-tracking system - no need to remember what was applied
-- 🔍 Status check shows exactly what's missing
-- 🔄 Compare TEST vs PROD with one command
-- 📝 All migrations tracked in git history
-
-**How it works:**
-1. Script validates the migration file exists
-2. Displays migration details (file size, line count, target database)
-3. Shows full SQL content for manual copy
-4. Provides direct Supabase SQL Editor URL
-5. Shows production warnings if targeting prod database
-
-**Workflow:**
-- Always test migrations on TEST database first (`migrate:test`)
-- Verify migration completed successfully
-- Then apply to PRODUCTION database (`migrate:prod`)
-
-**Required secrets in `.env.local`:**
-```env
-TEST_SUPABASE_URL=https://your-test-project.supabase.co
-NEXT_PUBLIC_SUPABASE_URL=https://your-prod-project.supabase.co
-```
-
-### Test Database Setup
-
-**Purpose:** Isolated test environment for E2E tests without affecting production data.
-
-**1. Create Test Supabase Project**
-- Go to [Supabase Dashboard](https://app.supabase.com/)
-- Create new project (e.g., `cnc-pilot-test`)
-- Copy credentials:
-  - Project URL: `https://xxx.supabase.co`
-  - Anon key: `eyJhbGci...`
-
-**2. Add Test Credentials to `.env.local`**
-```env
-# TEST (for E2E tests)
-TEST_SUPABASE_URL=https://xxx.supabase.co
-TEST_SUPABASE_ANON_KEY=eyJhbGci...
-```
-
-**3. Initialize Test Database Schema**
-
-Run these migrations in order on Supabase SQL Editor:
+Full documentation: [SMART_MIGRATIONS.md](./SMART_MIGRATIONS.md)
 
 ```bash
-# 1. Full schema (tables, functions, policies)
-npm run migrate:test migrations/TEST_DATABASE_SETUP.sql
-
-# 2. Triggers (handle_new_user, etc.)
-npm run migrate:test migrations/TEST_FINAL_SETUP.sql
-
-# 3. Create test user
-npm run migrate:test migrations/TEST_CREATE_USER.sql
-```
-
-**4. Verify Setup**
-
-In Supabase SQL Editor, run:
-```sql
-SELECT * FROM users WHERE email = 'test@cnc-pilot.pl';
-```
-
-Should return 1 user with `role = 'owner'`.
-
-**5. Run Dev Server with Test Database**
-
-```bash
-# Development with PRODUCTION database (default)
-npm run dev
-
-# Development with TEST database (for E2E testing)
-npm run dev:test
-```
-
-**6. Run E2E Tests**
-
-```bash
-# E2E tests automatically use TEST database
-npm run test:e2e
-```
-
-Playwright config uses `npm run dev:test` to start server with TEST credentials.
-
----
-
-## 📁 Project Structure
-
-```
-cnc-pilot-mvp/
-├── app/                      # Next.js App Router
-│   ├── (auth)/              # Authentication pages
-│   ├── (dashboard)/         # Protected pages
-│   ├── docs/               # Knowledge Portal (MDX)
-│   └── api/                # API routes
-├── components/              # React components
-│   ├── dashboard/          # Dashboard widgets
-│   ├── layout/            # Layout components
-│   └── ui/                # shadcn/ui components
-├── lib/                    # Utilities & helpers
-│   ├── supabase/          # Supabase client
-│   ├── auth.ts            # Auth helpers
-│   └── translations.ts    # i18n (PL/EN)
-├── hooks/                 # Custom React hooks
-├── migrations/            # Database migrations
-├── tests/                # Unit & E2E tests
-└── middleware.ts         # Session & route protection
+npm run migrate:status          # Check what's applied/pending
+npm run migrate:diff            # Compare TEST vs PROD
+npm run migration:new <name>    # Create new migration (with auto-tracking)
+npm run migration:show <name>   # Display SQL to copy
 ```
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Unit Tests (Vitest)
 ```bash
 npm run test              # Run all tests
 npm run test:watch        # Watch mode
-npm run test:ui           # Vitest UI
+npm run test:coverage     # Coverage report
 ```
-
-**Coverage:** 345 unit tests covering critical business logic
 
 ### E2E Tests (Playwright)
 ```bash
@@ -1034,101 +137,81 @@ npm run test:e2e:ui       # Interactive UI mode
 
 ---
 
-## 📸 Screenshots
+## Architecture Highlights
 
-### Dashboard - Real-time Production Overview
-![Dashboard](https://via.placeholder.com/800x450/1e293b/ffffff?text=Dashboard+%7C+Real-time+Metrics+%26+KPIs)
-*Live metrics, urgent tasks, and production calendar*
-
-### Order Management - Complete Lifecycle Tracking
-![Orders](https://via.placeholder.com/800x450/1e293b/ffffff?text=Orders+%7C+Full+Lifecycle+Management)
-*From quote to delivery with status tracking and cost analysis*
-
-### Time Tracking - One-Click Timers
-![Time Tracking](https://via.placeholder.com/800x450/1e293b/ffffff?text=Time+Tracking+%7C+Built-in+Timers)
-*Operators can start/stop timers tied directly to orders*
-
-### Inventory Management - Auto-Deduction & Alerts
-![Inventory](https://via.placeholder.com/800x450/1e293b/ffffff?text=Inventory+%7C+Stock+Levels+%26+Alerts)
-*Low-stock alerts, batch tracking, and automatic material consumption*
-
-> **Note:** Screenshots show placeholder images. See [Live Demo](https://cnc-pilot-mvp.vercel.app) for actual interface.
-
----
-
-## 🏗️ Architecture Highlights
-
-### Multi-Tenancy Implementation
-- **Email domain-based** company identification
+### Multi-Tenancy
+- Email domain-based company identification
 - Automatic company assignment during registration
 - Database-level isolation with RLS
 - Blocked public domains (gmail.com, etc.)
 
-### Security Features
+### Security
 - Row Level Security (RLS) on all tables
 - Rate limiting on sensitive endpoints
 - Input sanitization (DOMPurify)
-- Environment variable validation
+- Prompt injection sanitizer for AI features
 - Secure session management
 
 ### Performance
-- Server Components for optimal performance
+- Server Components for optimal rendering
 - Parallel data fetching with Promise.all
-- Optimistic UI updates
-- Image optimization
+- Optimistic UI updates with rollback
 - ~2 second cold start with Turbopack
 
 ---
 
-## 🤝 Contributing
+## AI Features
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+20 AI features powered by Gemini 2.5 Flash (free tier, ~2.3% rate budget):
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+| Phase | Features |
+|-------|----------|
+| **Phase 0 — Cleanup** | Unified Gemini client, report summary dedup, prompt injection sanitizer |
+| **Phase 1 — Quick Wins** | Smart anomaly explanations, CLV predictions, feedback loop, auto-tagging |
+| **Phase 2 — Production AI** | AI production plan generator, predictive deadlines, order auto-fill, PDF/image quote import, smart deadline manager, auto-reorder materials |
+| **Phase 3 — Analytics** | Dynamic pricing engine, demand forecasting, quality defect prediction, revenue forecasting |
+| **AI Expansion** | Report AI summaries (4 pages), customer intelligence (churn risk), inventory predictions (stockout forecasting) |
 
 ---
 
-## 📄 License
+## Recent Updates
+
+| Date | Update |
+|------|--------|
+| 2026-02-14 | Customer Detail Page Redesign + CLV Panel with 8 metrics |
+| 2026-02-13 | AI Master Plan Phases 0-3 — 20 AI features, 681+ unit tests |
+| 2026-02-11 | AI Expansion Sprint + Kanban & Swimlanes Views |
+
+**[View Full Changelog](./CHANGELOG.md)**
+
+---
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👤 Author
+## Author
 
 **Jakub Ren** - Product Manager & AI-Assisted Development Specialist
 
-### Connect With Me:
-- 🐙 **GitHub:** [@JakubRen](https://github.com/JakubRen)
-- 💼 **LinkedIn:** 
-- 📧 **Email:** jakub.renkowski@outlook.com 
-- 🌐 **Portfolio:** 
+- **GitHub:** [@JakubRen](https://github.com/JakubRen)
+- **Email:** jakub.renkowski@outlook.com
 
-### Project Links:
-- 📦 **Repository:** [github.com/JakubRen/cnc-pilot-mvp](https://github.com/JakubRen/cnc-pilot-mvp)
-- 🚀 **Live Demo:** [cnc-pilot-mvp.vercel.app](https://cnc-pilot-mvp.vercel.app)
-- 📚 **Documentation:** [cnc-pilot-mvp.vercel.app/docs](https://cnc-pilot-mvp.vercel.app/docs)
-
-### About This Project:
-Built as a comprehensive production management solution for CNC manufacturing, combining enterprise-grade architecture with practical shop floor needs. **Developed using AI-assisted development with Claude Code (Anthropic)**, demonstrating how Product Managers can leverage AI tools to build production-ready SaaS applications without traditional coding.
-
-**Development Approach:** Product Management + AI-Assisted Development (Claude Code, Claude Sonnet 4.5)
-**Tech Stack:** Next.js, TypeScript, React, PostgreSQL, Supabase, Tailwind CSS, Testing (Vitest, Playwright)
+**Development Approach:** Product Management + AI-Assisted Development (Claude Code)
+**Repository:** [github.com/JakubRen/cnc-pilot-mvp](https://github.com/JakubRen/cnc-pilot-mvp) | **Live:** [cnc-pilot-mvp.vercel.app](https://cnc-pilot-mvp.vercel.app)
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- Built with [Next.js](https://nextjs.org/)
-- UI components from [shadcn/ui](https://ui.shadcn.com/)
+- Built with [Next.js](https://nextjs.org/) + [shadcn/ui](https://ui.shadcn.com/)
 - Database & Auth by [Supabase](https://supabase.com/)
+- AI by [Google Gemini](https://ai.google.dev/)
 - Deployed on [Vercel](https://vercel.com/)
-- Developed with assistance from [Claude Code](https://claude.com/claude-code)
+- Developed with [Claude Code](https://claude.com/claude-code)
 
 ---
 
-<p align="center">Made with ❤️ for CNC manufacturers</p>
+<p align="center">Made with CNC manufacturers in mind</p>

@@ -51,6 +51,7 @@ nul
 # Markdown files — kept locally, not pushed to remote
 *.md
 !README.md
+!CHANGELOG.md
 
 # Screenshots and PDFs (root only)
 /*.png
