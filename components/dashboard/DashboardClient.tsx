@@ -1,26 +1,65 @@
 ﻿'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { DashboardPreferences, DEFAULT_DASHBOARD_PREFERENCES } from '@/types/dashboard'
 import { useTranslation } from '@/hooks/useTranslation'
+import PageTransition from '@/components/ui/PageTransition'
+import type { AIInsightsData } from '@/types/ai-insights'
+import type { AnomalyAlertsData } from '@/types/anomaly-alerts'
+
+// Light components - keep static imports
 import PersonalizationModal from './PersonalizationModal'
 import MetricCards from './MetricCards'
 import UrgentTasks from './UrgentTasks'
 import ProductionPlan from './ProductionPlan'
 import ActivityFeed from './ActivityFeed'
 import TopCustomers from './TopCustomers'
-import OrdersChart from './OrdersChart'
-import RevenueChart from './RevenueChart'
-import TopCustomersChart from './TopCustomersChart'
-import ProductivityChart from './ProductivityChart'
-import ProfitabilityWidget from './ProfitabilityWidget'
-import AIInsightsWidget from './AIInsightsWidget'
-import AnomalyAlertsWidget from './AnomalyAlertsWidget'
-import DemandForecastWidget from './DemandForecastWidget'
-import RevenueForecastWidget from './RevenueForecastWidget'
-import PageTransition from '@/components/ui/PageTransition'
-import type { AIInsightsData } from '@/types/ai-insights'
-import type { AnomalyAlertsData } from '@/types/anomaly-alerts'
+
+// Skeleton placeholder for lazy-loaded widgets
+function WidgetSkeleton() {
+  return (
+    <div className="w-full h-64 bg-card animate-pulse rounded-lg border border-border" />
+  )
+}
+
+// Heavy components - lazy load (recharts ~150-200KB)
+const OrdersChart = dynamic(() => import('./OrdersChart'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
+const RevenueChart = dynamic(() => import('./RevenueChart'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
+const TopCustomersChart = dynamic(() => import('./TopCustomersChart'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
+const ProductivityChart = dynamic(() => import('./ProductivityChart'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
+const ProfitabilityWidget = dynamic(() => import('./ProfitabilityWidget'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
+const DemandForecastWidget = dynamic(() => import('./DemandForecastWidget'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
+const RevenueForecastWidget = dynamic(() => import('./RevenueForecastWidget'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
+const AIInsightsWidget = dynamic(() => import('./AIInsightsWidget'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
+const AnomalyAlertsWidget = dynamic(() => import('./AnomalyAlertsWidget'), {
+  loading: () => <WidgetSkeleton />,
+  ssr: false
+})
 
 interface DashboardData {
   metrics: {

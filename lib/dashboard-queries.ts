@@ -508,15 +508,12 @@ export async function getProfitabilitySummary(companyId: string, days = 30) {
 // ============================================
 
 export async function getDashboardSummary(companyId: string) {
-  // Fetch all data in parallel
+  // FIX: Use RPC for metrics (1 query instead of 7) + parallel data queries
+  // Total: 1 RPC + ~10 data queries instead of 17 separate queries
   const [
-    totalOrders,
-    activeOrders,
-    completedThisWeek,
+    rpcStats,
     overdueOrders,
-    activeTimers,
     lowStockItems,
-    revenueThisMonth,
     ordersDueToday,
     staleTimers,
     productionPlan,
@@ -528,13 +525,9 @@ export async function getDashboardSummary(companyId: string) {
     productivityData,
     profitabilitySummary,
   ] = await Promise.all([
-    getTotalOrders(companyId),
-    getActiveOrders(companyId),
-    getCompletedThisWeek(companyId),
+    getDashboardStatsRPC(companyId),
     getOverdueOrders(companyId),
-    getActiveTimers(companyId),
     getLowStockItems(companyId),
-    getRevenueThisMonth(companyId),
     getOrdersDueToday(companyId),
     getStaleTimers(companyId),
     getProductionPlan(companyId),
@@ -547,8 +540,35 @@ export async function getDashboardSummary(companyId: string) {
     getProfitabilitySummary(companyId),
   ]);
 
-  return {
-    metrics: {
+  // If RPC succeeded, use its counts for metrics; otherwise fall back to individual queries
+  let metrics;
+  if (rpcStats) {
+    metrics = {
+      totalOrders: rpcStats.total_orders,
+      activeOrders: rpcStats.active_orders,
+      completedThisWeek: rpcStats.completed_this_week,
+      overdueCount: rpcStats.overdue_orders,
+      activeTimers: rpcStats.active_timers,
+      lowStockCount: rpcStats.low_stock_items,
+      revenueThisMonth: rpcStats.revenue_this_month,
+    };
+  } else {
+    // Fallback: run the 7 individual metric queries
+    logger.warn('RPC get_dashboard_stats failed, falling back to individual queries');
+    const [
+      totalOrders,
+      activeOrders,
+      completedThisWeek,
+      activeTimers,
+      revenueThisMonth,
+    ] = await Promise.all([
+      getTotalOrders(companyId),
+      getActiveOrders(companyId),
+      getCompletedThisWeek(companyId),
+      getActiveTimers(companyId),
+      getRevenueThisMonth(companyId),
+    ]);
+    metrics = {
       totalOrders,
       activeOrders,
       completedThisWeek,
@@ -556,7 +576,11 @@ export async function getDashboardSummary(companyId: string) {
       activeTimers,
       lowStockCount: lowStockItems.length,
       revenueThisMonth,
-    },
+    };
+  }
+
+  return {
+    metrics,
     urgentTasks: {
       overdueOrders,
       ordersDueToday,
