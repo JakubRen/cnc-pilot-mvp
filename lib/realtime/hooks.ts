@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { subscribeToOrders, subscribeToNotifications, subscribeToTimeLogs } from './client'
+import { subscribeToOrders, subscribeToNotifications, subscribeToTimeLogs, removeChannel } from './client'
 import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js'
 import toast from 'react-hot-toast'
 
@@ -15,7 +15,7 @@ export function useRealtimeOrders(companyId: string) {
   useEffect(() => {
     if (!companyId) return
 
-    const subscription = subscribeToOrders(companyId, (payload) => {
+    subscribeToOrders(companyId, (payload) => {
       const { eventType, new: newOrder, old: oldOrder } = payload
 
       setUpdates(prev => [...prev, payload as RealtimePostgresChangesPayload<OrderRecord>])
@@ -33,7 +33,7 @@ export function useRealtimeOrders(companyId: string) {
     })
 
     return () => {
-      subscription.unsubscribe()
+      removeChannel('orders-changes')
     }
   }, [companyId])
 
@@ -46,7 +46,7 @@ export function useRealtimeNotifications(userId: number) {
   useEffect(() => {
     if (!userId) return
 
-    const subscription = subscribeToNotifications(userId, (payload) => {
+    subscribeToNotifications(userId, (payload) => {
       const { new: notification } = payload
 
       if (!notification) return
@@ -66,7 +66,7 @@ export function useRealtimeNotifications(userId: number) {
     })
 
     return () => {
-      subscription.unsubscribe()
+      removeChannel('notifications-changes')
     }
   }, [userId])
 
@@ -79,7 +79,7 @@ export function useRealtimeTimers(companyId: string) {
   useEffect(() => {
     if (!companyId) return
 
-    const subscription = subscribeToTimeLogs(companyId, (payload) => {
+    subscribeToTimeLogs(companyId, (payload) => {
       const { eventType, new: newTimer, old: oldTimer } = payload
 
       if (eventType === 'INSERT' && newTimer) {
@@ -101,7 +101,7 @@ export function useRealtimeTimers(companyId: string) {
     })
 
     return () => {
-      subscription.unsubscribe()
+      removeChannel('time-logs-changes')
     }
   }, [companyId])
 

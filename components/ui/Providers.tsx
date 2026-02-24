@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { TranslationProvider } from '@/hooks/useTranslation';
 import { PermissionsProvider } from '@/hooks/usePermissions';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { UserProfileProvider } from '@/hooks/UserProfileProvider';
 import { ErrorBoundary } from './ErrorBoundary';
 import type { UserPermissionsMap } from '@/types/permissions';
 
@@ -16,11 +17,13 @@ export function Providers({ children, initialPermissions }: ProvidersProps) {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <TranslationProvider>
-          <PermissionsProvider initialPermissions={initialPermissions}>
-            {children}
-          </PermissionsProvider>
-        </TranslationProvider>
+        <UserProfileProvider>
+          <TranslationProvider>
+            <PermissionsProvider initialPermissions={initialPermissions}>
+              {children}
+            </PermissionsProvider>
+          </TranslationProvider>
+        </UserProfileProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

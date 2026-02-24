@@ -1,0 +1,29 @@
+import { Metadata } from 'next'
+import TagManager from '@/components/tags/TagManager'
+import { getUserProfile } from '@/lib/auth-server'
+import { canAccessModule } from '@/lib/permissions-server'
+import { redirect } from 'next/navigation'
+
+export const metadata: Metadata = {
+  title: 'Tagi | CNC-Pilot',
+  description: 'Zarządzanie tagami dla zamówień i magazynu',
+}
+
+export default async function TagsPage() {
+  const userProfile = await getUserProfile()
+  if (!userProfile) redirect('/login')
+
+  // Permission check - tags access
+  const hasAccess = await canAccessModule('tags')
+  if (!hasAccess) {
+    redirect('/no-access')
+  }
+
+  return (
+<div className="p-8">
+      <div className="max-w-7xl mx-auto">
+        <TagManager />
+      </div>
+    </div>
+)
+}

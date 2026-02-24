@@ -1,16 +1,43 @@
 // Supabase Realtime Client - Subscriptions
 import { supabase } from '@/lib/supabase'
-import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js'
+import type { RealtimePostgresChangesPayload, RealtimeChannel } from '@supabase/supabase-js'
 import { logger } from '@/lib/logger'
 
 type RealtimePayload = RealtimePostgresChangesPayload<Record<string, unknown>>
+
+// Subscription registry to prevent duplicates
+const activeChannels = new Map<string, RealtimeChannel>()
+
+function getOrCreateChannel(channelName: string): { channel: RealtimeChannel; isNew: boolean } {
+  const existing = activeChannels.get(channelName)
+  if (existing) {
+    return { channel: existing, isNew: false }
+  }
+  const channel = supabase.channel(channelName)
+  activeChannels.set(channelName, channel)
+  return { channel, isNew: true }
+}
+
+export function removeChannel(channelName: string) {
+  const channel = activeChannels.get(channelName)
+  if (channel) {
+    supabase.removeChannel(channel)
+    activeChannels.delete(channelName)
+  }
+}
 
 export function subscribeToOrders(
   companyId: string,
   callback: (payload: RealtimePayload) => void
 ) {
-  return supabase
-    .channel('orders-changes')
+  const channelName = 'orders-changes'
+  const { channel, isNew } = getOrCreateChannel(channelName)
+
+  if (!isNew) {
+    return channel
+  }
+
+  return channel
     .on(
       'postgres_changes',
       {
@@ -35,8 +62,14 @@ export function subscribeToNotifications(
   userId: number,
   callback: (payload: RealtimePayload) => void
 ) {
-  return supabase
-    .channel('notifications-changes')
+  const channelName = 'notifications-changes'
+  const { channel, isNew } = getOrCreateChannel(channelName)
+
+  if (!isNew) {
+    return channel
+  }
+
+  return channel
     .on(
       'postgres_changes',
       {
@@ -61,8 +94,14 @@ export function subscribeToTimeLogs(
   companyId: string,
   callback: (payload: RealtimePayload) => void
 ) {
-  return supabase
-    .channel('time-logs-changes')
+  const channelName = 'time-logs-changes'
+  const { channel, isNew } = getOrCreateChannel(channelName)
+
+  if (!isNew) {
+    return channel
+  }
+
+  return channel
     .on(
       'postgres_changes',
       {
@@ -87,8 +126,14 @@ export function subscribeToInventory(
   companyId: string,
   callback: (payload: RealtimePayload) => void
 ) {
-  return supabase
-    .channel('inventory-changes')
+  const channelName = 'inventory-changes'
+  const { channel, isNew } = getOrCreateChannel(channelName)
+
+  if (!isNew) {
+    return channel
+  }
+
+  return channel
     .on(
       'postgres_changes',
       {

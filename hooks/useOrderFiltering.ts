@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { FilterState } from '@/app/orders/OrderFilters'
+import { FilterState } from '@/app/(dashboard)/orders/OrderFilters'
 
 interface OrderTag {
   id: string

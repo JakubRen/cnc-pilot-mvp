@@ -2,7 +2,7 @@
 
 import { useIsMobile } from '@/hooks/useMediaQuery'
 import { OrderCard } from './OrderCard'
-import OrderList from '@/app/orders/OrderList'
+import OrderList from '@/app/(dashboard)/orders/OrderList'
 
 interface OrderWithTags {
   id: string

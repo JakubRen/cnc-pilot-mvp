@@ -1,15 +1,15 @@
 // ============================================
 // components/layout/InterfaceModeGuard.tsx
 // Redirects users based on their interface_mode setting
+// Uses UserProfileProvider context instead of its own fetch
 // ============================================
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { useUserProfile } from '@/hooks/useUserProfile';
 import type { InterfaceMode } from '@/lib/auth';
-import { logger } from '@/lib/logger';
 
 // Pages that kiosk_only users CAN access
 const KIOSK_ALLOWED_PATHS = ['/kiosk', '/logout', '/login', '/no-access'];
@@ -20,55 +20,31 @@ const EXCLUDED_PATHS = ['/api/', '/auth/', '/_next/'];
 export default function InterfaceModeGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isChecking, setIsChecking] = useState(true);
+  const { profile, loading } = useUserProfile();
 
   useEffect(() => {
-    async function checkInterfaceMode() {
-      // Skip check for excluded paths
-      if (EXCLUDED_PATHS.some(p => pathname.startsWith(p))) {
-        setIsChecking(false);
-        return;
-      }
+    // Still loading profile from context — wait
+    if (loading) return;
 
-      // Skip check for kiosk allowed paths
-      if (KIOSK_ALLOWED_PATHS.includes(pathname)) {
-        setIsChecking(false);
-        return;
-      }
+    // Skip check for excluded paths
+    if (EXCLUDED_PATHS.some(p => pathname.startsWith(p))) return;
 
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
+    // Skip check for kiosk allowed paths
+    if (KIOSK_ALLOWED_PATHS.includes(pathname)) return;
 
-        if (!user) {
-          setIsChecking(false);
-          return;
-        }
+    // No profile means no user — nothing to guard
+    if (!profile) return;
 
-        const { data: userProfile } = await supabase
-          .from('users')
-          .select('interface_mode')
-          .eq('auth_id', user.id)
-          .single();
+    const interfaceMode = profile.interface_mode as InterfaceMode | null;
 
-        const interfaceMode = userProfile?.interface_mode as InterfaceMode | null;
-
-        // If user has kiosk_only mode and is trying to access non-kiosk page
-        if (interfaceMode === 'kiosk_only' && !KIOSK_ALLOWED_PATHS.includes(pathname)) {
-          router.replace('/kiosk');
-          return;
-        }
-      } catch (error) {
-        logger.error('Error checking interface mode', { error });
-      }
-
-      setIsChecking(false);
+    // If user has kiosk_only mode and is trying to access non-kiosk page
+    if (interfaceMode === 'kiosk_only' && !KIOSK_ALLOWED_PATHS.includes(pathname)) {
+      router.replace('/kiosk');
     }
+  }, [loading, profile, pathname, router]);
 
-    checkInterfaceMode();
-  }, [pathname, router]);
-
-  // Show nothing while checking (prevents flash of content)
-  if (isChecking) {
+  // Show spinner while profile is loading (prevents flash of content)
+  if (loading) {
     return (
       <div className="min-h-screen bg-muted flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-violet-500"></div>
