@@ -1,168 +1,105 @@
-# CNC-Pilot MVP
+<p align="center">
+  <img src="./public/cnc-pilot-logo.svg" alt="CNC-Pilot logo" width="160" />
+</p>
 
-> Modern production management system for CNC manufacturing workshops
+<h1 align="center">CNC-Pilot</h1>
 
-[![Deployment Status](https://img.shields.io/badge/deployment-live-brightgreen)](https://cnc-pilot-mvp.vercel.app)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e)](https://supabase.com/)
-[![Tests](https://img.shields.io/badge/tests-681%2B%20unit%20%2B%2047%20E2E-green)](.)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://cnc-pilot-mvp.vercel.app"><img src="https://img.shields.io/badge/deployment-live-brightgreen" alt="Live"></a>
+  <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js"></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript" alt="TypeScript"></a>
+  <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e?logo=supabase" alt="Supabase"></a>
+  <a href="#testing"><img src="https://img.shields.io/badge/tests-681%2B%20unit%20·%2047%20E2E-green" alt="Tests"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+</p>
 
-**[Live Demo](https://cnc-pilot-mvp.vercel.app)** | **[Documentation](https://cnc-pilot-mvp.vercel.app/docs)** | **[Changelog](./CHANGELOG.md)**
-
----
-
-## About
-
-CNC-Pilot is a multi-tenant SaaS solution for small and medium-sized CNC manufacturing companies. It covers the full production lifecycle — from order creation and quoting, through production planning and execution, to delivery and cost analysis. Built with AI-powered features using Gemini 2.5 Flash for intelligent automation at zero API cost.
-
----
-
-## Key Features
-
-- **Order Management** — Full lifecycle from quote to completion with multi-item orders
-- **Production Planning** — Operations routing with setup/run time calculation and interactive execution
-- **Kanban & Swimlanes** — Drag-and-drop board views with @dnd-kit
-- **Time Tracking** — Built-in timers with automatic cost calculation
-- **Inventory Management** — Stock levels, batch tracking, low-stock alerts, auto-reorder
-- **AI Features** — 20 Gemini-powered features (see [AI Features](#ai-features) below)
-- **Quality Control** — Quick Measure flow, tolerance tracking, defect prediction
-- **Dashboard** — Real-time metrics, anomaly alerts, AI insights
-- **Quotes & Pricing** — AI quote import (PDF/email), dynamic pricing engine, ABC costing
-- **Customer Intelligence** — CLV predictions, churn risk scoring, auto-tiering
-- **Reports & Analytics** — AI summaries, revenue/demand forecasting, export to CSV/Excel/PDF
-- **Knowledge Portal** — Interactive documentation with Mermaid diagrams
-- **Multi-tenancy** — Row Level Security with email domain-based isolation
-- **Role-based Access** — Owner / Admin / Manager / Operator / Viewer
-- **Multi-language** — Polish & English
-- **Dark Mode** — Full dark theme support
+<p align="center">
+  <strong><a href="https://cnc-pilot-mvp.vercel.app">Live Demo</a></strong> · <strong><a href="https://cnc-pilot-mvp.vercel.app/docs">Documentation</a></strong> · <strong><a href="./CHANGELOG.md">Changelog</a></strong>
+</p>
 
 ---
 
-## Tech Stack
+## From spreadsheet chaos to full production control.
 
-### Frontend
-- **Framework:** Next.js 16 (App Router, Turbopack)
-- **Language:** TypeScript 5
-- **Styling:** Tailwind CSS 4 + shadcn/ui
-- **State:** React 19 + Server Components
-- **Forms:** React Hook Form + Zod validation
+CNC-Pilot is a **production management platform** built for CNC manufacturing workshops. It replaces scattered spreadsheets, WhatsApp groups, and paper notes with a single system that tracks every order from quote to delivery — with **20 AI features** that automate the tedious parts.
 
-### Backend & Database
-- **Database:** Supabase (PostgreSQL)
-- **Authentication:** Supabase Auth
-- **Security:** Row Level Security (RLS) on all tables
-- **API:** Next.js API Routes
-- **AI:** Gemini 2.5 Flash (free tier)
-
-### Testing & CI/CD
-- **Unit Tests:** Vitest (681+ tests)
-- **E2E Tests:** Playwright (47/48 passing)
-- **CI/CD:** GitHub Actions
-- **Deployment:** Vercel
-- **Monitoring:** UptimeRobot
+Built for shops with 3–50 people. Runs on Supabase + Vercel free tiers. Zero monthly cost.
 
 ---
 
-## Getting Started
+## Core Use Cases
 
-### Prerequisites
-
-- Node.js 18+
-- Supabase account ([free tier available](https://supabase.com))
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/JakubRen/cnc-pilot-mvp.git
-   cd cnc-pilot-mvp
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-
-   Fill in your Supabase credentials in `.env.local`:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-   ```
-
-4. **Set up the database**
-   - Create a new Supabase project
-   - Run the SQL migration: `migrations/DAY_10_COMPLETE_SETUP.sql`
-
-5. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000)
-
-### Database Migrations
-
-Full documentation: [SMART_MIGRATIONS.md](./SMART_MIGRATIONS.md)
-
-```bash
-npm run migrate:status          # Check what's applied/pending
-npm run migrate:diff            # Compare TEST vs PROD
-npm run migration:new <name>    # Create new migration (with auto-tracking)
-npm run migration:show <name>   # Display SQL to copy
-```
+- **Order-to-Cash** — customer inquiry → AI-parsed quote → order → production plan → delivery → cost analysis
+- **Shop Floor Control** — assign operators, track setup/run times per operation, monitor live progress on Kanban/Swimlanes
+- **Inventory & Reorder** — stock levels, batch tracking, low-stock alerts, AI-powered auto-reorder (Wilson EOQ formula)
+- **Quoting & Pricing** — paste an email or upload a PDF → AI extracts parts, matches inventory, generates quote with dynamic pricing
+- **Quality Assurance** — Quick Measure flow, tolerance tracking, AI defect prediction (5-factor risk model)
+- **Customer Intelligence** — CLV predictions, churn risk scoring, auto-tiering (VIP/Regular/New/Inactive)
 
 ---
 
-## Testing
+## Highlights
 
-### Unit Tests (Vitest)
-```bash
-npm run test              # Run all tests
-npm run test:watch        # Watch mode
-npm run test:coverage     # Coverage report
-```
-
-### E2E Tests (Playwright)
-```bash
-npm run test:e2e          # Headless mode
-npm run test:e2e:ui       # Interactive UI mode
-```
+- 🧩 **Multi-tenant SaaS** — Row Level Security on every table, email domain-based company isolation
+- 🧠 **20 AI features** — Gemini 2.5 Flash (free tier, ~2.3% rate budget) powering everything from quote parsing to demand forecasting
+- 📋 **Kanban + Swimlanes** — drag-and-drop order boards with @dnd-kit, optimistic UI, customer-grouped swimlanes
+- ⏱️ **Built-in time tracking** — one-click timers tied to operations, automatic cost calculation
+- 🔒 **Enterprise security** — RLS, rate limiting, input sanitization (DOMPurify), prompt injection protection
+- 📊 **AI-powered analytics** — revenue forecasting, demand prediction (SMA-3 + seasonality), dynamic pricing engine
+- 🌍 **Multi-language** — Polish & English with typed translation wrappers
+- 🌓 **Dark mode** — full violet/gray design system with Geist Sans
+- ✅ **Tested** — 681+ unit tests (Vitest) + 47 E2E tests (Playwright), CI/CD via GitHub Actions
+- ⚡ **Modern stack** — Next.js 16 App Router, React 19 Server Components, TypeScript 5, Tailwind CSS 4
 
 ---
 
-## Architecture Highlights
+## Screenshots
 
-### Multi-Tenancy
-- Email domain-based company identification
-- Automatic company assignment during registration
-- Database-level isolation with RLS
-- Blocked public domains (gmail.com, etc.)
+> **Screenshots coming soon.** See the **[Live Demo](https://cnc-pilot-mvp.vercel.app)** for the actual interface.
 
-### Security
-- Row Level Security (RLS) on all tables
-- Rate limiting on sensitive endpoints
-- Input sanitization (DOMPurify)
-- Prompt injection sanitizer for AI features
-- Secure session management
+<!--
+Replace placeholders with real screenshots. Recommended: 800x450 PNG, dark theme.
+Save to: docs/screenshots/ or public/screenshots/
 
-### Performance
-- Server Components for optimal rendering
-- Parallel data fetching with Promise.all
-- Optimistic UI updates with rollback
-- ~2 second cold start with Turbopack
+<table>
+  <tr>
+    <td><img src="./docs/screenshots/dashboard.png" alt="Dashboard" width="260"/></td>
+    <td><img src="./docs/screenshots/kanban.png" alt="Kanban Board" width="260"/></td>
+    <td><img src="./docs/screenshots/order-detail.png" alt="Order Detail" width="260"/></td>
+  </tr>
+  <tr>
+    <td align="center">Dashboard</td>
+    <td align="center">Kanban Board</td>
+    <td align="center">Order Detail</td>
+  </tr>
+  <tr>
+    <td><img src="./docs/screenshots/production.png" alt="Production" width="260"/></td>
+    <td><img src="./docs/screenshots/inventory.png" alt="Inventory" width="260"/></td>
+    <td><img src="./docs/screenshots/ai-features.png" alt="AI Features" width="260"/></td>
+  </tr>
+  <tr>
+    <td align="center">Production Execution</td>
+    <td align="center">Inventory Management</td>
+    <td align="center">AI Features</td>
+  </tr>
+</table>
+-->
+
+---
+
+## Architecture Overview
+
+- 🏢 **Multi-tenant** — `company_id` scoping on all tables. Email domain-based registration. Blocked public domains. Database-level RLS isolation.
+- 🔐 **Security** — Supabase Auth + RLS on every table. Rate limiting, DOMPurify sanitization, AI prompt injection protection.
+- 🧠 **AI layer** — Unified `callGemini<T>()` client with structured JSON output, generic caching (`ai_cache` table, configurable TTL), company-scoped.
+- ⚡ **Performance** — React 19 Server Components, parallel data fetching, optimistic UI with rollback, ~2s cold start (Turbopack).
+- 📦 **Modular** — Each domain (orders, production, inventory, customers, quotes) is a self-contained module with its own routes, components, and server actions.
 
 ---
 
 ## AI Features
 
-20 AI features powered by Gemini 2.5 Flash (free tier, ~2.3% rate budget):
+20 AI features powered by **Gemini 2.5 Flash** (free tier):
 
 | Phase | Features |
 |-------|----------|
@@ -174,6 +111,77 @@ npm run test:e2e:ui       # Interactive UI mode
 
 ---
 
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | Next.js 16 (App Router, Turbopack) |
+| **UI** | React 19, Tailwind CSS 4, shadcn/ui |
+| **Language** | TypeScript 5 |
+| **Database** | Supabase (PostgreSQL + Auth + RLS) |
+| **AI** | Gemini 2.5 Flash (free tier) |
+| **Forms** | React Hook Form + Zod |
+| **Drag & Drop** | @dnd-kit |
+| **Testing** | Vitest (681+ unit) + Playwright (47 E2E) |
+| **CI/CD** | GitHub Actions → Vercel |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Supabase account ([free tier](https://supabase.com))
+
+### Quick Start
+
+```bash
+git clone https://github.com/JakubRen/cnc-pilot-mvp.git
+cd cnc-pilot-mvp
+npm install
+
+cp .env.example .env.local
+# Fill in NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+### Database Setup
+
+1. Create a new Supabase project
+2. Run `migrations/DAY_10_COMPLETE_SETUP.sql` in the SQL editor
+
+### Migrations
+
+Full docs: **[SMART_MIGRATIONS.md](./SMART_MIGRATIONS.md)**
+
+```bash
+npm run migrate:status          # What's applied/pending
+npm run migrate:diff            # Compare TEST vs PROD
+npm run migration:new <name>    # Create new migration
+npm run migration:show <name>   # Display SQL
+```
+
+---
+
+## Testing
+
+```bash
+# Unit tests (Vitest)
+npm run test              # Run all
+npm run test:watch        # Watch mode
+npm run test:coverage     # Coverage
+
+# E2E tests (Playwright)
+npm run test:e2e          # Headless
+npm run test:e2e:ui       # Interactive
+```
+
+---
+
 ## Recent Updates
 
 | Date | Update |
@@ -182,36 +190,33 @@ npm run test:e2e:ui       # Interactive UI mode
 | 2026-02-13 | AI Master Plan Phases 0-3 — 20 AI features, 681+ unit tests |
 | 2026-02-11 | AI Expansion Sprint + Kanban & Swimlanes Views |
 
-**[View Full Changelog](./CHANGELOG.md)**
+**[View Full Changelog →](./CHANGELOG.md)**
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
 ## Author
 
-**Jakub Ren** - Product Manager & AI-Assisted Development Specialist
+**Jakub Ren** — Product Manager & AI-Assisted Development Specialist
 
 - **GitHub:** [@JakubRen](https://github.com/JakubRen)
 - **Email:** jakub.renkowski@outlook.com
 
-**Development Approach:** Product Management + AI-Assisted Development (Claude Code)
-**Repository:** [github.com/JakubRen/cnc-pilot-mvp](https://github.com/JakubRen/cnc-pilot-mvp) | **Live:** [cnc-pilot-mvp.vercel.app](https://cnc-pilot-mvp.vercel.app)
+**Built as a comprehensive production management solution for CNC manufacturing**, combining enterprise-grade architecture with practical shop floor needs. Developed using AI-assisted development with **[Claude Code](https://claude.com/claude-code)**, demonstrating how Product Managers can leverage AI tools to build production-ready SaaS applications.
 
 ---
 
-## Acknowledgments
-
-- Built with [Next.js](https://nextjs.org/) + [shadcn/ui](https://ui.shadcn.com/)
-- Database & Auth by [Supabase](https://supabase.com/)
-- AI by [Google Gemini](https://ai.google.dev/)
-- Deployed on [Vercel](https://vercel.com/)
-- Developed with [Claude Code](https://claude.com/claude-code)
-
----
-
-<p align="center">Made with CNC manufacturers in mind</p>
+<p align="center">
+  Built with
+  <a href="https://nextjs.org/">Next.js</a> ·
+  <a href="https://ui.shadcn.com/">shadcn/ui</a> ·
+  <a href="https://supabase.com/">Supabase</a> ·
+  <a href="https://ai.google.dev/">Gemini</a> ·
+  <a href="https://vercel.com/">Vercel</a> ·
+  <a href="https://claude.com/claude-code">Claude Code</a>
+</p>
