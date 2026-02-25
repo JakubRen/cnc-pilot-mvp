@@ -7,6 +7,7 @@ import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import CommandPalette from '@/components/ui/CommandPalette';
 import MobileBottomNav from './MobileBottomNav';
+import ChatPanel from '@/components/copilot/ChatPanel';
 import InterfaceModeGuard from './InterfaceModeGuard';
 import type { InterfaceMode } from '@/lib/auth';
 import { LiveRegionProvider } from '@/components/ui/LiveRegion';
@@ -89,10 +90,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
         onClose={() => setShowShortcutsHelp(false)}
       />
 
-      {/* Floating Help Button */}
+      {/* CNC Copilot Chat */}
+      <ChatPanel />
+
+      {/* Floating Help Button — shifted left to avoid overlap with Copilot toggle */}
       <button
         onClick={() => setShowShortcutsHelp(true)}
-        className="fixed bottom-6 right-6 w-10 h-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-md flex items-center justify-center transition z-30 group focus:outline-none focus:ring-2 focus:ring-ring hidden lg:flex"
+        className="fixed bottom-6 right-24 w-10 h-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-md flex items-center justify-center transition z-30 group focus:outline-none focus:ring-2 focus:ring-ring hidden lg:flex"
         title="Skróty klawiszowe (Ctrl+/)"
         aria-label="Pokaż skróty klawiszowe"
       >

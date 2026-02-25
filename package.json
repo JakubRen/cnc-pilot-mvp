@@ -30,6 +30,8 @@
     "migrate:status": "node scripts/migration-check.js test"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.31",
+    "@ai-sdk/react": "^3.0.101",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -48,6 +50,7 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.93.3",
     "@types/mdx": "^2.0.13",
+    "ai": "^6.0.99",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
