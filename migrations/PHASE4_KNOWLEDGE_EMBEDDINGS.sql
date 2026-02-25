@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS knowledge_embeddings (
   content_text TEXT NOT NULL,   -- The text that was embedded
   content_summary TEXT,         -- Short summary for display in chat
 
-  -- Embedding vector (text-embedding-004 = 768 dimensions)
+  -- Embedding vector (gemini-embedding-001 (outputDimensionality=768) = 768 dimensions)
   embedding VECTOR(768) NOT NULL,
 
   -- Flexible metadata (material, category, sku, etc.)

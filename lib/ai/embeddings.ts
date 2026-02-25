@@ -9,7 +9,8 @@ import type {
   SimilaritySearchResult,
 } from '@/types/copilot'
 
-const EMBEDDING_MODEL = 'text-embedding-004'
+const EMBEDDING_MODEL = 'gemini-embedding-001'
+const EMBEDDING_DIMENSIONS = 768
 const EMBEDDING_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models'
 
 // ============================================
@@ -36,6 +37,7 @@ export async function generateEmbedding(text: string): Promise<number[] | null> 
         body: JSON.stringify({
           model: `models/${EMBEDDING_MODEL}`,
           content: { parts: [{ text }] },
+          outputDimensionality: EMBEDDING_DIMENSIONS,
         }),
       }
     )
