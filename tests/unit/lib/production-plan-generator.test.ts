@@ -166,7 +166,7 @@ function inferOperations(input: PlanGeneratorInput): GeneratedOperation[] {
   ops.push({
     operationNumber: opNum++,
     operationType: 'quality_control',
-    operationName: 'Kontrola jakosci',
+    operationName: 'Kontrola jakości',
     setupTimeMinutes: 5,
     runTimePerUnitMinutes: Math.round(1 * mult * 10) / 10,
     machineSuggestion: null,

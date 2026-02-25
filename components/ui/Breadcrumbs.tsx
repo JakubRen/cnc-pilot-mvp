@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Breadcrumb" className={cn('flex items-center space-x-2 text-sm', className)}>
+    <nav aria-label="Nawigacja okruszkowa" className={cn('flex items-center space-x-2 text-sm', className)}>
       <ol className="flex items-center space-x-2">
         {items.map((item, index) => {
           const isLast = index === items.length - 1
@@ -70,7 +70,7 @@ export function useBreadcrumbs(pathname: string): BreadcrumbItem[] {
 
   const breadcrumbs: BreadcrumbItem[] = [
     {
-      label: 'Dashboard',
+      label: 'Pulpit',
       href: '/',
       icon: (
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">

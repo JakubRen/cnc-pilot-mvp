@@ -60,11 +60,11 @@ export default async function InventoryPage() {
   }
 
   return (
-<div className="p-8">
+<div className="p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">
+            <h1 className="text-2xl sm:text-4xl font-bold text-foreground mb-2">
               📊 Magazyn - Stany
             </h1>
             <p className="text-muted-foreground">
@@ -74,7 +74,7 @@ export default async function InventoryPage() {
           <div className="flex gap-3">
             <Link
               href="/products"
-              className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
+              className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold text-sm sm:text-base"
             >
               📦 Katalog Towarów
             </Link>
@@ -104,29 +104,29 @@ export default async function InventoryPage() {
             </Link>
           </div>
         ) : filteredLocations.length > 0 && (
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full">
+          <div className="bg-card border border-border rounded-lg overflow-x-auto">
+            <table className="w-full min-w-[640px]">
               <thead className="bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-foreground uppercase hidden md:table-cell">
                     SKU
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-foreground uppercase">
                     Towar
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-foreground uppercase hidden lg:table-cell">
                     Lokalizacja
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-foreground uppercase">
+                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-semibold text-foreground uppercase">
                     Dostępne
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-foreground uppercase">
+                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-semibold text-foreground uppercase hidden md:table-cell">
                     Zarezerwowane
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-semibold text-foreground uppercase">
+                  <th className="px-3 sm:px-6 py-3 text-center text-xs font-semibold text-foreground uppercase">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-foreground uppercase">
+                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-semibold text-foreground uppercase">
                     Akcje
                   </th>
                 </tr>
@@ -138,21 +138,21 @@ export default async function InventoryPage() {
 
                   return (
                     <tr key={location.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                      <td className="px-6 py-4 text-sm font-mono text-foreground">
-                        {location.product.sku}
+                      <td className="px-3 sm:px-6 py-4 text-sm font-mono text-foreground hidden md:table-cell">
+                        <span className="min-w-0 truncate block max-w-[120px]">{location.product.sku}</span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-4 min-w-0 max-w-[200px]">
                         <Link
                           href={`/products/${location.product.id}`}
-                          className="text-sm font-medium text-primary hover:underline"
+                          className="text-sm font-medium text-primary hover:underline truncate block"
                         >
                           {location.product.name}
                         </Link>
                       </td>
-                      <td className="px-6 py-4 text-sm text-muted-foreground">
+                      <td className="px-3 sm:px-6 py-4 text-sm text-muted-foreground hidden lg:table-cell">
                         {location.location_code}
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-3 sm:px-6 py-4 text-right">
                         <span className={`text-lg font-bold ${
                           status === 'out' ? 'text-red-600' :
                           status === 'low' ? 'text-yellow-600' :
@@ -164,10 +164,10 @@ export default async function InventoryPage() {
                           {productUnitLabels[location.product.unit as keyof typeof productUnitLabels]}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right text-sm text-muted-foreground">
+                      <td className="px-3 sm:px-6 py-4 text-right text-sm text-muted-foreground hidden md:table-cell">
                         {location.reserved_quantity.toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-3 sm:px-6 py-4 text-center">
                         {status === 'out' ? (
                           <span className="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">
                             Brak
@@ -182,10 +182,10 @@ export default async function InventoryPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-3 sm:px-6 py-4 text-right">
                         <Link
                           href={`/products/${location.product.id}`}
-                          className="text-sm text-primary hover:underline"
+                          className="text-sm text-primary hover:underline whitespace-nowrap"
                         >
                           Szczegóły →
                         </Link>

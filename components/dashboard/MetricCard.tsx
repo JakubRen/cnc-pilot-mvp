@@ -33,23 +33,23 @@ function CardContent({ title, value, icon: Icon, subtitle, color = 'blue', link 
 
   return (
     <div
-      className={`bg-card rounded-lg p-6 border border-border transition-colors min-h-[160px] ${link ? 'cursor-pointer hover:bg-muted' : ''} shadow-sm`}
+      className={`bg-card rounded-lg p-4 sm:p-6 border border-border transition-colors min-h-[120px] sm:min-h-[160px] ${link ? 'cursor-pointer hover:bg-muted' : ''} shadow-sm`}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className={`p-3 rounded-lg ${iconBg[color]}`}>
+      <div className="flex items-start justify-between mb-3 sm:mb-4">
+        <div className={`p-2 sm:p-3 rounded-lg ${iconBg[color]}`}>
           {isComponent ? (
-            <Icon className={`w-6 h-6 ${colorAccent[color]}`} />
+            <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${colorAccent[color]}`} />
           ) : (
-            <span className="text-2xl">{Icon}</span>
+            <span className="text-xl sm:text-2xl">{Icon}</span>
           )}
         </div>
-        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-widest text-right mt-1 font-mono">
+        <h3 className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-widest text-right mt-1 font-mono">
           {title}
         </h3>
       </div>
 
-      <div className="mb-2">
-        <p className="text-4xl font-bold tracking-tight text-foreground font-mono tabular-nums">
+      <div className="mb-1 sm:mb-2">
+        <p className="text-2xl sm:text-4xl font-bold tracking-tight text-foreground font-mono tabular-nums">
           {value}
         </p>
       </div>
@@ -57,7 +57,7 @@ function CardContent({ title, value, icon: Icon, subtitle, color = 'blue', link 
       {subtitle && (
         <div className="flex items-center gap-2">
            <div className={`h-1 w-1 rounded-full ${color === 'red' ? 'bg-red-500' : 'bg-green-500'}`}></div>
-           <p className="text-xs text-muted-foreground font-mono">{subtitle}</p>
+           <p className="text-[10px] sm:text-xs text-muted-foreground font-mono">{subtitle}</p>
         </div>
       )}
     </div>

@@ -199,8 +199,8 @@ export default function OrderList({
                 <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col" title="Prawdopodobienstwo terminowej realizacji (AI)">
                   AI %
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col" title="Ryzyko wad jakosciowych (AI)">
-                  Jakosc
+                <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col" title="Ryzyko wad jakościowych (AI)">
+                  Jakość
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider" role="columnheader" scope="col">
                   {t('common', 'status')}
@@ -267,7 +267,7 @@ export default function OrderList({
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex flex-col gap-1">
                       <span className={isOrderOverdue(order.deadline, order.status) ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-foreground'}>
-                        {new Date(order.deadline).toLocaleDateString()}
+                        {new Date(order.deadline).toLocaleDateString('pl-PL')}
                       </span>
                       {isOrderOverdue(order.deadline, order.status) && (
                         <Badge variant="danger" size="sm" className="w-fit">{t('orderStatus', 'overdue')}</Badge>

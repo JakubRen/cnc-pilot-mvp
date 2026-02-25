@@ -14,7 +14,7 @@ export default function ThemeToggle() {
             ? 'bg-white dark:bg-violet-600 text-violet-600 dark:text-white shadow-sm'
             : 'text-muted-foreground hover:text-foreground'
         }`}
-        title="Light theme"
+        title="Jasny motyw"
       >
         ☀️
       </button>
@@ -25,7 +25,7 @@ export default function ThemeToggle() {
             ? 'bg-violet-600 text-white shadow-sm'
             : 'text-muted-foreground hover:text-foreground'
         }`}
-        title="Dark theme"
+        title="Ciemny motyw"
       >
         🌙
       </button>
@@ -36,7 +36,7 @@ export default function ThemeToggle() {
             ? 'bg-violet-600 text-white shadow-sm'
             : 'text-muted-foreground hover:text-foreground'
         }`}
-        title="Auto theme"
+        title="Automatyczny motyw"
       >
         ⚙️
       </button>

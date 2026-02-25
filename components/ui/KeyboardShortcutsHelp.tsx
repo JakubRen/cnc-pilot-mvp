@@ -79,7 +79,7 @@ export default function KeyboardShortcutsHelp({
           </div>
           <button
             onClick={handleClose}
-            aria-label="Close shortcuts help"
+            aria-label="Zamknij pomoc skrótów"
             className="text-muted-foreground hover:text-foreground transition p-2 hover:bg-muted rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

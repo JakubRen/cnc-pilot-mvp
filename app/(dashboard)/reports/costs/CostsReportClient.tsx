@@ -68,6 +68,30 @@ export default function CostsReportClient({ stats, orders, children }: CostsRepo
     )
   }
 
+  if (orders.length === 0) {
+    return (
+      <>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <Link href="/reports" className="text-muted-foreground hover:text-foreground text-sm">
+                ← Raporty
+              </Link>
+            </div>
+            <h1 className="text-4xl font-bold text-foreground">{t('costs', 'title')}</h1>
+          </div>
+        </div>
+        {children}
+        <div className="bg-card rounded-lg border border-border p-12 text-center">
+          <div className="text-5xl mb-4">💰</div>
+          <h3 className="text-xl font-semibold text-foreground mb-2">Brak danych do wyświetlenia</h3>
+          <p className="text-muted-foreground">Nie znaleziono żadnych zamówień w wybranym okresie.</p>
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
       {/* Header */}

@@ -84,7 +84,7 @@ export default function ResetPasswordPage() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">CNC-Pilot</h1>
-          <p className="text-slate-400">Production Management System</p>
+          <p className="text-slate-400">System Zarządzania Produkcją</p>
         </div>
 
         <div className="bg-slate-800 border border-slate-700 rounded-lg p-8">

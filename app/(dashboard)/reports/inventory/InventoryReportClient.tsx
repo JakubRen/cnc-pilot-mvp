@@ -59,6 +59,16 @@ export default function InventoryReportClient({ items, summary, categories }: Pr
     exportToCSV(exportData, `magazyn_${new Date().toISOString().split('T')[0]}`);
   };
 
+  if (items.length === 0) {
+    return (
+      <div className="bg-card rounded-lg border border-border p-12 text-center">
+        <div className="text-5xl mb-4">📦</div>
+        <h3 className="text-xl font-semibold text-foreground mb-2">Brak danych do wyświetlenia</h3>
+        <p className="text-muted-foreground">Nie znaleziono żadnych pozycji magazynowych.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Summary Cards */}

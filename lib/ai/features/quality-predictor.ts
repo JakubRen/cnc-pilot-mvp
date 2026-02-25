@@ -218,11 +218,11 @@ export function generateRecommendation(badge: QualityBadge, factors: QualityRisk
 
   switch (badge) {
     case 'red':
-      return `Wysokie ryzyko jakosci! Glowny czynnik: ${topFactor.description} Zalecana dodatkowa kontrola jakosci.`
+      return `Wysokie ryzyko jakości! Główny czynnik: ${topFactor.description} Zalecana dodatkowa kontrola jakości.`
     case 'yellow':
-      return `Umiarkowane ryzyko jakosci. Zwroc uwage na: ${topFactor.description}`
+      return `Umiarkowane ryzyko jakości. Zwróć uwagę na: ${topFactor.description}`
     case 'green':
-      return 'Niskie ryzyko jakosci. Standardowa kontrola wystarczajaca.'
+      return 'Niskie ryzyko jakości. Standardowa kontrola wystarczająca.'
   }
 }
 

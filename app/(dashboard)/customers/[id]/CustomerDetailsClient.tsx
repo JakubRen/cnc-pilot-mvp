@@ -98,7 +98,7 @@ export default function CustomerDetailsClient({
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
-            { label: 'Dashboard', href: '/' },
+            { label: 'Pulpit', href: '/' },
             { label: 'Kontrahenci', href: '/customers' },
             { label: customer.name },
           ]}

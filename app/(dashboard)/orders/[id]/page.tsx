@@ -150,7 +150,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           {/* Breadcrumbs */}
           <Breadcrumbs
             items={[
-              { label: 'Dashboard', href: '/' },
+              { label: 'Pulpit', href: '/' },
               { label: 'Zamówienia', href: '/orders' },
               { label: `#${order.order_number}` },
             ]}

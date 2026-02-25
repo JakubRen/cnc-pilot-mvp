@@ -11,8 +11,8 @@ import { sanitizeText, sanitizeEmail } from '@/lib/sanitization'
 
 // Validation schema
 const userSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  full_name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Nieprawidłowy format email'),
+  full_name: z.string().min(2, 'Imię i nazwisko musi mieć minimum 2 znaki'),
   role: z.enum(['pending', 'operator', 'admin', 'owner']),
 })
 
@@ -47,7 +47,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
         .single()
 
       if (error) {
-        toast.error('Error loading user: ' + error.message)
+        toast.error('Błąd ładowania użytkownika: ' + error.message)
         router.push('/users')
         return
       }
@@ -66,7 +66,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
   }, [params, setValue, router])
 
   const onSubmit = async (data: UserFormData) => {
-    const loadingToast = toast.loading('Updating user...')
+    const loadingToast = toast.loading('Aktualizowanie użytkownika...')
 
     // Sanitize user inputs to prevent XSS attacks
     const sanitizedData = {
@@ -83,18 +83,18 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error('Failed to update user: ' + error.message)
+      toast.error('Nie udało się zaktualizować użytkownika: ' + error.message)
       return
     }
 
-    toast.success('User updated successfully!')
+    toast.success('Użytkownik zaktualizowany pomyślnie!')
     router.push('/users')
   }
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-foreground text-xl">Loading user data...</div>
+        <div className="text-foreground text-xl">Ładowanie danych użytkownika...</div>
       </div>
     )
   }
@@ -102,7 +102,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-foreground mb-8">Edit User</h1>
+        <h1 className="text-4xl font-bold text-foreground mb-8">Edytuj Użytkownika</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Email Field */}
@@ -125,7 +125,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
           {/* Full Name Field */}
           <div>
             <label htmlFor="edit_full_name" className="block text-foreground mb-2 font-medium">
-              Full Name <span className="text-red-400">*</span>
+              Imię i Nazwisko <span className="text-red-400">*</span>
             </label>
             <input
               id="edit_full_name"
@@ -142,17 +142,17 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
           {/* Role Field */}
           <div>
             <label htmlFor="edit_role" className="block text-foreground mb-2 font-medium">
-              Role <span className="text-red-400">*</span>
+              Rola <span className="text-red-400">*</span>
             </label>
             <select
               id="edit_role"
               {...register('role')}
               className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground focus:border-violet-500 focus:ring-2 focus:ring-violet-500 focus:outline-none transition"
             >
-              <option value="pending">⏳ Oczekujący (Pending)</option>
+              <option value="pending">⏳ Oczekujący</option>
               <option value="operator">⚙️ Operator</option>
-              <option value="admin">🔑 Admin</option>
-              <option value="owner">👑 Właściciel (Owner)</option>
+              <option value="admin">🔑 Administrator</option>
+              <option value="owner">👑 Właściciel</option>
             </select>
             {errors.role && (
               <p className="text-red-400 text-sm mt-1">{errors.role.message}</p>
@@ -166,14 +166,14 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
               disabled={isSubmitting}
               className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition shadow-lg hover:shadow-xl"
             >
-              {isSubmitting ? 'Updating...' : 'Update User'}
+              {isSubmitting ? 'Aktualizowanie...' : 'Zaktualizuj Użytkownika'}
             </button>
             <button
               type="button"
               onClick={() => router.push('/users')}
               className="px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-accent font-semibold transition"
             >
-              Cancel
+              Anuluj
             </button>
           </div>
         </form>

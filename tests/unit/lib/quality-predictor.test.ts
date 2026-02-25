@@ -209,11 +209,11 @@ function generateRecommendation(badge: QualityBadge, factors: QualityRiskFactor[
 
   switch (badge) {
     case 'high':
-      return `Wysokie ryzyko jakosci! Glowny czynnik: ${topFactor.description} Zalecana dodatkowa kontrola jakosci.`
+      return `Wysokie ryzyko jakości! Główny czynnik: ${topFactor.description} Zalecana dodatkowa kontrola jakości.`
     case 'medium':
-      return `Umiarkowane ryzyko jakosci. Zwroc uwage na: ${topFactor.description}`
+      return `Umiarkowane ryzyko jakości. Zwróć uwagę na: ${topFactor.description}`
     case 'low':
-      return 'Niskie ryzyko jakosci. Standardowa kontrola wystarczajaca.'
+      return 'Niskie ryzyko jakości. Standardowa kontrola wystarczająca.'
   }
 }
 
@@ -445,7 +445,7 @@ describe('Quality Predictor — Recommendations', () => {
       { name: 'operator', score: 80, weight: 0.3, description: 'Operator z wysokim defect rate.' },
     ])
     expect(rec).toContain('Wysokie ryzyko')
-    expect(rec).toContain('kontrola jakosci')
+    expect(rec).toContain('kontrola jakości')
   })
 
   it('should warn for medium badge', () => {

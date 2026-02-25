@@ -74,7 +74,7 @@ export const commonTranslations = {
     orders: { pl: 'Zamówienia', en: 'Orders' },
     production: { pl: 'Plan Produkcji', en: 'Production' },
     customers: { pl: 'Kontrahenci', en: 'Contractors' },
-    quotesExpress: { pl: 'Express Quote', en: 'Express Quote' },
+    quotesExpress: { pl: 'Szybka Wycena', en: 'Express Quote' },
     quotes: { pl: 'Oferty', en: 'Quotes' },
     calendar: { pl: 'Kalendarz', en: 'Calendar' },
     products: { pl: 'Towary', en: 'Products' },

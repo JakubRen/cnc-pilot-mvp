@@ -64,9 +64,9 @@ export default function AIInsightsWidget({ initialInsights, companyId }: Props) 
       const result = await refreshInsights(companyId)
       setData(result)
       setLastRefresh(Date.now())
-      toast.success('Insights zaktualizowane')
+      toast.success('Analiza zaktualizowana')
     } catch {
-      toast.error('Błąd generowania insights')
+      toast.error('Błąd generowania analizy')
     } finally {
       setIsLoading(false)
     }
@@ -78,7 +78,7 @@ export default function AIInsightsWidget({ initialInsights, companyId }: Props) 
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="text-xl">🧠</span>
-          <h3 className="text-lg font-semibold text-foreground">AI Insights</h3>
+          <h3 className="text-lg font-semibold text-foreground">Analiza AI</h3>
           {data.isStale && data.insights.length > 0 && (
             <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full">
               Nieaktualne

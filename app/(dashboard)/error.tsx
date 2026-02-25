@@ -25,12 +25,12 @@ export default function Error({
 
           {/* Title */}
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            Oops! Something went wrong
+            Ups! Coś poszło nie tak
           </h2>
 
           {/* Description */}
           <p className="text-muted-foreground mb-6">
-            We encountered an unexpected error. Please try again or contact support if the problem persists.
+            Wystąpił nieoczekiwany błąd. Spróbuj ponownie lub skontaktuj się z administratorem, jeśli problem się powtarza.
           </p>
 
           {/* Error Message (Dev only) */}
@@ -48,13 +48,13 @@ export default function Error({
               onClick={reset}
               className="flex-1 px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
             >
-              Try Again
+              Spróbuj ponownie
             </button>
             <Link
               href="/"
               className="flex-1 px-6 py-3 bg-secondary text-foreground rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition font-semibold text-center"
             >
-              Go Home
+              Strona główna
             </Link>
           </div>
         </div>

@@ -7,11 +7,11 @@ export default function MobileBottomNav() {
   const pathname = usePathname()
 
   const navItems = [
-    { href: '/', icon: '📊', label: 'Home' },
-    { href: '/orders', icon: '📦', label: 'Orders' },
-    { href: '/inventory', icon: '🏭', label: 'Stock' },
-    { href: '/documents', icon: '📄', label: 'Docs' },
-    { href: '/reports', icon: '📈', label: 'Reports' },
+    { href: '/', icon: '📊', label: 'Pulpit' },
+    { href: '/orders', icon: '📦', label: 'Zamówienia' },
+    { href: '/inventory', icon: '🏭', label: 'Magazyn' },
+    { href: '/documents', icon: '📄', label: 'Wydania' },
+    { href: '/reports', icon: '📈', label: 'Raporty' },
   ]
 
   return (

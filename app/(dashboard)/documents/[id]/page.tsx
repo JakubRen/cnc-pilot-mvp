@@ -77,7 +77,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
-            { label: 'Dashboard', href: '/' },
+            { label: 'Pulpit', href: '/' },
             { label: 'Dokumenty', href: '/documents' },
             { label: document.document_number },
           ]}

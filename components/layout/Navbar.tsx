@@ -15,16 +15,16 @@ export default function Navbar({ user }: NavbarProps) {
   const pathname = usePathname()
 
   const handleLogout = async () => {
-    const loadingToast = toast.loading('Logging out...')
+    const loadingToast = toast.loading('Wylogowywanie...')
     const { error } = await signOut()
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error('Logout failed')
+      toast.error('Wylogowanie nie powiodło się')
       return
     }
 
-    toast.success('Logged out successfully')
+    toast.success('Wylogowano pomyślnie')
     router.push('/login')
     router.refresh()
   }
@@ -51,7 +51,7 @@ export default function Navbar({ user }: NavbarProps) {
       <div className="flex justify-between items-center pb-4 border-b border-border">
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">
-            Logged in as:{' '}
+            Zalogowany jako:{' '}
             <span className="text-foreground font-semibold">{user.email}</span>
           </span>
           <span
@@ -64,7 +64,7 @@ export default function Navbar({ user }: NavbarProps) {
           onClick={handleLogout}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold"
         >
-          Logout
+          Wyloguj
         </button>
       </div>
 
@@ -78,7 +78,7 @@ export default function Navbar({ user }: NavbarProps) {
               : 'bg-muted text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
-          Users
+          Użytkownicy
         </Link>
         <Link
           href="/orders"
@@ -88,7 +88,7 @@ export default function Navbar({ user }: NavbarProps) {
               : 'bg-muted text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
-          Orders
+          Zamówienia
         </Link>
         <Link
           href="/inventory"
@@ -98,7 +98,7 @@ export default function Navbar({ user }: NavbarProps) {
               : 'bg-muted text-muted-foreground hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
-          Inventory
+          Magazyn
         </Link>
       </div>
     </div>

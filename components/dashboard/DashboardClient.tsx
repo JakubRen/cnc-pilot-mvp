@@ -139,26 +139,26 @@ export default function DashboardClient({
   }
 
   return (
-    <PageTransition className="p-6">
+    <PageTransition className="p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-4 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
             <div>
               {/* FIXED: text-white -> text-foreground */}
-              <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight">{t('nav', 'dashboard')}</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-xl sm:text-3xl font-bold text-foreground mb-1 sm:mb-2 tracking-tight">{t('nav', 'dashboard')}</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
                 {t('dashboard', 'welcome').replace('{name}', userName)}
               </p>
             </div>
-            <div className="text-right flex gap-4 items-start">
+            <div className="text-left sm:text-right flex gap-3 sm:gap-4 items-center sm:items-start">
               {/* Personalization Button - Theme aware */}
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition font-semibold flex items-center gap-2 shadow-sm"
+                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition font-semibold flex items-center gap-2 shadow-sm text-sm sm:text-base"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -176,7 +176,7 @@ export default function DashboardClient({
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                {t('dashboard', 'customize')}
+                <span className="hidden sm:inline">{t('dashboard', 'customize')}</span>
               </button>
 
               {/* Company & Date Info */}

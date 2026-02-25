@@ -265,7 +265,7 @@ export default function InventoryTable({ items }: InventoryTableProps) {
   return (
     <div ref={tableRef}>
       {/* Header with Filter Button */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
         <div className="flex items-center gap-3">
           {/* Filter Button */}
           <button
@@ -377,7 +377,7 @@ export default function InventoryTable({ items }: InventoryTableProps) {
                   onDragLeave={handleHeaderDragLeave}
                   onDrop={(e) => handleHeaderDrop(e, column.id)}
                   onDragEnd={handleHeaderDragEnd}
-                  className={`px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-grab active:cursor-grabbing select-none hover:bg-accent/50 transition ${
+                  className={`px-3 sm:px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-grab active:cursor-grabbing select-none hover:bg-accent/50 transition ${
                     column.id === 'actions' ? 'text-right' : column.id === 'quantity' ? 'text-right' : column.id === 'status' ? 'text-center' : 'text-left'
                   } ${draggingHeader === column.id ? 'opacity-50' : ''} ${
                     dragOverHeader === column.id ? 'bg-violet-100 dark:bg-violet-900/30 border-l-2 border-violet-500' : ''
@@ -421,7 +421,7 @@ export default function InventoryTable({ items }: InventoryTableProps) {
                   {visibleColumns.map((column) => (
                     <td
                       key={column.id}
-                      className={`px-6 py-4 whitespace-nowrap text-sm ${
+                      className={`px-3 sm:px-6 py-4 whitespace-nowrap text-sm ${
                         column.id === 'quantity' ? 'text-right' : column.id === 'status' ? 'text-center' : ''
                       }`}
                     >

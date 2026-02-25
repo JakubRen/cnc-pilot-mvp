@@ -85,7 +85,7 @@ export default function NotificationsClient({ notifications: initialNotification
       case 'success':
         return 'Sukces';
       default:
-        return 'Info';
+        return 'Informacja';
     }
   };
 

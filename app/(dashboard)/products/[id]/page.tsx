@@ -53,7 +53,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
-            { label: 'Dashboard', href: '/' },
+            { label: 'Pulpit', href: '/' },
             { label: 'Produkty', href: '/products' },
             { label: product.name },
           ]}

@@ -79,7 +79,7 @@ export default async function OrderQCPage({ params }: { params: Promise<{ id: st
       <div className="max-w-5xl mx-auto">
         <Breadcrumbs
           items={[
-            { label: 'Dashboard', href: '/' },
+            { label: 'Pulpit', href: '/' },
             { label: 'Zamówienia', href: '/orders' },
             { label: `#${order.order_number}`, href: `/orders/${id}` },
             { label: 'Kontrola Jakości' },

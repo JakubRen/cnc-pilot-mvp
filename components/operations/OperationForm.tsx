@@ -347,7 +347,7 @@ export default function OperationForm({
                   {/* Setup Time */}
                   <div>
                     <label className="block text-muted-foreground text-sm mb-2">
-                      ⏱️ Setup Time (min) *
+                      ⏱️ Czas przygotowania (min) *
                     </label>
                     <input
                       type="number"
@@ -380,14 +380,14 @@ export default function OperationForm({
                       placeholder="Czas przygotowania (jednorazowy)"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Koszt setup: {formatCost(costs.setupCost)}
+                      Koszt przygotowania: {formatCost(costs.setupCost)}
                     </p>
                   </div>
 
                   {/* Run Time */}
                   <div>
                     <label className="block text-muted-foreground text-sm mb-2">
-                      🔄 Run Time (min/szt) *
+                      🔄 Czas obróbki (min/szt) *
                     </label>
                     <input
                       type="number"
@@ -420,7 +420,7 @@ export default function OperationForm({
                       placeholder="Czas obróbki 1 sztuki"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Koszt run ({quantity} szt.): {formatCost(costs.runCost)}
+                      Koszt obróbki ({quantity} szt.): {formatCost(costs.runCost)}
                     </p>
                   </div>
 
@@ -444,7 +444,7 @@ export default function OperationForm({
                   <div className="text-sm text-violet-200">
                     <p className="font-semibold mb-1">💡 Automatyczne szacowanie</p>
                     <p className="text-xs">
-                      Kliknij aby oszacować Setup/Run Time na podstawie typu operacji i złożoności
+                      Kliknij aby oszacować czasy przygotowania i obróbki na podstawie typu operacji i złożoności
                     </p>
                   </div>
                   <button
@@ -468,13 +468,13 @@ export default function OperationForm({
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-green-300 mb-1">Setup Cost</p>
+                      <p className="text-xs text-green-300 mb-1">Koszt przygotowania</p>
                       <p className="text-lg font-bold text-green-400">
                         {formatCost(costs.setupCost)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-green-300 mb-1">Run Cost</p>
+                      <p className="text-xs text-green-300 mb-1">Koszt obróbki</p>
                       <p className="text-lg font-bold text-green-400">
                         {formatCost(costs.runCost)}
                       </p>
@@ -512,13 +512,13 @@ export default function OperationForm({
                   return (
                     <>
                       <div className="text-center">
-                        <p className="text-sm text-violet-300 mb-1">Setup Time</p>
+                        <p className="text-sm text-violet-300 mb-1">Czas przygotowania</p>
                         <p className="text-2xl font-bold text-white">
                           {formatDuration(totalSetupTime)}
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-sm text-violet-300 mb-1">Run Time</p>
+                        <p className="text-sm text-violet-300 mb-1">Czas obróbki</p>
                         <p className="text-2xl font-bold text-white">
                           {formatDuration(totalRunTime)}
                         </p>
@@ -545,11 +545,11 @@ export default function OperationForm({
       )}
 
       <div className="bg-violet-900/20 border border-violet-700/50 rounded-lg p-4 text-sm text-violet-200">
-        <p className="font-semibold mb-2">ℹ️ Informacja o Setup/Run Time:</p>
+        <p className="font-semibold mb-2">ℹ️ Informacja o czasach operacji:</p>
         <ul className="list-disc list-inside space-y-1 text-violet-300 text-xs">
-          <li><strong>Setup Time:</strong> Czas przygotowawczy maszyny - jednorazowy, niezależny od ilości sztuk</li>
-          <li><strong>Run Time:</strong> Czas obróbki jednej sztuki - mnożony przez ilość w zleceniu</li>
-          <li><strong>Koszt całkowity:</strong> Setup Cost + (Run Time × ilość × stawka)</li>
+          <li><strong>Czas przygotowania:</strong> Czas przygotowawczy maszyny - jednorazowy, niezależny od ilości sztuk</li>
+          <li><strong>Czas obróbki:</strong> Czas obróbki jednej sztuki - mnożony przez ilość w zleceniu</li>
+          <li><strong>Koszt całkowity:</strong> Koszt przygotowania + (Czas obróbki × ilość × stawka)</li>
           <li>Kolejność operacji (#1, #2, #3...) określa routing produkcyjny</li>
         </ul>
       </div>

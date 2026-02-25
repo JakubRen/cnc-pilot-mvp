@@ -93,7 +93,7 @@ export default async function InventoryDetailsPage({ params }: { params: Promise
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
-            { label: 'Dashboard', href: '/' },
+            { label: 'Pulpit', href: '/' },
             { label: 'Magazyn', href: '/inventory' },
             { label: item.name },
           ]}

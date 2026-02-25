@@ -21,10 +21,10 @@ export default function Error({
         <div className="bg-card border border-red-300 dark:border-red-700 rounded-lg p-8 text-center">
           <div className="text-6xl mb-4">📦❌</div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            Failed to load orders
+            Nie udało się załadować zamówień
           </h2>
           <p className="text-muted-foreground mb-6">
-            There was a problem loading the orders list. This might be a temporary issue.
+            Wystąpił problem z ładowaniem listy zamówień. To może być tymczasowy problem.
           </p>
 
           {process.env.NODE_ENV === 'development' && (
@@ -40,13 +40,13 @@ export default function Error({
               onClick={reset}
               className="flex-1 px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition font-semibold"
             >
-              Retry
+              Spróbuj ponownie
             </button>
             <Link
               href="/"
               className="flex-1 px-6 py-3 bg-secondary text-foreground rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition font-semibold text-center"
             >
-              Dashboard
+              Pulpit
             </Link>
           </div>
         </div>

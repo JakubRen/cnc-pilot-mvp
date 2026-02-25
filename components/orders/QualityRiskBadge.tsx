@@ -64,9 +64,9 @@ export default function QualityRiskBadge({ risk, riskLevel, riskFactors, size = 
     : 'text-xs px-2 py-0.5 gap-1.5'
 
   // Build tooltip text with risk factors breakdown
-  const tooltipParts = [`Ryzyko wad jakosciowych: ${clamped}%`]
+  const tooltipParts = [`Ryzyko wad jakościowych: ${clamped}%`]
   if (riskLevel) {
-    tooltipParts[0] = `Ryzyko: ${clamped}% (${riskLevel === 'low' ? 'niskie' : riskLevel === 'medium' ? 'srednie' : 'wysokie'})`
+    tooltipParts[0] = `Ryzyko: ${clamped}% (${riskLevel === 'low' ? 'niskie' : riskLevel === 'medium' ? 'średnie' : 'wysokie'})`
   }
   if (riskFactors && riskFactors.length > 0) {
     tooltipParts.push('')

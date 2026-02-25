@@ -64,6 +64,16 @@ export default function OrdersReportClient({ orders, summary }: Props) {
     return colors[status] || 'bg-slate-600';
   };
 
+  if (orders.length === 0) {
+    return (
+      <div className="bg-card rounded-lg border border-border p-12 text-center">
+        <div className="text-5xl mb-4">📋</div>
+        <h3 className="text-xl font-semibold text-foreground mb-2">Brak danych do wyświetlenia</h3>
+        <p className="text-muted-foreground">Nie znaleziono żadnych zamówień w wybranym okresie.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Summary Cards */}

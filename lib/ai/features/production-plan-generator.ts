@@ -162,7 +162,7 @@ function inferOperations(input: PlanGeneratorInput): GeneratedOperation[] {
   ops.push({
     operationNumber: opNum++,
     operationType: 'quality_control',
-    operationName: 'Kontrola jakosci',
+    operationName: 'Kontrola jakości',
     setupTimeMinutes: 5,
     runTimePerUnitMinutes: Math.round(1 * mult * 10) / 10,
     machineSuggestion: null,
@@ -319,7 +319,7 @@ function buildPrompt(input: PlanGeneratorInput, fewShotExamples: HistoricalPlan[
   lines.push('- Zwroc liste operacji w kolejnosci wykonania')
   lines.push('- Dozwolone typy: milling, turning, drilling, grinding, cutting, deburring, quality_control, other')
   lines.push('- Zawsze zaczynaj od "cutting" (ciecie materialu)')
-  lines.push('- Zawsze konczac "quality_control" (kontrola jakosci)')
+  lines.push('- Zawsze konczac "quality_control" (kontrola jakości)')
   lines.push('- setup_time w minutach (czas przygotowania maszyny)')
   lines.push('- run_time_per_unit w minutach (czas na sztuke)')
   lines.push('- machine_suggestion: sugerowana maszyna (lub null)')

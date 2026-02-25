@@ -8,18 +8,18 @@ export default function LogoutButton() {
   const router = useRouter()
 
   const handleLogout = async () => {
-    const loadingToast = toast.loading('Logging out...')
+    const loadingToast = toast.loading('Wylogowywanie...')
 
     const { error } = await signOut()
 
     toast.dismiss(loadingToast)
 
     if (error) {
-      toast.error('Logout failed: ' + error.message)
+      toast.error('Wylogowanie nie powiodło się: ' + error.message)
       return
     }
 
-    toast.success('Logged out successfully')
+    toast.success('Wylogowano pomyślnie')
     router.push('/login')
     router.refresh()
   }
@@ -29,7 +29,7 @@ export default function LogoutButton() {
       onClick={handleLogout}
       className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold"
     >
-      Logout
+      Wyloguj
     </button>
   )
 }

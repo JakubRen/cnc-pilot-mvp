@@ -88,16 +88,16 @@ export default function RegisterPage() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">CNC-Pilot</h1>
-          <p className="text-slate-400">Production Management System</p>
+          <p className="text-slate-400">System Zarządzania Produkcją</p>
         </div>
 
         <div className="bg-slate-800 border border-slate-700 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-white mb-6">Create Account</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Utwórz Konto</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Full Name */}
             <div>
-              <label className="block text-slate-300 mb-2">Full Name</label>
+              <label className="block text-slate-300 mb-2">Imię i Nazwisko</label>
               <input
                 {...register('fullName')}
                 type="text"
@@ -128,7 +128,7 @@ export default function RegisterPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-slate-300 mb-2">Password</label>
+              <label className="block text-slate-300 mb-2">Hasło</label>
               <input
                 {...register('password')}
                 type="password"
@@ -144,18 +144,18 @@ export default function RegisterPage() {
             <Button
               type="submit"
               isLoading={isSubmitting}
-              loadingText="Creating account..."
+              loadingText="Tworzenie konta..."
               className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition"
             >
-              Create Account
+              Utwórz Konto
             </Button>
           </form>
 
           {/* Login Link */}
           <div className="mt-6 text-center text-slate-400">
-            Already have an account?{' '}
+            Masz już konto?{' '}
             <Link href="/login" className="text-blue-400 hover:text-blue-300">
-              Login
+              Zaloguj się
             </Link>
           </div>
         </div>

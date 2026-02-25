@@ -61,13 +61,13 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
             <p className="text-2xl font-bold text-white">{orderItems.length}</p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-violet-300 mb-1">Setup Time</p>
+            <p className="text-sm text-violet-300 mb-1">Czas przygotowania</p>
             <p className="text-2xl font-bold text-white">
               {formatDuration(grandTotals.setupTime)}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-violet-300 mb-1">Run Time</p>
+            <p className="text-sm text-violet-300 mb-1">Czas obróbki</p>
             <p className="text-2xl font-bold text-white">
               {formatDuration(grandTotals.runTime)}
             </p>
@@ -187,13 +187,13 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
                           {/* Operation details grid */}
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                             <div>
-                              <p className="text-xs text-muted-foreground mb-1">Setup Time</p>
+                              <p className="text-xs text-muted-foreground mb-1">Czas przygotowania</p>
                               <p className="text-sm font-semibold text-foreground">
                                 {formatDuration(operation.setup_time_minutes)}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground mb-1">Run Time/szt</p>
+                              <p className="text-xs text-muted-foreground mb-1">Czas obróbki/szt</p>
                               <p className="text-sm font-semibold text-foreground">
                                 {formatDuration(operation.run_time_per_unit_minutes)}
                               </p>
@@ -255,13 +255,13 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
                 <div className="mt-4 p-4 bg-muted rounded-lg">
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Setup Time</p>
+                      <p className="text-xs text-muted-foreground mb-1">Czas przygotowania</p>
                       <p className="text-lg font-bold text-foreground">
                         {formatDuration(item.total_setup_time_minutes || 0)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Run Time</p>
+                      <p className="text-xs text-muted-foreground mb-1">Czas obróbki</p>
                       <p className="text-lg font-bold text-foreground">
                         {formatDuration(item.total_run_time_minutes || 0)}
                       </p>
@@ -286,8 +286,8 @@ export default function OperationsDisplay({ orderItems, editable = false }: Oper
         <ul className="list-disc list-inside space-y-1 text-violet-300 text-xs">
           <li><strong>Pozycje:</strong> Każda pozycja to osobny detal do wykonania (np. Flansza, Wałek)</li>
           <li><strong>Operacje:</strong> Kolejne kroki obróbki (#1, #2, #3...) tworzą routing produkcyjny</li>
-          <li><strong>Setup Time:</strong> Czas przygotowania maszyny (jednorazowy)</li>
-          <li><strong>Run Time:</strong> Czas obróbki jednej sztuki × ilość w pozycji</li>
+          <li><strong>Czas przygotowania:</strong> Czas przygotowania maszyny (jednorazowy, niezależny od ilości)</li>
+          <li><strong>Czas obróbki:</strong> Czas obróbki jednej sztuki × ilość w pozycji</li>
           <li><strong>Koszt:</strong> Automatycznie obliczany na podstawie czasów i stawek</li>
         </ul>
       </div>

@@ -93,8 +93,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <button
         onClick={() => setShowShortcutsHelp(true)}
         className="fixed bottom-6 right-6 w-10 h-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-md flex items-center justify-center transition z-30 group focus:outline-none focus:ring-2 focus:ring-ring hidden lg:flex"
-        title="Keyboard Shortcuts (Ctrl+/)"
-        aria-label="Show keyboard shortcuts"
+        title="Skróty klawiszowe (Ctrl+/)"
+        aria-label="Pokaż skróty klawiszowe"
       >
         <QuestionMarkCircleIcon className="w-5 h-5" />
         <span className="absolute bottom-full mb-2 right-0 px-3 py-1 bg-popover text-popover-foreground text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none border border-border">

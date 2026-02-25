@@ -72,7 +72,7 @@ export default function CommandPalette({ userRole }: CommandPaletteProps) {
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted cursor-pointer transition"
               >
                 <span className="text-lg">📊</span>
-                <span>Dashboard</span>
+                <span>Pulpit</span>
               </Command.Item>
               <Command.Item
                 onSelect={() => runCommand(() => router.push('/orders'))}

@@ -173,7 +173,7 @@ export default function AddInventoryForm() {
           <input
             id="name"
             {...register('name')}
-            placeholder="Aluminum 6061 Bar 100mm"
+            placeholder="Aluminium 6061 pręt 100mm"
             className="w-full px-4 py-3 rounded-lg bg-muted border border-border text-foreground focus:border-violet-500 focus:outline-none"
           />
           {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}

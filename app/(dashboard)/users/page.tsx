@@ -30,7 +30,7 @@ export default async function UsersPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-          <h2 className="text-xl font-bold text-red-800 dark:text-red-300 mb-2">Error</h2>
+          <h2 className="text-xl font-bold text-red-800 dark:text-red-300 mb-2">Błąd</h2>
           <p className="text-red-600 dark:text-red-400">{error.message}</p>
         </div>
       </div>

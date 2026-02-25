@@ -193,8 +193,8 @@ export default function QuoteFileUpload({ onImport, onClose }: Props) {
               <tr>
                 <th className="text-left p-3 text-muted-foreground">#</th>
                 <th className="text-left p-3 text-muted-foreground">Nazwa</th>
-                <th className="text-left p-3 text-muted-foreground">Material</th>
-                <th className="text-right p-3 text-muted-foreground">Ilosc</th>
+                <th className="text-left p-3 text-muted-foreground">Materiał</th>
+                <th className="text-right p-3 text-muted-foreground">Ilość</th>
                 <th className="text-left p-3 text-muted-foreground">Wymiary</th>
               </tr>
             </thead>

@@ -68,7 +68,7 @@ const ACTION_LABELS: Record<string, string> = {
   edit: 'Edycja',
   delete: 'Usuwanie',
   upload: 'Wysyłanie',
-  export: 'Export',
+  export: 'Eksport',
   permissions: 'Uprawnienia',
 };
 
