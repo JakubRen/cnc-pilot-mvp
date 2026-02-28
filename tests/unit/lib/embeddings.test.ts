@@ -93,7 +93,7 @@ describe('generateEmbedding', () => {
     await generateEmbedding('hello')
 
     expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining('text-embedding-004'),
+      expect.stringContaining('gemini-embedding-001'),
       expect.objectContaining({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

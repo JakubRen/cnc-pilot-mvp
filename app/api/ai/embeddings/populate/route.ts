@@ -5,6 +5,7 @@ import {
   populateOrderEmbeddings,
   populateCustomerEmbeddings,
   populateMachineEmbeddings,
+  populateKnowledgeEntries,
 } from '@/lib/ai/embedding-pipeline'
 
 export async function POST(request: NextRequest) {
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     const companyId = userProfile.company_id
     const body = await request.json()
-    const sourceTypes: string[] = body.sourceTypes || ['product', 'order', 'customer', 'machine']
+    const sourceTypes: string[] = body.sourceTypes || ['product', 'order', 'customer', 'machine', 'knowledge_entry']
 
     const results: Record<string, number> = {}
 
@@ -37,6 +38,9 @@ export async function POST(request: NextRequest) {
     }
     if (sourceTypes.includes('machine')) {
       results.machines = await populateMachineEmbeddings(companyId)
+    }
+    if (sourceTypes.includes('knowledge_entry')) {
+      results.knowledge = await populateKnowledgeEntries(companyId)
     }
 
     const total = Object.values(results).reduce((sum, n) => sum + n, 0)

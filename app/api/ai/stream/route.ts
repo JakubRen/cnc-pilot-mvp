@@ -6,6 +6,7 @@ import { sanitizeUserInput, FIELD_LIMITS } from '@/lib/ai/security/sanitizer'
 import { searchSimilar } from '@/lib/ai/embeddings'
 import { buildSystemPrompt } from '@/lib/ai/copilot/system-prompt'
 import * as copilotTools from '@/lib/ai/copilot/tools'
+import * as reportTools from '@/lib/ai/copilot/report-tools'
 import { z } from 'zod'
 import type { CopilotContext } from '@/types/copilot'
 
@@ -129,6 +130,47 @@ export async function POST(request: Request) {
             complexity: z.enum(['simple', 'medium', 'complex']).describe('Złożoność'),
           }),
           execute: async (params) => copilotTools.getProductionPlan(companyId, params),
+        }),
+        // Report tools (CSV export)
+        generate_orders_report: tool({
+          description: 'Generuj raport zamówień do CSV. Użyj gdy user prosi o eksport/raport/CSV zamówień.',
+          inputSchema: z.object({
+            status: z.string().optional().describe('Filtr statusu: pending, in_progress, completed, delayed, cancelled'),
+            customer_name: z.string().optional().describe('Filtr klienta'),
+            date_from: z.string().optional().describe('Data od (YYYY-MM-DD)'),
+            date_to: z.string().optional().describe('Data do (YYYY-MM-DD)'),
+          }),
+          execute: async (params) => reportTools.generateOrdersReport(companyId, params),
+        }),
+        generate_inventory_report: tool({
+          description: 'Generuj raport magazynu do CSV. Użyj gdy user prosi o eksport/raport stanów magazynowych.',
+          inputSchema: z.object({
+            category: z.string().optional().describe('Kategoria: raw_material, finished_good, semi_finished, tool, consumable'),
+            low_stock_only: z.boolean().optional().describe('Tylko produkty z niskim stanem'),
+          }),
+          execute: async (params) => reportTools.generateInventoryReport(companyId, params),
+        }),
+        generate_costs_report: tool({
+          description: 'Generuj raport kosztów i marż do CSV. Użyj gdy user prosi o eksport/raport kosztów/marż.',
+          inputSchema: z.object({
+            date_from: z.string().optional().describe('Data od (YYYY-MM-DD)'),
+            date_to: z.string().optional().describe('Data do (YYYY-MM-DD)'),
+          }),
+          execute: async (params) => reportTools.generateCostsReport(companyId, params),
+        }),
+        generate_customer_report: tool({
+          description: 'Generuj raport historii klienta do CSV. Użyj gdy user prosi o eksport/raport konkretnego klienta.',
+          inputSchema: z.object({
+            customer_name: z.string().describe('Nazwa klienta'),
+          }),
+          execute: async (params) => reportTools.generateCustomerReport(companyId, params),
+        }),
+        generate_deadlines_report: tool({
+          description: 'Generuj raport zagrożonych terminów do CSV. Użyj gdy user prosi o eksport/raport terminów/deadlines.',
+          inputSchema: z.object({
+            days_ahead: z.number().optional().describe('Ile dni do przodu (domyślnie 14)'),
+          }),
+          execute: async (params) => reportTools.generateDeadlinesReport(companyId, params),
         }),
       },
       stopWhen: stepCountIs(5),

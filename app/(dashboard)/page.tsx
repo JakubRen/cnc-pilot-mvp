@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { unstable_cache } from 'next/cache';
+
 import { createClient } from '@/lib/supabase-server';
 import { getDashboardSummary } from '@/lib/dashboard-queries';
 import { canAccessModule } from '@/lib/permissions-server';
@@ -45,16 +45,9 @@ export default async function HomePage() {
     redirect('/no-access');
   }
 
-  // Cache dashboard summary for 60s to avoid redundant DB queries on repeated loads
-  const getCachedDashboard = unstable_cache(
-    async (companyId: string) => getDashboardSummary(companyId),
-    ['dashboard-summary'],
-    { revalidate: 60 }
-  );
-
   // Fetch dashboard data + AI insights + anomalies in parallel
   const [dashboardData, aiInsights, anomalyAlerts] = await Promise.all([
-    getCachedDashboard(currentUser.company_id),
+    getDashboardSummary(currentUser.company_id),
     getOrGenerateInsights(currentUser.company_id),
     getAnomalyAlerts(currentUser.company_id),
   ]);
