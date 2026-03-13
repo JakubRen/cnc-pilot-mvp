@@ -1,10 +1,14 @@
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env.local') })
 const { createClient } = require('@supabase/supabase-js')
 const fs = require('fs')
 const path = require('path')
 
-// TEST database credentials
-const supabaseUrl = 'https://vvetjctdjswgwebhgbpd.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2ZXRqY3RkanN3Z3dlYmhnYnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5NDk1MTIsImV4cCI6MjA4MjUyNTUxMn0.HAmoQihJBrH_sDFsLF_Brzuv5L6YoiHBTJHgdOodfZM'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local')
+  process.exit(1)
+}
 
 const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {

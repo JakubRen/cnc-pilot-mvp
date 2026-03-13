@@ -3,11 +3,15 @@
  * Run: node scripts/fix-test-rpc.js
  */
 
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env.local') });
 const { createClient } = require('@supabase/supabase-js');
 
-// TEST database credentials
-const SUPABASE_URL = 'https://vvetjctdjswgwebhgbpd.supabase.co';
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2ZXRqY3RkanN3Z3dlYmhnYnBkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNDUzMDE2NCwiZXhwIjoyMDUwMTA2MTY0fQ.iJSGnbJGv8lVlFqNhOoGEGjRGZu7mXuXSqTvQZfLLVE';
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local');
+  process.exit(1);
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
   auth: { persistSession: false }
