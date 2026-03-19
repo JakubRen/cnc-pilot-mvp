@@ -1,0 +1,169 @@
+# ============================================
+# CNC-Pilot Scenario Runner — Test Scenarios
+# Format: each scenario has a name and sequential steps
+# ============================================
+
+scenarios:
+  # ── 1. Dashboard ─────────────────────────────
+  - name: "Dashboard loads with KPI cards"
+    steps:
+      - goto: /
+      - expect:
+          text_visible: "Pulpit"
+      - expect:
+          element_count:
+            selector: "[data-testid='kpi-card'], .kpi-card, [class*='card']"
+            min: 1
+      - screenshot: "dashboard-kpis"
+
+  # ── 2. Orders list ──────────────────────────
+  - name: "Orders list loads with data"
+    steps:
+      - goto: /orders
+      - expect:
+          text_visible: "Zamówienia"
+      - wait: 1000
+      - expect:
+          element_visible: "table, [role='table'], [data-testid='orders-list'], main"
+      - screenshot: "orders-list"
+
+  # ── 3. Navigate to add order ────────────────
+  - name: "Navigate to add order page"
+    steps:
+      - goto: /orders
+      - wait: 1000
+      - click: "Dodaj zamówienie"
+      - wait: 1000
+      - expect:
+          url_contains: "/orders/"
+      - screenshot: "add-order-page"
+
+  # ── 4. Create simple order ──────────────────
+  - name: "Create simple order flow"
+    steps:
+      - goto: /orders
+      - wait: 1000
+      - click: "Dodaj zamówienie"
+      - wait: 1500
+      - expect:
+          text_visible: "Dodaj nowe zamówienie"
+      - screenshot: "order-form-filled"
+
+  # ── 5. Production list ──────────────────────
+  - name: "Production list loads"
+    steps:
+      - goto: /production
+      - expect:
+          text_visible: "Plan Produkcji"
+      - wait: 1000
+      - expect:
+          element_visible: "table, [role='table'], [data-testid='production-list'], main"
+      - screenshot: "production-list"
+
+  # ── 6. Customer list and navigation ─────────
+  - name: "Customer list and detail navigation"
+    steps:
+      - goto: /customers
+      - expect:
+          text_visible: "Kontrahenci"
+      - wait: 1000
+      - expect:
+          element_visible: "table, [role='table'], [data-testid='customers-list'], main"
+      - screenshot: "customers-list"
+
+  # ── 7. Quotes page ─────────────────────────
+  - name: "Quotes page loads"
+    steps:
+      - goto: /quotes
+      - expect:
+          text_visible: "Oferty"
+      - wait: 1000
+      - screenshot: "quotes-page"
+
+  # ── 8. Products page ────────────────────────
+  - name: "Products page loads"
+    steps:
+      - goto: /products
+      - expect:
+          text_visible: "Towary"
+      - wait: 1000
+      - screenshot: "products-page"
+
+  # ── 9. Inventory page ──────────────────────
+  - name: "Inventory page loads"
+    steps:
+      - goto: /inventory
+      - expect:
+          text_visible: "Magazyn"
+      - wait: 1000
+      - screenshot: "inventory-page"
+
+  # ── 10. Documents page ──────────────────────
+  - name: "Documents page loads"
+    steps:
+      - goto: /documents
+      - expect:
+          text_visible: "Dokumenty"
+      - wait: 1000
+      - screenshot: "documents-page"
+
+  # ── 11. Reports page ───────────────────────
+  - name: "Reports page loads"
+    steps:
+      - goto: /reports
+      - expect:
+          text_visible: "Raporty"
+      - wait: 1000
+      - screenshot: "reports-page"
+
+  # ── 12. Settings page ──────────────────────
+  - name: "Settings page accessible"
+    steps:
+      - goto: /settings
+      - expect:
+          text_visible: "Ustawienia"
+      - wait: 1000
+      - screenshot: "settings-page"
+
+  # ── 13. Copilot shortcut ────────────────────
+  - name: "Copilot opens with keyboard shortcut"
+    steps:
+      - goto: /
+      - wait: 1000
+      - press: "Control+Shift+K"
+      - wait: 1000
+      - screenshot: "copilot-open"
+      - press: "Escape"
+      - wait: 500
+
+  # ── 14. Calendar page ──────────────────────
+  - name: "Calendar page loads"
+    steps:
+      - goto: /calendar
+      - expect:
+          text_visible: "Kalendarz"
+      - wait: 1000
+      - screenshot: "calendar-page"
+
+  # ── 15. Sidebar navigation ─────────────────
+  - name: "Sidebar navigation between pages"
+    steps:
+      - goto: /
+      - wait: 500
+      - click: "Zamówienia"
+      - wait: 1000
+      - expect:
+          url_contains: "/orders"
+      - click: "Plan Produkcji"
+      - wait: 1000
+      - expect:
+          url_contains: "/production"
+      - click: "Kontrahenci"
+      - wait: 1000
+      - expect:
+          url_contains: "/customers"
+      - click: "Pulpit"
+      - wait: 1000
+      - expect:
+          url_contains: "/"
+      - screenshot: "sidebar-navigation-done"
