@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/cron/deadline-reminder",
-      "schedule": "0 8 * * *"
+      "schedule": "0 6,10,14,18 * * *"
     },
     {
       "path": "/api/cron/low-stock-check",
