@@ -123,7 +123,7 @@ export async function visitPage(
 
     // Check page didn't redirect to login (permission issue)
     const currentUrl = page.url()
-    if (currentUrl.includes('/login') && route.path !== '/login') {
+    if (currentUrl.includes('/login') && (route.path as string) !== '/login') {
       return {
         route,
         status: 'skip',

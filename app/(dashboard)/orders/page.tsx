@@ -4,6 +4,7 @@ import { canAccessModule } from '@/lib/permissions-server'
 import { redirect } from 'next/navigation'
 import OrdersClient from './OrdersClient'
 import { Button } from '@/components/ui/Button'
+import QuickOrderModal from '@/components/orders/QuickOrderModal'
 
 // Disable router cache - always fetch fresh data
 export const dynamic = 'force-dynamic'
@@ -108,9 +109,12 @@ export default async function OrdersPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-foreground">Zamówienia</h1>
-          <Button href="/orders/add" variant="primary">
-            + Dodaj Zamówienie
-          </Button>
+          <div className="flex gap-3">
+            <QuickOrderModal companyId={userProfile.company_id || ''} userId={userProfile.id} />
+            <Button href="/orders/add" variant="primary">
+              + Dodaj Zamówienie
+            </Button>
+          </div>
         </div>
 
         <OrdersClient orders={ordersWithTags} currentUserRole={userProfile.role} companyId={userProfile.company_id || ''} userId={userProfile.id} />
