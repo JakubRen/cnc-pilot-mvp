@@ -6,6 +6,7 @@ import StatusDropdown from './StatusDropdown'
 import DrawingButton from './DrawingButton'
 import OrderDetailsTabs from './OrderDetailsTabs'
 import GenerateClientLink from '@/components/client-portal/GenerateClientLink'
+import DuplicateButton from './DuplicateButton'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -175,6 +176,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             <div className="flex gap-3 items-center">
               <GenerateClientLink customerName={order.customer_name} />
               <DrawingButton drawingFile={drawingFile} />
+              <DuplicateButton orderId={id} orderNumber={order.order_number} />
               <Link
                 href={`/orders/${id}/edit`}
                 className="px-4 py-2 text-sm rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition font-semibold"

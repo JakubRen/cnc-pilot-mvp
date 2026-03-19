@@ -131,6 +131,48 @@ export async function POST(request: Request) {
           }),
           execute: async (params) => copilotTools.getProductionPlan(companyId, params),
         }),
+        // Background agent tools
+        run_demand_forecast: tool({
+          description: 'Prognozuj zapotrzebowanie na części i materiały na 30/60/90 dni. Użyj gdy user pyta o prognozy popytu, trendy zamówień.',
+          inputSchema: z.object({
+            days: z.number().optional().describe('Okres prognozy w dniach (30, 60, 90)'),
+          }),
+          execute: async (params) => copilotTools.runDemandForecast(companyId, params),
+        }),
+        run_revenue_forecast: tool({
+          description: 'Prognozuj przychody i zyski na 30/60/90 dni. Użyj gdy user pyta o prognozy finansowe, przychody, marże.',
+          inputSchema: z.object({
+            days: z.number().optional().describe('Okres prognozy w dniach (30, 60, 90)'),
+          }),
+          execute: async (params) => copilotTools.runRevenueForecast(companyId, params),
+        }),
+        check_auto_reorder: tool({
+          description: 'Sprawdź sugestie automatycznego zamówienia materiałów u dostawców. Użyj gdy user pyta o braki magazynowe, co zamówić.',
+          inputSchema: z.object({}),
+          execute: async () => copilotTools.checkAutoReorder(companyId),
+        }),
+        run_dynamic_pricing: tool({
+          description: 'Zaproponuj dynamiczną cenę za część CNC uwzględniając popyt, historię i obciążenie. Użyj gdy user pyta ile wycenić część.',
+          inputSchema: z.object({
+            partName: z.string().describe('Nazwa części'),
+            material: z.string().optional().describe('Materiał'),
+            quantity: z.number().describe('Ilość sztuk'),
+            complexity: z.string().optional().describe('Złożoność: simple, medium, complex'),
+          }),
+          execute: async (params) => copilotTools.runDynamicPricing(companyId, params),
+        }),
+        check_completion_risks: tool({
+          description: 'Sprawdź ryzyko opóźnień zamówień na podstawie postępu produkcji vs deadline. Użyj gdy user pyta o ryzyka, opóźnienia, które zamówienia są zagrożone.',
+          inputSchema: z.object({
+            days_ahead: z.number().optional().describe('Ile dni do przodu sprawdzić (domyślnie 7)'),
+          }),
+          execute: async (params) => copilotTools.checkCompletionRisks(companyId, params),
+        }),
+        get_workshop_status: tool({
+          description: 'Kompleksowy status warsztatu: ryzyka opóźnień + braki magazynowe + alerty. Użyj gdy user pyta "jak idzie?", "co się dzieje?", "status warsztatu".',
+          inputSchema: z.object({}),
+          execute: async () => copilotTools.getWorkshopStatus(companyId),
+        }),
         // Report tools (CSV export)
         generate_orders_report: tool({
           description: 'Generuj raport zamówień do CSV. Użyj gdy user prosi o eksport/raport/CSV zamówień.',

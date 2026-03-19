@@ -59,20 +59,25 @@ export async function duplicateOrder(orderId: string): Promise<{ success: boolea
     return { success: false, error: 'Original order not found or unauthorized.' }
   }
 
-  // Generate a new unique order number
-  const newOrderNumber = `${originalOrder.order_number} (kopia ${Date.now().toString().slice(-4)})` // Appending a timestamp for uniqueness
+  // Generate a proper order number via RPC
+  const { data: newOrderNumber, error: rpcError } = await supabase
+    .rpc('generate_order_number', { p_company_id: userProfile.company_id })
 
-  // Create the new order object
+  if (rpcError || !newOrderNumber) {
+    logger.error('Error generating order number for duplicate', { error: rpcError?.message })
+    return { success: false, error: 'Failed to generate order number' }
+  }
+
+  // Create the new order: copy all fields, reset dates and status
   const newOrder = {
     ...originalOrder,
-    id: undefined, // Let Supabase generate a new ID
+    id: undefined,
     order_number: newOrderNumber,
-    status: 'pending', // Default status for duplicated order
-    created_at: new Date().toISOString(), // Set new creation timestamp
-    updated_at: new Date().toISOString(), // Set new update timestamp
-    created_by: userProfile.id, // Assign to current user
-    // Optionally clear/adjust other fields like priority, assigned_machine_id, assigned_operator_id
-    // For now, copy all, but override key ones.
+    status: 'pending',
+    deadline: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    created_by: userProfile.id,
   }
 
   // Insert the new order
