@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { renderToBuffer } from '@react-pdf/renderer'
-import QuoteTemplate from '@/lib/pdf/quote-template'
 import { fetchQuotePdfDataByToken } from '@/lib/pdf/fetch-quote'
+import { renderQuotePdf } from '@/lib/pdf/render'
 import { sanitizeFileName } from '@/lib/pdf/styles'
 
 /**
@@ -23,7 +22,7 @@ export async function GET(
       )
     }
 
-    const buffer = await renderToBuffer(<QuoteTemplate data={data} />)
+    const buffer = await renderQuotePdf(data)
     const fileName = `Wycena_${data.quote_number}_${sanitizeFileName(data.customer_name)}.pdf`
 
     return new Response(new Uint8Array(buffer), {

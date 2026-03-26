@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUserProfile } from '@/lib/auth-server'
-import { renderToBuffer } from '@react-pdf/renderer'
-import ProductionPlanTemplate from '@/lib/pdf/production-plan-template'
-import { fetchProductionPlanPdfData } from '@/lib/pdf/fetch-production-plan'
+import { fetchOrderPdfData } from '@/lib/pdf/fetch-order'
+import { renderOrderPdf } from '@/lib/pdf/render'
 import { sanitizeFileName } from '@/lib/pdf/styles'
 
 export async function GET(
@@ -17,13 +16,13 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const data = await fetchProductionPlanPdfData(id, userProfile.company_id)
+    const data = await fetchOrderPdfData(id, userProfile.company_id)
     if (!data) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
 
-    const buffer = await renderToBuffer(<ProductionPlanTemplate data={data} />)
-    const fileName = `Plan_${data.plan_number}_${sanitizeFileName(data.part_name)}.pdf`
+    const buffer = await renderOrderPdf(data)
+    const fileName = `Zamowienie_${data.order_number}_${sanitizeFileName(data.customer_name)}.pdf`
 
     return new Response(new Uint8Array(buffer), {
       headers: {
@@ -32,7 +31,7 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('[api/pdf/production-plan] Error:', error)
+    console.error('[api/pdf/order] Error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

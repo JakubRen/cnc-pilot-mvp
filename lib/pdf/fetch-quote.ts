@@ -14,41 +14,22 @@ export async function fetchQuotePdfData(
 
   const { data: quote, error } = await supabase
     .from('quotes')
-    .select(`
-      id,
-      quote_number,
-      created_at,
-      expires_at,
-      status,
-      customer_name,
-      customer_email,
-      customer_phone,
-      part_name,
-      material,
-      quantity,
-      total_price,
-      price_per_unit,
-      breakdown,
-      notes,
-      company_id,
-      created_by,
-      quote_items (
-        id,
-        part_name,
-        material,
-        quantity,
-        unit_price,
-        total_price,
-        dimensions,
-        complexity,
-        notes
-      )
-    `)
+    .select('*')
     .eq('id', quoteId)
     .eq('company_id', companyId)
     .single()
 
-  if (error || !quote) return null
+  if (error || !quote) {
+    console.error('[fetchQuotePdfData] Query failed:', { quoteId, companyId, error: error?.message })
+    return null
+  }
+
+  // Fetch quote items separately (same pattern as quotes page)
+  const { data: quoteItems } = await supabase
+    .from('quote_items')
+    .select('*')
+    .eq('quote_id', quoteId)
+    .order('created_at', { ascending: true })
 
   // Fetch creator name
   let creatorName: string | null = null
@@ -63,7 +44,7 @@ export async function fetchQuotePdfData(
 
   const company = await fetchCompanyBranding(companyId)
 
-  const items: QuotePdfItem[] = (quote.quote_items || []).map((item: Record<string, unknown>) => ({
+  const items: QuotePdfItem[] = (quoteItems || []).map((item: Record<string, unknown>) => ({
     part_name: item.part_name as string,
     material: item.material as string | null,
     quantity: item.quantity as number,
@@ -106,37 +87,7 @@ export async function fetchQuotePdfDataByToken(
 
   const { data: quote, error } = await supabase
     .from('quotes')
-    .select(`
-      id,
-      quote_number,
-      created_at,
-      expires_at,
-      status,
-      customer_name,
-      customer_email,
-      customer_phone,
-      part_name,
-      material,
-      quantity,
-      total_price,
-      price_per_unit,
-      breakdown,
-      notes,
-      company_id,
-      created_by,
-      token,
-      quote_items (
-        id,
-        part_name,
-        material,
-        quantity,
-        unit_price,
-        total_price,
-        dimensions,
-        complexity,
-        notes
-      )
-    `)
+    .select('*')
     .eq('token', token)
     .single()
 
@@ -146,6 +97,13 @@ export async function fetchQuotePdfDataByToken(
   if (quote.expires_at && new Date(quote.expires_at) < new Date()) {
     return null
   }
+
+  // Fetch quote items separately
+  const { data: quoteItems } = await supabase
+    .from('quote_items')
+    .select('*')
+    .eq('quote_id', quote.id)
+    .order('created_at', { ascending: true })
 
   // Fetch creator name
   let creatorName: string | null = null
@@ -160,7 +118,7 @@ export async function fetchQuotePdfDataByToken(
 
   const company = await fetchCompanyBranding(quote.company_id)
 
-  const items: QuotePdfItem[] = (quote.quote_items || []).map((item: Record<string, unknown>) => ({
+  const items: QuotePdfItem[] = (quoteItems || []).map((item: Record<string, unknown>) => ({
     part_name: item.part_name as string,
     material: item.material as string | null,
     quantity: item.quantity as number,

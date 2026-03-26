@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUserProfile } from '@/lib/auth-server'
-import { renderToBuffer } from '@react-pdf/renderer'
-import QuoteTemplate from '@/lib/pdf/quote-template'
 import { fetchQuotePdfData } from '@/lib/pdf/fetch-quote'
+import { renderQuotePdf } from '@/lib/pdf/render'
 import { sanitizeFileName } from '@/lib/pdf/styles'
 
 export async function GET(
@@ -22,7 +21,7 @@ export async function GET(
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
 
-    const buffer = await renderToBuffer(<QuoteTemplate data={data} />)
+    const buffer = await renderQuotePdf(data)
     const fileName = `Wycena_${data.quote_number}_${sanitizeFileName(data.customer_name)}.pdf`
 
     return new Response(new Uint8Array(buffer), {
