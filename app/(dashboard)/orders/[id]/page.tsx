@@ -7,6 +7,7 @@ import DrawingButton from './DrawingButton'
 import OrderDetailsTabs from './OrderDetailsTabs'
 import GenerateClientLink from '@/components/client-portal/GenerateClientLink'
 import DuplicateButton from './DuplicateButton'
+import OrderPdfButton from './OrderPdfButton'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -174,6 +175,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               </div>
             </div>
             <div className="flex gap-3 items-center">
+              <OrderPdfButton orderId={id} orderNumber={order.order_number} />
               <GenerateClientLink customerName={order.customer_name} />
               <DrawingButton drawingFile={drawingFile} />
               <DuplicateButton orderId={id} orderNumber={order.order_number} />

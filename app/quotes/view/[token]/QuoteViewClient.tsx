@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import { saveAs } from 'file-saver'
 import { Button } from '@/components/ui/Button'
+import { sanitizeFileName } from '@/lib/pdf/styles'
 
 interface QuoteViewClientProps {
   quote: any
@@ -12,6 +14,7 @@ interface QuoteViewClientProps {
 export default function QuoteViewClient({ quote, isExpired }: QuoteViewClientProps) {
   const [isAccepting, setIsAccepting] = useState(false)
   const [acceptedLocally, setAcceptedLocally] = useState(false)
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false)
 
   const handleAccept = async () => {
     setIsAccepting(true)
@@ -43,6 +46,21 @@ export default function QuoteViewClient({ quote, isExpired }: QuoteViewClientPro
       toast.error(error instanceof Error ? error.message : 'Błąd akceptacji')
     } finally {
       setIsAccepting(false)
+    }
+  }
+
+  const handleDownloadPdf = async () => {
+    setIsDownloadingPdf(true)
+    try {
+      const response = await fetch(`/api/pdf/quote/view/${quote.token}`)
+      if (!response.ok) throw new Error('Nie udalo sie wygenerowac PDF')
+      const blob = await response.blob()
+      const fileName = `Wycena_${quote.quote_number}_${sanitizeFileName(quote.customer_name)}.pdf`
+      saveAs(blob, fileName)
+    } catch (error) {
+      toast.error('Blad pobierania PDF')
+    } finally {
+      setIsDownloadingPdf(false)
     }
   }
 
@@ -208,23 +226,32 @@ export default function QuoteViewClient({ quote, isExpired }: QuoteViewClientPro
               {isAccepting ? 'Akceptuję...' : '✅ Akceptuję ofertę'}
             </Button>
             <Button
-              onClick={() => window.print()}
+              onClick={handleDownloadPdf}
+              disabled={isDownloadingPdf}
               variant="secondary"
               className="px-8 py-4"
             >
-              📄 Drukuj
+              {isDownloadingPdf ? 'Generowanie...' : '📄 Pobierz PDF'}
             </Button>
           </div>
         )}
 
         {(isExpired || isAccepted) && (
-          <div className="text-center mb-6">
+          <div className="flex justify-center gap-4 mb-6">
+            <Button
+              onClick={handleDownloadPdf}
+              disabled={isDownloadingPdf}
+              variant="secondary"
+              className="px-8 py-4"
+            >
+              {isDownloadingPdf ? 'Generowanie...' : '📄 Pobierz PDF'}
+            </Button>
             <Button
               onClick={() => window.print()}
               variant="secondary"
               className="px-8 py-4"
             >
-              📄 Drukuj ofertę
+              🖨️ Drukuj
             </Button>
           </div>
         )}

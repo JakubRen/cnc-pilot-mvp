@@ -6,7 +6,7 @@ import ExcelJS from 'exceljs'
 // In-memory store for generated files (1h TTL)
 const fileStore = new Map<string, { buffer: Buffer; name: string; expiresAt: number }>()
 
-function storeFile(name: string, buffer: Buffer): string {
+export function storeFile(name: string, buffer: Buffer): string {
   const fileId = randomUUID()
   fileStore.set(fileId, { buffer, name, expiresAt: Date.now() + 3600000 })
   // Cleanup expired entries

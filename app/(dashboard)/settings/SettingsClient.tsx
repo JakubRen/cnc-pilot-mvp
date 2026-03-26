@@ -16,6 +16,9 @@ const companySchema = z.object({
   phone: z.string().optional(),
   timezone: z.string().optional(),
   logo_url: z.string().url('Nieprawidłowy URL logo').optional().or(z.literal('')),
+  nip: z.string().optional(),
+  bank_account: z.string().optional(),
+  website: z.string().url('Nieprawidłowy URL').optional().or(z.literal('')),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
@@ -27,6 +30,9 @@ interface Company {
   phone: string | null
   timezone: string | null
   logo_url: string | null
+  nip: string | null
+  bank_account: string | null
+  website: string | null
 }
 
 interface EmailDomain {
@@ -72,6 +78,9 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
       phone: company?.phone || '',
       timezone: company?.timezone || 'Europe/Warsaw',
       logo_url: company?.logo_url || '',
+      nip: company?.nip || '',
+      bank_account: company?.bank_account || '',
+      website: company?.website || '',
     },
   });
 
@@ -88,6 +97,9 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
           phone: data.phone || null,
           timezone: data.timezone || 'Europe/Warsaw',
           logo_url: data.logo_url || null,
+          nip: data.nip || null,
+          bank_account: data.bank_account || null,
+          website: data.website || null,
         })
         .eq('id', company.id);
 
@@ -146,6 +158,22 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
                   </h3>
                   <p className="text-sm text-slate-700 dark:text-muted-foreground">
                     Dodawaj i edytuj użytkowników firmy
+                  </p>
+                </div>
+              </div>
+            </a>
+            <a
+              href="/settings/api-keys"
+              className="p-4 bg-muted rounded-lg hover:bg-accent transition group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">🔑</span>
+                <div>
+                  <h3 className="font-semibold text-foreground group-hover:text-violet-600 dark:group-hover:text-violet-400">
+                    Klucze API
+                  </h3>
+                  <p className="text-sm text-slate-700 dark:text-muted-foreground">
+                    Podlacz agentow AI (Claude Desktop, Cursor)
                   </p>
                 </div>
               </div>
@@ -301,6 +329,54 @@ export default function SettingsClient({ company, emailDomains, userRole, canMan
             <p className="text-slate-500 dark:text-muted-foreground text-xs mt-1">
               Możesz wkleić URL swojego logo lub przesłać plik do serwisu typu Imgur
             </p>
+          </div>
+
+          {/* NIP */}
+          <div>
+            <label className="block text-foreground text-sm font-semibold mb-2">
+              NIP
+            </label>
+            <input
+              {...register('nip')}
+              type="text"
+              className="w-full px-4 py-2 bg-card border border-border rounded-lg text-foreground placeholder-slate-400 dark:placeholder-slate-500 focus:border-violet-500 focus:outline-none"
+              placeholder="np. 1234567890"
+            />
+            {errors.nip && (
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.nip.message}</p>
+            )}
+          </div>
+
+          {/* Bank Account */}
+          <div>
+            <label className="block text-foreground text-sm font-semibold mb-2">
+              Konto bankowe
+            </label>
+            <input
+              {...register('bank_account')}
+              type="text"
+              className="w-full px-4 py-2 bg-card border border-border rounded-lg text-foreground placeholder-slate-400 dark:placeholder-slate-500 focus:border-violet-500 focus:outline-none"
+              placeholder="np. PL12 3456 7890 1234 5678 9012 3456"
+            />
+            {errors.bank_account && (
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.bank_account.message}</p>
+            )}
+          </div>
+
+          {/* Website */}
+          <div>
+            <label className="block text-foreground text-sm font-semibold mb-2">
+              Strona WWW
+            </label>
+            <input
+              {...register('website')}
+              type="url"
+              className="w-full px-4 py-2 bg-card border border-border rounded-lg text-foreground placeholder-slate-400 dark:placeholder-slate-500 focus:border-violet-500 focus:outline-none"
+              placeholder="https://"
+            />
+            {errors.website && (
+              <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.website.message}</p>
+            )}
           </div>
 
           {/* Submit Button */}

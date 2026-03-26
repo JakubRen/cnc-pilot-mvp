@@ -52,6 +52,7 @@
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.1.6",
+    "@react-pdf/renderer": "^4.3.2",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.93.3",
     "@types/mdx": "^2.0.13",

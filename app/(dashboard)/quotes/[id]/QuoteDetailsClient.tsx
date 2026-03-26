@@ -4,7 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { saveAs } from 'file-saver'
 import { Button } from '@/components/ui/Button'
+import { sanitizeFileName } from '@/lib/pdf/styles'
 
 interface QuoteItem {
   id: string
@@ -27,6 +29,7 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
   const router = useRouter()
   const [isCopying, setIsCopying] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false)
 
   // Generate portal URL
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
@@ -92,6 +95,23 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
       toast.error('Błąd połączenia z serwerem')
     } finally {
       setIsConverting(false)
+    }
+  }
+
+  // Download PDF
+  const handleDownloadPdf = async () => {
+    setIsDownloadingPdf(true)
+    try {
+      const response = await fetch(`/api/pdf/quote/${quote.id}`)
+      if (!response.ok) throw new Error('Nie udalo sie wygenerowac PDF')
+      const blob = await response.blob()
+      const fileName = `Wycena_${quote.quote_number}_${sanitizeFileName(quote.customer_name)}.pdf`
+      saveAs(blob, fileName)
+      toast.success('PDF pobrany!')
+    } catch (error) {
+      toast.error('Blad generowania PDF')
+    } finally {
+      setIsDownloadingPdf(false)
     }
   }
 
@@ -387,19 +407,29 @@ export default function QuoteDetailsClient({ quote, quoteItems, userProfile }: Q
               </a>
             </div>
 
-            {/* Print */}
+            {/* PDF Download */}
             <div className="bg-card border border-border rounded-lg p-6 shadow-lg">
               <h2 className="text-lg font-semibold text-foreground mb-4">
-                🖨️ Drukuj ofertę
+                📄 Pobierz PDF
               </h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Drukuj lub zapisz jako PDF (Ctrl+P).
+                Pobierz profesjonalny dokument PDF z logo firmy.
               </p>
               <Button
-                onClick={() => window.print()}
-                className="w-full bg-slate-600 hover:bg-slate-700 text-white"
+                onClick={handleDownloadPdf}
+                disabled={isDownloadingPdf}
+                isLoading={isDownloadingPdf}
+                loadingText="Generowanie..."
+                className="w-full bg-violet-600 hover:bg-violet-700 text-white mb-2"
               >
-                📄 Drukuj
+                📄 Pobierz PDF
+              </Button>
+              <Button
+                onClick={() => window.print()}
+                variant="outline"
+                className="w-full"
+              >
+                🖨️ Drukuj
               </Button>
             </div>
 

@@ -225,6 +225,37 @@ export async function checkCompletionRisks(companyId: string, params: { days_ahe
 }
 
 // ============================================
+// Tool 13 (PDF): generate_quote_pdf
+// ============================================
+
+export async function generateQuotePdf(
+  companyId: string,
+  params: { quote_id: string }
+): Promise<{ url: string; fileName: string }> {
+  const { fetchQuotePdfData } = await import('@/lib/pdf/fetch-quote')
+  const { renderToBuffer } = await import('@react-pdf/renderer')
+  const QuoteTemplate = (await import('@/lib/pdf/quote-template')).default
+  const { sanitizeFileName } = await import('@/lib/pdf/styles')
+  const { storeFile } = await import('@/lib/ai/copilot/report-tools')
+  const React = await import('react')
+
+  const data = await fetchQuotePdfData(params.quote_id, companyId)
+  if (!data) {
+    return { url: '', fileName: '' }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const buffer = await renderToBuffer(React.createElement(QuoteTemplate, { data }) as any)
+  const fileName = `Wycena_${data.quote_number}_${sanitizeFileName(data.customer_name)}.pdf`
+  const fileId = storeFile(fileName, Buffer.from(buffer))
+
+  return {
+    url: `/api/ai/reports/${fileId}`,
+    fileName,
+  }
+}
+
+// ============================================
 // Tool 12: get_workshop_status (compound)
 // ============================================
 
